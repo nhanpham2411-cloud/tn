@@ -1,8 +1,128 @@
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { ArrowLeft, CheckCircle2, Mail } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
 export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState("")
+  const [error, setError] = useState("")
+  const [sent, setSent] = useState(false)
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+
+    setError("")
+    setSent(true)
+  }
+
+  if (sent) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-full bg-chart-2/10">
+            <CheckCircle2 className="size-xl text-chart-2" />
+          </div>
+          <CardTitle className="typo-heading-2">Check your email</CardTitle>
+          <CardDescription>
+            We've sent a password reset link to{" "}
+            <span className="font-medium text-foreground">{email}</span>
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-sm">
+          <Button variant="outline" className="w-full" asChild>
+            <a href={`mailto:${email}`}>
+              <Mail className="mr-xs size-md" />
+              Open Email App
+            </a>
+          </Button>
+          <p className="typo-paragraph-mini text-center text-muted-foreground">
+            Didn't receive the email? Check your spam folder or{" "}
+            <button
+              onClick={() => setSent(false)}
+              className="text-primary hover:underline"
+            >
+              try another email
+            </button>
+          </p>
+        </CardContent>
+
+        <CardFooter className="justify-center">
+          <Link
+            to="/auth/sign-in"
+            className="typo-paragraph-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+          >
+            <ArrowLeft className="size-md" />
+            Back to sign in
+          </Link>
+        </CardFooter>
+      </Card>
+    )
+  }
+
   return (
-    <div>
-      <h1 className="typo-heading-2 text-foreground">Forgot Password</h1>
-      <p className="typo-paragraph-reg text-muted-foreground">Coming soon...</p>
-    </div>
+    <Card className="w-full max-w-md">
+      <CardHeader className="text-center">
+        <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
+          <span className="typo-heading-3">D</span>
+        </div>
+        <CardTitle className="typo-heading-2">Forgot password?</CardTitle>
+        <CardDescription>
+          Enter your email and we'll send you a reset link
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-md">
+          <div className="flex flex-col gap-xs">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={!!error}
+              aria-describedby={error ? "email-error" : undefined}
+            />
+            {error && (
+              <p id="email-error" className="typo-paragraph-mini text-destructive">
+                {error}
+              </p>
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
+            Send Reset Link
+          </Button>
+        </form>
+      </CardContent>
+
+      <CardFooter className="justify-center">
+        <Link
+          to="/auth/sign-in"
+          className="typo-paragraph-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+        >
+          <ArrowLeft className="size-md" />
+          Back to sign in
+        </Link>
+      </CardFooter>
+    </Card>
   )
 }
