@@ -166,8 +166,8 @@ export function AppHeader() {
                 {/* Mobile nav header */}
                 <div className="flex items-center gap-sm px-xl py-lg border-b border-border/30 dark:border-white/[0.06]">
                   <svg viewBox="0 0 28 28" fill="none" className="size-[24px]">
-                    <path d="M14 3L24 10L14 25L4 10Z" fill="url(#mobGrd)" fillOpacity="0.3" stroke="url(#mobGrd)" strokeWidth="1" strokeOpacity="0.5"/>
-                    <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#mobGrd)" fillOpacity="0.6"/>
+                    <path d="M14 3L24 10L14 25L4 10Z" fill="url(#mobGrd)" fillOpacity="0.5" stroke="url(#mobGrd)" strokeWidth="1" strokeOpacity="0.7"/>
+                    <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#mobGrd)" fillOpacity="0.85"/>
                     <defs><linearGradient id="mobGrd" x1="4" y1="3" x2="24" y2="25"><stop stopColor="#c4b5fd"/><stop offset="1" stopColor="#818cf8"/></linearGradient></defs>
                   </svg>
                   <span className="sp-h5 text-foreground">ShopPulse</span>
@@ -196,8 +196,8 @@ export function AppHeader() {
 
           <Link to="/dashboard" className="flex items-center gap-sm">
             <svg viewBox="0 0 28 28" fill="none" className="size-[28px]">
-              <path d="M14 3L24 10L14 25L4 10Z" fill="url(#hdrGrd)" fillOpacity="0.3" stroke="url(#hdrGrd)" strokeWidth="1" strokeOpacity="0.5"/>
-              <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#hdrGrd)" fillOpacity="0.6"/>
+              <path d="M14 3L24 10L14 25L4 10Z" fill="url(#hdrGrd)" fillOpacity="0.5" stroke="url(#hdrGrd)" strokeWidth="1" strokeOpacity="0.7"/>
+              <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#hdrGrd)" fillOpacity="0.85"/>
               <defs><linearGradient id="hdrGrd" x1="4" y1="3" x2="24" y2="25"><stop stopColor="#c4b5fd"/><stop offset="1" stopColor="#818cf8"/></linearGradient></defs>
             </svg>
             <span className="sp-h4 text-foreground hidden sm:inline">ShopPulse</span>
