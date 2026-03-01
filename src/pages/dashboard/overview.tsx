@@ -704,10 +704,8 @@ export default function DashboardOverviewPage() {
                       mode="range"
                       selected={draftRange}
                       onSelect={(range) => {
-                        if (range) {
-                          setDraftRange(range)
-                          setPresetLabel("")
-                        }
+                        setDraftRange(range ?? undefined)
+                        setPresetLabel("")
                       }}
                       numberOfMonths={2}
                       disabled={{ after: new Date() }}
