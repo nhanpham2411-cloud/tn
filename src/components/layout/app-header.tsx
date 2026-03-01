@@ -147,7 +147,8 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="flex flex-col gap-sm sm:gap-lg px-md sm:px-xl lg:px-2xl pt-md sm:pt-xl lg:pt-2xl max-w-[1440px] mx-auto w-full">
+      <header className="px-md sm:px-xl lg:px-2xl pt-md sm:pt-xl lg:pt-2xl w-full">
+        <div className="flex flex-col gap-sm sm:gap-lg max-w-[1440px] mx-auto w-full">
         {/* Top row: logo text + tab nav + actions */}
         <div className="flex items-center justify-between">
           {/* Mobile menu + Brand */}
@@ -361,6 +362,7 @@ export function AppHeader() {
               <span className="text-[11px]">⌘</span>K
             </kbd>
           </button>
+        </div>
         </div>
       </header>
 
