@@ -318,7 +318,7 @@ export default function UsersListPage() {
         </div>
 
         {/* KPI cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
             { icon: Users, label: "Total Users", value: totalCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
             { icon: UserCheck, label: "Active", value: activeCount, iconBg: "bg-success-subtle", iconColor: "text-success" },

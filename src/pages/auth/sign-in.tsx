@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { BarChart3, Eye, EyeOff, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { ShopPulseLogo } from "@/components/layout/auth-layout"
 
 /* Social icons (inline SVG for zero deps) */
 function GoogleIcon() {
@@ -75,17 +76,18 @@ export default function SignInPage() {
   }
 
   return (
-    <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
-      <CardHeader className="text-center">
+    <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
+      <CardHeader className="text-center p-xl pb-md">
         {/* Logo — visible on mobile only (desktop has sidebar branding) */}
-        <div className="mx-auto mb-sm flex size-[40px] items-center justify-center rounded-xl bg-primary text-primary-foreground lg:hidden">
-          <BarChart3 className="size-[20px]" />
+        <div className="mx-auto mb-md flex items-center gap-xs lg:hidden">
+          <ShopPulseLogo size={32} />
+          <span className="font-heading text-lg font-bold text-foreground">ShopPulse</span>
         </div>
         <CardTitle className="sp-h2">Welcome back</CardTitle>
         <CardDescription>Sign in to your account to continue</CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="px-xl">
         <form onSubmit={handleSubmit} className="flex flex-col gap-md">
           {/* Email */}
           <div className="flex flex-col gap-xs">
@@ -152,26 +154,26 @@ export default function SignInPage() {
       </CardContent>
 
       {/* Social login */}
-      <CardContent className="pt-0">
+      <CardContent className="px-xl pt-0">
         <div className="flex items-center gap-md">
           <Separator className="flex-1" />
-          <span className="sp-caption text-muted-foreground">or continue with</span>
+          <span className="sp-caption text-muted-foreground whitespace-nowrap">or continue with</span>
           <Separator className="flex-1" />
         </div>
       </CardContent>
 
-      <CardContent className="flex gap-sm pt-0">
+      <CardContent className="grid grid-cols-2 gap-sm px-xl pt-0">
         <Button variant="outline" className="w-full">
           <GoogleIcon />
-          Google
+          <span>Google</span>
         </Button>
         <Button variant="outline" className="w-full">
           <GitHubIcon />
-          GitHub
+          <span>GitHub</span>
         </Button>
       </CardContent>
 
-      <CardFooter className="justify-center">
+      <CardFooter className="justify-center px-xl pb-xl">
         <p className="sp-body text-muted-foreground">
           Don't have an account?{" "}
           <Link to="/auth/sign-up" className="text-primary font-medium hover:underline">Sign up</Link>

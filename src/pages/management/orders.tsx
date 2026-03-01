@@ -367,7 +367,7 @@ export default function OrdersPage() {
         </div>
 
         {/* KPI summary cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
             { icon: ShoppingCart, label: "Total Orders", value: totalOrders, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
             { icon: DollarSign, label: "Revenue", value: `$${(totalRevenue / 1_000).toFixed(0)}K`, iconBg: "bg-success-subtle", iconColor: "text-success" },

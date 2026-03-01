@@ -267,7 +267,7 @@ export default function HelpSupportPage() {
             </div>
 
             {/* Quick Links */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-lg stagger-children">
               {quickLinks.map((link) => (
                 <DCard key={link.title} className="flex flex-col gap-md cursor-pointer hover:border-border dark:hover:border-border transition-colors">
                   <div className="flex items-center gap-sm">

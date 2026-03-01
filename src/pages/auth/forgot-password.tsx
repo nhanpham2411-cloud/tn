@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, BarChart3, CheckCircle2, Loader2, Mail } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ShopPulseLogo } from "@/components/layout/auth-layout"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -40,8 +41,8 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
-        <CardHeader className="text-center">
+      <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
+        <CardHeader className="text-center p-xl">
           <div className="mx-auto mb-sm flex size-[48px] items-center justify-center rounded-full bg-success/10 dark:bg-success/20">
             <CheckCircle2 className="size-xl text-success" />
           </div>
@@ -52,7 +53,7 @@ export default function ForgotPasswordPage() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-sm">
+        <CardContent className="flex flex-col gap-sm px-xl">
           <Button variant="outline" className="w-full" asChild>
             <a href={`mailto:${email}`}>
               <Mail className="mr-xs size-md" />
@@ -71,7 +72,7 @@ export default function ForgotPasswordPage() {
           </p>
         </CardContent>
 
-        <CardFooter className="justify-center">
+        <CardFooter className="justify-center px-xl pb-xl">
           <Link
             to="/auth/sign-in"
             className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
@@ -85,16 +86,17 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
-      <CardHeader className="text-center">
-        <div className="mx-auto mb-sm flex size-[40px] items-center justify-center rounded-xl bg-primary text-primary-foreground lg:hidden">
-          <BarChart3 className="size-[20px]" />
+    <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
+      <CardHeader className="text-center p-xl pb-md">
+        <div className="mx-auto mb-md flex items-center gap-xs lg:hidden">
+          <ShopPulseLogo size={32} />
+          <span className="font-heading text-lg font-bold text-foreground">ShopPulse</span>
         </div>
         <CardTitle className="sp-h2">Forgot password?</CardTitle>
         <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="px-xl">
         <form onSubmit={handleSubmit} className="flex flex-col gap-md">
           <div className="flex flex-col gap-xs">
             <Label htmlFor="email">Email</Label>

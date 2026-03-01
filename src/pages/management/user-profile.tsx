@@ -372,7 +372,7 @@ export default function UserProfilePage() {
             {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[90px] rounded-2xl" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
             {[
               { icon: CreditCard, label: "Plan", value: user.plan, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
               { icon: Shield, label: "Role", value: user.role, iconBg: "bg-success-subtle", iconColor: "text-success" },

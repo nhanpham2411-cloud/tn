@@ -550,6 +550,9 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-caret-blink: caret-blink 1.25s ease-out infinite;
   --animate-fade-up: fade-up 0.3s ease-out;
+  --animate-page-in: page-in 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-slide-up: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-scale-in: scale-in 0.2s ease-out;
 }
 
 @keyframes accordion-down {
@@ -585,6 +588,30 @@
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
+}
+
+/* Page transition — fade + slight slide up */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Slide up — for cards, modals, content blocks */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale in — for badges, toasts, small elements */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Shimmer skeleton — animated gradient sweep */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* ============================================================
@@ -961,6 +988,19 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
   }
+
+  /* ── Input autofill override — prevent browser bg + corner color bleed ── */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--input) inset !important;
+    -webkit-text-fill-color: var(--foreground) !important;
+    caret-color: var(--foreground);
+    background-color: var(--input) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
 }
 
 /* ============================================================
@@ -1302,4 +1342,58 @@ html.dark::-webkit-scrollbar-thumb:hover,
 html.dark,
 .dark * {
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* ============================================================
+   Motion & Animation Utilities
+   ============================================================ */
+
+/* Page transition — applied to route content wrapper */
+@utility animate-page-in {
+  animation: page-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Slide up — for content blocks appearing */
+@utility animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Scale in — small elements popping in */
+@utility animate-scale-in {
+  animation: scale-in 0.2s ease-out both;
+}
+
+/* Stagger children — apply to parent, children get delayed fade-in */
+@utility stagger-children {
+  & > * {
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  & > *:nth-child(1) { animation-delay: 0ms; }
+  & > *:nth-child(2) { animation-delay: 50ms; }
+  & > *:nth-child(3) { animation-delay: 100ms; }
+  & > *:nth-child(4) { animation-delay: 150ms; }
+  & > *:nth-child(5) { animation-delay: 200ms; }
+  & > *:nth-child(6) { animation-delay: 250ms; }
+  & > *:nth-child(n+7) { animation-delay: 300ms; }
+}
+
+/* Shimmer skeleton — animated gradient shine */
+@utility skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    var(--accent) 40%,
+    var(--muted) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Reduced Motion — respect user preference ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

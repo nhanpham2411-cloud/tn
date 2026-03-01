@@ -74,6 +74,7 @@ import {
 } from "@/data/chart-data"
 import { useChartColors } from "@/hooks/use-chart-colors"
 import { SalesGlobe } from "@/components/charts/sales-globe"
+import { countryFlag } from "@/components/charts/sales-map"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { format, subDays, startOfYear } from "date-fns"
@@ -400,7 +401,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
                   onClick={() => setActiveDay((prev) => prev === i ? null : i)}
                   className={`flex flex-col items-center justify-center gap-2xs size-[48px] rounded-2xl transition-all ${
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(139,92,246,0.25)]"
+                      ? "bg-primary text-primary-foreground shadow-[0_2px_8px_rgba(139,92,246,0.25)] dark:shadow-[0_2px_8px_rgba(139,92,246,0.4)]"
                       : "text-muted-foreground hover:bg-surface-raised hover:rounded-xl"
                   }`}
                 >
@@ -861,7 +862,7 @@ export default function DashboardOverviewPage() {
               </div>
 
               {/* 2x2 Metric cards with sparklines */}
-              <div className="grid grid-cols-2 gap-lg">
+              <div className="grid grid-cols-2 gap-lg stagger-children">
                 {([
                   { icon: DollarSign, label: "Current Balance", numValue: 7000.75, value: "$7,000.75", change: "+34.5%", up: true, desc: "Available balance across all accounts", sparkColor: p[0] },
                   { icon: PiggyBank, label: "Savings", numValue: 5300.50, value: "$5,300.50", change: "+12.01%", up: true, desc: "Total savings this quarter", sparkColor: p[1] },
@@ -976,7 +977,7 @@ export default function DashboardOverviewPage() {
                   <p className="sp-body text-white/60 mt-xs line-clamp-1">Unlock deeper e-commerce insights, real-time reports & predictive trends.</p>
                 </div>
                 <button
-                  className="flex items-center justify-center gap-xs w-full py-sm rounded-xl sp-body-semibold text-primary-hover bg-white transition-all hover:bg-white/90 shadow-[0_2px_12px_rgba(0,0,0,0.15)]"
+                  className="flex items-center justify-center gap-xs w-full py-sm rounded-xl sp-body-semibold text-primary-hover bg-white transition-all hover:bg-white/90 shadow-[0_2px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
                   onClick={() => navigate("/settings/billing")}
                 >
                   Upgrade
@@ -1447,7 +1448,7 @@ export default function DashboardOverviewPage() {
             {salesLocations.map((loc, i) => (
               <div key={loc.city} className="flex items-center gap-sm rounded-xl border border-border-card p-lg">
                 <div className="size-[36px] rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${p[i % p.length]}15` }}>
-                  <Globe className="size-[16px]" style={{ color: p[i % p.length] }} />
+                  <span className="text-[18px] leading-none">{countryFlag(loc.country)}</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="sp-body-medium text-foreground">{loc.city}</p>

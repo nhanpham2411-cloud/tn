@@ -226,7 +226,7 @@ export default function BillingPage() {
             {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[90px] rounded-2xl" />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
             {usage.map((item) => (
               <DCard key={item.label} className="flex flex-col justify-center gap-xs">
                 <div className="flex items-center gap-sm">

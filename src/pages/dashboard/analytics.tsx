@@ -882,7 +882,7 @@ export default function AnalyticsPage() {
           </div>
         )}
 
-      <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-lg [grid-auto-rows:minmax(115px,auto)]">
+      <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-lg [grid-auto-rows:minmax(115px,auto)] stagger-children">
 
         {/* ── Row 1: 4 KPI cards ── */}
         {SUMMARY_METRICS.map((m) => (

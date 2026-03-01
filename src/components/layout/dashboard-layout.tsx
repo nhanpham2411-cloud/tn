@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom"
 
 import { AppHeader } from "@/components/layout/app-header"
+import { PageTransition } from "@/components/page-transition"
 
 export function DashboardLayout() {
   return (
@@ -13,7 +14,9 @@ export function DashboardLayout() {
           <div className="absolute top-[40%] -left-[250px] size-[500px] rounded-full bg-indigo-500/[0.02] blur-[180px]" />
         </div>
         <div className="relative flex flex-col gap-xl w-full max-w-[1440px] mx-auto">
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </div>
       </main>
     </div>
