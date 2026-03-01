@@ -402,8 +402,24 @@ export default function OrdersPage() {
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
+              {/* Mobile: Select dropdown */}
+              <Select value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
+                <SelectTrigger className="sm:hidden w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="processing">Processing</SelectItem>
+                  <SelectItem value="shipped">Shipped</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="refunded">Refunded</SelectItem>
+                </SelectContent>
+              </Select>
+              {/* Desktop: Pill tabs */}
               <Tabs value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
-                <TabsList className="rounded-full overflow-x-auto max-w-full">
+                <TabsList className="rounded-full hidden sm:inline-flex">
                   <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
                   <TabsTrigger value="pending" className="rounded-full">Pending</TabsTrigger>
                   <TabsTrigger value="processing" className="rounded-full">Processing</TabsTrigger>

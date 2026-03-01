@@ -369,8 +369,22 @@ export default function ReportsPage() {
                 <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
               </Button>
             </div>
+            {/* Mobile: Select dropdown */}
+            <Select value={tab} onValueChange={(v) => { setTab(v); setPage(1) }}>
+              <SelectTrigger className="sm:hidden w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="revenue">Revenue</SelectItem>
+                <SelectItem value="customers">Customers</SelectItem>
+                <SelectItem value="products">Products</SelectItem>
+                <SelectItem value="channels">Channels</SelectItem>
+              </SelectContent>
+            </Select>
+            {/* Desktop: Pill tabs */}
             <Tabs value={tab} onValueChange={(v) => { setTab(v); setPage(1) }}>
-              <TabsList className="rounded-full">
+              <TabsList className="rounded-full hidden sm:inline-flex">
                 <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
                 <TabsTrigger value="revenue" className="rounded-full">Revenue</TabsTrigger>
                 <TabsTrigger value="customers" className="rounded-full">Customers</TabsTrigger>

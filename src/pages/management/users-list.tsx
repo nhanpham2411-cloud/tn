@@ -353,8 +353,21 @@ export default function UsersListPage() {
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
+              {/* Mobile: Select dropdown */}
+              <Select value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
+                <SelectTrigger className="sm:hidden w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="invited">Invited</SelectItem>
+                </SelectContent>
+              </Select>
+              {/* Desktop: Pill tabs */}
               <Tabs value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
-                <TabsList className="rounded-full">
+                <TabsList className="rounded-full hidden sm:inline-flex">
                   <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
                   <TabsTrigger value="active" className="rounded-full">Active</TabsTrigger>
                   <TabsTrigger value="inactive" className="rounded-full">Inactive</TabsTrigger>

@@ -383,8 +383,22 @@ export default function InvoicesPage() {
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
+              {/* Mobile: Select dropdown */}
+              <Select value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
+                <SelectTrigger className="sm:hidden w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="overdue">Overdue</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              {/* Desktop: Pill tabs */}
               <Tabs value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
-                <TabsList className="rounded-full">
+                <TabsList className="rounded-full hidden sm:inline-flex">
                   <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
                   <TabsTrigger value="paid" className="rounded-full">Paid</TabsTrigger>
                   <TabsTrigger value="pending" className="rounded-full">Pending</TabsTrigger>
