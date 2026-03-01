@@ -683,11 +683,8 @@ export default function DashboardOverviewPage() {
                         onClick={() => {
                           const to = new Date()
                           const from = preset.days > 0 ? subDays(to, preset.days) : startOfYear(to)
-                          setDateRange({ from, to })
+                          setDraftRange({ from, to })
                           setPresetLabel(preset.label)
-                          setDraftRange(undefined)
-                          setDatePickerOpen(false)
-                          toast(`Switched to ${preset.label}`)
                         }}
                         className={`sp-caption text-left px-sm py-xs rounded-md transition-colors ${
                           presetLabel === preset.label
@@ -702,9 +699,10 @@ export default function DashboardOverviewPage() {
                   <div className="flex flex-col">
                     <CalendarComponent
                       mode="range"
+                      required
                       selected={draftRange}
                       onSelect={(range) => {
-                        setDraftRange(range ?? undefined)
+                        setDraftRange(range)
                         setPresetLabel("")
                       }}
                       numberOfMonths={2}
@@ -729,9 +727,12 @@ export default function DashboardOverviewPage() {
                           onClick={() => {
                             if (draftRange?.from && draftRange?.to) {
                               setDateRange(draftRange)
-                              setPresetLabel("")
                               setDatePickerOpen(false)
-                              toast(`${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`)
+                              toast(
+                                presetLabel
+                                  ? `Applied: ${presetLabel}`
+                                  : `${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`
+                              )
                             }
                           }}
                         >
