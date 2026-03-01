@@ -64,7 +64,7 @@ function Calendar({
           "day-outside text-muted-foreground/40 aria-selected:text-primary-foreground/70",
         disabled: "text-muted-foreground opacity-50",
         range_middle:
-          "aria-selected:bg-transparent aria-selected:text-foreground",
+          "aria-selected:bg-primary/10 aria-selected:text-foreground aria-selected:rounded-none aria-selected:hover:bg-primary/20",
         hidden: "invisible",
         ...classNames,
       }}
