@@ -80,7 +80,7 @@ export default function OnboardingPage() {
           {steps.map((step, i) => (
             <div key={step.title} className="flex items-center gap-xs">
               <div
-                className={`flex size-2xl items-center justify-center rounded-full typo-paragraph-sm-bold ${
+                className={`flex size-2xl items-center justify-center rounded-full sp-body-semibold ${
                   i < currentStep
                     ? "bg-primary text-primary-foreground"
                     : i === currentStep
@@ -103,7 +103,7 @@ export default function OnboardingPage() {
 
         <Progress value={progress} className="mb-md" />
 
-        <CardTitle className="typo-heading-3">{steps[currentStep].title}</CardTitle>
+        <CardTitle className="sp-h3">{steps[currentStep].title}</CardTitle>
         <CardDescription>{steps[currentStep].description}</CardDescription>
       </CardHeader>
 
@@ -157,7 +157,7 @@ export default function OnboardingPage() {
         {/* Step 2: Invite Team */}
         {currentStep === 1 && (
           <div className="flex flex-col gap-md">
-            <p className="typo-paragraph-sm text-muted-foreground">
+            <p className="sp-body text-muted-foreground">
               Invite team members by email. You can always add more later.
             </p>
             {emails.map((email, i) => (
@@ -207,8 +207,8 @@ export default function OnboardingPage() {
             </div>
 
             <div className="rounded-xl border border-border bg-muted/50 p-lg">
-              <h4 className="typo-paragraph-reg-semibold text-foreground mb-xs">You're all set!</h4>
-              <p className="typo-paragraph-sm text-muted-foreground">
+              <h4 className="sp-body-semibold text-foreground mb-xs">You're all set!</h4>
+              <p className="sp-body text-muted-foreground">
                 Click "Get Started" to access your ShopPulse dashboard. You can update these settings anytime from your profile.
               </p>
             </div>

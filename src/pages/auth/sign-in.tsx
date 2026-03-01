@@ -57,9 +57,9 @@ export default function SignInPage() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <span className="typo-heading-3">D</span>
+          <span className="sp-h3">D</span>
         </div>
-        <CardTitle className="typo-heading-2">Welcome back</CardTitle>
+        <CardTitle className="sp-h2">Welcome back</CardTitle>
         <CardDescription>
           Sign in to your account to continue
         </CardDescription>
@@ -80,7 +80,7 @@ export default function SignInPage() {
               aria-describedby={emailError ? "email-error" : undefined}
             />
             {emailError && (
-              <p id="email-error" className="typo-paragraph-mini text-destructive">
+              <p id="email-error" className="sp-caption text-destructive">
                 {emailError}
               </p>
             )}
@@ -111,7 +111,7 @@ export default function SignInPage() {
               </Button>
             </div>
             {passwordError && (
-              <p id="password-error" className="typo-paragraph-mini text-destructive">
+              <p id="password-error" className="sp-caption text-destructive">
                 {passwordError}
               </p>
             )}
@@ -121,13 +121,13 @@ export default function SignInPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-xs">
               <Checkbox id="remember" />
-              <Label htmlFor="remember" className="typo-paragraph-sm cursor-pointer">
+              <Label htmlFor="remember" className="sp-body cursor-pointer">
                 Remember me
               </Label>
             </div>
             <Link
               to="/auth/forgot-password"
-              className="typo-paragraph-sm text-primary hover:underline"
+              className="sp-body text-primary hover:underline"
             >
               Forgot password?
             </Link>
@@ -144,7 +144,7 @@ export default function SignInPage() {
       <CardContent className="pt-0">
         <div className="flex items-center gap-md">
           <Separator className="flex-1" />
-          <span className="typo-paragraph-mini text-muted-foreground">or</span>
+          <span className="sp-caption text-muted-foreground">or</span>
           <Separator className="flex-1" />
         </div>
       </CardContent>
@@ -159,7 +159,7 @@ export default function SignInPage() {
       </CardContent>
 
       <CardFooter className="justify-center">
-        <p className="typo-paragraph-sm text-muted-foreground">
+        <p className="sp-body text-muted-foreground">
           Don't have an account?{" "}
           <Link to="/auth/sign-up" className="text-primary hover:underline">
             Sign up

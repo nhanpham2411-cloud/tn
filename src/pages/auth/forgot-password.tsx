@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
           <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-full bg-chart-2/10">
             <CheckCircle2 className="size-xl text-chart-2" />
           </div>
-          <CardTitle className="typo-heading-2">Check your email</CardTitle>
+          <CardTitle className="sp-h2">Check your email</CardTitle>
           <CardDescription>
             We've sent a password reset link to{" "}
             <span className="font-medium text-foreground">{email}</span>
@@ -59,21 +59,22 @@ export default function ForgotPasswordPage() {
               Open Email App
             </a>
           </Button>
-          <p className="typo-paragraph-mini text-center text-muted-foreground">
+          <p className="sp-caption text-center text-muted-foreground">
             Didn't receive the email? Check your spam folder or{" "}
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setSent(false)}
-              className="text-primary hover:underline"
+              className="h-auto p-0 text-primary hover:underline hover:bg-transparent"
             >
               try another email
-            </button>
+            </Button>
           </p>
         </CardContent>
 
         <CardFooter className="justify-center">
           <Link
             to="/auth/sign-in"
-            className="typo-paragraph-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+            className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
           >
             <ArrowLeft className="size-md" />
             Back to sign in
@@ -87,9 +88,9 @@ export default function ForgotPasswordPage() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <span className="typo-heading-3">D</span>
+          <span className="sp-h3">D</span>
         </div>
-        <CardTitle className="typo-heading-2">Forgot password?</CardTitle>
+        <CardTitle className="sp-h2">Forgot password?</CardTitle>
         <CardDescription>
           Enter your email and we'll send you a reset link
         </CardDescription>
@@ -109,7 +110,7 @@ export default function ForgotPasswordPage() {
               aria-describedby={error ? "email-error" : undefined}
             />
             {error && (
-              <p id="email-error" className="typo-paragraph-mini text-destructive">
+              <p id="email-error" className="sp-caption text-destructive">
                 {error}
               </p>
             )}
@@ -124,7 +125,7 @@ export default function ForgotPasswordPage() {
       <CardFooter className="justify-center">
         <Link
           to="/auth/sign-in"
-          className="typo-paragraph-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+          className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
         >
           <ArrowLeft className="size-md" />
           Back to sign in

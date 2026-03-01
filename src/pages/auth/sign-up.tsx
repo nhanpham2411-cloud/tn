@@ -76,9 +76,9 @@ export default function SignUpPage() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <span className="typo-heading-3">D</span>
+          <span className="sp-h3">D</span>
         </div>
-        <CardTitle className="typo-heading-2">Create an account</CardTitle>
+        <CardTitle className="sp-h2">Create an account</CardTitle>
         <CardDescription>
           Get started with ShopPulse in minutes
         </CardDescription>
@@ -97,7 +97,7 @@ export default function SignUpPage() {
               aria-invalid={!!errors.name}
             />
             {errors.name && (
-              <p className="typo-paragraph-mini text-destructive">{errors.name}</p>
+              <p className="sp-caption text-destructive">{errors.name}</p>
             )}
           </div>
 
@@ -113,7 +113,7 @@ export default function SignUpPage() {
               aria-invalid={!!errors.email}
             />
             {errors.email && (
-              <p className="typo-paragraph-mini text-destructive">{errors.email}</p>
+              <p className="sp-caption text-destructive">{errors.email}</p>
             )}
           </div>
 
@@ -141,7 +141,7 @@ export default function SignUpPage() {
               </Button>
             </div>
             {errors.password && (
-              <p className="typo-paragraph-mini text-destructive">{errors.password}</p>
+              <p className="sp-caption text-destructive">{errors.password}</p>
             )}
 
             {/* Password strength */}
@@ -152,7 +152,7 @@ export default function SignUpPage() {
                     value={(strength / 5) * 100}
                     className="h-1.5 flex-1"
                   />
-                  <span className="typo-paragraph-mini text-muted-foreground">
+                  <span className="sp-caption text-muted-foreground">
                     {strengthLabels[strength - 1] || "Too Short"}
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export default function SignUpPage() {
                         <X className="size-sm text-muted-foreground" />
                       )}
                       <span
-                        className={`typo-paragraph-mini ${
+                        className={`sp-caption ${
                           req.met ? "text-foreground" : "text-muted-foreground"
                         }`}
                       >
@@ -186,7 +186,7 @@ export default function SignUpPage() {
               onCheckedChange={(checked) => setTerms(checked === true)}
               aria-invalid={!!errors.terms}
             />
-            <Label htmlFor="terms" className="typo-paragraph-sm cursor-pointer leading-tight">
+            <Label htmlFor="terms" className="sp-body cursor-pointer leading-tight">
               I agree to the{" "}
               <span className="text-primary hover:underline cursor-pointer">Terms of Service</span>{" "}
               and{" "}
@@ -194,7 +194,7 @@ export default function SignUpPage() {
             </Label>
           </div>
           {errors.terms && (
-            <p className="typo-paragraph-mini text-destructive">{errors.terms}</p>
+            <p className="sp-caption text-destructive">{errors.terms}</p>
           )}
 
           {/* Submit */}
@@ -208,7 +208,7 @@ export default function SignUpPage() {
       <CardContent className="pt-0">
         <div className="flex items-center gap-md">
           <Separator className="flex-1" />
-          <span className="typo-paragraph-mini text-muted-foreground">or</span>
+          <span className="sp-caption text-muted-foreground">or</span>
           <Separator className="flex-1" />
         </div>
       </CardContent>
@@ -223,7 +223,7 @@ export default function SignUpPage() {
       </CardContent>
 
       <CardFooter className="justify-center">
-        <p className="typo-paragraph-sm text-muted-foreground">
+        <p className="sp-body text-muted-foreground">
           Already have an account?{" "}
           <Link to="/auth/sign-in" className="text-primary hover:underline">
             Sign in

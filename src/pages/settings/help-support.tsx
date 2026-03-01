@@ -309,18 +309,20 @@ export default function HelpSupportPage() {
               {!searchQuery.trim() && (
                 <div className="flex flex-wrap gap-xs mb-lg">
                   {faqCategories.map((cat) => (
-                    <button
+                    <Button
                       key={cat.value}
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setFaqCategory(cat.value)}
-                      className={`inline-flex items-center gap-xs px-md py-xs rounded-full sp-caption font-medium transition-colors ${
+                      className={`inline-flex items-center gap-xs rounded-full sp-caption font-medium transition-colors ${
                         faqCategory === cat.value
-                          ? "bg-foreground text-background"
+                          ? "bg-foreground text-background hover:bg-foreground/90 hover:text-background"
                           : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                       }`}
                     >
                       <cat.icon className="size-[13px]" />
                       {cat.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}

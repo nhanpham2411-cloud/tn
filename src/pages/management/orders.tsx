@@ -545,12 +545,13 @@ export default function OrdersPage() {
                         <Checkbox checked={selected.has(order.id)} onCheckedChange={() => toggleOne(order.id)} aria-label={`Select ${order.id}`} />
                       </TableCell>
                       <TableCell>
-                        <button
-                          className="sp-body-semibold text-primary hover:underline text-left"
+                        <Button
+                          variant="ghost"
+                          className="sp-body-semibold text-primary hover:underline hover:bg-transparent text-left h-auto p-0"
                           onClick={() => setDetailSheet(order.id)}
                         >
                           {order.id}
-                        </button>
+                        </Button>
                       </TableCell>
                       <TableCell>
                         <div className="min-w-0">

@@ -267,13 +267,15 @@ export default function GeneralSettingsPage() {
                       <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-[18px] font-semibold">{currentUser.avatar}</AvatarFallback>
                     </Avatar>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={handleUploadAvatar}
-                      className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      className="absolute inset-0 size-auto rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-black/60"
                       aria-label="Upload avatar"
                     >
                       <Camera className="size-[18px] text-white" />
-                    </button>
+                    </Button>
                   </div>
                   <div>
                     <p className="sp-body-semibold text-foreground">{name}</p>
@@ -331,14 +333,16 @@ export default function GeneralSettingsPage() {
                       placeholder="Enter current password"
                       disabled={savingPassword}
                     />
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       type="button"
                       onClick={() => setShowCurrentPw(!showCurrentPw)}
-                      className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-xs top-1/2 -translate-y-1/2 size-[28px] text-muted-foreground hover:text-foreground"
                       aria-label={showCurrentPw ? "Hide password" : "Show password"}
                     >
                       {showCurrentPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <div className="grid gap-lg sm:grid-cols-2">
@@ -352,14 +356,16 @@ export default function GeneralSettingsPage() {
                         placeholder="Enter new password"
                         disabled={savingPassword}
                       />
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         type="button"
                         onClick={() => setShowNewPw(!showNewPw)}
-                        className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-xs top-1/2 -translate-y-1/2 size-[28px] text-muted-foreground hover:text-foreground"
                         aria-label={showNewPw ? "Hide password" : "Show password"}
                       >
                         {showNewPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
-                      </button>
+                      </Button>
                     </div>
                     {newPassword && newPassword.length < 8 && (
                       <p className="sp-caption text-destructive">Must be at least 8 characters</p>

@@ -427,7 +427,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
               <span className="sp-body-semibold text-foreground">
                 ${(data[activeDay] as { total: number }).total.toLocaleString()}
               </span>
-              <button onClick={() => setActiveDay(null)} className="sp-caption text-muted-foreground hover:text-foreground transition-colors">Clear</button>
+              <Button variant="ghost" size="sm" onClick={() => setActiveDay(null)} className="h-auto px-xs py-0 sp-caption text-muted-foreground hover:text-foreground transition-colors">Clear</Button>
             </>
           ) : (
             <>
@@ -659,13 +659,13 @@ export default function DashboardOverviewPage() {
               if (!open) setDraftRange(undefined)
             }}>
               <PopoverTrigger asChild>
-                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label="Select date range">
+                <Button variant="outline" className="flex items-center gap-xs px-md py-2xs h-auto rounded-lg border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong sp-body-medium text-foreground" aria-label="Select date range">
                   <Calendar className="size-[14px] text-muted-foreground" />
                   {dateRange.from && dateRange.to
                     ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
                     : "Pick a date range"}
                   <ChevronDown className="size-[12px] text-muted-foreground/50" />
-                </button>
+                </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start" sideOffset={8}>
                 <div className="flex">
