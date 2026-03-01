@@ -382,7 +382,7 @@ export default function UsersListPage() {
           </div>
 
           {/* Search + Role filter */}
-          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -407,8 +407,51 @@ export default function UsersListPage() {
             </Select>
           </div>
 
-          {/* Table */}
-          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          {/* Mobile card list — below md */}
+          <div className="md:hidden px-md pt-md pb-xl">
+            {refreshing ? (
+              <div className="flex flex-col gap-sm">
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[100px] rounded-xl" />)}
+              </div>
+            ) : paginated.length === 0 ? (
+              <EmptyState icon={Users} title="No users found" description="Try adjusting your filters or invite a new user." />
+            ) : (
+              <div className="flex flex-col gap-sm">
+                {paginated.map((user) => {
+                  const status = statusConfig[user.status]
+                  return (
+                    <Link
+                      key={user.id}
+                      to={`/management/users/${user.id}`}
+                      className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors"
+                    >
+                      <div className="flex items-center gap-sm">
+                        <Avatar className="size-[36px] ring-1 ring-border/20">
+                          <AvatarImage src={user.avatarUrl} alt={user.name} />
+                          <AvatarFallback className="sp-caption">{user.avatar}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="sp-body-semibold text-foreground truncate">{user.name}</p>
+                          <p className="sp-caption text-muted-foreground/60 truncate">{user.email}</p>
+                        </div>
+                        <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium shrink-0 ${status.badgeClass}`}>
+                          <span className={`size-[5px] rounded-full ${status.dotClass}`} />
+                          {status.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                        <span><Badge variant="outline" className="sp-caption mr-xs">{roleLabel[user.role]}</Badge> · {user.plan}</span>
+                        <span>{user.lastActive}</span>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Table — md and above */}
+          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>

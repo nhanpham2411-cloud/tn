@@ -379,7 +379,45 @@ export default function BillingPage() {
                   </Button>
                 </div>
               </div>
-              <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+              {/* Mobile card list — below md */}
+              <div className="md:hidden px-md pt-md pb-xl">
+                <div className="flex flex-col gap-sm">
+                  {billingHistory.map((invoice) => {
+                    const cfg = statusBadgeConfig[invoice.status] ?? statusBadgeConfig.paid
+                    return (
+                      <div key={invoice.id} className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="sp-body-semibold text-foreground">{invoice.id}</span>
+                          <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium ${cfg.badgeClass}`}>
+                            <span className={`size-[5px] rounded-full ${cfg.dotClass}`} />
+                            {cfg.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="sp-caption text-muted-foreground">{invoice.date}</span>
+                          <span className="sp-body-semibold text-foreground">${invoice.amount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center justify-end gap-xs">
+                          {invoice.status === "failed" && (
+                            <Button variant="ghost" size="xs" className="text-destructive hover:text-destructive hover:bg-destructive/10 sp-caption" onClick={() => handleRetryPayment(invoice.id)}>
+                              Retry
+                            </Button>
+                          )}
+                          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }}>
+                            <Download className="size-[14px]" />
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+                <p className="sp-caption text-muted-foreground/60 text-center pt-lg border-t border-border/40 mt-md">
+                  Need help with billing? Contact support at billing@shoppulse.io
+                </p>
+              </div>
+
+              {/* Table — md and above */}
+              <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
                 <Table className="table-fixed min-w-[600px]">
                   <TableHeader>
                     <TableRow>

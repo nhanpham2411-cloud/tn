@@ -425,8 +425,48 @@ export default function InvoicesPage() {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          {/* Mobile card list — below md */}
+          <div className="md:hidden px-md pt-md pb-xl">
+            {refreshing ? (
+              <div className="flex flex-col gap-sm">
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[110px] rounded-xl" />)}
+              </div>
+            ) : paginated.length === 0 ? (
+              <EmptyState icon={FileText} title="No invoices found" description="Try adjusting your filters or search terms." />
+            ) : (
+              <div className="flex flex-col gap-sm">
+                {paginated.map((invoice) => (
+                  <div
+                    key={invoice.id}
+                    className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                    onClick={() => setDetailSheet(invoice.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="sp-body-semibold text-primary">{invoice.id}</span>
+                        <span className="sp-caption text-muted-foreground/60 ml-xs">{invoice.orderId}</span>
+                      </div>
+                      <StatusBadge status={invoice.status} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0 flex-1">
+                        <p className="sp-body-medium text-foreground truncate">{invoice.customerName}</p>
+                        <p className="sp-caption text-muted-foreground/60 truncate">{invoice.customerEmail}</p>
+                      </div>
+                      <p className="sp-body-semibold text-foreground ml-md">${invoice.total.toFixed(2)}</p>
+                    </div>
+                    <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                      <span>Issued {invoice.issuedAt}</span>
+                      <span>Due {invoice.dueDate}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Table — md and above */}
+          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>

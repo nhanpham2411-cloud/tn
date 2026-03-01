@@ -434,7 +434,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Search + Payment filter */}
-          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -457,8 +457,45 @@ export default function OrdersPage() {
             </Select>
           </div>
 
-          {/* Table */}
-          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          {/* Mobile card list — below md */}
+          <div className="md:hidden px-md pt-md pb-xl">
+            {refreshing ? (
+              <div className="flex flex-col gap-sm">
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[120px] rounded-xl" />)}
+              </div>
+            ) : paginated.length === 0 ? (
+              <EmptyState icon={ShoppingCart} title="No orders found" description="Try adjusting your filters or search terms." />
+            ) : (
+              <div className="flex flex-col gap-sm">
+                {paginated.map((order) => (
+                  <div
+                    key={order.id}
+                    className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors"
+                    onClick={() => setDetailSheet(order.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="sp-body-semibold text-primary">{order.id}</span>
+                      <StatusBadge status={order.status} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0 flex-1">
+                        <p className="sp-body-medium text-foreground truncate">{order.customerName}</p>
+                        <p className="sp-caption text-muted-foreground/60 truncate">{order.customerEmail}</p>
+                      </div>
+                      <p className="sp-body-semibold text-foreground ml-md">${order.total.toLocaleString()}</p>
+                    </div>
+                    <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                      <span>{order.items.length} item{order.items.length !== 1 && "s"} · {paymentLabel[order.paymentMethod]}</span>
+                      <span>{order.createdAt}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Table — md and above */}
+          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>

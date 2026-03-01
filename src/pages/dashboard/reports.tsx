@@ -381,7 +381,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Search + Status filter */}
-          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -404,8 +404,51 @@ export default function ReportsPage() {
             </Select>
           </div>
 
-          {/* Table */}
-          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          {/* Mobile card list — below md */}
+          <div className="md:hidden px-md pt-md pb-xl">
+            {refreshing ? (
+              <div className="flex flex-col gap-sm">
+                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[90px] rounded-xl" />)}
+              </div>
+            ) : paginated.length === 0 ? (
+              <EmptyState icon={FileText} title="No reports found" description="Try adjusting your filters or generate a new report." />
+            ) : (
+              <div className="flex flex-col gap-sm">
+                {paginated.map((report) => {
+                  const type = typeConfig[report.type]
+                  const status = statusConfig[report.status]
+                  return (
+                    <div
+                      key={report.id}
+                      className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                      onClick={() => setDetailSheet(report.id)}
+                    >
+                      <div className="flex items-start justify-between gap-sm">
+                        <div className="min-w-0 flex-1">
+                          <p className="sp-body-semibold text-foreground truncate">{report.name}</p>
+                          <span className={`inline-flex items-center gap-xs sp-caption mt-3xs ${type.color}`}>
+                            <span className={`size-[5px] rounded-full ${type.dotColor}`} />
+                            {type.label}
+                          </span>
+                        </div>
+                        <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium shrink-0 ${status.badgeClass}`}>
+                          <span className={`size-[5px] rounded-full ${status.dotClass}`} />
+                          {status.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                        <span>{report.date} · <Badge variant="outline" className="sp-caption">{report.format}</Badge></span>
+                        <span>{report.size}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Table — md and above */}
+          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>
