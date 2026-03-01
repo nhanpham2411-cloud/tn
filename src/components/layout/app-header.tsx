@@ -338,7 +338,7 @@ export function AppHeader() {
                   <HelpCircle className="size-[14px]" /> Help & Support
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => toast("Signing out...")} className="text-destructive">
+                <DropdownMenuItem onClick={() => { toast("Signing out..."); setTimeout(() => navigate("/auth/sign-in"), 600) }} className="text-destructive">
                   <LogOut className="size-[14px]" /> Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
