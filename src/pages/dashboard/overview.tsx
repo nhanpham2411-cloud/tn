@@ -579,6 +579,7 @@ export default function DashboardOverviewPage() {
     to: new Date(),
   })
   const [presetLabel, setPresetLabel] = useState("Last 60 days")
+  const [comparePeriod, setComparePeriod] = useState<"previous" | "last-year">("previous")
 
   // Simulate loading
   useEffect(() => {
@@ -744,6 +745,28 @@ export default function DashboardOverviewPage() {
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Compare period */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground">
+                  <BarChart3 className="size-[14px] text-muted-foreground" />
+                  <span className="hidden sm:inline">Compare:</span>
+                  <span>{comparePeriod === "previous" ? "Previous period" : "Same period last year"}</span>
+                  <ChevronDown className="size-[12px] text-muted-foreground/50" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuLabel>Compare to</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => { setComparePeriod("previous"); toast("Comparing with previous period") }}>
+                  <span className={comparePeriod === "previous" ? "font-semibold" : ""}>Previous period</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => { setComparePeriod("last-year"); toast("Comparing with same period last year") }}>
+                  <span className={comparePeriod === "last-year" ? "font-semibold" : ""}>Same period last year</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50">
             <div className="size-[6px] rounded-full bg-success animate-pulse" />
@@ -888,7 +911,7 @@ export default function DashboardOverviewPage() {
                               {metric.change}
                             </span>
                           </TooltipTrigger>
-                          <TooltipContent>vs. previous period</TooltipContent>
+                          <TooltipContent>vs. {comparePeriod === "previous" ? "previous period" : "same period last year"}</TooltipContent>
                         </TT>
                       </div>
                       <Sparkline dataKey={metric.label} color={metric.sparkColor} up={metric.up} />
