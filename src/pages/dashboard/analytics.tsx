@@ -923,7 +923,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* ── Row 6-7: Conversion Funnel (4) + Geography (8) ── */}
-        <div className="md:col-span-3 lg:col-span-4 lg:row-span-2">
+        <div className="md:col-span-6 lg:col-span-4 lg:row-span-2">
           <ConversionFunnel colors={colors} p={p} refreshing={refreshingFunnel} onRefresh={handleRefreshFunnel} />
         </div>
         <div className="md:col-span-6 lg:col-span-8 lg:row-span-2">

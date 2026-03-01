@@ -459,7 +459,7 @@ export default function OrdersPage() {
 
           {/* Table */}
           <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
-            <Table className="table-fixed">
+            <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[32px] !p-0 text-center">

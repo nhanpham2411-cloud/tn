@@ -380,7 +380,7 @@ export default function BillingPage() {
                 </div>
               </div>
               <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
-                <Table className="table-fixed">
+                <Table className="table-fixed min-w-[600px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="sp-label w-[22%]">Invoice</TableHead>

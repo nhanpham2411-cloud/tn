@@ -22,11 +22,18 @@ import {
   AlertTriangle,
   TrendingUp,
   X,
+  Menu,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import {
   CommandDialog,
   CommandInput,
@@ -96,6 +103,7 @@ export function AppHeader() {
   const navigate = useNavigate()
   const { resolvedTheme, toggleTheme } = useTheme()
   const [open, setOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
   const [notifOpen, setNotifOpen] = useState(false)
 
@@ -142,7 +150,49 @@ export function AppHeader() {
       <header className="flex flex-col gap-sm sm:gap-lg px-md sm:px-xl lg:px-2xl pt-md sm:pt-xl lg:pt-2xl max-w-[1440px] mx-auto w-full">
         {/* Top row: logo text + tab nav + actions */}
         <div className="flex items-center justify-between">
-          {/* Brand */}
+          {/* Mobile menu + Brand */}
+          <div className="flex items-center gap-xs">
+          {/* Hamburger — mobile only */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden size-[36px] rounded-full text-muted-foreground hover:text-foreground">
+                <Menu className="size-[20px]" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] p-0">
+              <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+              <div className="flex flex-col h-full">
+                {/* Mobile nav header */}
+                <div className="flex items-center gap-sm px-xl py-lg border-b border-border/30 dark:border-white/[0.06]">
+                  <svg viewBox="0 0 28 28" fill="none" className="size-[24px]">
+                    <path d="M14 3L24 10L14 25L4 10Z" fill="url(#mobGrd)" fillOpacity="0.3" stroke="url(#mobGrd)" strokeWidth="1" strokeOpacity="0.5"/>
+                    <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#mobGrd)" fillOpacity="0.6"/>
+                    <defs><linearGradient id="mobGrd" x1="4" y1="3" x2="24" y2="25"><stop stopColor="#c4b5fd"/><stop offset="1" stopColor="#818cf8"/></linearGradient></defs>
+                  </svg>
+                  <span className="sp-h5 text-foreground">ShopPulse</span>
+                </div>
+                {/* Mobile nav links */}
+                <nav className="flex-1 overflow-y-auto py-sm">
+                  {pages.map((page) => (
+                    <Link
+                      key={page.url}
+                      to={page.url}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-sm px-xl py-sm sp-body transition-colors ${
+                        isActive(page.url)
+                          ? "text-foreground bg-muted/50 dark:bg-white/[0.04] font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/30 dark:hover:bg-white/[0.02]"
+                      }`}
+                    >
+                      <page.icon className="size-[18px]" />
+                      {page.title}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+
           <Link to="/dashboard" className="flex items-center gap-sm">
             <svg viewBox="0 0 28 28" fill="none" className="size-[28px]">
               <path d="M14 3L24 10L14 25L4 10Z" fill="url(#hdrGrd)" fillOpacity="0.3" stroke="url(#hdrGrd)" strokeWidth="1" strokeOpacity="0.5"/>
@@ -151,6 +201,7 @@ export function AppHeader() {
             </svg>
             <span className="sp-h4 text-foreground hidden sm:inline">ShopPulse</span>
           </Link>
+          </div>
 
           {/* Tab nav — centered */}
           <nav className="hidden md:flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs">
@@ -171,6 +222,11 @@ export function AppHeader() {
 
           {/* Right actions */}
           <div className="flex items-center gap-xs">
+            {/* Mobile search icon — below sm only */}
+            <Button variant="ghost" size="icon" className="sm:hidden size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={() => setOpen(true)}>
+              <Search className="size-[18px]" />
+            </Button>
+
             <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={toggleTheme}>
               {resolvedTheme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
             </Button>
@@ -187,7 +243,7 @@ export function AppHeader() {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align="end" className="w-[380px] p-0" sideOffset={8}>
+              <PopoverContent align="end" className="w-[calc(100vw-2rem)] sm:w-[380px] p-0" sideOffset={8}>
                 <div className="flex items-center justify-between px-xl py-md border-b border-border/30 dark:border-white/[0.06]">
                   <div className="flex items-center gap-sm">
                     <h4 className="sp-h5 text-foreground">Notifications</h4>
