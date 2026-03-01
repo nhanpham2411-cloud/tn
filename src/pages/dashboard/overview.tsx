@@ -212,7 +212,7 @@ function DashboardSkeleton() {
     <div className="flex flex-col gap-lg">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
         <div className="lg:col-span-8 flex flex-col gap-lg">
-          <div className="grid grid-cols-[3fr_5fr] gap-lg">
+          <div className="grid grid-cols-1 md:grid-cols-[3fr_5fr] gap-lg">
             <Skeleton className="h-[280px] rounded-2xl" />
             <div className="grid grid-cols-2 gap-lg">
               {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-[130px] rounded-2xl" />)}
@@ -649,8 +649,8 @@ export default function DashboardOverviewPage() {
         )}
 
         {/* Date range + last updated */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-sm">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm min-w-0">
             <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
               <PopoverTrigger asChild>
                 <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground">
@@ -715,7 +715,7 @@ export default function DashboardOverviewPage() {
               </PopoverContent>
             </Popover>
           </div>
-          <div className="flex items-center gap-2xs text-muted-foreground/50">
+          <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50">
             <div className="size-[6px] rounded-full bg-success animate-pulse" />
             <span className="sp-caption">Updated just now</span>
           </div>
@@ -935,10 +935,10 @@ export default function DashboardOverviewPage() {
         </div>
 
         {/* ━━━ SECTION 2: Bottom — 3 cards (4+4+4 = 12 cols) ━━━ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-lg items-start">
 
           {/* ── Recent Orders ──────────────────────────────── */}
-          <DCard className="lg:col-span-4 p-2xl">
+          <DCard className="md:col-span-1 lg:col-span-4 p-2xl">
             <div className="flex items-center justify-between mb-xl">
               <div className="flex items-center gap-sm">
                 <h3 className="sp-h4 text-foreground">Recent Orders</h3>
@@ -1024,7 +1024,7 @@ export default function DashboardOverviewPage() {
           </DCard>
 
           {/* ── Top Products ───────────────────────────────── */}
-          <DCard className="lg:col-span-4 p-2xl">
+          <DCard className="md:col-span-1 lg:col-span-4 p-2xl">
             <div className="flex items-center justify-between mb-lg">
               <div className="flex items-center gap-sm">
                 <h3 className="sp-h4 text-foreground">Top Products</h3>
@@ -1119,7 +1119,7 @@ export default function DashboardOverviewPage() {
           </DCard>
 
           {/* ── Sales Channels ─────────────────────────────── */}
-          <DCard className="lg:col-span-4 p-2xl pb-xl">
+          <DCard className="md:col-span-2 lg:col-span-4 p-2xl pb-xl">
             <div className="flex items-center justify-between mb-lg">
               <h3 className="sp-h4 text-foreground">Sales Channels</h3>
               <DropdownMenu>

@@ -116,7 +116,7 @@ function EmptyState({ icon: Icon, title, description }: { icon: React.ElementTyp
 function TableRowSkeleton() {
   return (
     <TableRow>
-      <TableCell><Skeleton className="size-[16px] rounded" /></TableCell>
+      <TableCell className="!p-0 text-center"><Skeleton className="size-[16px] rounded mx-auto" /></TableCell>
       <TableCell><Skeleton className="h-[14px] w-[80px] rounded" /></TableCell>
       <TableCell><div className="flex flex-col gap-2xs"><Skeleton className="h-[14px] w-[100px] rounded" /><Skeleton className="h-[10px] w-[140px] rounded" /></div></TableCell>
       <TableCell><Skeleton className="h-[22px] w-[75px] rounded-full" /></TableCell>
@@ -349,18 +349,18 @@ export default function OrdersPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Orders</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="outline" onClick={() => { toast("Exporting all orders..."); setTimeout(() => toast.success("Export complete"), 1200) }}>
+          <Button variant="outline" className="shrink-0" onClick={() => { toast("Exporting all orders..."); setTimeout(() => toast.success("Export complete"), 1200) }}>
             <Download className="mr-xs size-[14px]" />
             Export
           </Button>
@@ -391,8 +391,8 @@ export default function OrdersPage() {
         {/* Orders table card */}
         <DCard className="!p-0 overflow-hidden">
           {/* Card header */}
-          <div className="relative p-xl pb-0">
-            <div className="flex items-center justify-between">
+          <div className="relative p-md sm:p-xl pb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
               <div className="flex items-center gap-md">
                 <div>
                   <h3 className="sp-h4 text-foreground">All Orders</h3>
@@ -403,7 +403,7 @@ export default function OrdersPage() {
                 </Button>
               </div>
               <Tabs value={statusTab} onValueChange={(v) => { setStatusTab(v); setPage(1) }}>
-                <TabsList className="rounded-full">
+                <TabsList className="rounded-full overflow-x-auto max-w-full">
                   <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
                   <TabsTrigger value="pending" className="rounded-full">Pending</TabsTrigger>
                   <TabsTrigger value="processing" className="rounded-full">Processing</TabsTrigger>
@@ -434,7 +434,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Search + Payment filter */}
-          <div className="px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -445,7 +445,7 @@ export default function OrdersPage() {
               />
             </div>
             <Select value={paymentFilter} onValueChange={(v) => { setPaymentFilter(v); setPage(1) }}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-full sm:w-[150px]">
                 <SelectValue placeholder="Payment" />
               </SelectTrigger>
               <SelectContent>
@@ -458,11 +458,11 @@ export default function OrdersPage() {
           </div>
 
           {/* Table */}
-          <div className="px-xl pb-xl pt-md">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[4%]">
+                  <TableHead className="w-[32px] !p-0 text-center">
                     <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
                   </TableHead>
                   <TableHead className="sp-label w-[11%]">Order ID</TableHead>
@@ -487,7 +487,7 @@ export default function OrdersPage() {
                 ) : (
                   paginated.map((order) => (
                     <TableRow key={order.id} className="group" data-state={selected.has(order.id) ? "selected" : undefined}>
-                      <TableCell>
+                      <TableCell className="!p-0 text-center">
                         <Checkbox checked={selected.has(order.id)} onCheckedChange={() => toggleOne(order.id)} aria-label={`Select ${order.id}`} />
                       </TableCell>
                       <TableCell>

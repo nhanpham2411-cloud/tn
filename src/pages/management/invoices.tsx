@@ -113,7 +113,7 @@ function EmptyState({ icon: Icon, title, description }: { icon: React.ElementTyp
 function TableRowSkeleton() {
   return (
     <TableRow>
-      <TableCell><Skeleton className="size-[16px] rounded" /></TableCell>
+      <TableCell className="!p-0 text-center"><Skeleton className="size-[16px] rounded mx-auto" /></TableCell>
       <TableCell><div className="flex flex-col gap-2xs"><Skeleton className="h-[14px] w-[80px] rounded" /><Skeleton className="h-[10px] w-[60px] rounded" /></div></TableCell>
       <TableCell><div className="flex flex-col gap-2xs"><Skeleton className="h-[14px] w-[100px] rounded" /><Skeleton className="h-[10px] w-[140px] rounded" /></div></TableCell>
       <TableCell><Skeleton className="h-[22px] w-[70px] rounded-full" /></TableCell>
@@ -326,23 +326,23 @@ export default function InvoicesPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Invoices</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <div className="flex gap-sm">
-            <Button variant="outline" onClick={() => { toast("Exporting all invoices..."); setTimeout(() => toast.success("Export complete"), 1200) }}>
+          <div className="flex gap-sm shrink-0">
+            <Button variant="outline" className="hidden sm:flex" onClick={() => { toast("Exporting all invoices..."); setTimeout(() => toast.success("Export complete"), 1200) }}>
               <Download className="mr-xs size-[14px]" /> Export
             </Button>
             <Button onClick={() => toast.success("New invoice form coming soon")}>
-              <FileText className="mr-xs size-[14px]" /> New Invoice
+              <FileText className="mr-xs size-[14px]" /> <span className="hidden sm:inline">New Invoice</span><span className="sm:hidden">New</span>
             </Button>
           </div>
         </div>
@@ -372,8 +372,8 @@ export default function InvoicesPage() {
         {/* Invoices table card */}
         <DCard className="!p-0 overflow-hidden">
           {/* Card header */}
-          <div className="relative p-xl pb-0">
-            <div className="flex items-center justify-between">
+          <div className="relative p-md sm:p-xl pb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
               <div className="flex items-center gap-md">
                 <div>
                   <h3 className="sp-h4 text-foreground">All Invoices</h3>
@@ -413,7 +413,7 @@ export default function InvoicesPage() {
           </div>
 
           {/* Search */}
-          <div className="px-xl pt-lg">
+          <div className="px-md sm:px-xl pt-lg">
             <div className="relative">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -426,11 +426,11 @@ export default function InvoicesPage() {
           </div>
 
           {/* Table */}
-          <div className="px-xl pb-xl pt-md">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[4%]">
+                  <TableHead className="w-[32px] !p-0 text-center">
                     <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
                   </TableHead>
                   <TableHead className="sp-label w-[12%]">Invoice</TableHead>
@@ -455,7 +455,7 @@ export default function InvoicesPage() {
                 ) : (
                   paginated.map((invoice) => (
                     <TableRow key={invoice.id} className="group" data-state={selected.has(invoice.id) ? "selected" : undefined}>
-                      <TableCell>
+                      <TableCell className="!p-0 text-center">
                         <Checkbox checked={selected.has(invoice.id)} onCheckedChange={() => toggleOne(invoice.id)} aria-label={`Select ${invoice.id}`} />
                       </TableCell>
                       <TableCell>

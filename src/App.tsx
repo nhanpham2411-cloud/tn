@@ -19,6 +19,7 @@ const Invoices = lazy(() => import("@/pages/management/invoices"))
 const SettingsGeneral = lazy(() => import("@/pages/settings/general"))
 const Notifications = lazy(() => import("@/pages/settings/notifications"))
 const Billing = lazy(() => import("@/pages/settings/billing"))
+const HelpSupport = lazy(() => import("@/pages/settings/help-support"))
 
 const SignIn = lazy(() => import("@/pages/auth/sign-in"))
 const SignUp = lazy(() => import("@/pages/auth/sign-up"))
@@ -59,6 +60,7 @@ function App() {
           <Route path="/settings/general" element={<SettingsGeneral />} />
           <Route path="/settings/notifications" element={<Notifications />} />
           <Route path="/settings/billing" element={<Billing />} />
+          <Route path="/settings/help" element={<HelpSupport />} />
         </Route>
 
         {/* Auth layout routes (no sidebar) */}

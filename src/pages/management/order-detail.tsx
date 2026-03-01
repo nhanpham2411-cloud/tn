@@ -397,7 +397,8 @@ export default function OrderDetailPage() {
                       <Badge variant="default" level="secondary" size="sm">{order.items.length} item{order.items.length !== 1 && "s"}</Badge>
                     </div>
                   </div>
-                  <Table className="table-fixed">
+                  <div className="overflow-x-auto">
+                  <Table className="table-fixed min-w-[500px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead className="sp-label w-[45%]">Product</TableHead>
@@ -422,6 +423,7 @@ export default function OrderDetailPage() {
                       ))}
                     </TableBody>
                   </Table>
+                  </div>
 
                   <Separator className="my-lg" />
 

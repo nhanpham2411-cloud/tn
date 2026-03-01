@@ -9,6 +9,10 @@ import {
   BarChart3,
   Users,
   HardDrive,
+  Loader2,
+  Plus,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react"
 
 import { Card } from "@/components/ui/card"
@@ -24,6 +28,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { toast } from "sonner"
 
@@ -49,7 +63,7 @@ function BillingSkeleton() {
       </div>
       <Skeleton className="h-[280px] rounded-2xl" />
       <Skeleton className="h-[200px] rounded-2xl" />
-      <Skeleton className="h-[200px] rounded-2xl" />
+      <Skeleton className="h-[300px] rounded-2xl" />
     </div>
   )
 }
@@ -89,9 +103,9 @@ const usage = [
 const billingHistory = [
   { id: "INV-2026-002", date: "Feb 1, 2026", amount: 99.00, status: "paid" },
   { id: "INV-2026-001", date: "Jan 1, 2026", amount: 99.00, status: "paid" },
-  { id: "INV-2025-012", date: "Dec 1, 2025", amount: 99.00, status: "paid" },
+  { id: "INV-2025-012", date: "Dec 1, 2025", amount: 99.00, status: "pending" },
   { id: "INV-2025-011", date: "Nov 1, 2025", amount: 99.00, status: "paid" },
-  { id: "INV-2025-010", date: "Oct 1, 2025", amount: 29.00, status: "paid" },
+  { id: "INV-2025-010", date: "Oct 1, 2025", amount: 29.00, status: "failed" },
   { id: "INV-2025-009", date: "Sep 1, 2025", amount: 29.00, status: "paid" },
 ]
 
@@ -108,10 +122,10 @@ function formatTotal(total: number, unit: string): string {
   return `${total}`
 }
 
-const statusBadgeClass: Record<string, string> = {
-  paid: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
-  pending: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20",
-  failed: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20",
+const statusBadgeConfig: Record<string, { dotClass: string; badgeClass: string; label: string }> = {
+  paid: { dotClass: "bg-success", badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20", label: "Paid" },
+  pending: { dotClass: "bg-warning", badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20", label: "Pending" },
+  failed: { dotClass: "bg-destructive", badgeClass: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20", label: "Failed" },
 }
 
 /* ------------------------------------------------------------------ */
@@ -122,6 +136,9 @@ export default function BillingPage() {
   const [loading, setLoading] = useState(true)
   const [connectionStatus, setConnectionStatus] = useState<"online" | "offline">("online")
   const [refreshing, setRefreshing] = useState(false)
+  const [cancelDialog, setCancelDialog] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [removeCardDialog, setRemoveCardDialog] = useState(false)
 
   // Loading
   useEffect(() => {
@@ -144,7 +161,33 @@ export default function BillingPage() {
     setTimeout(() => { setRefreshing(false); toast.success("Billing refreshed") }, 800)
   }, [])
 
+  const handleCancelSubscription = useCallback(() => {
+    setCancelling(true)
+    setTimeout(() => {
+      setCancelling(false)
+      setCancelDialog(false)
+      toast.success("Subscription cancellation scheduled")
+    }, 800)
+  }, [])
+
+  const handleRemoveCard = useCallback(() => {
+    setRemoveCardDialog(false)
+    toast.success("Payment method removed")
+  }, [])
+
+  const handleDownloadAll = useCallback(() => {
+    toast("Downloading all invoices...")
+    setTimeout(() => toast.success("All invoices downloaded"), 1200)
+  }, [])
+
+  const handleRetryPayment = useCallback((id: string) => {
+    toast(`Retrying payment for ${id}...`)
+    setTimeout(() => toast.success("Payment retried successfully"), 1000)
+  }, [])
+
   if (loading) return <BillingSkeleton />
+
+  const currentPlan = plans.find((p) => p.current)
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -161,18 +204,18 @@ export default function BillingPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">Billing</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh}>
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -216,16 +259,26 @@ export default function BillingPage() {
           <>
             {/* Current Plan */}
             <DCard>
-              <div className="flex items-center justify-between mb-lg">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-lg">
+                <div className="min-w-0">
                   <h3 className="sp-h4 text-foreground">Current Plan</h3>
-                  <p className="sp-caption text-muted-foreground mt-3xs">You are on the Enterprise plan</p>
+                  <p className="sp-caption text-muted-foreground mt-3xs truncate">You are on the {currentPlan?.name} plan · Next billing on Mar 1, 2026</p>
                 </div>
-                <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 sp-caption font-medium">
-                  <Zap className="size-[10px]" /> Enterprise
-                </span>
+                <div className="flex items-center gap-sm shrink-0">
+                  <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 sp-caption font-medium">
+                    <Zap className="size-[10px]" /> {currentPlan?.name}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => setCancelDialog(true)}
+                  >
+                    Cancel Plan
+                  </Button>
+                </div>
               </div>
-              <div className="grid gap-lg md:grid-cols-3">
+              <div className="grid gap-lg sm:grid-cols-2 md:grid-cols-3">
                 {plans.map((plan) => (
                   <div
                     key={plan.name}
@@ -263,69 +316,114 @@ export default function BillingPage() {
               </div>
             </DCard>
 
-            {/* Payment Method */}
+            {/* Payment Methods */}
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div>
-                  <h3 className="sp-h4 text-foreground">Payment Method</h3>
+                  <h3 className="sp-h4 text-foreground">Payment Methods</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">Manage your payment details</p>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => toast.success("Opening payment settings...")}>
-                  Update
+                <Button variant="outline" size="sm" onClick={() => toast.success("Opening add payment method...")}>
+                  <Plus className="size-[14px] mr-xs" /> Add Method
                 </Button>
               </div>
-              <div className="flex items-center gap-md rounded-xl border border-border/60 dark:border-border-subtle p-lg">
-                <div className="size-[40px] rounded-lg bg-muted flex items-center justify-center">
-                  <CreditCard className="size-[18px] text-muted-foreground" />
+              <div className="flex flex-col gap-md">
+                {/* Card 1 - Default */}
+                <div className="flex items-center gap-md rounded-xl border border-border/60 dark:border-border-subtle p-lg">
+                  <div className="size-[40px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                    <CreditCard className="size-[18px] text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="sp-body-semibold text-foreground">Visa ending in 4242</p>
+                    <p className="sp-caption text-muted-foreground">Expires 12/2027</p>
+                  </div>
+                  <Badge variant="outline" className="sp-caption">Default</Badge>
+                  <Button variant="outline" size="sm" onClick={() => toast.success("Opening payment settings...")}>
+                    Update
+                  </Button>
                 </div>
-                <div className="flex-1">
-                  <p className="sp-body-semibold text-foreground">Visa ending in 4242</p>
-                  <p className="sp-caption text-muted-foreground">Expires 12/2027</p>
+                {/* Card 2 - Backup */}
+                <div className="flex items-center gap-md rounded-xl border border-border/60 dark:border-border-subtle p-lg">
+                  <div className="size-[40px] rounded-lg bg-muted flex items-center justify-center">
+                    <CreditCard className="size-[18px] text-muted-foreground" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="sp-body-semibold text-foreground">Mastercard ending in 8371</p>
+                    <p className="sp-caption text-muted-foreground">Expires 06/2026</p>
+                  </div>
+                  <Button variant="ghost" size="xs" className="text-muted-foreground hover:text-foreground" onClick={() => toast.success("Set as default payment method")}>
+                    Set Default
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => setRemoveCardDialog(true)}
+                  >
+                    <Trash2 className="size-[13px]" />
+                  </Button>
                 </div>
-                <Badge variant="outline" className="sp-caption">Default</Badge>
               </div>
             </DCard>
 
             {/* Billing History */}
             <DCard className="!p-0 overflow-hidden">
-              <div className="p-xl pb-0">
+              <div className="p-md sm:p-xl pb-0">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="sp-h4 text-foreground">Billing History</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">Download past invoices</p>
                   </div>
+                  <Button variant="outline" size="sm" onClick={handleDownloadAll}>
+                    <Download className="size-[14px] mr-xs" /> Download All
+                  </Button>
                 </div>
               </div>
-              <div className="px-xl pb-xl pt-md">
+              <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
                 <Table className="table-fixed">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="sp-label w-[25%]">Invoice</TableHead>
-                      <TableHead className="sp-label w-[25%]">Date</TableHead>
-                      <TableHead className="sp-label text-right w-[20%]">Amount</TableHead>
+                      <TableHead className="sp-label w-[22%]">Invoice</TableHead>
+                      <TableHead className="sp-label w-[22%]">Date</TableHead>
+                      <TableHead className="sp-label text-right w-[18%]">Amount</TableHead>
                       <TableHead className="sp-label w-[20%]">Status</TableHead>
-                      <TableHead className="sp-label text-right w-[10%]">Actions</TableHead>
+                      <TableHead className="sp-label text-right w-[18%]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {billingHistory.map((invoice) => (
-                      <TableRow key={invoice.id} className="group">
-                        <TableCell className="sp-body-semibold text-foreground">{invoice.id}</TableCell>
-                        <TableCell className="sp-caption text-muted-foreground">{invoice.date}</TableCell>
-                        <TableCell className="text-right sp-body-semibold text-foreground">${invoice.amount.toFixed(2)}</TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium capitalize ${statusBadgeClass[invoice.status] ?? statusBadgeClass.paid}`}>
-                            <span className="size-[5px] rounded-full bg-success" />
-                            {invoice.status}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }}>
-                            <Download className="size-[14px]" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {billingHistory.map((invoice) => {
+                      const cfg = statusBadgeConfig[invoice.status] ?? statusBadgeConfig.paid
+                      return (
+                        <TableRow key={invoice.id} className="group">
+                          <TableCell className="sp-body-semibold text-foreground">{invoice.id}</TableCell>
+                          <TableCell className="sp-caption text-muted-foreground">{invoice.date}</TableCell>
+                          <TableCell className="text-right sp-body-semibold text-foreground">${invoice.amount.toFixed(2)}</TableCell>
+                          <TableCell>
+                            <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium ${cfg.badgeClass}`}>
+                              <span className={`size-[5px] rounded-full ${cfg.dotClass}`} />
+                              {cfg.label}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-xs">
+                              {invoice.status === "failed" && (
+                                <Button
+                                  variant="ghost"
+                                  size="xs"
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10 sp-caption"
+                                  onClick={() => handleRetryPayment(invoice.id)}
+                                >
+                                  Retry
+                                </Button>
+                              )}
+                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }}>
+                                <Download className="size-[14px]" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
                 <p className="sp-caption text-muted-foreground/60 text-center pt-lg border-t border-border/40 mt-md">
@@ -335,6 +433,54 @@ export default function BillingPage() {
             </DCard>
           </>
         )}
+
+        {/* Cancel Subscription AlertDialog */}
+        <AlertDialog open={cancelDialog} onOpenChange={setCancelDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-xs">
+                <AlertTriangle className="size-[16px] text-destructive" />
+                Cancel your subscription?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Your {currentPlan?.name} plan will remain active until the end of your current billing cycle (Mar 1, 2026).
+                After that, you'll be downgraded to the Free plan with limited features.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={cancelling}>Keep Subscription</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={handleCancelSubscription}
+                disabled={cancelling}
+              >
+                {cancelling ? (
+                  <><Loader2 className="size-[14px] mr-xs animate-spin" /> Cancelling...</>
+                ) : (
+                  "Cancel Subscription"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Remove Card AlertDialog */}
+        <AlertDialog open={removeCardDialog} onOpenChange={setRemoveCardDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove payment method?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Mastercard ending in 8371 will be removed from your account. Make sure you have another payment method configured.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleRemoveCard}>
+                Remove Card
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </TooltipProvider>
   )

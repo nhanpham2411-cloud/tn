@@ -73,6 +73,7 @@ const pages = [
   { title: "General Settings", url: "/settings/general", icon: Settings },
   { title: "Notifications", url: "/settings/notifications", icon: Bell },
   { title: "Billing", url: "/settings/billing", icon: CreditCard },
+  { title: "Help & Support", url: "/settings/help", icon: HelpCircle },
 ]
 
 const INITIAL_NOTIFICATIONS = [
@@ -138,7 +139,7 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="flex flex-col gap-lg px-xl lg:px-2xl pt-xl lg:pt-2xl">
+      <header className="flex flex-col gap-sm sm:gap-lg px-md sm:px-xl lg:px-2xl pt-md sm:pt-xl lg:pt-2xl max-w-[1440px] mx-auto w-full">
         {/* Top row: logo text + tab nav + actions */}
         <div className="flex items-center justify-between">
           {/* Brand */}
@@ -276,7 +277,7 @@ export function AppHeader() {
                 <DropdownMenuItem onClick={() => navigate("/settings/notifications")}>
                   <Bell className="size-[14px]" /> Notifications
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => toast("Opening help center...")}>
+                <DropdownMenuItem onClick={() => navigate("/settings/help")}>
                   <HelpCircle className="size-[14px]" /> Help & Support
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -289,10 +290,10 @@ export function AppHeader() {
         </div>
 
         {/* Second row: greeting + search */}
-        <div className="flex items-end justify-between">
-          <div>
-            <h1 className="sp-h2 text-foreground">Good morning, Linh</h1>
-            <p className="sp-body text-muted-foreground mt-3xs">Stay on top of your tasks, monitor progress, and track status.</p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-sm">
+          <div className="min-w-0">
+            <h1 className="sp-h3 sm:sp-h2 text-foreground">Good morning, Linh</h1>
+            <p className="sp-caption sm:sp-body text-muted-foreground mt-3xs hidden sm:block">Stay on top of your tasks, monitor progress, and track status.</p>
           </div>
           <button
             onClick={() => setOpen(true)}

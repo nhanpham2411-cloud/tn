@@ -10,6 +10,16 @@ import {
   Save,
   Download,
   Trash2,
+  Shield,
+  Smartphone,
+  Globe,
+  Laptop,
+  LogOut,
+  Camera,
+  Eye,
+  EyeOff,
+  Key,
+  Clock,
 } from "lucide-react"
 
 import { Card } from "@/components/ui/card"
@@ -18,6 +28,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Switch } from "@/components/ui/switch"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
@@ -59,12 +71,25 @@ function SettingsSkeleton() {
     <div className="flex flex-col gap-lg">
       <Skeleton className="h-[10px] w-[60px] rounded" />
       <Skeleton className="h-[28px] w-[120px] rounded" />
+      <Skeleton className="h-[140px] rounded-2xl" />
       <Skeleton className="h-[200px] rounded-2xl" />
       <Skeleton className="h-[200px] rounded-2xl" />
+      <Skeleton className="h-[260px] rounded-2xl" />
       <Skeleton className="h-[200px] rounded-2xl" />
+      <Skeleton className="h-[180px] rounded-2xl" />
     </div>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const sessions = [
+  { id: "s1", device: "MacBook Pro", browser: "Chrome 122", location: "Ho Chi Minh City, VN", lastActive: "Active now", icon: Laptop, current: true },
+  { id: "s2", device: "iPhone 15 Pro", browser: "Safari 18", location: "Ho Chi Minh City, VN", lastActive: "2h ago", icon: Smartphone, current: false },
+  { id: "s3", device: "Windows Desktop", browser: "Firefox 124", location: "Hanoi, VN", lastActive: "3 days ago", icon: Globe, current: false },
+]
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -77,7 +102,9 @@ export default function GeneralSettingsPage() {
   const [refreshing, setRefreshing] = useState(false)
   const [savingProfile, setSavingProfile] = useState(false)
   const [savingCompany, setSavingCompany] = useState(false)
+  const [savingPassword, setSavingPassword] = useState(false)
   const [deleteDialog, setDeleteDialog] = useState(false)
+  const [revokeDialog, setRevokeDialog] = useState<string | null>(null)
 
   const [name, setName] = useState(currentUser.name)
   const [email, setEmail] = useState(currentUser.email)
@@ -85,6 +112,16 @@ export default function GeneralSettingsPage() {
   const [companyUrl, setCompanyUrl] = useState("https://shoppulse.io")
   const [language, setLanguage] = useState("en")
   const [timezone, setTimezone] = useState("utc-8")
+
+  // Password
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showCurrentPw, setShowCurrentPw] = useState(false)
+  const [showNewPw, setShowNewPw] = useState(false)
+
+  // 2FA
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true)
 
   // Loading
   useEffect(() => {
@@ -117,6 +154,40 @@ export default function GeneralSettingsPage() {
     setTimeout(() => { setSavingCompany(false); toast.success("Company details saved") }, 800)
   }, [])
 
+  const handleChangePassword = useCallback(() => {
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters")
+      return
+    }
+    setSavingPassword(true)
+    setTimeout(() => {
+      setSavingPassword(false)
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+      toast.success("Password updated successfully")
+    }, 800)
+  }, [newPassword, confirmPassword])
+
+  const handleToggle2FA = useCallback((checked: boolean) => {
+    setTwoFactorEnabled(checked)
+    toast.success(checked ? "Two-factor authentication enabled" : "Two-factor authentication disabled")
+  }, [])
+
+  const handleRevokeSession = useCallback(() => {
+    setRevokeDialog(null)
+    toast.success("Session revoked successfully")
+  }, [])
+
+  const handleUploadAvatar = useCallback(() => {
+    toast("Uploading avatar...")
+    setTimeout(() => toast.success("Avatar updated"), 800)
+  }, [])
+
   const handleExport = useCallback(() => {
     toast("Exporting data...")
     setTimeout(() => toast.success("Data exported successfully"), 1200)
@@ -135,6 +206,9 @@ export default function GeneralSettingsPage() {
     { value: "system", icon: Monitor, label: "System" },
   ] as const
 
+  const canChangePassword = currentPassword.trim() && newPassword.trim() && confirmPassword.trim()
+  const passwordMismatch = confirmPassword && newPassword !== confirmPassword
+
   return (
     <TooltipProvider delayDuration={300}>
       <div className="flex flex-col gap-lg">
@@ -150,35 +224,68 @@ export default function GeneralSettingsPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">General</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh}>
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
 
         {refreshing ? (
           <>
+            <Skeleton className="h-[140px] rounded-2xl" />
             <Skeleton className="h-[200px] rounded-2xl" />
             <Skeleton className="h-[200px] rounded-2xl" />
             <Skeleton className="h-[260px] rounded-2xl" />
+            <Skeleton className="h-[200px] rounded-2xl" />
+            <Skeleton className="h-[180px] rounded-2xl" />
           </>
         ) : (
           <>
-            {/* Profile */}
+            {/* Profile with Avatar */}
             <DCard>
-              <h3 className="sp-h4 text-foreground">Profile</h3>
-              <p className="sp-caption text-muted-foreground mt-3xs mb-lg">Manage your personal information</p>
+              <div className="flex items-center justify-between mb-lg">
+                <div>
+                  <h3 className="sp-h4 text-foreground">Profile</h3>
+                  <p className="sp-caption text-muted-foreground mt-3xs">Manage your personal information</p>
+                </div>
+              </div>
               <div className="flex flex-col gap-lg">
+                {/* Avatar */}
+                <div className="flex items-center gap-lg">
+                  <div className="relative group">
+                    <Avatar className="size-[64px]">
+                      <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-[18px] font-semibold">{currentUser.avatar}</AvatarFallback>
+                    </Avatar>
+                    <button
+                      onClick={handleUploadAvatar}
+                      className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    >
+                      <Camera className="size-[18px] text-white" />
+                    </button>
+                  </div>
+                  <div>
+                    <p className="sp-body-semibold text-foreground">{name}</p>
+                    <p className="sp-caption text-muted-foreground">{email}</p>
+                    <Button variant="ghost" size="xs" className="mt-xs text-muted-foreground h-auto p-0 hover:text-foreground" onClick={handleUploadAvatar}>
+                      Change photo
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Name + Email */}
                 <div className="grid gap-lg sm:grid-cols-2">
                   <div className="flex flex-col gap-2xs">
                     <Label className="sp-label">Full Name</Label>
@@ -198,6 +305,174 @@ export default function GeneralSettingsPage() {
                     )}
                   </Button>
                 </div>
+              </div>
+            </DCard>
+
+            {/* Password & Security */}
+            <DCard>
+              <div className="flex items-center gap-sm mb-lg">
+                <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <Key className="size-[18px] text-primary" />
+                </div>
+                <div>
+                  <h3 className="sp-h4 text-foreground">Password & Security</h3>
+                  <p className="sp-caption text-muted-foreground mt-3xs">Manage your password and security settings</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-lg">
+                <div className="flex flex-col gap-2xs">
+                  <Label className="sp-label">Current Password</Label>
+                  <div className="relative">
+                    <Input
+                      type={showCurrentPw ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      disabled={savingPassword}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPw(!showCurrentPw)}
+                      className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showCurrentPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-lg sm:grid-cols-2">
+                  <div className="flex flex-col gap-2xs">
+                    <Label className="sp-label">New Password</Label>
+                    <div className="relative">
+                      <Input
+                        type={showNewPw ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        disabled={savingPassword}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPw(!showNewPw)}
+                        className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showNewPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
+                      </button>
+                    </div>
+                    {newPassword && newPassword.length < 8 && (
+                      <p className="sp-caption text-destructive">Must be at least 8 characters</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2xs">
+                    <Label className="sp-label">Confirm New Password</Label>
+                    <Input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      disabled={savingPassword}
+                      aria-invalid={passwordMismatch ? true : undefined}
+                    />
+                    {passwordMismatch && (
+                      <p className="sp-caption text-destructive">Passwords do not match</p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button onClick={handleChangePassword} disabled={savingPassword || !canChangePassword}>
+                    {savingPassword ? (
+                      <><Loader2 className="size-[14px] mr-xs animate-spin" /> Updating...</>
+                    ) : (
+                      <><Key className="size-[14px] mr-xs" /> Update Password</>
+                    )}
+                  </Button>
+                </div>
+
+                <Separator />
+
+                {/* 2FA */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-sm">
+                    <div className="size-[36px] rounded-lg bg-success-subtle flex items-center justify-center">
+                      <Shield className="size-[18px] text-success" />
+                    </div>
+                    <div>
+                      <p className="sp-body-semibold text-foreground">Two-Factor Authentication</p>
+                      <p className="sp-caption text-muted-foreground mt-2xs">Add an extra layer of security to your account</p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={twoFactorEnabled}
+                    onCheckedChange={handleToggle2FA}
+                    aria-label="Toggle two-factor authentication"
+                  />
+                </div>
+                {twoFactorEnabled && (
+                  <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-success-subtle border border-success-border/20 text-success-subtle-foreground">
+                    <Shield className="size-[14px] shrink-0" />
+                    <p className="sp-caption">2FA is active via authenticator app. Last verified 2 days ago.</p>
+                  </div>
+                )}
+              </div>
+            </DCard>
+
+            {/* Active Sessions */}
+            <DCard>
+              <div className="flex items-center justify-between mb-lg">
+                <div className="flex items-center gap-sm">
+                  <div className="size-[36px] rounded-lg bg-violet-500/10 dark:bg-violet-500/20 flex items-center justify-center">
+                    <Clock className="size-[18px] text-violet-600 dark:text-violet-400" />
+                  </div>
+                  <div>
+                    <h3 className="sp-h4 text-foreground">Active Sessions</h3>
+                    <p className="sp-caption text-muted-foreground mt-3xs">{sessions.length} devices logged in</p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => { toast.success("All other sessions revoked") }}
+                >
+                  <LogOut className="size-[14px] mr-xs" /> Revoke All
+                </Button>
+              </div>
+              <div className="flex flex-col">
+                {sessions.map((session, i) => (
+                  <div key={session.id}>
+                    <div className="flex items-center justify-between py-md">
+                      <div className="flex items-center gap-sm">
+                        <div className="size-[36px] rounded-lg bg-muted flex items-center justify-center">
+                          <session.icon className="size-[18px] text-muted-foreground" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-xs">
+                            <p className="sp-body-semibold text-foreground">{session.device}</p>
+                            {session.current && (
+                              <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-success-subtle text-success-subtle-foreground border border-success-border/20 sp-caption font-medium">
+                                <span className="size-[5px] rounded-full bg-success" />
+                                This device
+                              </span>
+                            )}
+                          </div>
+                          <p className="sp-caption text-muted-foreground mt-2xs">
+                            {session.browser} · {session.location} · {session.lastActive}
+                          </p>
+                        </div>
+                      </div>
+                      {!session.current && (
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setRevokeDialog(session.id)}
+                        >
+                          <LogOut className="size-[13px]" />
+                        </Button>
+                      )}
+                    </div>
+                    {i < sessions.length - 1 && <Separator />}
+                  </div>
+                ))}
               </div>
             </DCard>
 
@@ -238,7 +513,7 @@ export default function GeneralSettingsPage() {
                   <RadioGroup
                     value={theme}
                     onValueChange={(v) => setTheme(v as "light" | "dark" | "system")}
-                    className="grid grid-cols-3 gap-md"
+                    className="grid grid-cols-1 sm:grid-cols-3 gap-md"
                   >
                     {themeOptions.map((opt) => (
                       <Label
@@ -333,6 +608,24 @@ export default function GeneralSettingsPage() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleDelete}>
                 Delete Everything
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Revoke Session AlertDialog */}
+        <AlertDialog open={!!revokeDialog} onOpenChange={(open) => !open && setRevokeDialog(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Revoke this session?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This device will be signed out immediately. They will need to log in again to access the account.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleRevokeSession}>
+                Revoke Session
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

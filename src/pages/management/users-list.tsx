@@ -125,7 +125,7 @@ function EmptyState({ icon: Icon, title, description }: { icon: React.ElementTyp
 function TableRowSkeleton() {
   return (
     <TableRow>
-      <TableCell className="w-12"><Skeleton className="size-[16px] rounded" /></TableCell>
+      <TableCell className="!p-0 text-center"><Skeleton className="size-[16px] rounded mx-auto" /></TableCell>
       <TableCell><div className="flex items-center gap-sm"><Skeleton className="size-[32px] rounded-full shrink-0" /><div className="flex flex-col gap-2xs"><Skeleton className="h-[14px] w-[120px] rounded" /><Skeleton className="h-[10px] w-[160px] rounded" /></div></div></TableCell>
       <TableCell><Skeleton className="h-[20px] w-[60px] rounded" /></TableCell>
       <TableCell><Skeleton className="h-[20px] w-[55px] rounded-full" /></TableCell>
@@ -299,20 +299,21 @@ export default function UsersListPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Users</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button onClick={() => setInviteDialog(true)}>
+          <Button onClick={() => setInviteDialog(true)} className="shrink-0">
             <UserPlus className="mr-xs size-[14px]" />
-            Invite User
+            <span className="hidden sm:inline">Invite User</span>
+            <span className="sm:hidden">Invite</span>
           </Button>
         </div>
 
@@ -341,8 +342,8 @@ export default function UsersListPage() {
         {/* Users table card */}
         <DCard className="!p-0 overflow-hidden">
           {/* Card header: always rendered for stable height */}
-          <div className="relative p-xl pb-0">
-            <div className="flex items-center justify-between">
+          <div className="relative p-md sm:p-xl pb-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
               <div className="flex items-center gap-md">
                 <div>
                   <h3 className="sp-h4 text-foreground">All Users</h3>
@@ -381,7 +382,7 @@ export default function UsersListPage() {
           </div>
 
           {/* Search + Role filter */}
-          <div className="px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -392,7 +393,7 @@ export default function UsersListPage() {
               />
             </div>
             <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v); setPage(1) }}>
-              <SelectTrigger className="w-[130px]">
+              <SelectTrigger className="w-full sm:w-[130px]">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -407,11 +408,11 @@ export default function UsersListPage() {
           </div>
 
           {/* Table */}
-          <div className="px-xl pb-xl pt-md">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[4%]">
+                  <TableHead className="w-[32px] !p-0 text-center">
                     <Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" />
                   </TableHead>
                   <TableHead className="sp-label w-[28%]">User</TableHead>
@@ -436,7 +437,7 @@ export default function UsersListPage() {
                     const status = statusConfig[user.status]
                     return (
                       <TableRow key={user.id} className="group">
-                        <TableCell>
+                        <TableCell className="!p-0 text-center">
                           <Checkbox checked={selected.has(user.id)} onCheckedChange={() => toggleOne(user.id)} aria-label={`Select ${user.name}`} />
                         </TableCell>
                         <TableCell>

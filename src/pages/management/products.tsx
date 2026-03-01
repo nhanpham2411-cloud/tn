@@ -127,13 +127,13 @@ function EmptyState({ icon: Icon, title, description }: { icon: React.ElementTyp
 function TableRowSkeleton() {
   return (
     <TableRow>
-      <TableCell><Skeleton className="size-[16px] rounded" /></TableCell>
+      <TableCell className="!p-0 text-center"><Skeleton className="size-[16px] rounded mx-auto" /></TableCell>
       <TableCell><div className="flex items-center gap-sm"><Skeleton className="size-[40px] rounded-lg" /><div className="flex flex-col gap-2xs"><Skeleton className="h-[14px] w-[120px] rounded" /><Skeleton className="h-[10px] w-[60px] rounded" /></div></div></TableCell>
       <TableCell><Skeleton className="h-[22px] w-[70px] rounded-full" /></TableCell>
       <TableCell><Skeleton className="h-[14px] w-[50px] rounded" /></TableCell>
       <TableCell><Skeleton className="h-[22px] w-[60px] rounded-full" /></TableCell>
       <TableCell><Skeleton className="h-[14px] w-[50px] rounded" /></TableCell>
-      <TableCell><Skeleton className="h-[14px] w-[40px] rounded" /></TableCell>
+      <TableCell><Skeleton className="h-[14px] w-[32px] rounded" /></TableCell>
       <TableCell><Skeleton className="h-[14px] w-[30px] rounded" /></TableCell>
       <TableCell className="text-right"><Skeleton className="size-[28px] rounded ml-auto" /></TableCell>
     </TableRow>
@@ -364,20 +364,21 @@ export default function ProductsPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Products</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button onClick={() => setAddDialog(true)}>
+          <Button onClick={() => setAddDialog(true)} className="shrink-0">
             <Plus className="mr-xs size-[14px]" />
-            Add Product
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
 
@@ -406,7 +407,7 @@ export default function ProductsPage() {
         {/* Products card */}
         <DCard className="!p-0 overflow-hidden">
           {/* Card header: Title + Refresh (left) | Tabs + View toggle (right) */}
-          <div className="relative flex items-center justify-between p-xl pb-0">
+          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-md p-md sm:p-xl pb-0">
             <div className="flex items-center gap-md">
               <div>
                 <h3 className="sp-h4 text-foreground">All Products</h3>
@@ -466,7 +467,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Search + Category filter */}
-          <div className="px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -477,7 +478,7 @@ export default function ProductsPage() {
               />
             </div>
             <Select value={categoryFilter} onValueChange={(v) => { setCategoryFilter(v); setPage(1) }}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-full sm:w-[150px]">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -492,17 +493,17 @@ export default function ProductsPage() {
           </div>
 
           {/* Content */}
-          <div className="px-xl pb-xl pt-md">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             {view === "list" ? (
               /* List View */
               <Table className="table-fixed">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[40px]"><Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" /></TableHead>
-                    <TableHead className="sp-label w-[26%]">Product</TableHead>
-                    <TableHead className="sp-label w-[12%]">Category</TableHead>
+                    <TableHead className="w-[32px] !p-0 text-center"><Checkbox checked={allSelected} onCheckedChange={toggleAll} aria-label="Select all" /></TableHead>
+                    <TableHead className="sp-label w-[28%]">Product</TableHead>
+                    <TableHead className="sp-label w-[13%]">Category</TableHead>
                     <TableHead className="sp-label w-[10%]">Price</TableHead>
-                    <TableHead className="sp-label w-[11%]">Status</TableHead>
+                    <TableHead className="sp-label w-[12%]">Status</TableHead>
                     <TableHead className="sp-label w-[10%]">Sales</TableHead>
                     <TableHead className="sp-label w-[9%]">Rating</TableHead>
                     <TableHead className="sp-label w-[8%]">Stock</TableHead>
@@ -521,7 +522,7 @@ export default function ProductsPage() {
                   ) : (
                     paginated.map((product) => (
                       <TableRow key={product.id} data-state={selected.has(product.id) ? "selected" : undefined}>
-                        <TableCell><Checkbox checked={selected.has(product.id)} onCheckedChange={() => toggleOne(product.id)} aria-label={`Select ${product.name}`} /></TableCell>
+                        <TableCell className="!p-0 text-center"><Checkbox checked={selected.has(product.id)} onCheckedChange={() => toggleOne(product.id)} aria-label={`Select ${product.name}`} /></TableCell>
                         <TableCell>
                           <div className="flex items-center gap-sm">
                             <div className="size-[40px] rounded-lg ring-1 ring-border/20 bg-surface-raised/50 dark:bg-surface-inset/50 overflow-hidden shrink-0">

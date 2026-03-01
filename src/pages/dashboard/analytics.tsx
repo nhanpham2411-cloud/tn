@@ -304,17 +304,21 @@ function GeographySection({ error, onRetry }: { error?: boolean; onRetry?: () =>
       />
 
       {/* Bottom: interactive location legend */}
-      <div className="mt-auto pt-sm grid grid-cols-4 gap-y-0">
+      <div className="mt-auto pt-sm grid grid-cols-2 md:grid-cols-4">
         {sorted.map((loc, i) => {
           const pct = ((loc.sales / totalSales) * 100).toFixed(0)
           const isActive = highlightCity === loc.city
-          const isLastCol = (i + 1) % 4 === 0
-          const lastRowStart = Math.floor((sorted.length - 1) / 4) * 4
-          const isLastRow = i >= lastRowStart
+          /* Border logic: right border except last in row, bottom border except last row */
+          const isLastCol2 = (i + 1) % 2 === 0
+          const isLastCol4 = (i + 1) % 4 === 0
+          const lastRow2Start = Math.floor((sorted.length - 1) / 2) * 2
+          const lastRow4Start = Math.floor((sorted.length - 1) / 4) * 4
+          const isLastRow2 = i >= lastRow2Start
+          const isLastRow4 = i >= lastRow4Start
           return (
             <div
               key={loc.city}
-              className={`${!isLastCol ? "border-r border-border-card" : ""} ${!isLastRow ? "border-b border-border-card" : ""} px-lg py-md`}
+              className={`${!isLastCol2 ? "border-r" : ""} ${!isLastRow2 ? "border-b" : ""} ${isLastCol2 && !isLastCol4 ? "md:border-r" : ""} ${isLastRow2 && !isLastRow4 ? "md:border-b" : ""} ${isLastCol4 ? "md:border-r-0" : ""} ${isLastRow4 ? "md:border-b-0" : ""} border-border-card px-md md:px-lg py-md`}
             >
               <button
                 className={`flex items-center gap-sm text-left rounded-xl px-sm py-xs w-full transition-colors ${isActive ? "bg-surface-raised" : "hover:bg-surface-raised/50"}`}
@@ -695,7 +699,7 @@ function DailyOrders({ colors }: { colors: Record<string, string> }) {
 
   return (
     <DCard className="p-2xl flex flex-col">
-      <div className="flex items-center justify-between mb-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-lg">
         <div>
           <h3 className="sp-h4 text-foreground">Daily Orders</h3>
           <div className="flex items-center gap-sm mt-xs">
@@ -706,7 +710,7 @@ function DailyOrders({ colors }: { colors: Record<string, string> }) {
             <span className="sp-caption text-muted-foreground">vs last week</span>
           </div>
         </div>
-        <div className="flex items-center gap-lg">
+        <div className="flex items-center gap-lg shrink-0">
           <div className="flex items-center gap-xs">
             <div className="size-[8px] rounded-sm" style={{ backgroundColor: colors["chart-1"] }} />
             <span className="sp-caption text-muted-foreground">This week</span>

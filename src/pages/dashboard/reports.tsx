@@ -304,25 +304,27 @@ export default function ReportsPage() {
         )}
 
         {/* Page header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-lg">
+        <div className="flex items-center justify-between gap-sm">
+          <div className="flex items-center gap-sm sm:gap-lg min-w-0">
             <div>
               <p className="sp-caption text-muted-foreground">Dashboard</p>
               <h1 className="sp-h3 text-foreground">Reports</h1>
             </div>
-            <div className="flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <div className="flex gap-sm">
+          <div className="flex gap-sm shrink-0">
             <Button variant="outline" onClick={handleExportAll}>
               <Download className="mr-xs size-[14px]" />
-              Export All
+              <span className="hidden sm:inline">Export All</span>
+              <span className="sm:hidden">Export</span>
             </Button>
             <Button onClick={() => setGenerateDialog(true)}>
               <Plus className="mr-xs size-[14px]" />
-              Generate Report
+              <span className="hidden sm:inline">Generate Report</span>
+              <span className="sm:hidden">Generate</span>
             </Button>
           </div>
         </div>
@@ -352,7 +354,7 @@ export default function ReportsPage() {
         {/* Reports table card */}
         <DCard className="!p-0 overflow-hidden">
           {/* Card header: Title (left) + Tabs (right) */}
-          <div className="flex items-center justify-between p-xl pb-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md p-md sm:p-xl pb-0">
             <div className="flex items-center gap-md">
               <div>
                 <h3 className="sp-h4 text-foreground">All Reports</h3>
@@ -379,7 +381,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Search + Status filter */}
-          <div className="px-xl pt-lg flex items-center gap-sm">
+          <div className="px-md sm:px-xl pt-lg flex items-center gap-sm">
             <div className="relative flex-1">
               <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
               <Input
@@ -390,7 +392,7 @@ export default function ReportsPage() {
               />
             </div>
             <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-full sm:w-[140px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -403,7 +405,7 @@ export default function ReportsPage() {
           </div>
 
           {/* Table */}
-          <div className="px-xl pb-xl pt-md">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
             <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
