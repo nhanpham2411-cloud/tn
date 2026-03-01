@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, CheckCircle2, Loader2, Mail } from "lucide-react"
+import { ArrowLeft, BarChart3, CheckCircle2, Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -40,10 +40,10 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-full bg-chart-2/10">
-            <CheckCircle2 className="size-xl text-chart-2" />
+          <div className="mx-auto mb-sm flex size-[48px] items-center justify-center rounded-full bg-success/10 dark:bg-success/20">
+            <CheckCircle2 className="size-xl text-success" />
           </div>
           <CardTitle className="sp-h2">Check your email</CardTitle>
           <CardDescription>
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
         <CardFooter className="justify-center">
           <Link
             to="/auth/sign-in"
-            className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+            className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
           >
             <ArrowLeft className="size-md" />
             Back to sign in
@@ -85,15 +85,13 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
       <CardHeader className="text-center">
-        <div className="mx-auto mb-sm flex size-3xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <span className="sp-h3">D</span>
+        <div className="mx-auto mb-sm flex size-[40px] items-center justify-center rounded-xl bg-primary text-primary-foreground lg:hidden">
+          <BarChart3 className="size-[20px]" />
         </div>
         <CardTitle className="sp-h2">Forgot password?</CardTitle>
-        <CardDescription>
-          Enter your email and we'll send you a reset link
-        </CardDescription>
+        <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -110,9 +108,7 @@ export default function ForgotPasswordPage() {
               aria-describedby={error ? "email-error" : undefined}
             />
             {error && (
-              <p id="email-error" className="sp-caption text-destructive">
-                {error}
-              </p>
+              <p id="email-error" className="sp-caption text-destructive">{error}</p>
             )}
           </div>
 
@@ -125,7 +121,7 @@ export default function ForgotPasswordPage() {
       <CardFooter className="justify-center">
         <Link
           to="/auth/sign-in"
-          className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs"
+          className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
         >
           <ArrowLeft className="size-md" />
           Back to sign in

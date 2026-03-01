@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Check, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -30,6 +31,7 @@ const steps = [
 ]
 
 export default function OnboardingPage() {
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0)
   const [companyName, setCompanyName] = useState("")
   const [industry, setIndustry] = useState("")
@@ -63,7 +65,7 @@ export default function OnboardingPage() {
       setTimeout(() => {
         setSubmitting(false)
         toast.success("Welcome to ShopPulse!")
-        window.location.href = "/dashboard"
+        navigate("/dashboard")
       }, 1200)
     }
   }
@@ -73,29 +75,23 @@ export default function OnboardingPage() {
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full max-w-lg border-0 shadow-none sm:border sm:shadow-sm">
       <CardHeader>
         {/* Step indicator */}
         <div className="flex items-center gap-sm mb-md">
           {steps.map((step, i) => (
             <div key={step.title} className="flex items-center gap-xs">
               <div
-                className={`flex size-2xl items-center justify-center rounded-full sp-body-semibold ${
-                  i < currentStep
+                className={`flex size-[28px] items-center justify-center rounded-full sp-caption font-semibold transition-colors ${
+                  i <= currentStep
                     ? "bg-primary text-primary-foreground"
-                    : i === currentStep
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                    : "bg-muted text-muted-foreground"
                 }`}
               >
                 {i < currentStep ? <Check className="size-sm" /> : i + 1}
               </div>
               {i < steps.length - 1 && (
-                <div
-                  className={`h-0.5 w-lg ${
-                    i < currentStep ? "bg-primary" : "bg-muted"
-                  }`}
-                />
+                <div className={`h-0.5 w-lg transition-colors ${i < currentStep ? "bg-primary" : "bg-muted"}`} />
               )}
             </div>
           ))}
@@ -140,13 +136,11 @@ export default function OnboardingPage() {
 
             <div className="flex flex-col gap-xs">
               <Label>Team Size</Label>
-              <RadioGroup value={teamSize} onValueChange={setTeamSize} className="flex gap-md">
+              <RadioGroup value={teamSize} onValueChange={setTeamSize} className="flex flex-wrap gap-md">
                 {["1-10", "11-50", "51-200", "200+"].map((size) => (
                   <div key={size} className="flex items-center gap-xs">
                     <RadioGroupItem value={size} id={`size-${size}`} />
-                    <Label htmlFor={`size-${size}`} className="cursor-pointer">
-                      {size}
-                    </Label>
+                    <Label htmlFor={`size-${size}`} className="cursor-pointer">{size}</Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -167,14 +161,10 @@ export default function OnboardingPage() {
                   placeholder="colleague@example.com"
                   value={email}
                   onChange={(e) => updateEmail(i, e.target.value)}
+                  aria-label={`Team member email ${i + 1}`}
                 />
                 {emails.length > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeEmail(i)}
-                    aria-label="Remove email"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => removeEmail(i)} aria-label="Remove email">
                     ×
                   </Button>
                 )}
@@ -206,7 +196,7 @@ export default function OnboardingPage() {
               </Select>
             </div>
 
-            <div className="rounded-xl border border-border bg-muted/50 p-lg">
+            <div className="rounded-xl border border-success/20 bg-success/5 dark:bg-success/10 p-lg">
               <h4 className="sp-body-semibold text-foreground mb-xs">You're all set!</h4>
               <p className="sp-body text-muted-foreground">
                 Click "Get Started" to access your ShopPulse dashboard. You can update these settings anytime from your profile.
@@ -217,11 +207,7 @@ export default function OnboardingPage() {
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={handleBack}
-          disabled={currentStep === 0}
-        >
+        <Button variant="outline" onClick={handleBack} disabled={currentStep === 0}>
           Back
         </Button>
         <Button
