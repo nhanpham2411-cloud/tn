@@ -309,7 +309,7 @@ export default function OrderDetailPage() {
             </Link>
           </Button>
           <div className="flex items-center gap-sm">
-            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
               <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
             </Button>
             <div className="flex items-center gap-2xs text-muted-foreground/70">
@@ -345,7 +345,7 @@ export default function OrderDetailPage() {
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="size-[32px]">
+                    <Button variant="outline" size="icon" className="size-[32px]" aria-label="More options">
                       <MoreHorizontal className="size-[14px]" />
                     </Button>
                   </DropdownMenuTrigger>

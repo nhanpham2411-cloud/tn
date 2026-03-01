@@ -365,6 +365,7 @@ export default function ReportsPage() {
                 size="xs"
                 className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground"
                 onClick={handleRefresh}
+                aria-label="Refresh"
               >
                 <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
               </Button>
@@ -403,6 +404,7 @@ export default function ReportsPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 className="pl-2xl"
+                aria-label="Search"
               />
             </div>
             <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
@@ -527,6 +529,7 @@ export default function ReportsPage() {
                                 variant="ghost"
                                 size="xs"
                                 className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground"
+                                aria-label="More options"
                               >
                                 <MoreHorizontal className="size-[14px]" />
                               </Button>
@@ -628,7 +631,7 @@ export default function ReportsPage() {
                   </div>
 
                   {/* Metadata grid */}
-                  <div className="grid grid-cols-2 gap-md">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     {[
                       { label: "Created", value: detailReport.date },
                       { label: "Created by", value: detailReport.createdBy },

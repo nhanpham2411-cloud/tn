@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Check } from "lucide-react"
+import { Check, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -35,6 +36,7 @@ export default function OnboardingPage() {
   const [teamSize, setTeamSize] = useState("1-10")
   const [emails, setEmails] = useState([""])
   const [timezone, setTimezone] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   const progress = ((currentStep + 1) / steps.length) * 100
 
@@ -57,7 +59,12 @@ export default function OnboardingPage() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      window.location.href = "/dashboard"
+      setSubmitting(true)
+      setTimeout(() => {
+        setSubmitting(false)
+        toast.success("Welcome to ShopPulse!")
+        window.location.href = "/dashboard"
+      }, 1200)
     }
   }
 
@@ -217,8 +224,20 @@ export default function OnboardingPage() {
         >
           Back
         </Button>
-        <Button onClick={handleNext}>
-          {currentStep === steps.length - 1 ? "Get Started" : "Continue"}
+        <Button
+          onClick={handleNext}
+          disabled={
+            (currentStep === 0 && (!companyName.trim() || !industry)) ||
+            (currentStep === steps.length - 1 && submitting)
+          }
+        >
+          {currentStep === steps.length - 1 && submitting ? (
+            <Loader2 className="size-md animate-spin" />
+          ) : currentStep === steps.length - 1 ? (
+            "Get Started"
+          ) : (
+            "Continue"
+          )}
         </Button>
       </CardFooter>
     </Card>

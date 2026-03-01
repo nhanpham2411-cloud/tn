@@ -235,7 +235,7 @@ export default function GeneralSettingsPage() {
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh}>
+          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -270,6 +270,7 @@ export default function GeneralSettingsPage() {
                     <button
                       onClick={handleUploadAvatar}
                       className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                      aria-label="Upload avatar"
                     >
                       <Camera className="size-[18px] text-white" />
                     </button>
@@ -334,6 +335,7 @@ export default function GeneralSettingsPage() {
                       type="button"
                       onClick={() => setShowCurrentPw(!showCurrentPw)}
                       className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      aria-label={showCurrentPw ? "Hide password" : "Show password"}
                     >
                       {showCurrentPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
                     </button>
@@ -354,6 +356,7 @@ export default function GeneralSettingsPage() {
                         type="button"
                         onClick={() => setShowNewPw(!showNewPw)}
                         className="absolute right-md top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        aria-label={showNewPw ? "Hide password" : "Show password"}
                       >
                         {showNewPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
                       </button>
@@ -465,6 +468,7 @@ export default function GeneralSettingsPage() {
                           size="xs"
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           onClick={() => setRevokeDialog(session.id)}
+                          aria-label="Revoke session"
                         >
                           <LogOut className="size-[13px]" />
                         </Button>

@@ -215,7 +215,7 @@ export default function BillingPage() {
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh}>
+          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -359,6 +359,7 @@ export default function BillingPage() {
                     size="xs"
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     onClick={() => setRemoveCardDialog(true)}
+                    aria-label="Remove card"
                   >
                     <Trash2 className="size-[13px]" />
                   </Button>
@@ -403,7 +404,7 @@ export default function BillingPage() {
                               Retry
                             </Button>
                           )}
-                          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }}>
+                          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
                             <Download className="size-[14px]" />
                           </Button>
                         </div>
@@ -454,7 +455,7 @@ export default function BillingPage() {
                                   Retry
                                 </Button>
                               )}
-                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }}>
+                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
                                 <Download className="size-[14px]" />
                               </Button>
                             </div>

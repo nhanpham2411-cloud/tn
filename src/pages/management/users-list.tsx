@@ -349,7 +349,7 @@ export default function UsersListPage() {
                   <h3 className="sp-h4 text-foreground">All Users</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} users found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -403,6 +403,7 @@ export default function UsersListPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 className="pl-2xl"
+                aria-label="Search"
               />
             </div>
             <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v); setPage(1) }}>
@@ -522,7 +523,7 @@ export default function UsersListPage() {
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground">
+                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
                                 <MoreHorizontal className="size-[14px]" />
                               </Button>
                             </DropdownMenuTrigger>

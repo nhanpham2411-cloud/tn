@@ -181,7 +181,7 @@ export default function NotificationsPage() {
             </div>
           </div>
           <div className="flex items-center gap-sm shrink-0">
-            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
               <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
             </Button>
             <Button onClick={handleSavePreferences} disabled={saving}>

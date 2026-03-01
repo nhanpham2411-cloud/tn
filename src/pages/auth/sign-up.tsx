@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff, Check, X } from "lucide-react"
+import { Eye, EyeOff, Check, X, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -37,6 +38,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("")
   const [terms, setTerms] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
 
   const strength = getPasswordStrength(password)
 
@@ -61,7 +63,12 @@ export default function SignUpPage() {
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length === 0) {
-      window.location.href = "/auth/onboarding"
+      setSubmitting(true)
+      setTimeout(() => {
+        setSubmitting(false)
+        toast.success("Account created successfully")
+        window.location.href = "/auth/onboarding"
+      }, 1200)
     }
   }
 
@@ -191,8 +198,8 @@ export default function SignUpPage() {
           )}
 
           {/* Submit */}
-          <Button type="submit" className="w-full">
-            Create Account
+          <Button type="submit" className="w-full" disabled={!name.trim() || !email || !password || !terms || submitting}>
+            {submitting ? <Loader2 className="size-md animate-spin" /> : "Create Account"}
           </Button>
         </form>
       </CardContent>

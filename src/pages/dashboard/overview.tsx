@@ -350,7 +350,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
         <div className="flex items-center gap-xs">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground">
+              <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
                 <MoreHorizontal className="size-[14px]" />
               </Button>
             </DropdownMenuTrigger>
@@ -659,7 +659,7 @@ export default function DashboardOverviewPage() {
               if (!open) setDraftRange(undefined)
             }}>
               <PopoverTrigger asChild>
-                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground">
+                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label="Select date range">
                   <Calendar className="size-[14px] text-muted-foreground" />
                   {dateRange.from && dateRange.to
                     ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
@@ -749,7 +749,7 @@ export default function DashboardOverviewPage() {
             {/* Compare period */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground">
+                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label="Compare period">
                   <BarChart3 className="size-[14px] text-muted-foreground" />
                   <span className="hidden sm:inline">Compare:</span>
                   <span>{comparePeriod === "previous" ? "Previous period" : "Same period last year"}</span>
@@ -881,7 +881,7 @@ export default function DashboardOverviewPage() {
                       <span className="sp-label text-muted-foreground truncate flex-1">{metric.label}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="xs" className="size-[24px] p-0 text-muted-foreground/50 hover:text-muted-foreground shrink-0">
+                          <Button variant="ghost" size="xs" className="size-[24px] p-0 text-muted-foreground/50 hover:text-muted-foreground shrink-0" aria-label="More options">
                             <MoreHorizontal className="size-[14px]" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -933,7 +933,7 @@ export default function DashboardOverviewPage() {
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground">
+                    <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
                       <MoreHorizontal className="size-[14px]" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -1000,7 +1000,7 @@ export default function DashboardOverviewPage() {
               <div className="flex items-center gap-2xs">
                 <TT>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefreshOrders}>
+                    <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefreshOrders} aria-label="Refresh">
                       <RefreshCw className={`size-[13px] ${refreshingOrders ? "animate-spin" : ""}`} />
                     </Button>
                   </TooltipTrigger>
@@ -1177,7 +1177,7 @@ export default function DashboardOverviewPage() {
               <h3 className="sp-h4 text-foreground">Sales Channels</h3>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="xs" className="text-muted-foreground/50 hover:text-muted-foreground">
+                  <Button variant="ghost" size="xs" className="text-muted-foreground/50 hover:text-muted-foreground" aria-label="More options">
                     <MoreHorizontal className="size-sm" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -1253,7 +1253,7 @@ export default function DashboardOverviewPage() {
             <SheetDescription>Monthly revenue performance for the past 12 months.</SheetDescription>
           </SheetHeader>
           <div className="mt-xl flex flex-col gap-lg">
-            <div className="grid grid-cols-2 gap-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
               <div className="surface-subtle p-lg">
                 <p className="sp-caption text-muted-foreground">Total Revenue</p>
                 <p className="sp-kpi-md text-foreground mt-2xs">${(revenueData.reduce((s, r) => s + r.revenue, 0) / 1000).toFixed(0)}k</p>
@@ -1369,7 +1369,7 @@ export default function DashboardOverviewPage() {
             <SheetDescription>Placed by {orderSheet.customer}</SheetDescription>
           </SheetHeader>
           <div className="mt-xl flex flex-col gap-lg">
-            <div className="grid grid-cols-2 gap-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
               <div className="surface-subtle p-lg">
                 <p className="sp-caption text-muted-foreground">Amount</p>
                 <p className="sp-kpi-sm text-foreground mt-2xs">{orderSheet.amount}</p>
@@ -1419,7 +1419,7 @@ export default function DashboardOverviewPage() {
                 <p className="sp-caption text-muted-foreground mt-2xs">{productSheet.sales.toLocaleString()} units sold</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
               <div className="surface-subtle p-lg">
                 <p className="sp-caption text-muted-foreground">Growth</p>
                 <p className={`sp-data text-foreground font-semibold mt-2xs ${productSheet.growth.startsWith("+") ? "text-success" : "text-destructive"}`}>{productSheet.growth}</p>
@@ -1514,7 +1514,7 @@ export default function DashboardOverviewPage() {
               </div>
               <div className="flex flex-col gap-2xs">
                 <Label>Channel Type</Label>
-                <div className="grid grid-cols-2 gap-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-sm">
                   {[
                     { icon: ShoppingCart, label: "E-Commerce", desc: "Online marketplace" },
                     { icon: Store, label: "Retail", desc: "Physical store" },

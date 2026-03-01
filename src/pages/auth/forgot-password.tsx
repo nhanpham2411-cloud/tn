@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, CheckCircle2, Mail } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Loader2, Mail } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +19,7 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -28,7 +30,12 @@ export default function ForgotPasswordPage() {
     }
 
     setError("")
-    setSent(true)
+    setSubmitting(true)
+    setTimeout(() => {
+      setSubmitting(false)
+      toast.success("Reset link sent to your email")
+      setSent(true)
+    }, 1200)
   }
 
   if (sent) {
@@ -108,8 +115,8 @@ export default function ForgotPasswordPage() {
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            Send Reset Link
+          <Button type="submit" className="w-full" disabled={!email || submitting}>
+            {submitting ? <Loader2 className="size-md animate-spin" /> : "Send Reset Link"}
           </Button>
         </form>
       </CardContent>

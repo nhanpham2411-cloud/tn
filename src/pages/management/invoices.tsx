@@ -282,7 +282,7 @@ export default function InvoicesPage() {
   const InvoiceActions = ({ invoice }: { invoice: Invoice }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground">
+        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -379,7 +379,7 @@ export default function InvoicesPage() {
                   <h3 className="sp-h4 text-foreground">All Invoices</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} invoices found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -435,6 +435,7 @@ export default function InvoicesPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 className="pl-2xl"
+                aria-label="Search"
               />
             </div>
           </div>
@@ -632,7 +633,7 @@ export default function InvoicesPage() {
                   </div>
 
                   {/* Metadata */}
-                  <div className="grid grid-cols-2 gap-md">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     {[
                       { label: "Order ID", value: detailInvoice.orderId },
                       { label: "Issued At", value: detailInvoice.issuedAt },

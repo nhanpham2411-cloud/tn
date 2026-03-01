@@ -303,7 +303,7 @@ export default function OrdersPage() {
   const OrderActions = ({ order }: { order: Order }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground">
+        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -398,7 +398,7 @@ export default function OrdersPage() {
                   <h3 className="sp-h4 text-foreground">All Orders</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} orders found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -458,6 +458,7 @@ export default function OrdersPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 className="pl-2xl"
+                aria-label="Search"
               />
             </div>
             <Select value={paymentFilter} onValueChange={(v) => { setPaymentFilter(v); setPage(1) }}>
@@ -681,7 +682,7 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Metadata grid */}
-                  <div className="grid grid-cols-2 gap-md">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     {[
                       { label: "Order Date", value: detailOrder.createdAt },
                       { label: "Last Updated", value: detailOrder.updatedAt },

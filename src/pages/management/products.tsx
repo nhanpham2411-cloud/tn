@@ -327,7 +327,7 @@ export default function ProductsPage() {
   const ProductActions = ({ product }: { product: Product }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground">
+        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -413,7 +413,7 @@ export default function ProductsPage() {
                 <h3 className="sp-h4 text-foreground">All Products</h3>
                 <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} products found</p>
               </div>
-              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh}>
+              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                 <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
               </Button>
             </div>
@@ -488,6 +488,7 @@ export default function ProductsPage() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                 className="pl-2xl"
+                aria-label="Search"
               />
             </div>
             <Select value={categoryFilter} onValueChange={(v) => { setCategoryFilter(v); setPage(1) }}>
@@ -752,7 +753,7 @@ export default function ProductsPage() {
                     <span className={`sp-caption capitalize ${categoryColors[detailProduct.category]}`}>{detailProduct.category}</span>
                   </div>
                   <p className="sp-body text-muted-foreground">{detailProduct.description}</p>
-                  <div className="grid grid-cols-2 gap-md">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     {[
                       { label: "Price", value: `$${detailProduct.price}` },
                       { label: "Stock", value: `${detailProduct.stock} units` },
@@ -795,7 +796,7 @@ export default function ProductsPage() {
                     <Label className="sp-label">Name</Label>
                     <Input value={editName} onChange={(e) => setEditName(e.target.value)} disabled={saving} />
                   </div>
-                  <div className="grid grid-cols-2 gap-md">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     <div className="flex flex-col gap-2xs">
                       <Label className="sp-label">Price ($)</Label>
                       <Input type="number" value={editPrice} onChange={(e) => setEditPrice(e.target.value)} disabled={saving} />
@@ -872,7 +873,7 @@ export default function ProductsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-2 gap-md">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
                 <div className="flex flex-col gap-2xs">
                   <Label className="sp-label">Price ($)</Label>
                   <Input type="number" placeholder="49" value={addPrice} onChange={(e) => setAddPrice(e.target.value)} disabled={adding} />

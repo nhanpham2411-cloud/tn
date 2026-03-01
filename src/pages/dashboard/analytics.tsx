@@ -79,7 +79,7 @@ function CardActions({ onExport, onCopy }: { onExport?: () => void; onCopy?: () 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground">
+        <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -456,18 +456,18 @@ function TrafficSources({ p }: { p: string[] }) {
       <div className="flex items-center gap-xl flex-1">
         {/* Donut — left side */}
         <div className="relative shrink-0 overflow-visible">
-          <ResponsiveContainer width={190} height={190} className="overflow-visible [&_svg]:overflow-visible">
+          <ResponsiveContainer width={210} height={210} className="overflow-visible [&_svg]:overflow-visible">
             <PieChart>
               <Pie
                 data={channelData}
-                innerRadius={48}
-                outerRadius={88}
+                innerRadius={55}
+                outerRadius={95}
                 dataKey="value"
                 stroke="none"
                 startAngle={90}
                 endAngle={-270}
                 paddingAngle={2}
-                cornerRadius={4}
+                cornerRadius={8}
                 activeIndex={activeIdx ?? undefined}
                 activeShape={<ActiveSector />}
                 onMouseEnter={(_, idx) => setActiveIdx(idx)}
@@ -614,7 +614,7 @@ function ConversionFunnel({ colors, p, refreshing, onRefresh }: { colors: Record
           {onRefresh && (
             <TT>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" onClick={onRefresh}>
+                <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" onClick={onRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </TooltipTrigger>

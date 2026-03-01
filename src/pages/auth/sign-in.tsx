@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +23,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("")
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,8 +44,12 @@ export default function SignInPage() {
     }
 
     if (valid) {
-      // Demo: navigate to dashboard
-      window.location.href = "/dashboard"
+      setSubmitting(true)
+      setTimeout(() => {
+        setSubmitting(false)
+        toast.success("Signed in successfully")
+        window.location.href = "/dashboard"
+      }, 1200)
     }
   }
 
@@ -128,8 +134,8 @@ export default function SignInPage() {
           </div>
 
           {/* Submit */}
-          <Button type="submit" className="w-full">
-            Sign In
+          <Button type="submit" className="w-full" disabled={!email || !password || submitting}>
+            {submitting ? <Loader2 className="size-md animate-spin" /> : "Sign In"}
           </Button>
         </form>
       </CardContent>
