@@ -563,6 +563,7 @@ export default function DashboardOverviewPage() {
   const [globeError, setGlobeError] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<"online" | "offline">("online")
   const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const [draftRange, setDraftRange] = useState<DateRange | undefined>(undefined)
 
   // Sheet / Dialog states for action UIs
   const [revenueSheet, setRevenueSheet] = useState(false)
@@ -651,7 +652,11 @@ export default function DashboardOverviewPage() {
         {/* Date range + last updated */}
         <div className="flex items-center justify-between gap-sm">
           <div className="flex items-center gap-sm min-w-0">
-            <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+            <Popover open={datePickerOpen} onOpenChange={(open) => {
+              setDatePickerOpen(open)
+              if (open) setDraftRange(dateRange)
+              if (!open) setDraftRange(undefined)
+            }}>
               <PopoverTrigger asChild>
                 <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground">
                   <Calendar className="size-[14px] text-muted-foreground" />
@@ -663,7 +668,7 @@ export default function DashboardOverviewPage() {
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start" sideOffset={8}>
                 <div className="flex">
-                  <div className="flex flex-col gap-3xs border-r border-border-card p-sm">
+                  <div className="flex flex-col gap-3xs border-r border-border/30 dark:border-white/[0.06] p-sm min-w-[140px]">
                     <p className="sp-label text-muted-foreground px-sm pb-2xs">Presets</p>
                     {([
                       { label: "Last 7 days", days: 7 },
@@ -680,36 +685,62 @@ export default function DashboardOverviewPage() {
                           const from = preset.days > 0 ? subDays(to, preset.days) : startOfYear(to)
                           setDateRange({ from, to })
                           setPresetLabel(preset.label)
+                          setDraftRange(undefined)
                           setDatePickerOpen(false)
                           toast(`Switched to ${preset.label}`)
                         }}
                         className={`sp-caption text-left px-sm py-xs rounded-md transition-colors ${
                           presetLabel === preset.label
                             ? "bg-primary text-primary-foreground font-medium"
-                            : "text-muted-foreground hover:bg-surface-raised hover:text-foreground"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         }`}
                       >
                         {preset.label}
                       </button>
                     ))}
                   </div>
-                  <div className="p-sm">
+                  <div className="flex flex-col">
                     <CalendarComponent
                       mode="range"
-                      selected={dateRange}
+                      selected={draftRange}
                       onSelect={(range) => {
                         if (range) {
-                          setDateRange(range)
+                          setDraftRange(range)
                           setPresetLabel("")
-                          if (range.from && range.to) {
-                            setDatePickerOpen(false)
-                            toast(`${format(range.from, "MMM d")} – ${format(range.to, "MMM d, yyyy")}`)
-                          }
                         }
                       }}
                       numberOfMonths={2}
                       disabled={{ after: new Date() }}
                     />
+                    {/* Apply / Cancel footer */}
+                    <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
+                      <p className="sp-caption text-muted-foreground">
+                        {draftRange?.from && draftRange?.to
+                          ? `${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`
+                          : draftRange?.from
+                            ? `${format(draftRange.from, "MMM d, yyyy")} – ...`
+                            : "Select a range"}
+                      </p>
+                      <div className="flex items-center gap-sm">
+                        <Button variant="ghost" size="sm" onClick={() => { setDraftRange(undefined); setDatePickerOpen(false) }}>
+                          Cancel
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={!draftRange?.from || !draftRange?.to}
+                          onClick={() => {
+                            if (draftRange?.from && draftRange?.to) {
+                              setDateRange(draftRange)
+                              setPresetLabel("")
+                              setDatePickerOpen(false)
+                              toast(`${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`)
+                            }
+                          }}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </PopoverContent>
