@@ -19,7 +19,7 @@ const SelectGroup = SelectPrimitive.Group
 const SelectValue = SelectPrimitive.Value
 
 const selectTriggerVariants = cva(
-  "flex w-full items-center justify-between rounded-lg border border-border bg-input typo-paragraph-sm text-foreground transition-colors focus:outline-none focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground aria-invalid:border-destructive-border aria-invalid:focus-visible:ring-ring-error [&>span]:line-clamp-1",
+  "flex w-full items-center justify-between rounded-lg border border-border bg-input typo-paragraph-sm text-foreground transition-colors hover:border-border-strong focus:outline-none focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground aria-invalid:border-destructive-border aria-invalid:focus-visible:ring-ring-error [&>span]:line-clamp-1",
   {
     variants: {
       size: {
@@ -117,7 +117,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-md py-2xs pl-xs pr-2xl typo-paragraph-sm outline-none transition-colors focus:bg-muted focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-md py-2xs pl-xs pr-2xl typo-paragraph-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}

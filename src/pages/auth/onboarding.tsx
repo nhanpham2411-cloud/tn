@@ -202,7 +202,7 @@ export default function OnboardingPage() {
             <div className="rounded-xl border border-border bg-muted/50 p-lg">
               <h4 className="typo-paragraph-reg-semibold text-foreground mb-xs">You're all set!</h4>
               <p className="typo-paragraph-sm text-muted-foreground">
-                Click "Get Started" to access your DataFlow dashboard. You can update these settings anytime from your profile.
+                Click "Get Started" to access your ShopPulse dashboard. You can update these settings anytime from your profile.
               </p>
             </div>
           </div>

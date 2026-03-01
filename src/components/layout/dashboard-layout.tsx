@@ -1,21 +1,21 @@
 import { Outlet } from "react-router-dom"
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/layout/app-sidebar"
 import { AppHeader } from "@/components/layout/app-header"
 
 export function DashboardLayout() {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <AppHeader />
-        <main className="flex-1 p-2xl">
-          <div className="flex flex-col gap-xl">
-            <Outlet />
-          </div>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="flex min-h-svh flex-col bg-background">
+      <AppHeader />
+      <main className="relative flex-1 p-xl lg:p-2xl overflow-hidden">
+        {/* Ambient gradient orbs — visible in dark mode only */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden" aria-hidden="true">
+          <div className="absolute -top-[300px] -right-[200px] size-[700px] rounded-full bg-violet-600/[0.03] blur-[200px]" />
+          <div className="absolute top-[40%] -left-[250px] size-[500px] rounded-full bg-indigo-500/[0.02] blur-[180px]" />
+        </div>
+        <div className="relative flex flex-col gap-xl">
+          <Outlet />
+        </div>
+      </main>
+    </div>
   )
 }

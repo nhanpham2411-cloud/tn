@@ -8,12 +8,15 @@ export function useChartColors() {
     function resolve() {
       const style = getComputedStyle(document.documentElement)
       const colorNames = [
-        "chart-1", "chart-2", "chart-3", "chart-4", "chart-5",
+        "chart-1", "chart-2", "chart-3", "chart-4", "chart-5", "chart-6",
         "primary", "muted", "border", "foreground", "muted-foreground",
+        "card", "background", "success", "destructive", "surface-inset",
       ]
       const resolved: Record<string, string> = {}
       for (const name of colorNames) {
+        // Try --color-* first (@theme), fall back to --* (inline tokens)
         const val = style.getPropertyValue(`--color-${name}`).trim()
+          || style.getPropertyValue(`--${name}`).trim()
         resolved[name] = val || "#888"
       }
       setColors(resolved)

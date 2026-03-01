@@ -1,11 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+/* Dark mode via .dark class on <html>, not OS preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
-   SprouX Design System — Theme Tokens
-   Extracted from Figma: [SprouX - DS] Foundation & Component
+   ShopPulse — E-commerce Analytics Dashboard
+   Design System tokens forked from SprouX DS
+   Primary: Violet #7C3AED | Neutral: Zinc | Dark-first
    ============================================================ */
 
 @theme inline {
@@ -46,6 +50,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
 
   /* --- Data Visualization: Area Chart Colors --- */
   --color-area-orange-fill: var(--area-orange-fill);
@@ -137,6 +142,9 @@
   --color-shadow-color: var(--shadow-color);
   --color-border-subtle: var(--border-subtle);
   --color-input-readonly: var(--input-readonly);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
+  --color-border-card: var(--border-card);
 
   /* --- Brand colors (Teal-based brand identity) --- */
   --color-brand: var(--brand);
@@ -167,6 +175,7 @@
   --color-emphasis-border: var(--emphasis-border);
 
   /* --- SprouX Spacing (from Figma semantic tokens) --- */
+  --spacing-4xs: 2px;
   --spacing-3xs: 4px;
   --spacing-2xs: 6px;
   --spacing-xs: 8px;
@@ -208,10 +217,10 @@
   --radius-10: 10px;     /* Figma radius/10 — no Tailwind default */
   --radius-xl: 12px;     /* Figma radius/12 */
 
-  /* --- Typography (from Figma) --- */
-  --font-heading: "Fraunces", Georgia, serif;
-  --font-body: "Geist", system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  /* --- Typography (ShopPulse) --- */
+  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* --- SprouX Color Palette (from Figma Variables) --- */
 
@@ -520,10 +529,27 @@
    *   Tailwind `shadow-sm` = 0 1px 2px black/5% which is Figma "shadow-xs".
    */
 
+  /* --- ShopPulse: Glassmorphism Colors --- */
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-bg-hover: var(--glass-bg-hover);
+  --color-glass-border: var(--glass-border);
+  --color-glass-border-hover: var(--glass-border-hover);
+
+  /* --- ShopPulse: Chart Gradient Fills --- */
+  --color-chart-1-fill-start: var(--chart-1-fill-start);
+  --color-chart-1-fill-end: var(--chart-1-fill-end);
+  --color-chart-2-fill-start: var(--chart-2-fill-start);
+  --color-chart-2-fill-end: var(--chart-2-fill-end);
+  --color-chart-3-fill-start: var(--chart-3-fill-start);
+  --color-chart-3-fill-end: var(--chart-3-fill-end);
+  --color-chart-4-fill-start: var(--chart-4-fill-start);
+  --color-chart-4-fill-end: var(--chart-4-fill-end);
+
   /* --- Animations --- */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+  --animate-fade-up: fade-up 0.3s ease-out;
 }
 
 @keyframes accordion-down {
@@ -541,40 +567,55 @@
   20%, 50% { opacity: 0; }
 }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gradient border rotation */
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-rotate {
+  to { --border-angle: 360deg; }
+}
+
 /* ============================================================
    Light Mode (Default)
-   SprouX custom Slate palette (warm-toned)
-   Foreground: #252522 (slate/950) | Border: #e9e9e7 (slate/200)
-   Primary: #0f766e (teal/700) | Muted: #afafab (slate/500)
+   ShopPulse: Zinc neutral + Violet accent
+   Foreground: #09090b (zinc/950) | Border: #e4e4e7 (zinc/200)
+   Primary: #7c3aed (violet/600)
    ============================================================ */
 @layer base {
   :root {
-    --background: var(--color-slate-50);
-    --foreground: var(--color-slate-950);
-    --foreground-subtle: var(--color-slate-700);
+    --background: var(--color-zinc-50);
+    --foreground: var(--color-zinc-950);
+    --foreground-subtle: var(--color-zinc-500);
 
     --card: #ffffff;                           /* raw: white */
-    --card-foreground: var(--color-slate-950);
-    --card-subtle: var(--color-slate-50);
-    --card-subtle-foreground: var(--color-slate-700);
+    --card-foreground: var(--color-zinc-950);
+    --card-subtle: var(--color-zinc-50);
+    --card-subtle-foreground: var(--color-zinc-500);
 
-    --popover: #000000;                        /* raw: black */
-    --popover-foreground: #ffffff;             /* raw: white */
+    --popover: #ffffff;                        /* raw: white */
+    --popover-foreground: var(--color-zinc-950);
 
-    --primary: var(--color-teal-700);
+    --primary: var(--color-violet-600);
     --primary-foreground: #ffffff;             /* raw: white */
-    --primary-hover: var(--color-teal-600);
+    --primary-hover: var(--color-violet-700);
 
-    --secondary: var(--color-slate-200);
-    --secondary-foreground: var(--color-slate-900);
-    --secondary-hover: var(--color-slate-100);
+    --secondary: var(--color-zinc-200);
+    --secondary-foreground: var(--color-zinc-900);
+    --secondary-hover: var(--color-zinc-100);
 
-    --muted: var(--color-slate-100);
-    --muted-foreground: var(--color-slate-700);
+    --muted: #f0f0f2;                              /* lighter — closer to zinc-100 */
+    --muted-foreground: var(--color-zinc-500);
 
-    --accent: var(--color-slate-100);
-    --accent-foreground: var(--color-slate-900);
-    --accent-selected: var(--color-slate-300);
+    --accent: var(--color-zinc-100);
+    --accent-foreground: var(--color-zinc-900);
+    --accent-selected: var(--color-zinc-300);
 
     --destructive: var(--color-red-600);
     --destructive-foreground: #ffffff;         /* raw: white */
@@ -582,13 +623,13 @@
     --destructive-subtle-foreground: var(--color-red-600);
     --destructive-border: var(--color-red-500);
     --ring-error: var(--color-red-200);
-    --ring-brand: var(--color-teal-200);
+    --ring-brand: var(--color-violet-200);
     --ring-success: var(--color-green-200);
-    --ring-warning: var(--color-orange-200);
+    --ring-warning: var(--color-amber-200);
     --ring-emphasis: var(--color-blue-200);
 
-    --primary-subtle: var(--color-teal-50);
-    --primary-subtle-foreground: var(--color-teal-700);
+    --primary-subtle: var(--color-violet-50);
+    --primary-subtle-foreground: var(--color-violet-600);
 
     --success: var(--color-green-600);
     --success-foreground: #ffffff;             /* raw: white */
@@ -608,39 +649,61 @@
     --emphasis-subtle-foreground: var(--color-blue-600);
     --emphasis-border: var(--color-blue-500);
 
-    --brand: var(--color-teal-700);
-    --brand-hover: var(--color-teal-800);
+    --brand: var(--color-violet-600);
+    --brand-hover: var(--color-violet-700);
     --brand-foreground: #ffffff;               /* raw: white */
-    --brand-subtle: var(--color-teal-50);
-    --brand-subtle-foreground: var(--color-teal-700);
-    --brand-subtle-foreground-hover: var(--color-teal-800);
-    --brand-border: var(--color-teal-600);
+    --brand-subtle: var(--color-violet-50);
+    --brand-subtle-foreground: var(--color-violet-600);
+    --brand-subtle-foreground-hover: var(--color-violet-700);
+    --brand-border: var(--color-violet-500);
 
-    --border: var(--color-slate-200);
-    --border-subtle: var(--color-slate-100);
-    --border-strong: var(--color-slate-500);
+    --border: var(--color-zinc-200);
+    --border-subtle: var(--color-zinc-100);
+    --border-strong: var(--color-zinc-400);
     --input: #ffffff;                          /* raw: white */
-    --input-readonly: var(--color-slate-100);
-    --ring: var(--color-slate-200);
+    --input-readonly: var(--color-zinc-100);
+    --ring: var(--color-zinc-200);
 
     --ghost: transparent;                      /* raw: null */
-    --ghost-foreground: var(--color-slate-700);
-    --ghost-hover: rgba(0,0,0,0.05);          /* raw: null — #0000000d */
+    --ghost-foreground: var(--color-zinc-500);
+    --ghost-hover: rgba(0,0,0,0.05);          /* raw: null */
 
-    --outline: rgba(255,255,255,0.1);          /* raw: null — #ffffff1a */
-    --outline-hover: rgba(51,65,85,0.033);     /* raw: null — #33415508 */
-    --backdrop: rgba(51,65,85,0.6);            /* raw: null — #33415599 */
+    --outline: rgba(255,255,255,0.1);          /* raw: null */
+    --outline-hover: rgba(0,0,0,0.033);        /* raw: null */
+    --backdrop: rgba(0,0,0,0.6);               /* raw: null */
 
-    /* --- Shadow Token (Figma shadows collection) --- */
-    --shadow-color: #00000040;                   /* black 25% — Figma shadow/color Light */
+    --surface-raised: var(--color-zinc-100);   /* icon containers, image placeholders */
+    --surface-inset: var(--color-zinc-100);    /* progress tracks, inset panels */
+    --border-card: rgba(0,0,0,0.06);           /* subtle list-item / card borders */
 
-    --chart-1: #1f77b4;
-    --chart-2: #ff7f0e;
-    --chart-3: #2ca02c;
-    --chart-4: #d62728;
-    --chart-5: #9467bd;
+    /* --- Shadow Token --- */
+    --shadow-color: #00000040;                 /* black 25% */
 
-    /* --- Area Chart Colors (Light) --- */
+    /* --- Charts (6 series — Violet + Green + Amber, vivid + pastel) --- */
+    --chart-1: #7c3aed;                        /* Vivid violet */
+    --chart-2: #22c55e;                        /* Fresh green */
+    --chart-3: #f59e0b;                        /* Warm amber */
+    --chart-4: #c4b5fd;                        /* Pastel lavender */
+    --chart-5: #86efac;                        /* Pastel mint */
+    --chart-6: #fde68a;                        /* Pastel gold */
+
+    /* --- Chart Gradient Fills (for Recharts <Area>) --- */
+    --chart-1-fill-start: rgba(124, 58, 237, 0.35);
+    --chart-1-fill-end: rgba(124, 58, 237, 0);
+    --chart-2-fill-start: rgba(34, 197, 94, 0.3);
+    --chart-2-fill-end: rgba(34, 197, 94, 0);
+    --chart-3-fill-start: rgba(245, 158, 11, 0.3);
+    --chart-3-fill-end: rgba(245, 158, 11, 0);
+    --chart-4-fill-start: rgba(196, 181, 253, 0.3);
+    --chart-4-fill-end: rgba(196, 181, 253, 0);
+
+    /* --- Glassmorphism (Light mode — higher opacity) --- */
+    --glass-bg: rgba(255,255,255,0.7);
+    --glass-bg-hover: rgba(255,255,255,0.85);
+    --glass-border: rgba(0,0,0,0.08);
+    --glass-border-hover: rgba(0,0,0,0.12);
+
+    /* --- Area Chart Colors (Light) — recolored for violet palette --- */
     --area-orange-fill: #fdd09cb2;
     --area-orange-fill-2: #f8b07eb2;
     --area-orange-stroke: #ffb86a;
@@ -708,114 +771,136 @@
     --static-green-5: #016630;
 
     --sidebar-background: #ffffff;              /* raw: white */
-    --sidebar-foreground: var(--color-slate-950);
-    --sidebar-primary: var(--color-teal-700);
+    --sidebar-foreground: var(--color-zinc-950);
+    --sidebar-primary: var(--color-violet-600);
     --sidebar-primary-foreground: #ffffff;     /* raw: white */
-    --sidebar-accent: var(--color-slate-100);
-    --sidebar-accent-foreground: var(--color-slate-700);
-    --sidebar-accent-hover: var(--color-slate-50);
-    --sidebar-muted: var(--color-slate-500);
-    --sidebar-border: var(--color-slate-200);
-    --sidebar-ring: var(--color-slate-200);
+    --sidebar-accent: var(--color-zinc-100);
+    --sidebar-accent-foreground: var(--color-zinc-500);
+    --sidebar-accent-hover: var(--color-zinc-50);
+    --sidebar-muted: var(--color-zinc-400);
+    --sidebar-border: var(--color-zinc-200);
+    --sidebar-ring: var(--color-zinc-200);
   }
 
   /* ============================================================
-     Dark Mode
-     Inverted: Slate palette dark ↔ light
+     Dark Mode (PRIMARY — dark-first design)
+     ShopPulse: Zinc dark + Violet accent
      ============================================================ */
   .dark {
-    --background: var(--color-slate-950);
-    --foreground: var(--color-slate-50);
-    --foreground-subtle: var(--color-slate-400);
+    --background: #0c0c10;                     /* Deeper than zinc-950 for Dribbble-quality depth */
+    --foreground: var(--color-zinc-50);
+    --foreground-subtle: var(--color-zinc-500);
 
-    --card: var(--color-slate-950);
-    --card-foreground: var(--color-slate-50);
-    --card-subtle: var(--color-slate-900);
-    --card-subtle-foreground: var(--color-slate-400);
+    --card: #141418;                             /* Subtle lift from background */
+    --card-foreground: var(--color-zinc-50);
+    --card-subtle: var(--color-zinc-900);
+    --card-subtle-foreground: var(--color-zinc-400);
 
-    --popover: var(--color-slate-950);
-    --popover-foreground: var(--color-slate-50);
+    --popover: var(--color-zinc-900);
+    --popover-foreground: var(--color-zinc-50);
 
-    --primary: var(--color-teal-600);
+    --primary: var(--color-violet-600);
     --primary-foreground: #ffffff;             /* raw: white */
-    --primary-hover: var(--color-teal-700);
+    --primary-hover: var(--color-violet-700);
 
-    --secondary: var(--color-slate-800);
-    --secondary-foreground: var(--color-slate-50);
-    --secondary-hover: var(--color-slate-900);
+    --secondary: var(--color-zinc-800);
+    --secondary-foreground: var(--color-zinc-50);
+    --secondary-hover: var(--color-zinc-900);
 
-    --muted: var(--color-slate-800);
-    --muted-foreground: var(--color-slate-400);
+    --muted: var(--color-zinc-800);
+    --muted-foreground: var(--color-zinc-400);
 
-    --accent: var(--color-slate-800);
-    --accent-foreground: var(--color-slate-50);
-    --accent-selected: var(--color-slate-700);
+    --accent: var(--color-zinc-800);
+    --accent-foreground: var(--color-zinc-50);
+    --accent-selected: var(--color-zinc-700);
 
-    --destructive: var(--color-red-900);
-    --destructive-foreground: var(--color-neutral-50);
-    --destructive-subtle: var(--color-red-950);
-    --destructive-subtle-foreground: var(--color-red-500);
+    --destructive: var(--color-red-500);
+    --destructive-foreground: #ffffff;         /* raw: white */
+    --destructive-subtle: rgba(239,68,68,0.1);
+    --destructive-subtle-foreground: var(--color-red-400);
     --destructive-border: var(--color-red-500);
     --ring-error: var(--color-red-900);
-    --ring-brand: var(--color-teal-800);
-    --ring-success: var(--color-green-800);
-    --ring-warning: var(--color-amber-800);
-    --ring-emphasis: var(--color-blue-800);
+    --ring-brand: var(--color-violet-900);
+    --ring-success: var(--color-green-900);
+    --ring-warning: var(--color-amber-900);
+    --ring-emphasis: var(--color-blue-900);
 
-    --primary-subtle: var(--color-teal-950);
-    --primary-subtle-foreground: var(--color-teal-400);
+    --primary-subtle: var(--color-violet-950);
+    --primary-subtle-foreground: var(--color-violet-400);
 
     --success: var(--color-green-500);
     --success-foreground: #ffffff;             /* raw: white */
-    --success-subtle: var(--color-green-950);
-    --success-subtle-foreground: var(--color-green-500);
+    --success-subtle: rgba(34,197,94,0.1);
+    --success-subtle-foreground: var(--color-green-400);
     --success-border: var(--color-green-500);
 
     --warning: var(--color-amber-500);
     --warning-foreground: #ffffff;             /* raw: white */
-    --warning-subtle: var(--color-amber-950);
-    --warning-subtle-foreground: var(--color-amber-500);
+    --warning-subtle: rgba(245,158,11,0.1);
+    --warning-subtle-foreground: var(--color-amber-400);
     --warning-border: var(--color-amber-500);
 
-    --emphasis: var(--color-blue-400);
+    --emphasis: var(--color-blue-500);
     --emphasis-foreground: #ffffff;            /* raw: white */
-    --emphasis-subtle: var(--color-blue-950);
+    --emphasis-subtle: rgba(59,130,246,0.1);
     --emphasis-subtle-foreground: var(--color-blue-400);
     --emphasis-border: var(--color-blue-500);
 
-    --brand: var(--color-teal-600);
-    --brand-hover: var(--color-teal-700);
+    --brand: var(--color-violet-600);
+    --brand-hover: var(--color-violet-700);
     --brand-foreground: #ffffff;               /* raw: white */
-    --brand-subtle: var(--color-teal-950);
-    --brand-subtle-foreground: var(--color-teal-400);
-    --brand-subtle-foreground-hover: var(--color-teal-300);
-    --brand-border: var(--color-teal-600);
+    --brand-subtle: var(--color-violet-950);
+    --brand-subtle-foreground: var(--color-violet-400);
+    --brand-subtle-foreground-hover: var(--color-violet-300);
+    --brand-border: var(--color-violet-600);
 
-    --border: var(--color-slate-800);
-    --border-subtle: var(--color-slate-900);
-    --border-strong: var(--color-slate-600);
-    --input: var(--color-slate-900);
-    --input-readonly: var(--color-slate-800);
-    --ring: var(--color-slate-800);
+    --border: var(--color-zinc-800);
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-strong: var(--color-zinc-600);
+    --input: var(--color-zinc-900);
+    --input-readonly: var(--color-zinc-800);
+    --ring: var(--color-zinc-800);
 
     --ghost: transparent;                      /* raw: null */
-    --ghost-foreground: var(--color-slate-600);
-    --ghost-hover: #ffffff19;                  /* raw: null — rgba(255,255,255,0.098) */
+    --ghost-foreground: var(--color-zinc-400);
+    --ghost-hover: rgba(255,255,255,0.06);     /* raw: null */
 
-    --outline: #ffffff0c;                      /* raw: null — rgba(255,255,255,0.047) */
-    --outline-hover: #ffffff19;                /* raw: null — rgba(255,255,255,0.098) */
-    --backdrop: #00000099;                     /* raw: null — rgba(0,0,0,0.6) */
+    --outline: rgba(255,255,255,0.04);         /* raw: null */
+    --outline-hover: rgba(255,255,255,0.08);   /* raw: null */
+    --backdrop: rgba(0,0,0,0.7);               /* raw: null */
 
-    /* --- Shadow Token (Figma shadows collection) --- */
+    --surface-raised: rgba(255,255,255,0.06);  /* icon containers, image placeholders */
+    --surface-inset: rgba(255,255,255,0.04);   /* progress tracks, inset panels */
+    --border-card: rgba(255,255,255,0.06);     /* subtle list-item / card borders */
+
+    /* --- Shadow Token --- */
     --shadow-color: #00000080;                 /* black 50% — darker for dark mode depth */
 
-    --chart-1: #1447e6;                        /* raw: null */
-    --chart-2: #00bc7d;
-    --chart-3: #fd9a00;
-    --chart-4: #ad46ff;
-    --chart-5: #ff2056;
+    /* --- Charts (brighter for dark bg — Violet + Green + Amber) --- */
+    --chart-1: #a78bfa;                        /* Bright violet */
+    --chart-2: #4ade80;                        /* Bright green */
+    --chart-3: #fbbf24;                        /* Bright gold */
+    --chart-4: #ddd6fe;                        /* Pastel lavender */
+    --chart-5: #bbf7d0;                        /* Pastel mint */
+    --chart-6: #fef08a;                        /* Pastel yellow */
 
-    /* --- Area Chart Colors (Dark) — raw: null (no primitive ref) --- */
+    /* --- Chart Gradient Fills (Violet + Green + Amber) --- */
+    --chart-1-fill-start: rgba(167, 139, 250, 0.35);
+    --chart-1-fill-end: rgba(167, 139, 250, 0);
+    --chart-2-fill-start: rgba(74, 222, 128, 0.3);
+    --chart-2-fill-end: rgba(74, 222, 128, 0);
+    --chart-3-fill-start: rgba(251, 191, 36, 0.3);
+    --chart-3-fill-end: rgba(251, 191, 36, 0);
+    --chart-4-fill-start: rgba(221, 214, 254, 0.3);
+    --chart-4-fill-end: rgba(221, 214, 254, 0);
+
+    /* --- Glassmorphism (Dark mode — subtle opacity) --- */
+    --glass-bg: rgba(255,255,255,0.03);
+    --glass-bg-hover: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.10);
+
+    /* --- Area Chart Colors (Dark) --- */
     --area-orange-fill: #755738b2;
     --area-orange-fill-2: #76380eb2;
     --area-orange-stroke: #ffb86a;
@@ -845,16 +930,16 @@
     --area-amber-stroke: #ffd230;
     --area-amber-stroke-2: #ffa50a;
 
-    --sidebar-background: var(--color-slate-900);
-    --sidebar-foreground: var(--color-slate-100);
-    --sidebar-primary: var(--color-teal-600);
+    --sidebar-background: var(--color-zinc-900);
+    --sidebar-foreground: var(--color-zinc-100);
+    --sidebar-primary: var(--color-violet-500);
     --sidebar-primary-foreground: #ffffff;     /* raw: white */
-    --sidebar-accent: var(--color-slate-800);
-    --sidebar-accent-foreground: var(--color-slate-100);
-    --sidebar-accent-hover: var(--color-slate-950);
-    --sidebar-muted: var(--color-slate-600);
-    --sidebar-border: var(--color-slate-800);
-    --sidebar-ring: var(--color-slate-950);
+    --sidebar-accent: var(--color-zinc-800);
+    --sidebar-accent-foreground: var(--color-zinc-100);
+    --sidebar-accent-hover: var(--color-zinc-950);
+    --sidebar-muted: var(--color-zinc-500);
+    --sidebar-border: var(--color-zinc-800);
+    --sidebar-ring: var(--color-zinc-950);
   }
 }
 
@@ -874,65 +959,79 @@
 }
 
 /* ============================================================
-   Typography — Figma Text Styles (synced 1:1)
+   Typography — ShopPulse Design System
 
-   PREFIX: "typo-" (NOT "text-")
+   PREFIX: "typo-" for SprouX-inherited classes
+   PREFIX: "sp-" for ShopPulse-specific classes
    The "text-" prefix conflicts with tailwind-merge (cn()) which
-   treats text-* as a single group (color/size/align). When both
-   typo-paragraph-sm-bold and text-foreground are in the same cn(),
-   tailwind-merge STRIPS the first one. Using "typo-" avoids this.
+   treats text-* as a single group. Using "typo-"/"sp-" avoids this.
 
    Uses Tailwind v4 @utility directive → utilities layer.
-   Class specificity (0,1,0) beats element selectors (0,0,1)
-   like `button { font-weight: medium }`.
    ============================================================ */
 
-/* ---- Headings (Figma "heading 1..4") ---- */
+/* ---- SprouX Headings (kept for component compatibility) ---- */
 
-@utility typo-heading-1 { font-family: var(--font-heading); font-weight: 600; font-size: 48px; line-height: 48px; letter-spacing: -1.5px; }
-@utility typo-heading-2 { font-family: var(--font-heading); font-weight: 600; font-size: 30px; line-height: 32px; letter-spacing: -1px; }
-@utility typo-heading-3 { font-family: var(--font-heading); font-weight: 600; font-size: 24px; line-height: 28.8px; letter-spacing: -1px; }
-@utility typo-heading-4 { font-family: var(--font-body); font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: 0; }
+@utility typo-heading-1 { font-family: var(--font-heading); font-weight: 800; font-size: 48px; line-height: 48px; letter-spacing: -1.5px; }
+@utility typo-heading-2 { font-family: var(--font-heading); font-weight: 700; font-size: 30px; line-height: 32px; letter-spacing: -1px; }
+@utility typo-heading-3 { font-family: var(--font-heading); font-weight: 700; font-size: 24px; line-height: 28.8px; letter-spacing: -1px; }
+@utility typo-heading-4 { font-family: var(--font-heading); font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: 0; }
 
-/* ---- Paragraph Extra Large (Figma "paragraph extra large/*") — Geist 30/32 ls:-1.0 ---- */
+/* ---- ShopPulse Headings (Plus Jakarta Sans) ---- */
+
+@utility sp-h1 { font-family: var(--font-heading); font-weight: 800; font-size: 36px; line-height: 40px; letter-spacing: -0.02em; }
+@utility sp-h2 { font-family: var(--font-heading); font-weight: 700; font-size: 24px; line-height: 32px; letter-spacing: -0.01em; }
+@utility sp-h3 { font-family: var(--font-heading); font-weight: 700; font-size: 20px; line-height: 28px; letter-spacing: -0.01em; }
+@utility sp-h4 { font-family: var(--font-heading); font-weight: 600; font-size: 16px; line-height: 24px; letter-spacing: 0; }
+@utility sp-h5 { font-family: var(--font-heading); font-weight: 600; font-size: 14px; line-height: 20px; letter-spacing: 0.01em; }
+
+/* ---- ShopPulse Body (Inter) ---- */
+
+@utility sp-body-lg       { font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 24px; letter-spacing: 0; }
+@utility sp-body          { font-family: var(--font-body); font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; }
+@utility sp-body-medium   { font-family: var(--font-body); font-weight: 500; font-size: 14px; line-height: 20px; letter-spacing: 0; }
+@utility sp-body-semibold { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 20px; letter-spacing: 0; }
+@utility sp-label         { font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.02em; }
+@utility sp-label-uppercase { font-family: var(--font-body); font-weight: 600; font-size: 11px; line-height: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+@utility sp-caption       { font-family: var(--font-body); font-weight: 400; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; }
+@utility sp-overline      { font-family: var(--font-body); font-weight: 600; font-size: 10px; line-height: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ---- ShopPulse Data (JetBrains Mono + tabular-nums) ---- */
+
+@utility sp-kpi-hero { font-family: var(--font-mono); font-weight: 600; font-size: 48px; line-height: 48px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+@utility sp-kpi-lg   { font-family: var(--font-mono); font-weight: 600; font-size: 32px; line-height: 36px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+@utility sp-kpi-md   { font-family: var(--font-mono); font-weight: 500; font-size: 24px; line-height: 28px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+@utility sp-kpi-sm   { font-family: var(--font-mono); font-weight: 500; font-size: 20px; line-height: 24px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+@utility sp-data     { font-family: var(--font-mono); font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+@utility sp-data-sm  { font-family: var(--font-mono); font-weight: 400; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
+@utility sp-order-id { font-family: var(--font-mono); font-weight: 500; font-size: 13px; line-height: 20px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+
+/* ---- SprouX Paragraph (kept for component compatibility) ---- */
 
 @utility typo-paragraph-xl        { font-family: var(--font-body); font-weight: 400; font-size: 30px; line-height: 32px; letter-spacing: -1px; }
 @utility typo-paragraph-xl-medium { font-family: var(--font-body); font-weight: 500; font-size: 30px; line-height: 32px; letter-spacing: -1px; }
 @utility typo-paragraph-xl-bold   { font-family: var(--font-body); font-weight: 600; font-size: 30px; line-height: 32px; letter-spacing: -1px; }
 
-/* ---- Paragraph Large (Figma "pharagrap large/*") — Geist 20/24 ls:-1.0 ---- */
-
 @utility typo-paragraph-lg        { font-family: var(--font-body); font-weight: 400; font-size: 20px; line-height: 24px; letter-spacing: -1px; }
 @utility typo-paragraph-lg-medium { font-family: var(--font-body); font-weight: 500; font-size: 20px; line-height: 24px; letter-spacing: -1px; }
 @utility typo-paragraph-lg-bold   { font-family: var(--font-body); font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: -1px; }
-
-/* ---- Paragraph Regular (Figma "paragraph regular/*") — Geist 16/24 ls:0 ---- */
 
 @utility typo-paragraph        { font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 24px; letter-spacing: 0; }
 @utility typo-paragraph-medium { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 24px; letter-spacing: 0; }
 @utility typo-paragraph-bold   { font-family: var(--font-body); font-weight: 600; font-size: 16px; line-height: 24px; letter-spacing: 0; }
 
-/* ---- Paragraph Small (Figma "paragraph small/*") — Geist 14/20 ls:0.07px ---- */
-
 @utility typo-paragraph-sm        { font-family: var(--font-body); font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0.07px; }
 @utility typo-paragraph-sm-medium { font-family: var(--font-body); font-weight: 500; font-size: 14px; line-height: 20px; letter-spacing: 0.07px; }
 @utility typo-paragraph-sm-bold   { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 20px; letter-spacing: 0.07px; }
-
-/* ---- Paragraph Mini (Figma "paragraph mini/*") — Geist 12/16 ls:0.18px ---- */
 
 @utility typo-paragraph-mini        { font-family: var(--font-body); font-weight: 400; font-size: 12px; line-height: 16px; letter-spacing: 0.18px; }
 @utility typo-paragraph-mini-medium { font-family: var(--font-body); font-weight: 500; font-size: 12px; line-height: 16px; letter-spacing: 0.18px; }
 @utility typo-paragraph-mini-bold   { font-family: var(--font-body); font-weight: 600; font-size: 12px; line-height: 16px; letter-spacing: 0.18px; }
 
-/* ---- Paragraph Tiny (Figma "paragraph tiny/*") — Geist 10/12 ls:0.15px ---- */
-
 @utility typo-paragraph-tiny        { font-family: var(--font-body); font-weight: 400; font-size: 10px; line-height: 12px; letter-spacing: 0.15px; }
 @utility typo-paragraph-tiny-medium { font-family: var(--font-body); font-weight: 500; font-size: 10px; line-height: 12px; letter-spacing: 0.15px; }
 @utility typo-paragraph-tiny-bold   { font-family: var(--font-body); font-weight: 600; font-size: 10px; line-height: 12px; letter-spacing: 0.15px; }
 
-/* ---- Monospaced (Figma "monospaced") — Geist Mono 400 16/24 ls:0 ---- */
-
-@utility typo-monospaced { font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace); font-weight: 400; font-size: 16px; line-height: 24px; letter-spacing: 0; }
+@utility typo-monospaced { font-family: var(--font-mono); font-weight: 400; font-size: 16px; line-height: 24px; letter-spacing: 0; }
 
 /* ============================================================
    Utility Classes (single-property — correct layer for Tailwind v4)
@@ -972,4 +1071,230 @@
   .ring-focus-emphasis {
     box-shadow: 0 0 0 3px var(--ring-emphasis);
   }
+}
+
+/* ============================================================
+   ShopPulse: Glassmorphism Utilities
+   4 levels — see art-direction.md Section 5
+   ============================================================ */
+
+@utility glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+@utility glass-elevated {
+  background: var(--glass-bg-hover);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+}
+
+@utility glass-accent {
+  background: rgba(124, 58, 237, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 0 20px -4px rgba(124, 58, 237, 0.15);
+}
+
+/* ============================================================
+   ShopPulse: Surface Utilities
+   ============================================================ */
+
+/* Subtle surface — for stat boxes, KPI containers, sheet content areas */
+@utility surface-subtle {
+  background-color: color-mix(in srgb, var(--muted) 30%, transparent);
+  border-radius: var(--radius-xl);
+}
+.dark .surface-subtle {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ============================================================
+   ShopPulse: Glow Effects
+   ============================================================ */
+
+@utility glow-accent {
+  box-shadow: 0 0 0 1px rgba(124,58,237,0.15),
+              0 0 20px -4px rgba(124,58,237,0.25),
+              0 0 40px -8px rgba(124,58,237,0.10);
+}
+
+@utility glow-success {
+  box-shadow: 0 0 0 1px rgba(34,197,94,0.15),
+              0 0 20px -4px rgba(34,197,94,0.20);
+}
+
+@utility glow-destructive {
+  box-shadow: 0 0 0 1px rgba(239,68,68,0.15),
+              0 0 20px -4px rgba(239,68,68,0.20);
+}
+
+/* ============================================================
+   ShopPulse: Border-Based Elevation (dark mode)
+   ============================================================ */
+
+@utility elevation-0 { border: 1px solid rgba(255,255,255,0.04); }
+@utility elevation-1 { border: 1px solid rgba(255,255,255,0.06); }
+@utility elevation-2 { border: 1px solid rgba(255,255,255,0.08); }
+@utility elevation-3 { border: 1px solid rgba(255,255,255,0.12); }
+
+@utility elevation-rich {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-top-color: rgba(255,255,255,0.10);
+  border-bottom-color: rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   ShopPulse: Visual Signature — Dot Pattern, Noise, Layered Shadows
+   Premium design elements that separate "designed" from "generated"
+   ============================================================ */
+
+/* ── Bento Card System ─────────────────────────────────
+   Dribbble-quality cards: 20px radius, gradient backgrounds,
+   subtle inner glow, layered shadows, smooth hover lift.
+   Inspired by Finexy Finance, Call Monitoring, Fitness Concept.
+   ───────────────────────────────────────────────────── */
+
+@utility bento-card {
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.dark .bento-card {
+  background: linear-gradient(145deg, #18181b, #1c1c22);
+  border-color: rgba(255,255,255,0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 2px 8px rgba(0,0,0,0.3),
+    0 8px 24px rgba(0,0,0,0.15);
+}
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.dark .bento-card:hover {
+  border-color: rgba(255,255,255,0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 4px 16px rgba(0,0,0,0.4),
+    0 16px 40px rgba(0,0,0,0.2);
+}
+
+/* Hero card — larger, accent-tinted for primary content */
+@utility bento-hero {
+  border-radius: 24px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.dark .bento-hero {
+  background: linear-gradient(145deg, #1a1a2e, #16162a);
+  border-color: rgba(139,92,246,0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 4px 16px rgba(124,58,237,0.06),
+    0 12px 32px rgba(0,0,0,0.2);
+}
+
+/* Accent-glow card — for highlighted/featured metrics */
+@utility bento-accent {
+  border-radius: 20px;
+  border: 1px solid rgba(139,92,246,0.15);
+  background: linear-gradient(145deg, rgba(139,92,246,0.05), rgba(139,92,246,0.01));
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.dark .bento-accent {
+  background: linear-gradient(145deg, rgba(139,92,246,0.08), rgba(139,92,246,0.02));
+  border-color: rgba(139,92,246,0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(139,92,246,0.06),
+    0 0 20px rgba(139,92,246,0.05),
+    0 4px 16px rgba(0,0,0,0.2);
+}
+.bento-accent:hover {
+  border-color: rgba(139,92,246,0.25);
+  box-shadow: 0 0 30px rgba(139,92,246,0.08);
+}
+.dark .bento-accent:hover {
+  border-color: rgba(139,92,246,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(139,92,246,0.08),
+    0 0 40px rgba(139,92,246,0.1),
+    0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* Icon pill — rounded icon container with tint */
+@utility icon-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+}
+
+/* ============================================================
+   Custom Scrollbar — minimal, no track background
+   ============================================================ */
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html.dark::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+html.dark::-webkit-scrollbar-thumb:hover,
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+html.dark,
+.dark * {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }

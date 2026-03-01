@@ -73,7 +73,7 @@ export default function SignUpPage() {
         </div>
         <CardTitle className="typo-heading-2">Create an account</CardTitle>
         <CardDescription>
-          Get started with DataFlow in minutes
+          Get started with ShopPulse in minutes
         </CardDescription>
       </CardHeader>
 
