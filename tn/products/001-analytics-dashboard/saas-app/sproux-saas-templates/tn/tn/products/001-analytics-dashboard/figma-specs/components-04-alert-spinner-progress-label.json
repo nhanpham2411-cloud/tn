@@ -1,0 +1,56 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Alert",
+      "category": "Components / Feedback",
+      "description": "Status message. 5 semantic variants, icon + title + description.",
+      "properties": { "Variant": ["Default", "Destructive", "Success", "Warning", "Emphasis"], "InCard": ["false", "true"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 400, "paddingX": "md", "paddingY": "sm", "gap": "xs", "radius": "lg", "fill": "card", "stroke": "border", "textFill": "foreground", "textStyle": "SP/Body Semibold", "textContent": "Alert Title" },
+      "variantStyles": {
+        "Variant=Destructive": { "fill": "destructive-subtle", "stroke": "destructive-border", "textFill": "destructive-subtle-foreground" },
+        "Variant=Success": { "fill": "success-subtle", "stroke": "success-border", "textFill": "success-subtle-foreground" },
+        "Variant=Warning": { "fill": "warning-subtle", "stroke": "warning-border", "textFill": "warning-subtle-foreground" },
+        "Variant=Emphasis": { "fill": "emphasis-subtle", "stroke": "emphasis-border", "textFill": "emphasis-subtle-foreground" },
+        "InCard=true": { "paddingX": "sm", "paddingY": "xs" }
+      },
+      "props": [["variant", "5 variants", "\"default\"", "Semantic variant"], ["inCard", "boolean", "false", "Compact padding"]],
+      "accessibility": { "keyboard": [["—", "Not interactive"]], "notes": ["role=\"alert\""] },
+      "related": [{ "name": "AlertDialog", "desc": "For blocking confirmations." }]
+    },
+    {
+      "name": "Spinner",
+      "category": "Components / Feedback",
+      "description": "Loading indicator. 3 sizes, animate-spin.",
+      "properties": { "Size": ["sm", "default", "lg"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 24, "height": 24, "fill": null, "textFill": "muted-foreground", "hideLabel": true },
+      "variantStyles": { "Size=sm": { "width": 16, "height": 16 }, "Size=lg": { "width": 32, "height": 32 } },
+      "props": [["size", "\"sm\"|\"default\"|\"lg\"", "\"default\"", "16/24/32px"]],
+      "accessibility": { "keyboard": [["—", "Not interactive"]], "notes": ["aria-label=\"Loading\""] },
+      "related": [{ "name": "Progress", "desc": "Determinate loading." }]
+    },
+    {
+      "name": "Progress",
+      "category": "Components / Feedback",
+      "description": "Progress bar. 6px track, primary fill, rounded-full.",
+      "properties": { "Value": ["0", "25", "50", "75", "100"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 240, "height": 6, "radius": "full", "fill": "muted", "hideLabel": true },
+      "variantStyles": {},
+      "props": [["value", "number", "0", "Progress 0-100"], ["max", "number", "100", "Maximum"]],
+      "accessibility": { "keyboard": [["—", "Not interactive"]], "notes": ["role=\"progressbar\" + aria-valuenow"] },
+      "related": [{ "name": "Spinner", "desc": "Indeterminate." }]
+    },
+    {
+      "name": "Label",
+      "category": "Components / Form",
+      "description": "Form label. typo-paragraph-sm-medium, select-none.",
+      "properties": { "State": ["Default", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "fill": null, "textFill": "foreground", "textStyle": "SP/Body", "textContent": "Label text" },
+      "variantStyles": { "State=Disabled": { "opacity": 0.5 } },
+      "props": [["htmlFor", "string", "—", "Associated control ID"]],
+      "accessibility": { "keyboard": [["Click", "Focus control"]], "notes": ["Use htmlFor always"] },
+      "related": [{ "name": "Input", "desc": "Primary control." }]
+    }
+  ]
+}
