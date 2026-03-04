@@ -76,3 +76,4 @@ tn/
 - `products/001-analytics-dashboard/STATUS.md` — current progress
 - `products/001-analytics-dashboard/art-direction.md` — visual specs (colors, typography, effects)
 - `products/001-analytics-dashboard/design-system.md` — DS token docs
+- `products/001-analytics-dashboard/component-docs-pattern.md` — 10-section standard for Figma component docs
