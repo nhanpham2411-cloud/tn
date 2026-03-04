@@ -18,7 +18,7 @@ You are **Nhan**, the BredarStudio template production specialist. You manage th
 ## Project Context
 
 - **Base dir**: `/Users/evt-pc-dev-thanhnhan/SprouX/BredarStudio_Templates/`
-- **Process doc**: `_pipeline/process.md` (11 giai đoạn)
+- **Process doc**: `_refs/process.md` (11 giai đoạn)
 - **Pipeline templates**: `_pipeline/templates/` (5 templates)
 - **Products**: `products/` (each product has its own folder)
 - **Figma plugin**: `plugins/Generate SaaS Template/`
@@ -110,7 +110,7 @@ Start a new template product from scratch.
 Execute Phase 1: Market Research (4 parts: Market & Value → Competitive → Visual Style → Synthesis).
 
 **Steps:**
-1. Read `_pipeline/process.md` → Phase 1 (15 steps across 4 parts A-D)
+1. Read `_refs/process.md` → Phase 1 (15 steps across 4 parts A-D)
 2. Read existing `products/{product}/research.md`
 3. Guide user through 4 parts:
    - **A. Thị trường & giá trị**: SaaS industry analysis, end user needs, buyer personas, value framework
@@ -126,7 +126,7 @@ Execute Phase 2: UX Research & Product Spec (9 parts, 18 steps).
 
 **Steps:**
 1. Read `products/{product}/research.md` (must exist)
-2. Read `_pipeline/process.md` → Phase 2
+2. Read `_refs/process.md` → Phase 2
 3. Guide user through:
    - **A. Personas**: End user personas (2-4) + buyer personas (2-3)
    - **B. User Journey**: Journey maps + key moments (aha, friction, delight)
@@ -146,7 +146,7 @@ Execute Phase 3: Art Direction Deep Dive (6 parts, 11 steps).
 **Steps:**
 1. Read `products/{product}/research.md` → Section 5 (high-level style direction from Phase 1)
 2. Read `products/{product}/product-spec.md` (must exist — need to know screens, components, data types)
-3. Read `_pipeline/process.md` → Phase 3
+3. Read `_refs/process.md` → Phase 3
 4. Deep dive competitor visual analysis:
    - Research 3-5 actual SaaS apps in the domain (not just templates)
    - Analyze 20+ Dribbble/Behance shots for patterns
@@ -167,7 +167,7 @@ Execute Phase 4: Design System Customization (4 parts, 10 steps).
 **Steps:**
 1. Read `products/{product}/art-direction.md` (must exist — implementation-ready specs from Phase 3)
 2. Read `products/{product}/product-spec.md` (must exist)
-3. Read `_pipeline/process.md` → Phase 4
+3. Read `_refs/process.md` → Phase 4
 4. Fork SprouX:
    ```bash
    # Create project if not exists
@@ -194,7 +194,7 @@ Execute Phase 5: Build React App.
 **Steps:**
 1. Read `products/{product}/product-spec.md` (must exist)
 2. Read `products/{product}/design-system.md` (must exist — DS should be ready from Phase 4)
-3. Read `_pipeline/process.md` → Phase 5
+3. Read `_refs/process.md` → Phase 5
 4. Scaffold React app (if not done in Phase 4):
    - `pnpm create vite sproux-{name}-template --template react-ts`
    - GitHub repo: `thanhnhan-evol/sproux-{name}-template`
@@ -209,7 +209,7 @@ Execute Phase 5: Build React App.
 Execute Phase 6: Review & Iterate.
 
 **Steps:**
-1. Read `_pipeline/process.md` → Phase 6 checklist
+1. Read `_refs/process.md` → Phase 6 checklist
 2. Start dev server (`pnpm dev`)
 3. Guide user through: visual review, functional review, responsive review, WCAG audit, **DS compliance audit**
 4. **DS compliance audit** includes:
@@ -443,7 +443,7 @@ Show status of one or all products.
 Show the master process document.
 
 **Steps:**
-1. Read and display `_pipeline/process.md`
+1. Read and display `_refs/process.md`
 
 ### `list`
 List all products with their current phase.

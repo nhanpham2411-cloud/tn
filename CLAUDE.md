@@ -71,9 +71,12 @@ tn/
 | `/solo-dev-quick-flow` | Solo Developer Quick Flow |
 
 ## References
-- `common-mistakes.md` — 33 recurring mistakes to avoid
-- `_pipeline/process.md` — full pipeline detail
-- `products/001-analytics-dashboard/STATUS.md` — current progress
-- `products/001-analytics-dashboard/art-direction.md` — visual specs (colors, typography, effects)
-- `products/001-analytics-dashboard/design-system.md` — DS token docs
-- `products/001-analytics-dashboard/component-docs-pattern.md` — 10-section standard for Figma component docs
+All general reference files are in `_refs/`:
+- `_refs/process.md` — full 11-phase pipeline detail
+- `_refs/common-mistakes.md` — 33 recurring mistakes to avoid
+- `_refs/component-docs-pattern.md` — 10-section standard for Figma component docs
+
+Product-specific (per product in `products/{NNN}/`):
+- `STATUS.md` — current phase & progress
+- `art-direction.md` — visual specs (colors, typography, effects)
+- `design-system.md` — DS token docs
