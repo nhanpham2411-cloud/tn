@@ -5,6 +5,7 @@ import {
   Settings,
   Moon,
   Sun,
+  Palette,
   LayoutDashboard,
   BarChart3,
   FileText,
@@ -227,6 +228,12 @@ export function AppHeader() {
             <Button variant="ghost" size="icon" className="sm:hidden size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={() => setOpen(true)}>
               <Search className="size-[18px]" />
             </Button>
+
+            <Link to="/design-system">
+              <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground" title="Design System">
+                <Palette className="size-[18px]" />
+              </Button>
+            </Link>
 
             <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={toggleTheme}>
               {resolvedTheme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}

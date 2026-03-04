@@ -481,7 +481,7 @@ export default function InvoicesPage() {
           </div>
 
           {/* Table — md and above */}
-          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          <div className="hidden md:block px-md sm:px-xl pb-xl pt-md overflow-x-auto min-h-[540px]">
             <Table className="table-fixed min-w-[700px]">
               <TableHeader>
                 <TableRow>
@@ -554,11 +554,11 @@ export default function InvoicesPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-lg border-t border-border/40 mt-md">
-                <p className="sp-caption text-muted-foreground whitespace-nowrap">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+                <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
-                <Pagination>
+                <Pagination className="w-auto mx-0">
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious

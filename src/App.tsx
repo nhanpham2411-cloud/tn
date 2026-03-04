@@ -27,6 +27,7 @@ const ForgotPassword = lazy(() => import("@/pages/auth/forgot-password"))
 const Onboarding = lazy(() => import("@/pages/auth/onboarding"))
 
 const NotFound = lazy(() => import("@/pages/utility/not-found"))
+const DesignSystem = lazy(() => import("@/pages/design-system"))
 
 function PageLoader() {
   return (
@@ -70,6 +71,9 @@ function App() {
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/onboarding" element={<Onboarding />} />
         </Route>
+
+        {/* Design System (standalone, no dashboard layout) */}
+        <Route path="/design-system" element={<DesignSystem />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

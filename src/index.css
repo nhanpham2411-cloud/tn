@@ -186,6 +186,8 @@
   --spacing-2xl: 32px;
   --spacing-3xl: 40px;
   --spacing-4xl: 48px;
+  --spacing-5xl: 56px;
+  --spacing-6xl: 64px;
 
   /* --- Max Width (Tailwind defaults for named breakpoints) --- */
   --max-width-xs: 20rem;    /* 320px */
@@ -640,9 +642,9 @@
 
     --secondary: var(--color-zinc-200);
     --secondary-foreground: var(--color-zinc-900);
-    --secondary-hover: var(--color-zinc-100);
+    --secondary-hover: var(--color-zinc-300);
 
-    --muted: #f0f0f2;                              /* lighter — closer to zinc-100 */
+    --muted: var(--color-zinc-100);                 /* Figma: zinc/100 */
     --muted-foreground: var(--color-zinc-500);
 
     --accent: var(--color-zinc-100);

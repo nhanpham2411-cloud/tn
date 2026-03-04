@@ -507,7 +507,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Content */}
-          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto">
+          <div className="px-md sm:px-xl pb-xl pt-md overflow-x-auto md:min-h-[540px]">
             {view === "list" ? (
               <>
               {/* Mobile card list — below md */}
@@ -659,11 +659,11 @@ export default function ProductsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-lg border-t border-border/40 mt-md">
-                <p className="sp-caption text-muted-foreground whitespace-nowrap">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+                <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
-                <Pagination>
+                <Pagination className="w-auto mx-0">
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious
