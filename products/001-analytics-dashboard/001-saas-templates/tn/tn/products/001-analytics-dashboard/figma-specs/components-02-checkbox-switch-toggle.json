@@ -1,0 +1,58 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Checkbox",
+      "category": "Components / Form",
+      "description": "Check control. 16×16px, rounded-sm. Checked/unchecked/indeterminate.",
+      "properties": { "Value": ["Unchecked", "Checked", "Indeterminate"], "State": ["Default", "Focus", "Error", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 16, "height": 16, "radius": "sm", "fill": "input", "stroke": "border-strong", "hideLabel": true },
+      "variantStyles": {
+        "Value=Checked": { "fill": "primary", "stroke": "primary", "textFill": "primary-foreground" },
+        "Value=Indeterminate": { "fill": "primary", "stroke": "primary", "textFill": "primary-foreground" },
+        "State=Focus": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Error": { "stroke": "destructive-border" },
+        "State=Error,Value=Checked": { "fill": "destructive", "stroke": "destructive" },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["checked", "boolean|\"indeterminate\"", "false", "State"], ["disabled", "boolean", "false", "Disable"], ["aria-invalid", "boolean", "false", "Error"]],
+      "accessibility": { "keyboard": [["Tab", "Focus"], ["Space", "Toggle"]], "notes": ["Uses aria-checked"] },
+      "related": [{ "name": "Switch", "desc": "For instant on/off." }, { "name": "Radio", "desc": "For single selection." }]
+    },
+    {
+      "name": "Switch",
+      "category": "Components / Form",
+      "description": "Toggle switch. Track 33×18px, thumb 16×16px, rounded-xl.",
+      "properties": { "Value": ["Off", "On"], "State": ["Default", "Focus", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 33, "height": 18, "paddingX": 1, "paddingY": 1, "radius": "xl", "fill": "border", "hideLabel": true },
+      "variantStyles": {
+        "Value=On": { "fill": "primary" },
+        "State=Focus": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["checked", "boolean", "false", "State"], ["disabled", "boolean", "false", "Disable"]],
+      "accessibility": { "keyboard": [["Tab", "Focus"], ["Space", "Toggle"]], "notes": ["role=\"switch\" + aria-checked"] },
+      "related": [{ "name": "Checkbox", "desc": "For form save." }, { "name": "Toggle", "desc": "For toolbar." }]
+    },
+    {
+      "name": "Toggle",
+      "category": "Components / Form",
+      "description": "Two-state button. 2 variants, 3 sizes. Toolbar pattern.",
+      "properties": { "Variant": ["Default", "Outline"], "Size": ["lg", "default", "sm"], "State": ["Default", "Hover", "Pressed", "Focus", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": 36, "paddingX": "sm", "paddingY": 0, "gap": "xs", "radius": "lg", "fill": null, "textFill": "muted-foreground", "iconSize": 16, "hideLabel": true },
+      "variantStyles": {
+        "Variant=Outline": { "stroke": "border" },
+        "Size=lg": { "height": 40, "paddingX": "md" },
+        "Size=sm": { "height": 32, "paddingX": "xs" },
+        "State=Hover": { "fill": "muted" },
+        "State=Pressed": { "fill": "muted", "textFill": "foreground" },
+        "State=Focus": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["variant", "\"default\"|\"outline\"", "\"default\"", "Style"], ["size", "3 sizes", "\"default\"", "Height"], ["pressed", "boolean", "—", "Pressed"]],
+      "accessibility": { "keyboard": [["Tab", "Focus"], ["Enter/Space", "Toggle"]], "notes": ["aria-pressed"] },
+      "related": [{ "name": "Button", "desc": "For actions." }]
+    }
+  ]
+}

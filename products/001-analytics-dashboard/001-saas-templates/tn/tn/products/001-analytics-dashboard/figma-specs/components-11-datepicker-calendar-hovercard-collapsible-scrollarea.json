@@ -1,0 +1,72 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Date Picker Trigger",
+      "category": "Components / Form",
+      "description": "Date select trigger. h-9, w-[280px], rounded-lg, CalendarIcon + text.",
+      "properties": { "State": ["Default", "HasDate", "Focus", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 280, "height": 36, "paddingX": "sm", "paddingY": 0, "gap": "xs", "radius": "lg", "fill": "input", "stroke": "border", "textFill": "muted-foreground", "textStyle": "SP/Body", "textContent": "Pick a date", "iconSize": 16 },
+      "variantStyles": {
+        "State=HasDate": { "textFill": "foreground", "textContent": "Mar 3, 2026" },
+        "State=Focus": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["date", "Date | undefined", "—", "Selected date"], ["onDateChange", "(date) => void", "—", "Change callback"]],
+      "figmaMapping": [["Trigger", "—", "—", "h-9 w-full sm:w-[280px] rounded-lg border bg-input px-sm"], ["Icon", "—", "—", "CalendarIcon size-md shrink-0"], ["No date", "—", "—", "text-muted-foreground"], ["Has date", "—", "—", "text-foreground text-left"]],
+      "accessibility": { "keyboard": [["Tab", "Focus trigger"], ["Enter/Space", "Open calendar"], ["Arrow Keys", "Navigate days"], ["Esc", "Close"]], "notes": ["Uses Calendar internally"] },
+      "related": [{ "name": "Calendar", "desc": "Standalone calendar." }, { "name": "Input", "desc": "Manual date text." }]
+    },
+    {
+      "name": "Calendar Day",
+      "category": "Components / Form",
+      "description": "Calendar day button. size-[48px] rounded-sm. Today: ring-1 ring-primary/40.",
+      "properties": { "State": ["Default", "Today", "Selected", "Outside", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 48, "height": 48, "paddingX": "xs", "paddingY": "xs", "radius": "sm", "fill": null, "textFill": "foreground", "textStyle": "SP/Body", "textContent": "15" },
+      "variantStyles": {
+        "State=Today": { "stroke": "primary", "strokeWeight": 1 },
+        "State=Selected": { "fill": "primary", "textFill": "primary-foreground" },
+        "State=Outside": { "textFill": "muted-foreground", "opacity": 0.4 },
+        "State=Disabled": { "textFill": "muted-foreground", "opacity": 0.5 }
+      },
+      "props": [["mode", "\"single\"|\"range\"", "\"single\"", "Selection mode"], ["selected", "Date", "—", "Selected date"], ["onSelect", "(date) => void", "—", "Select callback"]],
+      "accessibility": { "keyboard": [["Arrow Keys", "Navigate"], ["Enter/Space", "Select"], ["Page Up/Down", "Prev/next month"]], "notes": ["react-day-picker v9"] },
+      "related": [{ "name": "DatePicker", "desc": "Calendar in popover." }]
+    },
+    {
+      "name": "Hover Card Content",
+      "category": "Components / Overlay",
+      "description": "Rich preview on hover. w-64, rounded-md, border, p-md, shadow-md.",
+      "properties": {},
+      "base": { "layout": "vertical", "widthMode": "fixed", "width": 256, "paddingX": "md", "paddingY": "md", "gap": "sm", "radius": "md", "fill": "card", "stroke": "border", "textFill": "foreground", "textStyle": "SP/Body" },
+      "variantStyles": {},
+      "props": [["align", "\"start\"|\"center\"|\"end\"", "\"center\"", "Alignment"], ["sideOffset", "number", "4", "Distance px"]],
+      "accessibility": { "keyboard": [["Tab", "Focus trigger to show"], ["Esc", "Dismiss"]], "notes": ["Opens on hover/focus", "Content is supplementary"] },
+      "related": [{ "name": "Tooltip", "desc": "Brief text hints." }, { "name": "Popover", "desc": "Interactive content." }]
+    },
+    {
+      "name": "Collapsible",
+      "category": "Components / Data Display",
+      "description": "Expandable panel. No custom styling — Radix primitive wrapper.",
+      "properties": { "State": ["Open", "Closed", "Disabled"] },
+      "base": { "layout": "vertical", "widthMode": "fixed", "width": 300, "gap": "xs", "fill": null, "textFill": "foreground", "textStyle": "SP/Body Semibold", "textContent": "Toggle section" },
+      "variantStyles": { "State=Disabled": { "opacity": 0.5 } },
+      "props": [["open", "boolean", "—", "Controlled open"], ["defaultOpen", "boolean", "false", "Start expanded"], ["onOpenChange", "(open) => void", "—", "Toggle callback"], ["disabled", "boolean", "false", "Prevent toggle"]],
+      "accessibility": { "keyboard": [["Tab", "Focus trigger"], ["Enter/Space", "Toggle"]], "notes": ["Trigger: aria-expanded", "Content hidden when collapsed"] },
+      "related": [{ "name": "Accordion", "desc": "Multiple sections." }]
+    },
+    {
+      "name": "Scroll Area",
+      "category": "Components / Layout",
+      "description": "Custom scrollbar. Thumb w-1.5 rounded-full bg-black/15 dark:bg-white/35.",
+      "properties": { "Orientation": ["Vertical", "Horizontal"] },
+      "base": { "layout": "vertical", "widthMode": "fixed", "width": 200, "height": 200, "fill": null, "hideLabel": true },
+      "variantStyles": {},
+      "props": [["className", "string", "\"\"", "Container CSS (set h-* for height)"], ["type", "\"auto\"|\"always\"|\"scroll\"|\"hover\"", "\"hover\"", "Scrollbar visibility"]],
+      "figmaMapping": [["Scrollbar V", "—", "—", "w-1.5 p-[1px]"], ["Scrollbar H", "—", "—", "h-1.5 p-[1px]"], ["Thumb", "—", "—", "rounded-full bg-black/15 dark:bg-white/35"]],
+      "accessibility": { "keyboard": [["Arrow Keys", "Scroll"], ["Page Up/Down", "Scroll page"]], "notes": ["Custom scrollbar consistent cross-browser"] },
+      "related": [{ "name": "Card", "desc": "Bordered container." }]
+    }
+  ]
+}

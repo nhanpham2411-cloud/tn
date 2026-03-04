@@ -1,0 +1,285 @@
+{
+  "pageName": "Auth — Sign In",
+  "root": {
+    "type": "frame",
+    "name": "Sign In / Default — Dark",
+    "layout": "horizontal",
+    "sizing": { "width": "fixed:1440", "height": "fixed:900" },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "name": "Left Panel — Branding",
+        "layout": "vertical",
+        "sizing": { "width": "fixed:720", "height": "fill" },
+        "fill": "sidebar",
+        "padding": "2xl",
+        "gap": "xl",
+        "align": { "justify": "space-between", "counter": "center" },
+        "children": [
+          {
+            "type": "frame",
+            "name": "Logo Row",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": { "counter": "center" },
+            "children": [
+              {
+                "type": "placeholder",
+                "name": "ShopPulse Logo",
+                "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                "fill": "primary",
+                "radius": "lg",
+                "label": "◆"
+              },
+              {
+                "type": "text",
+                "name": "Brand Name",
+                "content": "ShopPulse",
+                "textStyle": "sp-h4",
+                "fill": "sidebar-foreground"
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "name": "Illustration Area",
+            "layout": "vertical",
+            "gap": "lg",
+            "align": { "counter": "center" },
+            "children": [
+              {
+                "type": "placeholder",
+                "name": "Dashboard Preview Illustration",
+                "sizing": { "width": "fixed:440", "height": "fixed:360" },
+                "fill": "card",
+                "fillOpacity": 0.06,
+                "radius": "xl",
+                "stroke": "primary",
+                "label": "Dashboard Illustration (SVG)\nAnimated KPI cards, charts, donut"
+              },
+              {
+                "type": "text",
+                "name": "Tagline Heading",
+                "content": "Powerful analytics for\nmodern e-commerce",
+                "textStyle": "sp-h2",
+                "fill": "sidebar-foreground",
+                "textAlign": "center"
+              },
+              {
+                "type": "text",
+                "name": "Tagline Description",
+                "content": "Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.",
+                "textStyle": "sp-body",
+                "fill": "muted-foreground",
+                "textAlign": "center",
+                "sizing": { "width": "fixed:360" }
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "name": "Stats Row",
+            "layout": "horizontal",
+            "gap": "xl",
+            "align": { "counter": "center" },
+            "children": [
+              {
+                "type": "frame",
+                "name": "Stat — Users",
+                "layout": "vertical",
+                "align": { "counter": "center" },
+                "gap": "3xs",
+                "children": [
+                  { "type": "text", "content": "10K+", "textStyle": "sp-h4", "fill": "sidebar-foreground" },
+                  { "type": "text", "content": "Active Users", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                ]
+              },
+              { "type": "separator", "direction": "vertical" },
+              {
+                "type": "frame",
+                "name": "Stat — Uptime",
+                "layout": "vertical",
+                "align": { "counter": "center" },
+                "gap": "3xs",
+                "children": [
+                  { "type": "text", "content": "99.9%", "textStyle": "sp-h4", "fill": "sidebar-foreground" },
+                  { "type": "text", "content": "Uptime", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                ]
+              },
+              { "type": "separator", "direction": "vertical" },
+              {
+                "type": "frame",
+                "name": "Stat — Rating",
+                "layout": "vertical",
+                "align": { "counter": "center" },
+                "gap": "3xs",
+                "children": [
+                  { "type": "text", "content": "4.9★", "textStyle": "sp-h4", "fill": "sidebar-foreground" },
+                  { "type": "text", "content": "Rating", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "name": "Right Panel — Form",
+        "layout": "vertical",
+        "sizing": { "width": "fill", "height": "fill" },
+        "fill": "background",
+        "align": { "justify": "center", "counter": "center" },
+        "children": [
+          {
+            "type": "frame",
+            "name": "Sign In Card",
+            "layout": "vertical",
+            "sizing": { "width": "fixed:440" },
+            "fill": "card",
+            "stroke": "border",
+            "radius": "xl",
+            "padding": "xl",
+            "gap": "lg",
+            "children": [
+              {
+                "type": "frame",
+                "name": "Card Header",
+                "layout": "vertical",
+                "gap": "xs",
+                "align": { "counter": "center" },
+                "sizing": { "width": "fill" },
+                "children": [
+                  { "type": "text", "content": "Welcome back", "textStyle": "sp-h2", "fill": "foreground", "textAlign": "center" },
+                  { "type": "text", "content": "Sign in to your account to continue", "textStyle": "sp-body", "fill": "muted-foreground", "textAlign": "center" }
+                ]
+              },
+              {
+                "type": "frame",
+                "name": "Form Fields",
+                "layout": "vertical",
+                "gap": "md",
+                "sizing": { "width": "fill" },
+                "children": [
+                  {
+                    "type": "frame",
+                    "name": "Email Field",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "sizing": { "width": "fill" },
+                    "children": [
+                      { "type": "text", "content": "Email", "textStyle": "sp-label", "fill": "foreground" },
+                      {
+                        "type": "component",
+                        "componentSet": "Input",
+                        "name": "Email Input",
+                        "overrides": { "text": { "Input": "name@example.com" } },
+                        "sizing": { "width": "fill" }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "name": "Password Field",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "sizing": { "width": "fill" },
+                    "children": [
+                      { "type": "text", "content": "Password", "textStyle": "sp-label", "fill": "foreground" },
+                      {
+                        "type": "component",
+                        "componentSet": "Input",
+                        "name": "Password Input",
+                        "overrides": { "text": { "Input": "Enter your password" } },
+                        "sizing": { "width": "fill" }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "name": "Remember + Forgot",
+                    "layout": "horizontal",
+                    "sizing": { "width": "fill" },
+                    "align": { "justify": "space-between", "counter": "center" },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "name": "Remember Me",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": { "counter": "center" },
+                        "children": [
+                          { "type": "component", "componentSet": "Checkbox", "name": "Remember Checkbox" },
+                          { "type": "text", "content": "Remember me", "textStyle": "sp-body", "fill": "foreground" }
+                        ]
+                      },
+                      { "type": "text", "content": "Forgot password?", "textStyle": "sp-body", "fill": "primary" }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Sign In Button",
+                    "variants": { "Variant": "Default", "Size": "Default" },
+                    "overrides": { "text": { "Label": "Sign In" } },
+                    "sizing": { "width": "fill" }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "name": "Divider Row",
+                "layout": "horizontal",
+                "gap": "md",
+                "align": { "counter": "center" },
+                "sizing": { "width": "fill" },
+                "children": [
+                  { "type": "separator" },
+                  { "type": "text", "content": "or continue with", "textStyle": "sp-caption", "fill": "muted-foreground" },
+                  { "type": "separator" }
+                ]
+              },
+              {
+                "type": "frame",
+                "name": "Social Buttons",
+                "layout": "horizontal",
+                "gap": "sm",
+                "sizing": { "width": "fill" },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Google Button",
+                    "variants": { "Variant": "Outline", "Size": "Default" },
+                    "overrides": { "text": { "Label": "Google" } },
+                    "sizing": { "width": "fill" }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "GitHub Button",
+                    "variants": { "Variant": "Outline", "Size": "Default" },
+                    "overrides": { "text": { "Label": "GitHub" } },
+                    "sizing": { "width": "fill" }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "name": "Footer Text",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "align": { "justify": "center" },
+                "sizing": { "width": "fill" },
+                "children": [
+                  { "type": "text", "content": "Don't have an account?", "textStyle": "sp-body", "fill": "muted-foreground" },
+                  { "type": "text", "content": "Sign up", "textStyle": "sp-body-semibold", "fill": "primary" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Table Row",
+      "category": "Components / Data Display",
+      "description": "Table row. Head h-3xl px-md, Cell p-md. border-b, hover bg-muted/50.",
+      "properties": { "Type": ["Header", "Body"], "State": ["Default", "Hover", "Selected"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 600, "height": 48, "paddingX": "md", "paddingY": 0, "gap": "md", "fill": null, "stroke": "border", "textFill": "foreground", "textStyle": "SP/Body" },
+      "variantStyles": {
+        "Type=Header": { "textFill": "muted-foreground", "textStyle": "SP/Body Semibold" },
+        "State=Hover": { "fillOpacity": 0.05, "fill": "muted" },
+        "State=Selected": { "fill": "muted" }
+      },
+      "props": [["className", "string", "\"\"", "Additional CSS"]],
+      "figmaMapping": [["TableHead", "—", "—", "h-3xl px-md font-medium text-muted-foreground"], ["TableCell", "—", "—", "p-md align-middle"], ["TableRow Hover", "—", "—", "hover:bg-muted/50"], ["TableRow Selected", "—", "data-state", "selected → bg-muted"]],
+      "accessibility": { "keyboard": [["Tab", "Navigate cells"]], "notes": ["Use <th> for headers", "scope=\"col\" for complex tables"] },
+      "related": [{ "name": "Card", "desc": "Single item display." }]
+    },
+    {
+      "name": "Breadcrumb",
+      "category": "Components / Navigation",
+      "description": "Path navigation. gap-xs, typo-paragraph-sm, separator [&>svg]:size-3.5.",
+      "properties": { "Items": ["2", "3", "4"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": null, "gap": "xs", "fill": null, "textFill": "muted-foreground", "textStyle": "SP/Body" },
+      "variantStyles": {},
+      "props": [["children", "ReactNode", "—", "BreadcrumbItem + Separator"], ["className", "string", "\"\"", "Additional CSS"]],
+      "figmaMapping": [["BreadcrumbLink", "—", "—", "hover:text-foreground transition-colors"], ["BreadcrumbPage", "—", "—", "font-semibold text-foreground"], ["Separator", "—", "—", "[&>svg]:size-3.5 ChevronRight"]],
+      "accessibility": { "keyboard": [["Tab", "Navigate links"]], "notes": ["<nav aria-label=\"breadcrumb\">", "aria-current=\"page\" on current"] },
+      "related": [{ "name": "Pagination", "desc": "For page navigation." }]
+    },
+    {
+      "name": "Pagination Link",
+      "category": "Components / Navigation",
+      "description": "Page number link. Uses buttonVariants, isActive → outline variant.",
+      "properties": { "State": ["Default", "Active", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": 36, "paddingX": 0, "paddingY": 0, "gap": 0, "radius": "lg", "fill": null, "textFill": "foreground", "textStyle": "SP/Body", "textContent": "1" },
+      "variantStyles": {
+        "State=Active": { "stroke": "border", "fill": "card" },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["href", "string", "—", "Page URL"], ["isActive", "boolean", "false", "Current page"], ["size", "\"default\"|\"icon\"", "\"icon\"", "Link size"]],
+      "figmaMapping": [["Previous", "—", "—", "size=default gap-1 pl-2.5"], ["Next", "—", "—", "size=default gap-1 pr-2.5"], ["Link Active", "—", "isActive", "outline variant"], ["Ellipsis", "—", "—", "size-9 items-center justify-center"]],
+      "accessibility": { "keyboard": [["Tab", "Navigate links"], ["Enter", "Go to page"]], "notes": ["<nav aria-label=\"pagination\">", "Active: aria-current=\"page\""] },
+      "related": [{ "name": "Breadcrumb", "desc": "Hierarchical nav." }]
+    }
+  ]
+}
