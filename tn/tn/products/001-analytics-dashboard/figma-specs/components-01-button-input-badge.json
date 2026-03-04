@@ -1,0 +1,91 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Button",
+      "category": "Components / Actions",
+      "description": "Primary action button. 7 variants, 4 sizes, icon support.",
+      "properties": {
+        "Variant": ["Default", "Secondary", "Outline", "Ghost", "Ghost Muted", "Destructive", "Destructive Secondary"],
+        "Size": ["lg", "default", "sm", "xs"],
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "IconLeft": ["false", "true"],
+        "IconRight": ["false", "true"]
+      },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": 36, "paddingX": "md", "paddingY": 0, "gap": "xs", "radius": "lg", "fill": "primary", "textFill": "primary-foreground", "textStyle": "SP/Body Semibold", "iconSize": 16 },
+      "variantStyles": {
+        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground" },
+        "Variant=Outline": { "fill": "card", "stroke": "border", "textFill": "foreground" },
+        "Variant=Ghost": { "fill": null, "textFill": "foreground" },
+        "Variant=Ghost Muted": { "fill": null, "textFill": "muted-foreground" },
+        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground" },
+        "Variant=Destructive Secondary": { "fill": "destructive-subtle", "textFill": "destructive-subtle-foreground", "stroke": "destructive-border" },
+        "Size=lg": { "height": 40, "paddingX": "xl", "gap": "xs" },
+        "Size=sm": { "height": 32, "paddingX": "sm", "gap": "2xs" },
+        "Size=xs": { "height": 24, "paddingX": "xs", "gap": "2xs", "textStyle": "SP/Caption" },
+        "State=Hover,Variant=Default": { "fill": "primary-hover" },
+        "State=Hover,Variant=Secondary": { "fill": "secondary-hover" },
+        "State=Hover,Variant=Outline": { "fill": "outline-hover" },
+        "State=Hover,Variant=Ghost": { "fill": "ghost-hover", "textFill": "foreground" },
+        "State=Hover,Variant=Ghost Muted": { "fill": "ghost-hover", "textFill": "foreground" },
+        "State=Focus,Variant=Default": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Focus,Variant=Destructive": { "stroke": "ring-error", "strokeWeight": 3 },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["variant", "7 variants", "\"default\"", "Visual style"], ["size", "\"lg\"|\"default\"|\"sm\"|\"xs\"", "\"default\"", "Height"], ["disabled", "boolean", "false", "Disable"], ["asChild", "boolean", "false", "Radix Slot"]],
+      "accessibility": { "keyboard": [["Tab", "Focus"], ["Enter / Space", "Activate"]], "notes": ["Icon-only: aria-label required", "Focus ring: 3px"] },
+      "related": [{ "name": "Toggle", "desc": "For on/off states." }],
+      "examples": [
+        { "name": "Primary Actions", "layout": "horizontal", "items": [{ "props": { "Variant": "Outline" }, "label": "Cancel" }, { "props": { "Variant": "Default" }, "label": "Save" }] },
+        { "name": "Destructive", "layout": "horizontal", "items": [{ "props": { "Variant": "Ghost" }, "label": "Keep" }, { "props": { "Variant": "Destructive" }, "label": "Delete" }] },
+        { "name": "All Sizes", "layout": "horizontal", "items": [{ "props": { "Size": "lg" }, "label": "Large" }, { "props": { "Size": "default" }, "label": "Default" }, { "props": { "Size": "sm" }, "label": "Small" }, { "props": { "Size": "xs" }, "label": "Mini" }] },
+        { "name": "With Icons", "layout": "horizontal", "items": [{ "props": { "IconLeft": "true" }, "label": "Add" }, { "props": { "IconRight": "true" }, "label": "Next" }] }
+      ]
+    },
+    {
+      "name": "Input",
+      "category": "Components / Form",
+      "description": "Text input. 4 sizes, focus ring, error/disabled states.",
+      "properties": { "Size": ["lg", "default", "sm", "xs"], "State": ["Default", "Focus", "Error", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "fixed", "width": 240, "height": 36, "paddingX": "sm", "paddingY": 0, "radius": "lg", "fill": "input", "stroke": "border", "textFill": "muted-foreground", "textStyle": "SP/Body", "textContent": "Placeholder" },
+      "variantStyles": {
+        "Size=lg": { "height": 40, "paddingX": "md" },
+        "Size=sm": { "height": 32, "paddingX": "xs" },
+        "Size=xs": { "height": 24, "paddingX": "2xs", "radius": "sm", "textStyle": "SP/Caption" },
+        "State=Focus": { "stroke": "ring", "strokeWeight": 3 },
+        "State=Error": { "stroke": "destructive-border" },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["size", "4 sizes", "\"default\"", "Height"], ["type", "string", "\"text\"", "HTML type"], ["disabled", "boolean", "false", "Disable"], ["aria-invalid", "boolean", "false", "Error"]],
+      "accessibility": { "keyboard": [["Tab", "Focus"]], "notes": ["Pair with <Label>"] },
+      "related": [{ "name": "Textarea", "desc": "Multi-line." }, { "name": "Select", "desc": "Dropdown." }]
+    },
+    {
+      "name": "Badge",
+      "category": "Components / Data Display",
+      "description": "Status indicator. 8 variants, 2 levels, 3 sizes. rounded-full.",
+      "properties": { "Variant": ["Default", "Secondary", "Outline", "Ghost", "Destructive", "Emphasis", "Success", "Warning"], "Level": ["Primary", "Secondary"], "Size": ["sm", "default", "lg"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": 24, "paddingX": "xs", "paddingY": 0, "gap": "3xs", "radius": "full", "fill": "primary", "textFill": "primary-foreground", "textStyle": "SP/Caption", "textContent": "Badge", "iconSize": 12 },
+      "variantStyles": {
+        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground" },
+        "Variant=Outline": { "fill": "background", "stroke": "border", "textFill": "foreground" },
+        "Variant=Ghost": { "fill": "background", "textFill": "foreground" },
+        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground" },
+        "Variant=Emphasis": { "fill": "emphasis", "textFill": "emphasis-foreground" },
+        "Variant=Success": { "fill": "success", "textFill": "success-foreground" },
+        "Variant=Warning": { "fill": "warning", "textFill": "warning-foreground" },
+        "Level=Secondary,Variant=Default": { "fill": "primary-subtle", "textFill": "primary-subtle-foreground" },
+        "Level=Secondary,Variant=Destructive": { "fill": "destructive-subtle", "textFill": "destructive-subtle-foreground" },
+        "Level=Secondary,Variant=Emphasis": { "fill": "emphasis-subtle", "textFill": "emphasis-subtle-foreground" },
+        "Level=Secondary,Variant=Success": { "fill": "success-subtle", "textFill": "success-subtle-foreground" },
+        "Level=Secondary,Variant=Warning": { "fill": "warning-subtle", "textFill": "warning-subtle-foreground" },
+        "Size=sm": { "height": 20, "paddingX": "2xs" },
+        "Size=lg": { "height": 28, "paddingX": "sm", "gap": "2xs", "textStyle": "SP/Body" }
+      },
+      "props": [["variant", "8 variants", "\"default\"", "Color"], ["level", "\"primary\"|\"secondary\"", "\"primary\"", "Solid/subtle"], ["size", "3 sizes", "\"default\"", "Height"]],
+      "accessibility": { "keyboard": [["—", "Not interactive"]], "notes": ["Purely presentational"] },
+      "related": [{ "name": "Button", "desc": "For actions." }]
+    }
+  ]
+}

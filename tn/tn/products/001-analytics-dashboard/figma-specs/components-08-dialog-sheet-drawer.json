@@ -1,0 +1,316 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Dialog Content",
+      "category": "Components / Overlay",
+      "description": "Modal dialog. max-w-lg, rounded-xl, p-md gap-xs. Close button top-right. Focus trapped, Esc to close.",
+      "properties": {
+        "ShowClose": ["true", "false"],
+        "ShowTitle": ["true", "false"],
+        "ShowDescription": ["true", "false"],
+        "ShowFooter": ["true", "false"]
+      },
+      "base": {
+        "layout": "vertical", "widthMode": "fixed", "width": 480,
+        "paddingX": "md", "paddingY": "md", "gap": "xs",
+        "radius": "xl", "fill": "card", "stroke": "border",
+        "textFill": "foreground", "textStyle": "SP/H4", "textContent": "Edit profile"
+      },
+      "variantStyles": {},
+      "props": [
+        ["open", "boolean", "—", "Controlled open state"],
+        ["onOpenChange", "(open: boolean) => void", "—", "Callback when open state changes"],
+        ["modal", "boolean", "true", "Block outside interaction"],
+        ["showCloseButton", "boolean", "true", "Show/hide the X close button"],
+        ["asChild", "boolean", "false", "DialogTrigger — merge props onto child element"],
+        ["forceMount", "boolean", "—", "DialogContent — force mounting for animation libraries"],
+        ["onOpenAutoFocus", "(e: Event) => void", "—", "DialogContent — called on open auto-focus"],
+        ["onCloseAutoFocus", "(e: Event) => void", "—", "DialogContent — called on close auto-focus"],
+        ["onEscapeKeyDown", "(e: KeyboardEvent) => void", "—", "DialogContent — called on Escape key"],
+        ["className", "string", "—", "Additional CSS classes (all sub-components)"]
+      ],
+      "examples": [
+        {
+          "name": "With Form",
+          "description": "Dialog with form inputs for editing user profile. Close button + footer actions.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Edit Profile", "props": { "ShowClose": "true", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "Confirmation",
+          "description": "Common pattern for confirming destructive actions.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Confirm Delete", "props": { "ShowClose": "true", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "Without Close Button",
+          "description": "User must use footer actions to dismiss — for terms acceptance, mandatory forms.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Terms of Service", "props": { "ShowClose": "false", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "Title Only",
+          "description": "Minimal dialog with just title and footer — no description needed.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Quick Confirm", "props": { "ShowClose": "true", "ShowTitle": "true", "ShowDescription": "false", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "All ShowClose Variants",
+          "description": "ShowClose × ShowFooter combinations side by side.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Close + Footer", "props": { "ShowClose": "true", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "true" } },
+            { "label": "Close Only", "props": { "ShowClose": "true", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "false" } },
+            { "label": "Footer Only", "props": { "ShowClose": "false", "ShowTitle": "true", "ShowDescription": "true", "ShowFooter": "true" } },
+            { "label": "Minimal", "props": { "ShowClose": "false", "ShowTitle": "true", "ShowDescription": "false", "ShowFooter": "false" } }
+          ]
+        }
+      ],
+      "figmaMapping": [
+        ["Overlay", "Black 50%", "DialogOverlay", "bg-black/50, fixed inset-0, z-50, fade animation"],
+        ["Content", "bg-card, border, shadow", "DialogContent", "sm:max-w-lg, sm:rounded-xl, p-md, gap-xs"],
+        ["Header", "Title + Description", "DialogHeader", "flex flex-col gap-xs, text-center sm:text-left"],
+        ["Title", "heading 4", "DialogTitle", "typo-heading-4 text-foreground"],
+        ["Description", "body text", "DialogDescription", "typo-paragraph-sm text-muted-foreground"],
+        ["Footer", "Action buttons", "DialogFooter", "flex flex-col-reverse gap-xs sm:flex-row sm:justify-end"],
+        ["Close", "X button", "DialogClose / showCloseButton", "absolute right-md top-md, X icon size-md, opacity-70"],
+        ["ShowClose", "true / false", "showCloseButton", "Toggle X close button visibility"],
+        ["ShowTitle", "true / false", "—", "Toggle title text visibility"],
+        ["ShowDescription", "true / false", "—", "Toggle description text visibility"],
+        ["ShowFooter", "true / false", "—", "Toggle footer action area"],
+        ["Animation", "Open / Close", "data-state", "zoom-in-95 / zoom-out-95, fade-in / fade-out"]
+      ],
+      "accessibility": {
+        "keyboard": [
+          ["Tab", "Move focus between interactive elements (trapped inside dialog)"],
+          ["Shift+Tab", "Move focus backwards between elements"],
+          ["Escape", "Close the dialog"],
+          ["Enter/Space", "Activate focused button"]
+        ],
+        "notes": [
+          "Focus trapped inside when open",
+          "Returns focus to trigger on close",
+          "role=\"dialog\" + aria-modal=\"true\"",
+          "aria-labelledby → DialogTitle",
+          "aria-describedby → DialogDescription",
+          "Always include DialogTitle for screen readers"
+        ]
+      },
+      "related": [
+        { "name": "AlertDialog", "desc": "Non-dismissible confirmation — cannot close by clicking overlay." },
+        { "name": "Sheet", "desc": "Slide-in panel for larger content areas." },
+        { "name": "Drawer", "desc": "Bottom sheet for mobile-friendly interactions." }
+      ]
+    },
+    {
+      "name": "Sheet Content",
+      "category": "Components / Overlay",
+      "description": "Side panel. 4 directions, w-3/4 sm:max-w-sm, p-md gap-md. Slide-in animation.",
+      "properties": {
+        "Side": ["right", "left", "top", "bottom"]
+      },
+      "base": {
+        "layout": "vertical", "widthMode": "fixed", "width": 384,
+        "paddingX": "md", "paddingY": "md", "gap": "md",
+        "fill": "card", "stroke": "border",
+        "textFill": "foreground", "textStyle": "SP/H4", "textContent": "Sheet Title"
+      },
+      "variantStyles": {},
+      "props": [
+        ["side", "\"top\"|\"right\"|\"bottom\"|\"left\"", "\"right\"", "Slide direction"],
+        ["open", "boolean", "—", "Controlled open state"],
+        ["onOpenChange", "(open: boolean) => void", "—", "Callback when open state changes"],
+        ["asChild", "boolean", "false", "SheetTrigger — merge props onto child element"],
+        ["forceMount", "boolean", "—", "SheetContent — force mounting for animation libraries"],
+        ["onOpenAutoFocus", "(e: Event) => void", "—", "SheetContent — called on open auto-focus"],
+        ["onCloseAutoFocus", "(e: Event) => void", "—", "SheetContent — called on close auto-focus"],
+        ["onEscapeKeyDown", "(e: KeyboardEvent) => void", "—", "SheetContent — called on Escape key"],
+        ["className", "string", "—", "Additional CSS classes (all sub-components)"]
+      ],
+      "examples": [
+        {
+          "name": "Right (Default)",
+          "description": "Most common — settings, details, or edit forms.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Edit Profile", "props": { "Side": "right" } }
+          ]
+        },
+        {
+          "name": "Left Side",
+          "description": "Ideal for navigation menus or sidebar content.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Navigation", "props": { "Side": "left" } }
+          ]
+        },
+        {
+          "name": "Top Side",
+          "description": "Notification banners or search panels.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Notifications", "props": { "Side": "top" } }
+          ]
+        },
+        {
+          "name": "Bottom Side",
+          "description": "Quick actions or mobile-style bottom sheets.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Quick Actions", "props": { "Side": "bottom" } }
+          ]
+        },
+        {
+          "name": "All Sides",
+          "description": "Side-by-side comparison of all 4 directions.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Right", "props": { "Side": "right" } },
+            { "label": "Left", "props": { "Side": "left" } },
+            { "label": "Top", "props": { "Side": "top" } },
+            { "label": "Bottom", "props": { "Side": "bottom" } }
+          ]
+        }
+      ],
+      "figmaMapping": [
+        ["Overlay", "Black 80%", "SheetOverlay", "bg-black/80, fixed inset-0, z-50"],
+        ["Content", "bg-card, border, shadow-lg", "SheetContent", "fixed z-50, gap-md, p-md"],
+        ["Side right", "inset-y-0 right-0", "side=\"right\"", "border-l, w-3/4 sm:max-w-sm, slide-in-from-right"],
+        ["Side left", "inset-y-0 left-0", "side=\"left\"", "border-r, w-3/4 sm:max-w-sm, slide-in-from-left"],
+        ["Side top", "inset-x-0 top-0", "side=\"top\"", "border-b, slide-in-from-top"],
+        ["Side bottom", "inset-x-0 bottom-0", "side=\"bottom\"", "border-t, slide-in-from-bottom"],
+        ["Header", "Title + Description", "SheetHeader", "flex flex-col gap-xs"],
+        ["Title", "heading 4", "SheetTitle", "typo-heading-4 text-foreground"],
+        ["Description", "body text", "SheetDescription", "typo-paragraph-sm text-muted-foreground"],
+        ["Close", "X button", "SheetClose", "absolute right-md top-md, focus-visible:ring-[3px]"],
+        ["Width", "3/4 viewport", "—", "w-3/4 sm:max-w-sm (left/right sides)"],
+        ["Animation", "Slide in/out", "data-state", "slide-in-from-{side} / slide-out-to-{side}"]
+      ],
+      "accessibility": {
+        "keyboard": [
+          ["Tab", "Move focus within sheet (trapped)"],
+          ["Shift+Tab", "Move focus backwards"],
+          ["Escape", "Close the sheet"],
+          ["Enter/Space", "Activate focused element"]
+        ],
+        "notes": [
+          "Focus trapped inside when open",
+          "Returns focus to trigger on close",
+          "role=\"dialog\" + aria-modal=\"true\"",
+          "Built on Radix Dialog primitive",
+          "Overlay click closes by default",
+          "Always include SheetTitle for screen readers"
+        ]
+      },
+      "related": [
+        { "name": "Dialog", "desc": "Centered modal for focused interactions." },
+        { "name": "Drawer", "desc": "Bottom sheet alternative for mobile." }
+      ]
+    },
+    {
+      "name": "Drawer Content",
+      "category": "Components / Overlay",
+      "description": "Bottom sheet. rounded-t-[10px], handle bar, swipe-to-close. Built on vaul.",
+      "properties": {
+        "ShowHandle": ["true", "false"],
+        "ShowFooter": ["true", "false"]
+      },
+      "base": {
+        "layout": "vertical", "widthMode": "fixed", "width": 400,
+        "paddingX": 0, "paddingY": 0, "gap": 0,
+        "radius": "xl", "fill": "card", "stroke": "border",
+        "textFill": "foreground", "textStyle": "SP/H4", "textContent": "Move Goal"
+      },
+      "variantStyles": {},
+      "props": [
+        ["open", "boolean", "—", "Controlled open state"],
+        ["onOpenChange", "(open: boolean) => void", "—", "Callback when open state changes"],
+        ["shouldScaleBackground", "boolean", "true", "Scale page background when open"],
+        ["dismissible", "boolean", "true", "Allow dismiss via overlay/swipe"],
+        ["snapPoints", "number[]", "—", "Snap points for drawer height (e.g. [0.5, 1])"],
+        ["asChild", "boolean", "false", "DrawerTrigger — merge props onto child element"],
+        ["className", "string", "—", "Additional CSS classes (all sub-components)"]
+      ],
+      "examples": [
+        {
+          "name": "Default",
+          "description": "Bottom drawer with handle, header, and footer actions — most common pattern.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Move Goal", "props": { "ShowHandle": "true", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "Without Handle",
+          "description": "Drawer without drag handle — close via footer buttons or overlay click.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Settings", "props": { "ShowHandle": "false", "ShowFooter": "true" } }
+          ]
+        },
+        {
+          "name": "Content Only",
+          "description": "Drawer with handle but no footer — swipe to dismiss.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Quick View", "props": { "ShowHandle": "true", "ShowFooter": "false" } }
+          ]
+        },
+        {
+          "name": "All Variants",
+          "description": "ShowHandle × ShowFooter combinations.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Handle + Footer", "props": { "ShowHandle": "true", "ShowFooter": "true" } },
+            { "label": "Handle Only", "props": { "ShowHandle": "true", "ShowFooter": "false" } },
+            { "label": "Footer Only", "props": { "ShowHandle": "false", "ShowFooter": "true" } },
+            { "label": "Minimal", "props": { "ShowHandle": "false", "ShowFooter": "false" } }
+          ]
+        }
+      ],
+      "figmaMapping": [
+        ["Overlay", "Black 80%", "DrawerOverlay", "bg-black/80, fixed inset-0"],
+        ["Content", "bg-card, border-t", "DrawerContent", "fixed inset-x-0 bottom-0, rounded-t-[10px]"],
+        ["Handle", "100×4px bar", "—", "mx-auto mt-md h-2xs w-[100px] rounded-full bg-muted"],
+        ["Header", "Title + Description", "DrawerHeader", "grid gap-2xs p-md"],
+        ["Title", "heading 4", "DrawerTitle", "typo-heading-4 text-foreground"],
+        ["Description", "body text", "DrawerDescription", "typo-paragraph-sm text-muted-foreground"],
+        ["Footer", "Action buttons", "DrawerFooter", "mt-auto flex flex-col gap-xs p-md"],
+        ["Close", "Close button", "DrawerClose", "Wraps child with close behavior"],
+        ["ShowHandle", "true / false", "—", "Toggle drag handle bar visibility"],
+        ["ShowFooter", "true / false", "—", "Toggle footer action area"],
+        ["Gesture", "Swipe to close", "—", "vaul library built-in touch gesture"],
+        ["Scale BG", "true", "shouldScaleBackground", "Scale page background on open"]
+      ],
+      "accessibility": {
+        "keyboard": [
+          ["Tab", "Move focus within drawer (trapped)"],
+          ["Shift+Tab", "Move focus backwards"],
+          ["Escape", "Close the drawer"],
+          ["Enter/Space", "Activate focused button"]
+        ],
+        "notes": [
+          "Swipe-to-close on touch devices",
+          "Focus trapped inside when open",
+          "Returns focus to trigger on close",
+          "Built on vaul library",
+          "Always include DrawerTitle for screen readers"
+        ]
+      },
+      "related": [
+        { "name": "Sheet", "desc": "Desktop side panel from any edge." },
+        { "name": "Dialog", "desc": "Centered modal alternative." }
+      ]
+    }
+  ]
+}

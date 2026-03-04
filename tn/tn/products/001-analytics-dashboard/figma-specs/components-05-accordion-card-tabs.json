@@ -1,0 +1,44 @@
+{
+  "type": "foundation-components",
+  "targetPage": "🧩 Components",
+  "components": [
+    {
+      "name": "Accordion Item",
+      "category": "Components / Data Display",
+      "description": "Expandable section. Trigger py-sm gap-xs, chevron 16px, content typo-paragraph-sm.",
+      "properties": { "Type": ["Open", "Closed"], "State": ["Default", "Hover", "Focus", "Disabled"] },
+      "base": { "layout": "vertical", "widthMode": "fixed", "width": 400, "paddingX": 0, "paddingY": 0, "gap": 0, "fill": null, "textFill": "foreground", "textStyle": "SP/Body Semibold", "textContent": "Accordion trigger" },
+      "variantStyles": { "State=Disabled": { "opacity": 0.5 } },
+      "props": [["type", "\"single\"|\"multiple\"", "—", "Mode (required)"], ["collapsible", "boolean", "false", "Allow close all"], ["disabled", "boolean", "false", "Disable"]],
+      "accessibility": { "keyboard": [["Tab", "Focus trigger"], ["Enter/Space", "Toggle"], ["Arrow Up/Down", "Navigate"]], "notes": ["aria-expanded on trigger"] },
+      "related": [{ "name": "Collapsible", "desc": "Single section." }, { "name": "Tabs", "desc": "Horizontal." }]
+    },
+    {
+      "name": "Card",
+      "category": "Components / Layout",
+      "description": "Content container. rounded-xl, border, shadow-sm. Header p-md gap-2xs, Content p-md pt-0.",
+      "properties": { "ShowHeader": ["true", "false"], "ShowFooter": ["true", "false"] },
+      "base": { "layout": "vertical", "widthMode": "fixed", "width": 320, "paddingX": 0, "paddingY": 0, "gap": 0, "radius": "xl", "fill": "card", "stroke": "border", "textFill": "card-foreground" },
+      "variantStyles": {},
+      "props": [["className", "string", "\"\"", "Additional CSS"]],
+      "figmaMapping": [["ShowHeader", "true", "CardHeader", "p-md gap-2xs"], ["ShowFooter", "true", "CardFooter", "p-md pt-0"], ["—", "—", "CardTitle", "typo-heading-4"], ["—", "—", "CardDescription", "typo-paragraph-sm muted"], ["—", "—", "CardContent", "p-md pt-0"]],
+      "accessibility": { "keyboard": [["Tab", "Focus interactive inside"]], "notes": ["Container, not a link"] },
+      "related": [{ "name": "Dialog", "desc": "For modal content." }]
+    },
+    {
+      "name": "Tab Trigger",
+      "category": "Components / Navigation",
+      "description": "Tab button. px-sm py-1, rounded-md. Active: bg-background + shadow.",
+      "properties": { "State": ["Default", "Active", "Disabled"] },
+      "base": { "layout": "horizontal", "widthMode": "hug", "height": 28, "paddingX": "sm", "paddingY": 1, "gap": "xs", "radius": "md", "fill": null, "textFill": "muted-foreground", "textStyle": "SP/Body", "textContent": "Tab" },
+      "variantStyles": {
+        "State=Active": { "fill": "background", "textFill": "foreground" },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+      "props": [["value", "string", "—", "Tab ID (required)"], ["disabled", "boolean", "false", "Disable tab"]],
+      "figmaMapping": [["TabsList", "—", "—", "h-9 bg-muted rounded-lg p-1"], ["TabsTrigger Default", "inactive", "data-state", "text-muted-foreground"], ["TabsTrigger Active", "active", "data-state", "bg-background text-foreground shadow"]],
+      "accessibility": { "keyboard": [["Tab", "Focus list"], ["Arrow L/R", "Navigate"], ["Enter/Space", "Activate"]], "notes": ["role=\"tablist\" + role=\"tab\""] },
+      "related": [{ "name": "Accordion", "desc": "Stacked sections." }]
+    }
+  ]
+}
