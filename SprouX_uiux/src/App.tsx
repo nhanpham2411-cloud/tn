@@ -7660,7 +7660,7 @@ function ToggleIconButtonTab() {
             { value: "sm", label: "Small" },
             { value: "mini", label: "Mini" },
           ]} />
-          <div className="space-y-xs">
+          <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Active?</span>
             <Switch checked={active} onCheckedChange={setActive} />
           </div>
@@ -7704,15 +7704,15 @@ function ToggleButtonTab() {
             { value: "sm", label: "Small" },
             { value: "mini", label: "Mini" },
           ]} />
-          <div className="space-y-xs">
+          <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Active?</span>
             <Switch checked={active} onCheckedChange={setActive} />
           </div>
-          <div className="space-y-xs">
+          <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Show left icon</span>
             <Switch checked={showLeftIcon} onCheckedChange={setShowLeftIcon} />
           </div>
-          <div className="space-y-xs">
+          <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Show right icon</span>
             <Switch checked={showRightIcon} onCheckedChange={setShowRightIcon} />
           </div>
@@ -7948,19 +7948,24 @@ function ToggleTokensTable() {
         </thead>
         <tbody className="divide-y divide-border">
           <tr>
-            <td className="p-3 font-mono text-xs">bg-muted</td>
-            <td className="p-3 font-mono text-xs">var(--muted)</td>
-            <td className="p-3">Hover bg + Active (on) bg (#f3f3f2)</td>
+            <td className="p-3 font-mono text-xs">bg-ghost-hover</td>
+            <td className="p-3 font-mono text-xs">var(--ghost-hover)</td>
+            <td className="p-3">Ghost: hover + active BG (rgba(0,0,0,0.05))</td>
           </tr>
           <tr>
-            <td className="p-3 font-mono text-xs">text-muted-foreground</td>
-            <td className="p-3 font-mono text-xs">var(--muted-foreground)</td>
-            <td className="p-3">Off-state icon/text (#6f6f6a)</td>
+            <td className="p-3 font-mono text-xs">bg-outline-hover</td>
+            <td className="p-3 font-mono text-xs">var(--outline-hover)</td>
+            <td className="p-3">Outline: hover + active BG (rgba(51,65,85,0.03))</td>
           </tr>
           <tr>
             <td className="p-3 font-mono text-xs">text-foreground</td>
             <td className="p-3 font-mono text-xs">var(--foreground)</td>
-            <td className="p-3">Hover + Active icon/text (#252522)</td>
+            <td className="p-3">Text label color (#252522)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">[&_svg]:text-muted-foreground</td>
+            <td className="p-3 font-mono text-xs">var(--muted-foreground)</td>
+            <td className="p-3">Icon color — all states (#6f6f6a)</td>
           </tr>
           <tr>
             <td className="p-3 font-mono text-xs">border-border</td>
