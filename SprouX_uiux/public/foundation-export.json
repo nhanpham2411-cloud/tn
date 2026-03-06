@@ -1,0 +1,2009 @@
+{
+  "semanticcolors": {
+    "light": {
+      "background": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "foreground": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "foregroundsubtle": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "card": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "cardforeground": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "cardsubtle": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "cardsubtleforeground": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "popover": {
+        "hex": "#000000",
+        "raw": "black"
+      },
+      "popoverforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "primary": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "primaryforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "primaryhover": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "secondary": {
+        "hex": "#e9e9e7",
+        "raw": "slate/200"
+      },
+      "secondaryforeground": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "secondaryhover": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "muted": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "mutedforeground": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "accent": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "accentforeground": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "accentselected": {
+        "hex": "#dadad7",
+        "raw": "slate/300"
+      },
+      "destructive": {
+        "hex": "#dc2626",
+        "raw": "red/600"
+      },
+      "destructiveforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "destructivesubtle": {
+        "hex": "#fef2f2",
+        "raw": "red/50"
+      },
+      "destructivesubtleforeground": {
+        "hex": "#dc2626",
+        "raw": "red/600"
+      },
+      "destructiveborder": {
+        "hex": "#ef4444",
+        "raw": "red/500"
+      },
+      "ringerror": {
+        "hex": "#fecaca",
+        "raw": "red/200"
+      },
+      "ringbrand": {
+        "hex": "#99f6e4",
+        "raw": "teal/200"
+      },
+      "ringsuccess": {
+        "hex": "#bbf7d0",
+        "raw": "green/200"
+      },
+      "ringwarning": {
+        "hex": "#fed7aa",
+        "raw": "orange/200"
+      },
+      "ringemphasis": {
+        "hex": "#bfdbfe",
+        "raw": "blue/200"
+      },
+      "success": {
+        "hex": "#16a34a",
+        "raw": "green/600"
+      },
+      "successforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "successsubtle": {
+        "hex": "#f0fdf4",
+        "raw": "green/50"
+      },
+      "successsubtleforeground": {
+        "hex": "#16a34a",
+        "raw": "green/600"
+      },
+      "successborder": {
+        "hex": "#22c55e",
+        "raw": "green/500"
+      },
+      "warning": {
+        "hex": "#d97706",
+        "raw": "amber/600"
+      },
+      "warningforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "warningsubtle": {
+        "hex": "#fffbeb",
+        "raw": "amber/50"
+      },
+      "warningsubtleforeground": {
+        "hex": "#d97706",
+        "raw": "amber/600"
+      },
+      "warningborder": {
+        "hex": "#f59e0b",
+        "raw": "amber/500"
+      },
+      "emphasis": {
+        "hex": "#2563eb",
+        "raw": "blue/600"
+      },
+      "emphasisforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "emphasissubtle": {
+        "hex": "#eff6ff",
+        "raw": "blue/50"
+      },
+      "emphasissubtleforeground": {
+        "hex": "#2563eb",
+        "raw": "blue/600"
+      },
+      "emphasisborder": {
+        "hex": "#3b82f6",
+        "raw": "blue/500"
+      },
+      "brand": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "brandhover": {
+        "hex": "#115e59",
+        "raw": "teal/800"
+      },
+      "brandforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "brandsubtle": {
+        "hex": "#f0fdfa",
+        "raw": "teal/50"
+      },
+      "brandsubtleforeground": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "brandsubtleforegroundhoverhover": {
+        "hex": "#115e59",
+        "raw": "teal/800"
+      },
+      "brandborder": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "border": {
+        "hex": "#e9e9e7",
+        "raw": "slate/200"
+      },
+      "bordersubtle": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "borderstrong": {
+        "hex": "#afafab",
+        "raw": "slate/500"
+      },
+      "input": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "inputreadonly": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "ring": {
+        "hex": "#e9e9e7",
+        "raw": "slate/200"
+      },
+      "ghost": {
+        "hex": "#ffffff00",
+        "raw": null
+      },
+      "ghostforeground": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "ghosthover": {
+        "hex": "#0000000d",
+        "raw": null
+      },
+      "outline": {
+        "hex": "#ffffff1a",
+        "raw": null
+      },
+      "outlinehover": {
+        "hex": "#33415508",
+        "raw": null
+      },
+      "backdrop": {
+        "hex": "#33415599",
+        "raw": null
+      },
+      "chart1": {
+        "hex": "#1f77b4",
+        "raw": null
+      },
+      "chart2": {
+        "hex": "#ff7f0e",
+        "raw": null
+      },
+      "chart3": {
+        "hex": "#2ca02c",
+        "raw": null
+      },
+      "chart4": {
+        "hex": "#d62728",
+        "raw": null
+      },
+      "chart5": {
+        "hex": "#9467bd",
+        "raw": null
+      },
+      "chartareaorangefill": {
+        "hex": "#fdd09cb2",
+        "raw": null
+      },
+      "chartareaorangefill2": {
+        "hex": "#f8b07eb2",
+        "raw": null
+      },
+      "chartareaorangestroke": {
+        "hex": "#ffb86a",
+        "raw": null
+      },
+      "chartareaorangestroke2": {
+        "hex": "#ff6900",
+        "raw": null
+      },
+      "chartareabluefill": {
+        "hex": "#bfdeffb2",
+        "raw": null
+      },
+      "chartareabluefill2": {
+        "hex": "#aaccffb2",
+        "raw": null
+      },
+      "chartareabluestroke": {
+        "hex": "#8ec5ff",
+        "raw": null
+      },
+      "chartareabluestroke2": {
+        "hex": "#3f8dff",
+        "raw": null
+      },
+      "chartareagreenfill": {
+        "hex": "#b9fbd2b2",
+        "raw": null
+      },
+      "chartareagreenfill2": {
+        "hex": "#82e2a9b2",
+        "raw": null
+      },
+      "chartareagreenstroke": {
+        "hex": "#7bf1ab",
+        "raw": null
+      },
+      "chartareagreenstroke2": {
+        "hex": "#19d163",
+        "raw": null
+      },
+      "chartarearosefill": {
+        "hex": "#ffd9deb2",
+        "raw": null
+      },
+      "chartarearosefill2": {
+        "hex": "#f491a8b2",
+        "raw": null
+      },
+      "chartarearosestroke": {
+        "hex": "#ffa1ad",
+        "raw": null
+      },
+      "chartarearosestroke2": {
+        "hex": "#ff4f79",
+        "raw": null
+      },
+      "chartareatealfill": {
+        "hex": "#a9f4e8b2",
+        "raw": null
+      },
+      "chartareatealfill2": {
+        "hex": "#7ce7dcb2",
+        "raw": null
+      },
+      "chartareatealstroke": {
+        "hex": "#46edd5",
+        "raw": null
+      },
+      "chartareatealstroke2": {
+        "hex": "#07c0ac",
+        "raw": null
+      },
+      "chartareapurplefill": {
+        "hex": "#f0e0ffb2",
+        "raw": null
+      },
+      "chartareapurplefill2": {
+        "hex": "#deb5ffb2",
+        "raw": null
+      },
+      "chartareapurplestroke": {
+        "hex": "#dab2ff",
+        "raw": null
+      },
+      "chartareapurplestroke2": {
+        "hex": "#c67eff",
+        "raw": null
+      },
+      "chartareaamberfill": {
+        "hex": "#ffedacb2",
+        "raw": null
+      },
+      "chartareaamberfill2": {
+        "hex": "#fed699b2",
+        "raw": null
+      },
+      "chartareaamberstroke": {
+        "hex": "#ffd230",
+        "raw": null
+      },
+      "chartareaamberstroke2": {
+        "hex": "#fe9a00",
+        "raw": null
+      },
+      "chartstaticblue1": {
+        "hex": "#8ec5ff",
+        "raw": null
+      },
+      "chartstaticblue2": {
+        "hex": "#2b7fff",
+        "raw": null
+      },
+      "chartstaticblue3": {
+        "hex": "#155dfc",
+        "raw": null
+      },
+      "chartstaticblue4": {
+        "hex": "#1447e6",
+        "raw": null
+      },
+      "chartstaticblue5": {
+        "hex": "#193cb8",
+        "raw": null
+      },
+      "chartstaticrose1": {
+        "hex": "#ffa1ad",
+        "raw": null
+      },
+      "chartstaticrose2": {
+        "hex": "#ff2056",
+        "raw": null
+      },
+      "chartstaticrose3": {
+        "hex": "#ec003f",
+        "raw": null
+      },
+      "chartstaticrose4": {
+        "hex": "#c70036",
+        "raw": null
+      },
+      "chartstaticrose5": {
+        "hex": "#a50036",
+        "raw": null
+      },
+      "chartstaticpurple1": {
+        "hex": "#dab2ff",
+        "raw": null
+      },
+      "chartstaticpurple2": {
+        "hex": "#ad46ff",
+        "raw": null
+      },
+      "chartstaticpurple3": {
+        "hex": "#9810fa",
+        "raw": null
+      },
+      "chartstaticpurple4": {
+        "hex": "#8200db",
+        "raw": null
+      },
+      "chartstaticpurple5": {
+        "hex": "#6e11b0",
+        "raw": null
+      },
+      "chartstaticorange1": {
+        "hex": "#ffb86a",
+        "raw": null
+      },
+      "chartstaticorange2": {
+        "hex": "#ff6900",
+        "raw": null
+      },
+      "chartstaticorange3": {
+        "hex": "#f54a00",
+        "raw": null
+      },
+      "chartstaticorange4": {
+        "hex": "#ca3500",
+        "raw": null
+      },
+      "chartstaticorange5": {
+        "hex": "#9f2d00",
+        "raw": null
+      },
+      "chartstaticteal1": {
+        "hex": "#46edd5",
+        "raw": null
+      },
+      "chartstaticteal2": {
+        "hex": "#00bba7",
+        "raw": null
+      },
+      "chartstaticteal3": {
+        "hex": "#009689",
+        "raw": null
+      },
+      "chartstaticteal4": {
+        "hex": "#00786f",
+        "raw": null
+      },
+      "chartstaticteal5": {
+        "hex": "#005f5a",
+        "raw": null
+      },
+      "chartstaticamber1": {
+        "hex": "#ffd230",
+        "raw": null
+      },
+      "chartstaticamber2": {
+        "hex": "#fe9a00",
+        "raw": null
+      },
+      "chartstaticamber3": {
+        "hex": "#e17100",
+        "raw": null
+      },
+      "chartstaticamber4": {
+        "hex": "#bb4d00",
+        "raw": null
+      },
+      "chartstaticamber5": {
+        "hex": "#973c00",
+        "raw": null
+      },
+      "chartstaticgreen1": {
+        "hex": "#7bf1a8",
+        "raw": null
+      },
+      "chartstaticgreen2": {
+        "hex": "#00c951",
+        "raw": null
+      },
+      "chartstaticgreen3": {
+        "hex": "#00a63e",
+        "raw": null
+      },
+      "chartstaticgreen4": {
+        "hex": "#008236",
+        "raw": null
+      },
+      "chartstaticgreen5": {
+        "hex": "#016630",
+        "raw": null
+      },
+      "sidebar": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "sidebarforeground": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "sidebarprimary": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "sidebarprimaryforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "sidebaraccent": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "sidebaraccentforeground": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "sidebaraccenthover": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "sidebarmuted": {
+        "hex": "#afafab",
+        "raw": "slate/500"
+      },
+      "sidebarborder": {
+        "hex": "#e9e9e7",
+        "raw": "slate/200"
+      },
+      "sidebarring": {
+        "hex": "#e9e9e7",
+        "raw": "slate/200"
+      }
+    },
+    "dark": {
+      "background": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "foreground": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "foregroundsubtle": {
+        "hex": "#c6c6c2",
+        "raw": "slate/400"
+      },
+      "card": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "cardforeground": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "cardsubtle": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "cardsubtleforeground": {
+        "hex": "#c6c6c2",
+        "raw": "slate/400"
+      },
+      "popover": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "popoverforeground": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "primary": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "primaryforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "primaryhover": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "secondary": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "secondaryforeground": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "secondaryhover": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "muted": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "mutedforeground": {
+        "hex": "#c6c6c2",
+        "raw": "slate/400"
+      },
+      "accent": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "accentforeground": {
+        "hex": "#f7f7f6",
+        "raw": "slate/50"
+      },
+      "accentselected": {
+        "hex": "#6f6f6a",
+        "raw": "slate/700"
+      },
+      "destructive": {
+        "hex": "#7f1d1d",
+        "raw": "red/900"
+      },
+      "destructiveforeground": {
+        "hex": "#fafafa",
+        "raw": "neutral/50"
+      },
+      "destructivesubtle": {
+        "hex": "#450a0a",
+        "raw": "red/950"
+      },
+      "destructivesubtleforeground": {
+        "hex": "#ef4444",
+        "raw": "red/500"
+      },
+      "destructiveborder": {
+        "hex": "#ef4444",
+        "raw": "red/500"
+      },
+      "ringerror": {
+        "hex": "#7f1d1d",
+        "raw": "red/900"
+      },
+      "ringbrand": {
+        "hex": "#115e59",
+        "raw": "teal/800"
+      },
+      "ringsuccess": {
+        "hex": "#166534",
+        "raw": "green/800"
+      },
+      "ringwarning": {
+        "hex": "#92400e",
+        "raw": "amber/800"
+      },
+      "ringemphasis": {
+        "hex": "#1e40af",
+        "raw": "blue/800"
+      },
+      "success": {
+        "hex": "#22c55e",
+        "raw": "green/500"
+      },
+      "successforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "successsubtle": {
+        "hex": "#052e16",
+        "raw": "green/950"
+      },
+      "successsubtleforeground": {
+        "hex": "#22c55e",
+        "raw": "green/500"
+      },
+      "successborder": {
+        "hex": "#22c55e",
+        "raw": "green/500"
+      },
+      "warning": {
+        "hex": "#f59e0b",
+        "raw": "amber/500"
+      },
+      "warningforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "warningsubtle": {
+        "hex": "#451a03",
+        "raw": "amber/950"
+      },
+      "warningsubtleforeground": {
+        "hex": "#f59e0b",
+        "raw": "amber/500"
+      },
+      "warningborder": {
+        "hex": "#f59e0b",
+        "raw": "amber/500"
+      },
+      "emphasis": {
+        "hex": "#60a5fa",
+        "raw": "blue/400"
+      },
+      "emphasisforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "emphasissubtle": {
+        "hex": "#172554",
+        "raw": "blue/950"
+      },
+      "emphasissubtleforeground": {
+        "hex": "#60a5fa",
+        "raw": "blue/400"
+      },
+      "emphasisborder": {
+        "hex": "#3b82f6",
+        "raw": "blue/500"
+      },
+      "brand": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "brandhover": {
+        "hex": "#0f766e",
+        "raw": "teal/700"
+      },
+      "brandforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "brandsubtle": {
+        "hex": "#042f2e",
+        "raw": "teal/950"
+      },
+      "brandsubtleforeground": {
+        "hex": "#2dd4bf",
+        "raw": "teal/400"
+      },
+      "brandsubtleforegroundhoverhover": {
+        "hex": "#5eead4",
+        "raw": "teal/300"
+      },
+      "brandborder": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "border": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "bordersubtle": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "borderstrong": {
+        "hex": "#8f8f8a",
+        "raw": "slate/600"
+      },
+      "input": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "inputreadonly": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "ring": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "ghost": {
+        "hex": "#ffffff00",
+        "raw": null
+      },
+      "ghostforeground": {
+        "hex": "#8f8f8a",
+        "raw": "slate/600"
+      },
+      "ghosthover": {
+        "hex": "#ffffff19",
+        "raw": null
+      },
+      "outline": {
+        "hex": "#ffffff0c",
+        "raw": null
+      },
+      "outlinehover": {
+        "hex": "#ffffff19",
+        "raw": null
+      },
+      "backdrop": {
+        "hex": "#00000099",
+        "raw": null
+      },
+      "chart1": {
+        "hex": "#1447e6",
+        "raw": null
+      },
+      "chart2": {
+        "hex": "#00bc7d",
+        "raw": null
+      },
+      "chart3": {
+        "hex": "#fd9a00",
+        "raw": null
+      },
+      "chart4": {
+        "hex": "#ad46ff",
+        "raw": null
+      },
+      "chart5": {
+        "hex": "#ff2056",
+        "raw": null
+      },
+      "chartareaorangefill": {
+        "hex": "#755738b2",
+        "raw": null
+      },
+      "chartareaorangefill2": {
+        "hex": "#76380eb2",
+        "raw": null
+      },
+      "chartareaorangestroke": {
+        "hex": "#ffb86a",
+        "raw": null
+      },
+      "chartareaorangestroke2": {
+        "hex": "#ff7915",
+        "raw": null
+      },
+      "chartareabluefill": {
+        "hex": "#475d75b2",
+        "raw": null
+      },
+      "chartareabluefill2": {
+        "hex": "#1f4176b2",
+        "raw": null
+      },
+      "chartareabluestroke": {
+        "hex": "#8ec5ff",
+        "raw": null
+      },
+      "chartareabluestroke2": {
+        "hex": "#539bff",
+        "raw": null
+      },
+      "chartareagreenfill": {
+        "hex": "#3f6e51b2",
+        "raw": null
+      },
+      "chartareagreenfill2": {
+        "hex": "#0e5e2eb2",
+        "raw": null
+      },
+      "chartareagreenstroke": {
+        "hex": "#7bf1a8",
+        "raw": null
+      },
+      "chartareagreenstroke2": {
+        "hex": "#19d163",
+        "raw": null
+      },
+      "chartarearosefill": {
+        "hex": "#754e53b2",
+        "raw": null
+      },
+      "chartarearosefill2": {
+        "hex": "#741b30b2",
+        "raw": null
+      },
+      "chartarearosestroke": {
+        "hex": "#ffa1ad",
+        "raw": null
+      },
+      "chartarearosestroke2": {
+        "hex": "#ff4670",
+        "raw": null
+      },
+      "chartareatealfill": {
+        "hex": "#409388b2",
+        "raw": null
+      },
+      "chartareatealfill2": {
+        "hex": "#0e5951b2",
+        "raw": null
+      },
+      "chartareatealstroke": {
+        "hex": "#46edd5",
+        "raw": null
+      },
+      "chartareatealstroke2": {
+        "hex": "#1ccfb9",
+        "raw": null
+      },
+      "chartareapurplefill": {
+        "hex": "#655576b2",
+        "raw": null
+      },
+      "chartareapurplefill2": {
+        "hex": "#532a77b2",
+        "raw": null
+      },
+      "chartareapurplestroke": {
+        "hex": "#dab2ff",
+        "raw": null
+      },
+      "chartareapurplestroke2": {
+        "hex": "#a96add",
+        "raw": null
+      },
+      "chartareaamberfill": {
+        "hex": "#746221b2",
+        "raw": null
+      },
+      "chartareaamberfill2": {
+        "hex": "#734b0eb2",
+        "raw": null
+      },
+      "chartareaamberstroke": {
+        "hex": "#ffd230",
+        "raw": null
+      },
+      "chartareaamberstroke2": {
+        "hex": "#ffa50a",
+        "raw": null
+      },
+      "sidebar": {
+        "hex": "#2f2f2b",
+        "raw": "slate/900"
+      },
+      "sidebarforeground": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "sidebarprimary": {
+        "hex": "#0d9488",
+        "raw": "teal/600"
+      },
+      "sidebarprimaryforeground": {
+        "hex": "#ffffff",
+        "raw": "white"
+      },
+      "sidebaraccent": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "sidebaraccentforeground": {
+        "hex": "#f3f3f2",
+        "raw": "slate/100"
+      },
+      "sidebaraccenthover": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "sidebarmuted": {
+        "hex": "#8f8f8a",
+        "raw": "slate/600"
+      },
+      "sidebarborder": {
+        "hex": "#4f4f4a",
+        "raw": "slate/800"
+      },
+      "sidebarring": {
+        "hex": "#252522",
+        "raw": "slate/950"
+      },
+      "chartstaticblue1": {
+        "hex": "#8ec5ff",
+        "raw": null
+      },
+      "chartstaticblue2": {
+        "hex": "#2b7fff",
+        "raw": null
+      },
+      "chartstaticblue3": {
+        "hex": "#155dfc",
+        "raw": null
+      },
+      "chartstaticblue4": {
+        "hex": "#1447e6",
+        "raw": null
+      },
+      "chartstaticblue5": {
+        "hex": "#193cb8",
+        "raw": null
+      },
+      "chartstaticrose1": {
+        "hex": "#ffa1ad",
+        "raw": null
+      },
+      "chartstaticrose2": {
+        "hex": "#ff2056",
+        "raw": null
+      },
+      "chartstaticrose3": {
+        "hex": "#ec003f",
+        "raw": null
+      },
+      "chartstaticrose4": {
+        "hex": "#c70036",
+        "raw": null
+      },
+      "chartstaticrose5": {
+        "hex": "#a50036",
+        "raw": null
+      },
+      "chartstaticpurple1": {
+        "hex": "#dab2ff",
+        "raw": null
+      },
+      "chartstaticpurple2": {
+        "hex": "#ad46ff",
+        "raw": null
+      },
+      "chartstaticpurple3": {
+        "hex": "#9810fa",
+        "raw": null
+      },
+      "chartstaticpurple4": {
+        "hex": "#8200db",
+        "raw": null
+      },
+      "chartstaticpurple5": {
+        "hex": "#6e11b0",
+        "raw": null
+      },
+      "chartstaticorange1": {
+        "hex": "#ffb86a",
+        "raw": null
+      },
+      "chartstaticorange2": {
+        "hex": "#ff6900",
+        "raw": null
+      },
+      "chartstaticorange3": {
+        "hex": "#f54a00",
+        "raw": null
+      },
+      "chartstaticorange4": {
+        "hex": "#ca3500",
+        "raw": null
+      },
+      "chartstaticorange5": {
+        "hex": "#9f2d00",
+        "raw": null
+      },
+      "chartstaticteal1": {
+        "hex": "#46edd5",
+        "raw": null
+      },
+      "chartstaticteal2": {
+        "hex": "#00bba7",
+        "raw": null
+      },
+      "chartstaticteal3": {
+        "hex": "#009689",
+        "raw": null
+      },
+      "chartstaticteal4": {
+        "hex": "#00786f",
+        "raw": null
+      },
+      "chartstaticteal5": {
+        "hex": "#005f5a",
+        "raw": null
+      },
+      "chartstaticamber1": {
+        "hex": "#ffd230",
+        "raw": null
+      },
+      "chartstaticamber2": {
+        "hex": "#fe9a00",
+        "raw": null
+      },
+      "chartstaticamber3": {
+        "hex": "#e17100",
+        "raw": null
+      },
+      "chartstaticamber4": {
+        "hex": "#bb4d00",
+        "raw": null
+      },
+      "chartstaticamber5": {
+        "hex": "#973c00",
+        "raw": null
+      },
+      "chartstaticgreen1": {
+        "hex": "#7bf1a8",
+        "raw": null
+      },
+      "chartstaticgreen2": {
+        "hex": "#00c951",
+        "raw": null
+      },
+      "chartstaticgreen3": {
+        "hex": "#00a63e",
+        "raw": null
+      },
+      "chartstaticgreen4": {
+        "hex": "#008236",
+        "raw": null
+      },
+      "chartstaticgreen5": {
+        "hex": "#016630",
+        "raw": null
+      }
+    }
+  },
+  "typography": {
+    "fontdefinitionsfontfamilyserif": "Fraunces",
+    "fontdefinitionsfontfamilysans": "Geist",
+    "fontdefinitionsfontfamilymonospace": "Geist Mono",
+    "fontdefinitionsfontfamilyheadings": "Fraunces",
+    "fontdefinitionsfontfamilybody": "Geist",
+    "heading1weight": "Semibold",
+    "heading2weight": "Semibold",
+    "heading3heading3weight": "Semibold",
+    "heading4weight": "Semibold",
+    "monospacedfontweight": "Regular",
+    "paragraphparagraphweight": "Regular",
+    "paragraphparagraphitalicweight": "Italic",
+    "paragraphparagraphboldweight": "Semibold",
+    "paragraphparagraphmediumweight": "Medium",
+    "heading1fontsize": 48,
+    "heading1lineheight": 48,
+    "heading1spacing": 48,
+    "heading1letterspacing": -1.5,
+    "heading2fontsize": 30,
+    "heading2lineheight": 32,
+    "heading2spacing": 30,
+    "heading2letterspacing": -1,
+    "heading3fontsize": 24,
+    "heading3lineheight": 28.799999237060547,
+    "heading3spacing": 20,
+    "heading3letterspacing": -1,
+    "heading4fontsize": 20,
+    "heading4lineheight": 24,
+    "heading4spacing": 20,
+    "heading4letterspacing": 0,
+    "paragraphregularfontsize": 16,
+    "paragraphregularlineheight": 24,
+    "paragraphregularspacing": 2,
+    "paragraphregularletterspacing": 0,
+    "paragraphsmallfontsize": 14,
+    "paragraphsmalllineheight": 20,
+    "paragraphsmallspacing": 2,
+    "paragraphsmallletterspacing": 0,
+    "paragraphminifontsize": 12,
+    "paragraphminilineheight": 16,
+    "paragraphminispacing": 12,
+    "paragraphminiletterspacing": 0,
+    "paragraphlargefontsize": 30,
+    "paragraphlargelineheight": 32,
+    "paragraphlargespacing": 30,
+    "paragraphlargeletterspacing": -1,
+    "paragraphtinyfontsize": 10,
+    "paragraphtinylineheight": 12,
+    "paragraphtinyspacing": 10,
+    "paragraphtinyletterspacing": 0,
+    "paragraphmediumfontsize": 20,
+    "paragraphmediumlineheight": 24,
+    "paragraphmediumspacing": 20,
+    "paragraphmediumletterspacing": -1,
+    "monospacedfontsize": 16,
+    "monospacedlineheight": 24,
+    "monospacedletterspacing": 0,
+    "monospacedspacing": 16
+  },
+  "borderradius": {
+    "absoluteradius2": 2,
+    "absoluteradius4": 4,
+    "absoluteradius6": 6,
+    "absoluteradius8": 8,
+    "absoluteradius10": 10,
+    "absoluteradius12": 12,
+    "absoluteradius16": 16,
+    "absoluteradius24": 24,
+    "absoluteradius32": 32,
+    "absoluteradiusinfinite": 9999,
+    "semanticroundednone": 0,
+    "semanticroundedxs": 2,
+    "semanticroundedsm": 4,
+    "semanticroundedmd": 6,
+    "semanticroundedlg": 8,
+    "semanticroundedxl": 12,
+    "semanticrounded2xl": 16,
+    "semanticrounded3xl": 24,
+    "semanticroundedfull": 9999
+  },
+  "spacing": {
+    "desktop": {
+      "absolute0": 0,
+      "absolute0,5": 2,
+      "absolute1": 4,
+      "absolute1,5": 6,
+      "absolute2": 8,
+      "absolute2,5": 10,
+      "absolute3": 12,
+      "absolute3,5": 14,
+      "absolute4": 16,
+      "absolute5": 20,
+      "absolute6": 24,
+      "absolute7": 28,
+      "absolute8": 32,
+      "absolute9": 36,
+      "absolute10": 40,
+      "absolute11": 44,
+      "absolute12": 48,
+      "absolute14": 56,
+      "absolute16": 64,
+      "absolute20": 80,
+      "absolute24": 96,
+      "absolute28": 112,
+      "absolute32": 128,
+      "absolute36": 144,
+      "absolute40": 160,
+      "absolute44": 176,
+      "absolute48": 192,
+      "absolute52": 208,
+      "absolute56": 224,
+      "absolute60": 240,
+      "absolute64": 256,
+      "absolute72": 288,
+      "absolute80": 320,
+      "absolute96": 384,
+      "semantic0": 0,
+      "semantic4xs": 2,
+      "semantic3xs": 4,
+      "semantic2xs": 6,
+      "semanticxs": 8,
+      "semanticsm": 12,
+      "semanticmd": 16,
+      "semanticlg": 20,
+      "semanticxl": 24,
+      "semantic2xl": 32,
+      "semantic3xl": 40,
+      "semantic4xl": 48,
+      "semantic5xl": 64,
+      "absoluteinfinite": 9999,
+      "absolutescreenmaxwidthauthorize": 552,
+      "absolutescreenmaxwidthsetup": 800,
+      "absolutescreenmaxwidthmain": 1200,
+      "absolutescreenmaxwidthdiscovery": 1384,
+      "absolutesidebarleftwidthexpand": 240,
+      "absolutesidebarleftwidthcollapse": 60,
+      "absolutesidebartopheight": 60,
+      "absolutesectionslotcreatormarginleft": 32,
+      "absolutesectionslotcreatormarginright": 32,
+      "absolutesectionslotcreatormargintop": 16,
+      "absolutesectionslotcreatormarginbottom": 16,
+      "absolutesectionslotcreatorgap": 16,
+      "absolutescreenpagemarginbottom": 24,
+      "absolutescreentitlepaddingtop": 32,
+      "absolutescreentitlepaddingbottom": 16,
+      "absolutescreentitlepaddingleft": 32,
+      "absolutescreentitlepaddingright": 32,
+      "absolutescreentitlegap": 12,
+      "absolutesectiontitlepaddingleft": 32,
+      "absolutesectiontitlepaddingright": 32,
+      "absolutesectiontitlepaddingtop": 16,
+      "absolutesectiontitlepaddingbottom": 4,
+      "absolutesectiontitlegap": 4,
+      "absolutecardslot16pxpaddingleft": 16,
+      "absolutecardslot16pxpaddingright": 16,
+      "absolutecardslot16pxpaddingtop": 16,
+      "absolutecardslot16pxpaddingbottom": 16,
+      "absolutecardtitle16pxpaddingleft": 16,
+      "absolutecardtitle16pxpaddingright": 16,
+      "absolutecardtitle16pxpaddingtop": 16,
+      "absolutecardtitle16pxpaddingbottom": 0,
+      "absolutecardtitle16pxgap": 4,
+      "absolutescreenactionpaddingleft": 32,
+      "absolutescreenactionpaddingright": 32,
+      "absolutescreenactionpaddingtop": 16,
+      "absolutescreenactionpaddingbottom": 16,
+      "absolutescreenactiongap": 8,
+      "absolutesectionslotauthorizationmarginleft": 32,
+      "absolutesectionslotauthorizationmarginright": 32,
+      "absolutesectionslotauthorizationmargintop": 64,
+      "absolutesectionslotauthorizationmarginbottom": 64,
+      "absolutedialogtomobilepopupmarginleft": 24,
+      "absolutedialogtomobilepopupmarginright": 24,
+      "absolutedialogtomobilepopupmargintop": 24,
+      "absolutedialogtomobilepopupmarginbottom": 24,
+      "absolutedialogtomobilefullscreenmarginleft": 24,
+      "absolutedialogtomobilefullscreenmarginright": 24,
+      "absolutedialogtomobilefullscreenmargintop": 24,
+      "absolutedialogtomobilefullscreenmarginbottom": 24,
+      "absolutecardslot24pxpaddingleft": 24,
+      "absolutecardslot24pxpaddingright": 24,
+      "absolutecardslot24pxpaddingtop": 24,
+      "absolutecardslot24pxpaddingbottom": 24,
+      "absolutecardtitle24pxpaddingleft": 24,
+      "absolutecardtitle24pxpaddingright": 24,
+      "absolutecardtitle24pxpaddingtop": 24,
+      "absolutecardtitle24pxpaddingbottom": 0,
+      "absolutecardtitle24pxgap": 4,
+      "absolutesidebartoppaddingleft": 32,
+      "absolutesidebartoppaddingright": 32,
+      "absolutesidebartopgap": 32,
+      "absolutesidebarleftpaddingleft": 20,
+      "absolutesidebarleftpaddingright": 20,
+      "absolutesidebarleftpaddingtop": 16,
+      "absolutesidebarleftpaddingbottom": 16,
+      "absolutesectionslotdiscoverymarginleft": 32,
+      "absolutesectionslotdiscoverymarginright": 32,
+      "absolutesectionslotdiscoverymargintop": 16,
+      "absolutesectionslotdiscoverymarginbottom": 16,
+      "absolutesectionslotdiscoverygap": 24,
+      "absolutedialogslot16pxpaddingleft": 16,
+      "absolutedialogslot16pxpaddingright": 16,
+      "absolutedialogslot16pxpaddingtop": 16,
+      "absolutedialogslot16pxpaddingbottom": 16,
+      "absolutedialogslot24pxpaddingleft": 24,
+      "absolutedialogslot24pxpaddingright": 24,
+      "absolutedialogslot24pxpaddingtop": 24,
+      "absolutedialogslot24pxpaddingbottom": 24
+    },
+    "tablet": {
+      "absolute0": 0,
+      "absolute0,5": 2,
+      "absolute1": 4,
+      "absolute1,5": 6,
+      "absolute2": 8,
+      "absolute2,5": 10,
+      "absolute3": 12,
+      "absolute3,5": 14,
+      "absolute4": 16,
+      "absolute5": 20,
+      "absolute6": 24,
+      "absolute7": 28,
+      "absolute8": 32,
+      "absolute9": 36,
+      "absolute10": 40,
+      "absolute11": 44,
+      "absolute12": 48,
+      "absolute14": 56,
+      "absolute16": 64,
+      "absolute20": 80,
+      "absolute24": 96,
+      "absolute28": 112,
+      "absolute32": 128,
+      "absolute36": 144,
+      "absolute40": 160,
+      "absolute44": 176,
+      "absolute48": 192,
+      "absolute52": 208,
+      "absolute56": 224,
+      "absolute60": 240,
+      "absolute64": 256,
+      "absolute72": 288,
+      "absolute80": 320,
+      "absolute96": 384,
+      "semantic0": 0,
+      "semantic4xs": 2,
+      "semantic3xs": 4,
+      "semantic2xs": 6,
+      "semanticxs": 8,
+      "semanticsm": 12,
+      "semanticmd": 16,
+      "semanticlg": 20,
+      "semanticxl": 24,
+      "semantic2xl": 32,
+      "semantic3xl": 40,
+      "semantic4xl": 48,
+      "semantic5xl": 64,
+      "absoluteinfinite": 9999,
+      "absolutescreenmaxwidthauthorize": 552,
+      "absolutescreenmaxwidthsetup": 800,
+      "absolutescreenmaxwidthmain": 1200,
+      "absolutescreenmaxwidthdiscovery": 1384,
+      "absolutesidebarleftwidthexpand": 240,
+      "absolutesidebarleftwidthcollapse": 60,
+      "absolutesidebartopheight": 60,
+      "absolutesectionslotcreatormarginleft": 24,
+      "absolutesectionslotcreatormarginright": 24,
+      "absolutesectionslotcreatormargintop": 16,
+      "absolutesectionslotcreatormarginbottom": 16,
+      "absolutesectionslotcreatorgap": 16,
+      "absolutescreenpagemarginbottom": 24,
+      "absolutescreentitlepaddingtop": 24,
+      "absolutescreentitlepaddingbottom": 8,
+      "absolutescreentitlepaddingleft": 24,
+      "absolutescreentitlepaddingright": 24,
+      "absolutescreentitlegap": 12,
+      "absolutesectiontitlepaddingleft": 24,
+      "absolutesectiontitlepaddingright": 24,
+      "absolutesectiontitlepaddingtop": 16,
+      "absolutesectiontitlepaddingbottom": 4,
+      "absolutesectiontitlegap": 4,
+      "absolutecardslot16pxpaddingleft": 16,
+      "absolutecardslot16pxpaddingright": 16,
+      "absolutecardslot16pxpaddingtop": 16,
+      "absolutecardslot16pxpaddingbottom": 16,
+      "absolutecardtitle16pxpaddingleft": 16,
+      "absolutecardtitle16pxpaddingright": 16,
+      "absolutecardtitle16pxpaddingtop": 16,
+      "absolutecardtitle16pxpaddingbottom": 0,
+      "absolutecardtitle16pxgap": 4,
+      "absolutescreenactionpaddingleft": 24,
+      "absolutescreenactionpaddingright": 24,
+      "absolutescreenactionpaddingtop": 16,
+      "absolutescreenactionpaddingbottom": 16,
+      "absolutescreenactiongap": 8,
+      "absolutesectionslotauthorizationmarginleft": 24,
+      "absolutesectionslotauthorizationmarginright": 24,
+      "absolutesectionslotauthorizationmargintop": 64,
+      "absolutesectionslotauthorizationmarginbottom": 64,
+      "absolutedialogtomobilepopupmarginleft": 24,
+      "absolutedialogtomobilepopupmarginright": 24,
+      "absolutedialogtomobilepopupmargintop": 24,
+      "absolutedialogtomobilepopupmarginbottom": 24,
+      "absolutedialogtomobilefullscreenmarginleft": 24,
+      "absolutedialogtomobilefullscreenmarginright": 24,
+      "absolutedialogtomobilefullscreenmargintop": 24,
+      "absolutedialogtomobilefullscreenmarginbottom": 24,
+      "absolutecardslot24pxpaddingleft": 20,
+      "absolutecardslot24pxpaddingright": 20,
+      "absolutecardslot24pxpaddingtop": 20,
+      "absolutecardslot24pxpaddingbottom": 20,
+      "absolutecardtitle24pxpaddingleft": 20,
+      "absolutecardtitle24pxpaddingright": 20,
+      "absolutecardtitle24pxpaddingtop": 20,
+      "absolutecardtitle24pxpaddingbottom": 0,
+      "absolutecardtitle24pxgap": 4,
+      "absolutesidebartoppaddingleft": 24,
+      "absolutesidebartoppaddingright": 24,
+      "absolutesidebartopgap": 24,
+      "absolutesidebarleftpaddingleft": 12,
+      "absolutesidebarleftpaddingright": 12,
+      "absolutesidebarleftpaddingtop": 16,
+      "absolutesidebarleftpaddingbottom": 16,
+      "absolutesectionslotdiscoverymarginleft": 24,
+      "absolutesectionslotdiscoverymarginright": 24,
+      "absolutesectionslotdiscoverymargintop": 16,
+      "absolutesectionslotdiscoverymarginbottom": 16,
+      "absolutesectionslotdiscoverygap": 24,
+      "absolutedialogslot16pxpaddingleft": 16,
+      "absolutedialogslot16pxpaddingright": 16,
+      "absolutedialogslot16pxpaddingtop": 16,
+      "absolutedialogslot16pxpaddingbottom": 16,
+      "absolutedialogslot24pxpaddingleft": 20,
+      "absolutedialogslot24pxpaddingright": 20,
+      "absolutedialogslot24pxpaddingtop": 20,
+      "absolutedialogslot24pxpaddingbottom": 20
+    },
+    "mobile": {
+      "absolute0": 0,
+      "absolute0,5": 2,
+      "absolute1": 4,
+      "absolute1,5": 6,
+      "absolute2": 8,
+      "absolute2,5": 10,
+      "absolute3": 12,
+      "absolute3,5": 14,
+      "absolute4": 16,
+      "absolute5": 20,
+      "absolute6": 24,
+      "absolute7": 28,
+      "absolute8": 32,
+      "absolute9": 36,
+      "absolute10": 40,
+      "absolute11": 44,
+      "absolute12": 48,
+      "absolute14": 56,
+      "absolute16": 64,
+      "absolute20": 80,
+      "absolute24": 96,
+      "absolute28": 112,
+      "absolute32": 128,
+      "absolute36": 144,
+      "absolute40": 160,
+      "absolute44": 176,
+      "absolute48": 192,
+      "absolute52": 208,
+      "absolute56": 224,
+      "absolute60": 240,
+      "absolute64": 256,
+      "absolute72": 288,
+      "absolute80": 320,
+      "absolute96": 384,
+      "semantic0": 0,
+      "semantic4xs": 2,
+      "semantic3xs": 4,
+      "semantic2xs": 6,
+      "semanticxs": 8,
+      "semanticsm": 12,
+      "semanticmd": 16,
+      "semanticlg": 20,
+      "semanticxl": 24,
+      "semantic2xl": 32,
+      "semantic3xl": 40,
+      "semantic4xl": 48,
+      "semantic5xl": 64,
+      "absoluteinfinite": 9999,
+      "absolutescreenmaxwidthauthorize": 552,
+      "absolutescreenmaxwidthsetup": 800,
+      "absolutescreenmaxwidthmain": 1200,
+      "absolutescreenmaxwidthdiscovery": 1384,
+      "absolutesidebarleftwidthexpand": 240,
+      "absolutesidebarleftwidthcollapse": 60,
+      "absolutesidebartopheight": 60,
+      "absolutesectionslotcreatormarginleft": 16,
+      "absolutesectionslotcreatormarginright": 16,
+      "absolutesectionslotcreatormargintop": 16,
+      "absolutesectionslotcreatormarginbottom": 16,
+      "absolutesectionslotcreatorgap": 16,
+      "absolutescreenpagemarginbottom": 24,
+      "absolutescreentitlepaddingtop": 24,
+      "absolutescreentitlepaddingbottom": 8,
+      "absolutescreentitlepaddingleft": 16,
+      "absolutescreentitlepaddingright": 16,
+      "absolutescreentitlegap": 12,
+      "absolutesectiontitlepaddingleft": 16,
+      "absolutesectiontitlepaddingright": 16,
+      "absolutesectiontitlepaddingtop": 16,
+      "absolutesectiontitlepaddingbottom": 4,
+      "absolutesectiontitlegap": 4,
+      "absolutecardslot16pxpaddingleft": 16,
+      "absolutecardslot16pxpaddingright": 16,
+      "absolutecardslot16pxpaddingtop": 16,
+      "absolutecardslot16pxpaddingbottom": 16,
+      "absolutecardtitle16pxpaddingleft": 16,
+      "absolutecardtitle16pxpaddingright": 16,
+      "absolutecardtitle16pxpaddingtop": 16,
+      "absolutecardtitle16pxpaddingbottom": 0,
+      "absolutecardtitle16pxgap": 4,
+      "absolutescreenactionpaddingleft": 16,
+      "absolutescreenactionpaddingright": 16,
+      "absolutescreenactionpaddingtop": 16,
+      "absolutescreenactionpaddingbottom": 16,
+      "absolutescreenactiongap": 8,
+      "absolutesectionslotauthorizationmarginleft": 0,
+      "absolutesectionslotauthorizationmarginright": 0,
+      "absolutesectionslotauthorizationmargintop": 0,
+      "absolutesectionslotauthorizationmarginbottom": 0,
+      "absolutedialogtomobilepopupmarginleft": 24,
+      "absolutedialogtomobilepopupmarginright": 24,
+      "absolutedialogtomobilepopupmargintop": 24,
+      "absolutedialogtomobilepopupmarginbottom": 24,
+      "absolutedialogtomobilefullscreenmarginleft": 0,
+      "absolutedialogtomobilefullscreenmarginright": 0,
+      "absolutedialogtomobilefullscreenmargintop": 0,
+      "absolutedialogtomobilefullscreenmarginbottom": 0,
+      "absolutecardslot24pxpaddingleft": 16,
+      "absolutecardslot24pxpaddingright": 16,
+      "absolutecardslot24pxpaddingtop": 16,
+      "absolutecardslot24pxpaddingbottom": 16,
+      "absolutecardtitle24pxpaddingleft": 16,
+      "absolutecardtitle24pxpaddingright": 16,
+      "absolutecardtitle24pxpaddingtop": 16,
+      "absolutecardtitle24pxpaddingbottom": 0,
+      "absolutecardtitle24pxgap": 4,
+      "absolutesidebartoppaddingleft": 16,
+      "absolutesidebartoppaddingright": 16,
+      "absolutesidebartopgap": 16,
+      "absolutesidebarleftpaddingleft": 12,
+      "absolutesidebarleftpaddingright": 12,
+      "absolutesidebarleftpaddingtop": 16,
+      "absolutesidebarleftpaddingbottom": 16,
+      "absolutesectionslotdiscoverymarginleft": 16,
+      "absolutesectionslotdiscoverymarginright": 16,
+      "absolutesectionslotdiscoverymargintop": 16,
+      "absolutesectionslotdiscoverymarginbottom": 16,
+      "absolutesectionslotdiscoverygap": 16,
+      "absolutedialogslot16pxpaddingleft": 16,
+      "absolutedialogslot16pxpaddingright": 16,
+      "absolutedialogslot16pxpaddingtop": 16,
+      "absolutedialogslot16pxpaddingbottom": 16,
+      "absolutedialogslot24pxpaddingleft": 16,
+      "absolutedialogslot24pxpaddingright": 16,
+      "absolutedialogslot24pxpaddingtop": 16,
+      "absolutedialogslot24pxpaddingbottom": 16
+    }
+  },
+  "shadows": {
+    "light": {
+      "2xsx": 0,
+      "2xsy": 1,
+      "2xsblur": 0,
+      "2xsspread": 0,
+      "2xscolor": {
+        "hex": "#0000000d",
+        "raw": null
+      },
+      "xsx": 0,
+      "xsy": 1,
+      "xsblur": 2,
+      "xsspread": 0,
+      "xscolor": {
+        "hex": "#0000000d",
+        "raw": null
+      },
+      "smshadow1x": 0,
+      "smshadow1y": 1,
+      "smshadow1blur": 3,
+      "smshadow1spread": 0,
+      "smshadow2x2": 0,
+      "smshadow2y": 1,
+      "smshadow2blur": 2,
+      "smshadow2spread": -1,
+      "smcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "mdshadow1x": 0,
+      "mdshadow1y": 4,
+      "mdshadow1blur": 6,
+      "mdshadow1spread": -1,
+      "mdshadow2x": 0,
+      "mdshadow2y": 2,
+      "mdshadow2blur": 4,
+      "mdshadow2spread": -2,
+      "mdcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "lgshadow1x": 0,
+      "lgshadow1y": 10,
+      "lgshadow1blur": 15,
+      "lgshadow1spread": -3,
+      "lgshadow2x": 0,
+      "lgshadow2y": 4,
+      "lgshadow2blur": -4,
+      "lgshadow2spread": 6,
+      "lgcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "xlshadow1x": 0,
+      "xlshadow1y": 20,
+      "xlshadow1blur": 25,
+      "xlshadow1spread": -5,
+      "xlshadow2x": 0,
+      "xlshadow2y": 8,
+      "xlshadow2blur": -6,
+      "xlshadow2spread": 10,
+      "xlcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "2xlx": 0,
+      "2xly": 25,
+      "2xlblur": 50,
+      "2xlspread": 12,
+      "2xlcolor": {
+        "hex": "#00000040",
+        "raw": null
+      }
+    },
+    "dark": {
+      "2xsx": 0,
+      "2xsy": 1,
+      "2xsblur": 0,
+      "2xsspread": 0,
+      "2xscolor": {
+        "hex": "#0000000d",
+        "raw": null
+      },
+      "xsx": 0,
+      "xsy": 1,
+      "xsblur": 2,
+      "xsspread": 0,
+      "xscolor": {
+        "hex": "#0000000d",
+        "raw": null
+      },
+      "smshadow1x": 0,
+      "smshadow1y": 1,
+      "smshadow1blur": 3,
+      "smshadow1spread": 0,
+      "smshadow2x2": 0,
+      "smshadow2y": 1,
+      "smshadow2blur": 2,
+      "smshadow2spread": -1,
+      "smcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "mdshadow1x": 0,
+      "mdshadow1y": 4,
+      "mdshadow1blur": 6,
+      "mdshadow1spread": -1,
+      "mdshadow2x": 0,
+      "mdshadow2y": 2,
+      "mdshadow2blur": 4,
+      "mdshadow2spread": -2,
+      "mdcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "lgshadow1x": 0,
+      "lgshadow1y": 10,
+      "lgshadow1blur": 15,
+      "lgshadow1spread": -3,
+      "lgshadow2x": 0,
+      "lgshadow2y": 4,
+      "lgshadow2blur": -4,
+      "lgshadow2spread": 6,
+      "lgcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "xlshadow1x": 0,
+      "xlshadow1y": 20,
+      "xlshadow1blur": 25,
+      "xlshadow1spread": -5,
+      "xlshadow2x": 0,
+      "xlshadow2y": 8,
+      "xlshadow2blur": -6,
+      "xlshadow2spread": 10,
+      "xlcolor": {
+        "hex": "#0000001a",
+        "raw": null
+      },
+      "2xlx": 0,
+      "2xly": 25,
+      "2xlblur": 50,
+      "2xlspread": 12,
+      "2xlcolor": {
+        "hex": "#00000040",
+        "raw": null
+      }
+    }
+  },
+  "rawcolors": {
+    "slate50": "#f7f7f6",
+    "slate100": "#f3f3f2",
+    "slate200": "#e9e9e7",
+    "slate300": "#dadad7",
+    "slate400": "#c6c6c2",
+    "slate500": "#afafab",
+    "slate600": "#8f8f8a",
+    "slate700": "#6f6f6a",
+    "slate800": "#4f4f4a",
+    "slate900": "#2f2f2b",
+    "slate950": "#252522",
+    "neutral50": "#fafafa",
+    "neutral100": "#f5f5f5",
+    "neutral200": "#e5e5e5",
+    "neutral300": "#d4d4d4",
+    "neutral400": "#a3a3a3",
+    "neutral500": "#737373",
+    "neutral600": "#525252",
+    "neutral700": "#404040",
+    "neutral800": "#262626",
+    "neutral900": "#171717",
+    "neutral950": "#0a0a0a",
+    "red50": "#fef2f2",
+    "red100": "#ffe2e2",
+    "red200": "#fecaca",
+    "red300": "#fca5a5",
+    "red400": "#f87171",
+    "red500": "#ef4444",
+    "red600": "#dc2626",
+    "red700": "#b91c1c",
+    "red800": "#991b1b",
+    "red900": "#7f1d1d",
+    "red950": "#450a0a",
+    "blue50": "#eff6ff",
+    "blue100": "#dbeafe",
+    "blue200": "#bfdbfe",
+    "blue300": "#93c5fd",
+    "blue400": "#60a5fa",
+    "blue500": "#3b82f6",
+    "blue600": "#2563eb",
+    "blue700": "#1d4ed8",
+    "blue800": "#1e40af",
+    "blue900": "#1e3a8a",
+    "blue950": "#172554",
+    "green50": "#f0fdf4",
+    "green100": "#dcfce7",
+    "green200": "#bbf7d0",
+    "green300": "#86efac",
+    "green400": "#4ade80",
+    "green500": "#22c55e",
+    "green600": "#16a34a",
+    "green700": "#15803d",
+    "green800": "#166534",
+    "green900": "#14532d",
+    "green950": "#052e16",
+    "emerald50": "#ecfdf5",
+    "emerald100": "#d1fae5",
+    "emerald200": "#a7f3d0",
+    "emerald300": "#6ee7b7",
+    "emerald400": "#34d399",
+    "emerald500": "#10b981",
+    "emerald600": "#059669",
+    "emerald700": "#047857",
+    "emerald800": "#065f46",
+    "emerald900": "#064e3b",
+    "emerald950": "#022c22",
+    "amber50": "#fffbeb",
+    "amber100": "#fef3c7",
+    "amber200": "#fde68a",
+    "amber300": "#fcd34d",
+    "amber400": "#fbbf24",
+    "amber500": "#f59e0b",
+    "amber600": "#d97706",
+    "amber700": "#b45309",
+    "amber800": "#92400e",
+    "amber900": "#78350f",
+    "amber950": "#451a03",
+    "orange50": "#fff7ed",
+    "orange100": "#ffedd5",
+    "orange200": "#fed7aa",
+    "orange300": "#fdba74",
+    "orange400": "#fb923c",
+    "orange500": "#f97316",
+    "orange600": "#ea580c",
+    "orange700": "#c2410c",
+    "orange800": "#9a3412",
+    "orange900": "#7c2d12",
+    "orange950": "#431407",
+    "yellow50": "#fefce8",
+    "yellow100": "#fef9c3",
+    "yellow200": "#fef08a",
+    "yellow300": "#fde047",
+    "yellow400": "#facc15",
+    "yellow500": "#eab308",
+    "yellow600": "#ca8a04",
+    "yellow700": "#a16207",
+    "yellow800": "#854d0e",
+    "yellow900": "#713f12",
+    "yellow950": "#422006",
+    "lime50": "#f7fee7",
+    "lime100": "#ecfccb",
+    "lime200": "#d9f99d",
+    "lime300": "#bef264",
+    "lime400": "#a3e635",
+    "lime500": "#84cc16",
+    "lime600": "#65a30d",
+    "lime700": "#4d7c0f",
+    "lime800": "#3f6212",
+    "lime900": "#365314",
+    "lime950": "#1a2e05",
+    "teal50": "#f0fdfa",
+    "teal100": "#ccfbf1",
+    "teal200": "#99f6e4",
+    "teal300": "#5eead4",
+    "teal400": "#2dd4bf",
+    "teal500": "#14b8a6",
+    "teal600": "#0d9488",
+    "teal700": "#0f766e",
+    "teal800": "#115e59",
+    "teal900": "#134e4a",
+    "teal950": "#042f2e",
+    "cyan50": "#ecfeff",
+    "cyan100": "#cffafe",
+    "cyan200": "#a5f3fc",
+    "cyan300": "#67e8f9",
+    "cyan400": "#22d3ee",
+    "cyan500": "#06b6d4",
+    "cyan600": "#0891b2",
+    "cyan700": "#0e7490",
+    "cyan800": "#155e75",
+    "cyan900": "#164e63",
+    "cyan950": "#083344",
+    "sky50": "#f0f9ff",
+    "sky100": "#e0f2fe",
+    "sky200": "#bae6fd",
+    "sky300": "#7dd3fc",
+    "sky400": "#38bdf8",
+    "sky500": "#0ea5e9",
+    "sky600": "#0284c7",
+    "sky700": "#0369a1",
+    "sky800": "#075985",
+    "sky900": "#0c4a6e",
+    "sky950": "#082f49",
+    "indigo50": "#eef2ff",
+    "indigo100": "#e0e7ff",
+    "indigo200": "#c7d2fe",
+    "indigo300": "#a5b4fc",
+    "indigo400": "#818cf8",
+    "indigo500": "#6366f1",
+    "indigo600": "#4f46e5",
+    "indigo700": "#4338ca",
+    "indigo800": "#3730a3",
+    "indigo900": "#312e81",
+    "indigo950": "#1e1b4b",
+    "violet50": "#f5f3ff",
+    "violet100": "#ede9fe",
+    "violet200": "#ddd6fe",
+    "violet300": "#c4b5fd",
+    "violet400": "#a78bfa",
+    "violet500": "#8b5cf6",
+    "violet600": "#7c3aed",
+    "violet700": "#6d28d9",
+    "violet800": "#5b21b6",
+    "violet900": "#4c1d95",
+    "violet950": "#2e1065",
+    "purple50": "#faf5ff",
+    "purple100": "#f3e8ff",
+    "purple200": "#e9d5ff",
+    "purple300": "#d8b4fe",
+    "purple400": "#c084fc",
+    "purple500": "#a855f7",
+    "purple600": "#9333ea",
+    "purple700": "#7e22ce",
+    "purple800": "#6b21a8",
+    "purple900": "#581c87",
+    "purple950": "#3b0764",
+    "pink50": "#fdf2f8",
+    "pink100": "#fce7f3",
+    "pink200": "#fbcfe8",
+    "pink300": "#f9a8d4",
+    "pink400": "#f472b6",
+    "pink500": "#ec4899",
+    "pink600": "#db2777",
+    "pink700": "#be185d",
+    "pink800": "#9d174d",
+    "pink900": "#831843",
+    "pink950": "#500724",
+    "rose50": "#fff1f2",
+    "rose100": "#ffe4e6",
+    "rose200": "#fecdd3",
+    "rose300": "#fda4af",
+    "rose400": "#fb7185",
+    "rose500": "#f43f5e",
+    "rose600": "#e11d48",
+    "rose700": "#be123c",
+    "rose800": "#9f1239",
+    "rose900": "#881337",
+    "rose950": "#4c0519",
+    "zinc50": "#fafafa",
+    "zinc100": "#f4f4f5",
+    "zinc200": "#e4e4e7",
+    "zinc300": "#d4d4d8",
+    "zinc400": "#a1a1aa",
+    "zinc500": "#71717a",
+    "zinc600": "#52525b",
+    "zinc700": "#3f3f46",
+    "zinc800": "#27272a",
+    "zinc900": "#18181b",
+    "zinc950": "#09090b",
+    "stone50": "#fafaf9",
+    "stone100": "#f5f5f4",
+    "stone200": "#e7e5e4",
+    "stone300": "#d6d3d1",
+    "stone400": "#a8a29e",
+    "stone500": "#78716c",
+    "stone600": "#57534e",
+    "stone700": "#44403c",
+    "stone800": "#292524",
+    "stone900": "#1c1917",
+    "stone950": "#0c0a09",
+    "gray50": "#f9fafb",
+    "gray100": "#f3f4f6",
+    "gray200": "#e5e7eb",
+    "gray300": "#d1d5db",
+    "gray400": "#9ca3af",
+    "gray500": "#6b7280",
+    "gray600": "#4b5563",
+    "gray700": "#374151",
+    "gray800": "#1f2937",
+    "gray900": "#111827",
+    "gray950": "#030712",
+    "fuchsia50": "#fdf4ff",
+    "fuchsia100": "#fae8ff",
+    "fuchsia200": "#f5d0fe",
+    "fuchsia300": "#f0abfc",
+    "fuchsia400": "#e879f9",
+    "fuchsia500": "#d946ef",
+    "fuchsia600": "#c026d3",
+    "fuchsia700": "#a21caf",
+    "fuchsia800": "#86198f",
+    "fuchsia900": "#701a75",
+    "fuchsia950": "#4a044e",
+    "white": "#ffffff",
+    "black": "#000000"
+  },
+  "_exportedAt": "2026-02-27T15:12:59.035Z",
+  "_source": "repo"
+}
