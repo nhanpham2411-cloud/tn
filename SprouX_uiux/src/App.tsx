@@ -7296,152 +7296,301 @@ function LabelDocs() {
    Slider Docs
    ================================================================ */
 
+function SliderExploreBehavior() {
+  const [type, setType] = useState("default")
+  const [value, setValue] = useState([50])
+  const [rangeValue, setRangeValue] = useState([25, 75])
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          {type === "default" && (
+            <Slider value={value} onValueChange={setValue} max={100} step={1} className="w-[240px]" />
+          )}
+          {type === "range-narrow" && (
+            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} className="w-[240px]" />
+          )}
+          {type === "range-wide" && (
+            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} className="w-[240px]" />
+          )}
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Type" value={type} onChange={(v) => {
+              setType(v)
+              if (v === "default") setValue([50])
+              else if (v === "range-narrow") setRangeValue([40, 60])
+              else setRangeValue([15, 85])
+            }} options={[
+              { value: "default", label: "Default" },
+              { value: "range-narrow", label: "Range narrow" },
+              { value: "range-wide", label: "Range wide" },
+            ]} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SliderPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">defaultValue</td>
+            <td className="p-3 font-mono text-xs">number[]</td>
+            <td className="p-3 font-mono text-xs">[0]</td>
+            <td className="p-3">Initial value(s). Use 2 values for range mode.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">value</td>
+            <td className="p-3 font-mono text-xs">number[]</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Controlled value(s).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">onValueChange</td>
+            <td className="p-3 font-mono text-xs">{`(value: number[]) => void`}</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Callback when value changes.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">min</td>
+            <td className="p-3 font-mono text-xs">number</td>
+            <td className="p-3 font-mono text-xs">0</td>
+            <td className="p-3">Minimum value.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">max</td>
+            <td className="p-3 font-mono text-xs">number</td>
+            <td className="p-3 font-mono text-xs">100</td>
+            <td className="p-3">Maximum value.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">step</td>
+            <td className="p-3 font-mono text-xs">number</td>
+            <td className="p-3 font-mono text-xs">1</td>
+            <td className="p-3">Step increment.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">disabled</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">false</td>
+            <td className="p-3">Disables the slider.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SliderTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-accent-selected</td>
+            <td className="p-3 font-mono text-xs">var(--accent-selected)</td>
+            <td className="p-3">Track background (#dadad7)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-primary</td>
+            <td className="p-3 font-mono text-xs">var(--primary)</td>
+            <td className="p-3">Range fill (active portion)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-background</td>
+            <td className="p-3 font-mono text-xs">var(--background)</td>
+            <td className="p-3">Thumb fill (#f7f7f6)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">border-foreground</td>
+            <td className="p-3 font-mono text-xs">var(--foreground)</td>
+            <td className="p-3">Thumb border 1px (#252522)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">ring-ring</td>
+            <td className="p-3 font-mono text-xs">var(--ring) 3px</td>
+            <td className="p-3">Focus ring</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">opacity-50</td>
+            <td className="p-3 font-mono text-xs">0.5</td>
+            <td className="p-3">Disabled state opacity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const sliderSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
 function SliderDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={sliderSections} />
+
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
         <h1 className="typo-heading-2">Slider</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A range input that allows users to select a value or range by dragging a thumb along a track. Supports single and dual thumb.
+          A range input that allows users to select a value or range by dragging a thumb along a track. Supports single and dual thumb modes. Built on Radix Slider primitive.
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-        ]}
-        render={(p) => <Slider defaultValue={[50]} max={100} step={1} disabled={p.disabled} className="w-60" />}
+      <SliderExploreBehavior />
+
+      <InstallationSection
+        deps="pnpm add @radix-ui/react-slider"
+        importCode={`import { Slider } from "@/components/ui/slider"`}
       />
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Import</h2>
-        <Example title="Import" code={`import { Slider } from "@/components/ui/slider"`}>
-          <p className="text-xs text-muted-foreground italic">Import statement only — see examples below.</p>
-        </Example>
-      </section>
-
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Default"
+            description="Single thumb slider."
+            code={`<Slider defaultValue={[50]} max={100} step={1} />`}
+          >
+            <Slider defaultValue={[50]} max={100} step={1} className="w-[240px]" />
+          </Example>
 
-        <Example title="Default" code={`<Slider defaultValue={[50]} max={100} step={1} />`}>
-          <Slider defaultValue={[50]} max={100} step={1} className="w-60" />
-        </Example>
+          <Example
+            title="Range (dual thumb)"
+            description="Two thumbs for selecting a range."
+            code={`<Slider defaultValue={[25, 75]} max={100} step={1} />`}
+          >
+            <Slider defaultValue={[25, 75]} max={100} step={1} className="w-[240px]" />
+          </Example>
 
-        <Example title="With min/max/step" code={`<Slider defaultValue={[25]} min={0} max={100} step={5} />`}>
-          <Slider defaultValue={[25]} min={0} max={100} step={5} className="w-60" />
-        </Example>
+          <Example
+            title="Custom step"
+            description="Step increment of 5."
+            code={`<Slider defaultValue={[25]} min={0} max={100} step={5} />`}
+          >
+            <Slider defaultValue={[25]} min={0} max={100} step={5} className="w-[240px]" />
+          </Example>
 
-        <Example title="Range (dual thumb)" code={`<Slider defaultValue={[25, 75]} max={100} step={1} />`}>
-          <Slider defaultValue={[25, 75]} max={100} step={1} className="w-60" />
-        </Example>
-
-        <Example title="Disabled" code={`<Slider defaultValue={[50]} disabled />`}>
-          <Slider defaultValue={[50]} max={100} disabled className="w-60" />
-        </Example>
-      </section>
-
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">API Reference</h2>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted">
-                <th className="text-left p-3 font-semibold">Prop</th>
-                <th className="text-left p-3 font-semibold">Type</th>
-                <th className="text-left p-3 font-semibold">Default</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="p-3 font-mono text-xs">defaultValue</td>
-                <td className="p-3 font-mono text-xs">number[]</td>
-                <td className="p-3 font-mono text-xs">[0]</td>
-                <td className="p-3">Initial value(s). Use 2 values for range mode.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">value</td>
-                <td className="p-3 font-mono text-xs">number[]</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Controlled value(s).</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">onValueChange</td>
-                <td className="p-3 font-mono text-xs">(value: number[]) =&gt; void</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Callback when value changes.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">min</td>
-                <td className="p-3 font-mono text-xs">number</td>
-                <td className="p-3 font-mono text-xs">0</td>
-                <td className="p-3">Minimum value.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">max</td>
-                <td className="p-3 font-mono text-xs">number</td>
-                <td className="p-3 font-mono text-xs">100</td>
-                <td className="p-3">Maximum value.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">step</td>
-                <td className="p-3 font-mono text-xs">number</td>
-                <td className="p-3 font-mono text-xs">1</td>
-                <td className="p-3">Step increment.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">disabled</td>
-                <td className="p-3 font-mono text-xs">boolean</td>
-                <td className="p-3 font-mono text-xs">false</td>
-                <td className="p-3">Disables the slider.</td>
-              </tr>
-            </tbody>
-          </table>
+          <Example
+            title="Disabled"
+            description="Disabled at 50% opacity."
+            code={`<Slider defaultValue={[50]} disabled />`}
+          >
+            <Slider defaultValue={[50]} max={100} disabled className="w-[240px]" />
+          </Example>
         </div>
       </section>
 
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <SliderPropsTable />
+      </section>
+
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <SliderTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Use Slider for numeric ranges like volume, price, or brightness." />
-          <DontItem text="Don't use Slider when precise numeric input is needed — use Input type='number' instead." />
-          <DoItem text="Show the current value label alongside the slider for clarity." />
-          <DontItem text="Don't use too many steps — keep the slider experience smooth." />
-        </div>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Use Slider for numeric ranges like volume, price, or brightness." />
+        <DontItem text="Don't use Slider when precise numeric input is needed — use Input type='number' instead." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Show the current value label alongside the slider for clarity." />
+        <DontItem text="Don't use a slider with too many discrete steps — keep the experience smooth." />
       </section>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
-        <div className="rounded-lg border border-border divide-y divide-border">
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Input</p>
-              <p className="text-muted-foreground mt-0.5">Use for precise numeric values where typing is preferred.</p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Progress</p>
-              <p className="text-muted-foreground mt-0.5">Read-only progress indicator — use when the value is not user-controlled.</p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">Planned</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["Track Height", "6px", "—", "h-1.5"],
-        ["Thumb Size", "16×16px", "—", "size-md rounded-full"],
-        ["State", "Default", "—", "default"],
-        ["State", "Focus", "—", "CSS :focus-visible (3px ring)"],
-        ["State", "Disabled", "disabled", "true (opacity-50)"],
-        ["Range", "Single thumb", "defaultValue", "[50]"],
-        ["Range", "Dual thumb", "defaultValue", "[25, 75]"],
+      <FigmaMapping id="figma-mapping" nodeId="65:4902" rows={[
+        ["Track", "6px height", "—", "h-1.5 bg-accent-selected rounded-full"],
+        ["Range", "Primary fill", "—", "bg-primary"],
+        ["Thumb", "14px circle", "—", "size-[14px] bg-background border border-foreground"],
+        ["Type", "Default", "—", "Single thumb"],
+        ["Type", "Range narrow", "—", "Dual thumb, narrow range"],
+        ["Type", "Range wide", "—", "Dual thumb, wide range"],
+        ["State", "Focus", "focus-visible", "ring-[3px] ring-ring"],
+        ["State", "Disabled", "data-[disabled]", "opacity-50"],
       ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">Keyboard Navigation</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
+              <tbody className="divide-y divide-border">
+                <tr><td className="p-2 font-mono">Arrow Right/Up</td><td className="p-2">Increase value by one step</td></tr>
+                <tr><td className="p-2 font-mono">Arrow Left/Down</td><td className="p-2">Decrease value by one step</td></tr>
+                <tr><td className="p-2 font-mono">Home</td><td className="p-2">Set to minimum value</td></tr>
+                <tr><td className="p-2 font-mono">End</td><td className="p-2">Set to maximum value</td></tr>
+                <tr><td className="p-2 font-mono">Page Up</td><td className="p-2">Increase by a larger step</td></tr>
+                <tr><td className="p-2 font-mono">Page Down</td><td className="p-2">Decrease by a larger step</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">ARIA Attributes</h3>
+          <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
+            <li>Radix provides <code className="bg-muted px-1 rounded font-mono">role="slider"</code> on each thumb.</li>
+            <li>Each thumb has <code className="bg-muted px-1 rounded font-mono">aria-valuemin</code>, <code className="bg-muted px-1 rounded font-mono">aria-valuemax</code>, <code className="bg-muted px-1 rounded font-mono">aria-valuenow</code>.</li>
+            <li>Use <code className="bg-muted px-1 rounded font-mono">aria-label</code> when no visible label is provided.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="related" className="space-y-md pb-12">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-xl border border-border divide-y divide-border text-xs">
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Input</p>
+            <p className="text-muted-foreground mt-0.5">Use for precise numeric values where typing is preferred.</p>
+          </div>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Progress</p>
+            <p className="text-muted-foreground mt-0.5">Read-only progress indicator — use when the value is not user-controlled.</p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
