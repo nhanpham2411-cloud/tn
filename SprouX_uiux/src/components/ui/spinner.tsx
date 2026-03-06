@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
  * Sizes: sm (16px), default (24px), lg (32px).
  */
 const spinnerVariants = cva(
-  "animate-spin text-muted-foreground",
+  "animate-spin text-foreground",
   {
     variants: {
       size: {

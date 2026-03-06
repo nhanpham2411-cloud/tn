@@ -26,7 +26,7 @@ const selectTriggerVariants = cva(
         lg: "h-3xl pl-md pr-xs gap-sm",
         default: "h-9 pl-sm pr-xs gap-xs",
         sm: "h-2xl px-xs gap-2xs",
-        xs: "h-2xl px-2xs gap-1",
+        xs: "h-2xl px-2xs gap-3xs",
       },
     },
     defaultVariants: {
@@ -139,7 +139,7 @@ function SelectSeparator({
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      className={cn("pointer-events-none -mx-1 my-1 h-px bg-border", className)}
       {...props}
     />
   )
