@@ -7722,9 +7722,54 @@ function ToggleButtonTab() {
   )
 }
 
+function ToggleGroupTab() {
+  const [type, setType] = useState("single")
+  const [skin, setSkin] = useState("default")
+  const [size, setSize] = useState("default")
+
+  return (
+    <div className="space-y-md">
+      <div className="p-4xl flex items-center justify-center min-h-[120px]">
+        {type === "single" ? (
+          <ToggleGroup type="single" variant={skin === "outlined" ? "outline" : "default"} size={size as "default" | "sm" | "lg" | "mini"} defaultValue="center">
+            <ToggleGroupItem value="left" aria-label="Align left"><AlignLeft className="size-md" /></ToggleGroupItem>
+            <ToggleGroupItem value="center" aria-label="Align center"><AlignCenter className="size-md" /></ToggleGroupItem>
+            <ToggleGroupItem value="right" aria-label="Align right"><AlignRight className="size-md" /></ToggleGroupItem>
+          </ToggleGroup>
+        ) : (
+          <ToggleGroup type="multiple" variant={skin === "outlined" ? "outline" : "default"} size={size as "default" | "sm" | "lg" | "mini"} defaultValue={["bold"]}>
+            <ToggleGroupItem value="bold" aria-label="Bold"><Bold className="size-md" /></ToggleGroupItem>
+            <ToggleGroupItem value="italic" aria-label="Italic"><Italic className="size-md" /></ToggleGroupItem>
+            <ToggleGroupItem value="underline" aria-label="Underline"><Underline className="size-md" /></ToggleGroupItem>
+          </ToggleGroup>
+        )}
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Type" value={type} onChange={setType} options={[
+            { value: "single", label: "Single" },
+            { value: "multiple", label: "Multiple" },
+          ]} />
+          <PropertyTabs label="Skin" value={skin} onChange={setSkin} options={[
+            { value: "default", label: "Ghost" },
+            { value: "outlined", label: "Outlined" },
+          ]} />
+          <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+            { value: "lg", label: "Large" },
+            { value: "default", label: "Default" },
+            { value: "sm", label: "Small" },
+            { value: "mini", label: "Mini" },
+          ]} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const toggleBehaviorTabs = [
   { value: "icon-button", label: "Toggle Icon Button" },
   { value: "button", label: "Toggle Button" },
+  { value: "group", label: "Toggle Group" },
 ]
 
 function ToggleExploreBehavior() {
@@ -7750,6 +7795,7 @@ function ToggleExploreBehavior() {
         </div>
         {activeTab === "icon-button" && <ToggleIconButtonTab />}
         {activeTab === "button" && <ToggleButtonTab />}
+        {activeTab === "group" && <ToggleGroupTab />}
       </div>
     </section>
   )
@@ -7810,278 +7856,10 @@ function TogglePropsTable() {
   )
 }
 
-function ToggleTokensTable() {
-  return (
-    <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border bg-muted">
-            <th className="text-left p-3 font-semibold">Token</th>
-            <th className="text-left p-3 font-semibold">Value</th>
-            <th className="text-left p-3 font-semibold">Usage</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          <tr>
-            <td className="p-3 font-mono text-xs">bg-muted</td>
-            <td className="p-3 font-mono text-xs">var(--muted)</td>
-            <td className="p-3">Hover bg + Active (on) bg (#f3f3f2)</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-mono text-xs">text-muted-foreground</td>
-            <td className="p-3 font-mono text-xs">var(--muted-foreground)</td>
-            <td className="p-3">Off-state icon/text (#6f6f6a)</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-mono text-xs">text-foreground</td>
-            <td className="p-3 font-mono text-xs">var(--foreground)</td>
-            <td className="p-3">Hover + Active icon/text (#252522)</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-mono text-xs">border-border</td>
-            <td className="p-3 font-mono text-xs">var(--border)</td>
-            <td className="p-3">Outline variant border (#e9e9e7)</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-mono text-xs">ring-ring</td>
-            <td className="p-3 font-mono text-xs">var(--ring) 3px</td>
-            <td className="p-3">Focus ring</td>
-          </tr>
-          <tr>
-            <td className="p-3 font-mono text-xs">opacity-50</td>
-            <td className="p-3 font-mono text-xs">0.5</td>
-            <td className="p-3">Disabled state</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-const toggleSections: TocSection[] = [
-  { id: "explore-behavior", label: "Explore Behavior" },
-  { id: "installation", label: "Installation" },
-  { id: "examples", label: "Examples" },
-  { id: "props", label: "Props" },
-  { id: "design-tokens", label: "Design Tokens" },
-  { id: "best-practices", label: "Best Practices" },
-  { id: "figma-mapping", label: "Figma Mapping" },
-  { id: "accessibility", label: "Accessibility" },
-  { id: "related", label: "Related Components" },
-]
-
-function ToggleDocs() {
-  return (
-    <div className="space-y-12">
-      <TableOfContents sections={toggleSections} />
-
-      <header className="space-y-md pb-3xl">
-        <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
-        <h1 className="typo-heading-2">Toggle</h1>
-        <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A two-state button that can be toggled on or off. Commonly used for formatting options like bold, italic, underline. Built on Radix Toggle primitive.
-        </p>
-      </header>
-
-      <ToggleExploreBehavior />
-
-      <InstallationSection
-        deps="pnpm add @radix-ui/react-toggle"
-        importCode={`import { Toggle } from "@/components/ui/toggle"`}
-      />
-
-      <section id="examples" className="space-y-md pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Examples</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Example
-            title="Ghost (default)"
-            description="Icon-only toggle with ghost style."
-            code={`<Toggle aria-label="Toggle bold">\n  <Bold className="size-md" />\n</Toggle>`}
-          >
-            <Toggle aria-label="Toggle bold"><Bold className="size-md" /></Toggle>
-          </Example>
-
-          <Example
-            title="Outline"
-            description="Toggle with visible border."
-            code={`<Toggle variant="outline" aria-label="Toggle italic">\n  <Italic className="size-md" />\n</Toggle>`}
-          >
-            <Toggle variant="outline" aria-label="Toggle italic"><Italic className="size-md" /></Toggle>
-          </Example>
-
-          <Example
-            title="With text"
-            description="Toggle button with icon and label."
-            code={`<Toggle aria-label="Toggle italic">\n  <Italic className="size-md" />\n  Italic\n</Toggle>`}
-          >
-            <Toggle aria-label="Toggle italic"><Italic className="size-md" />Italic</Toggle>
-          </Example>
-
-          <Example
-            title="All sizes"
-            description="Mini (24px), Small (32px), Default (36px), Large (40px)."
-            code={`<Toggle size="mini">...</Toggle>\n<Toggle size="sm">...</Toggle>\n<Toggle>...</Toggle>\n<Toggle size="lg">...</Toggle>`}
-          >
-            <div className="flex items-center gap-xs">
-              <Toggle size="mini" aria-label="Bold"><Bold className="size-md" /></Toggle>
-              <Toggle size="sm" aria-label="Bold"><Bold className="size-md" /></Toggle>
-              <Toggle aria-label="Bold"><Bold className="size-md" /></Toggle>
-              <Toggle size="lg" aria-label="Bold"><Bold className="size-md" /></Toggle>
-            </div>
-          </Example>
-
-          <Example
-            title="Pressed (controlled)"
-            description="Toggle in active/on state."
-            code={`<Toggle pressed aria-label="Bold">\n  <Bold className="size-md" />\n</Toggle>`}
-          >
-            <Toggle pressed aria-label="Bold"><Bold className="size-md" /></Toggle>
-          </Example>
-
-          <Example
-            title="Disabled"
-            description="Non-interactive at 50% opacity."
-            code={`<Toggle disabled aria-label="Bold">\n  <Bold className="size-md" />\n</Toggle>`}
-          >
-            <Toggle disabled aria-label="Bold"><Bold className="size-md" /></Toggle>
-          </Example>
-        </div>
-      </section>
-
-      <section id="props" className="space-y-md pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Props</h2>
-        <TogglePropsTable />
-      </section>
-
-      <section id="design-tokens" className="space-y-md pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
-        <ToggleTokensTable />
-      </section>
-
-      <section id="best-practices" className="space-y-md pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
-        <DoItem text="Always provide an aria-label when using icon-only toggles." />
-        <DontItem text="Don't use text-only toggles without an icon — they look like plain buttons." />
-        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
-        <DoItem text="Use Toggle for binary on/off actions (bold, mute, bookmark)." />
-        <DontItem text="Don't use Toggle for navigation — use Tabs or Buttons instead." />
-      </section>
-
-      <FigmaMapping id="figma-mapping" nodeId="164:20378" rows={[
-        ["Skin", "Ghost", "variant", '"default" — no border'],
-        ["Skin", "Outlined", "variant", '"outline" — visible border'],
-        ["Size", "Large (40px)", "size", '"lg"'],
-        ["Size", "Default (36px)", "size", '"default"'],
-        ["Size", "Small (32px)", "size", '"sm"'],
-        ["Size", "Mini (24px)", "size", '"mini"'],
-        ["Active?", "Yes", "pressed", "true — data-[state=on]"],
-        ["Active?", "No", "pressed", "false — data-[state=off]"],
-        ["State", "Focus", "focus-visible", "ring-[3px] ring-ring"],
-        ["State", "Disabled", "disabled", "true — opacity-50"],
-      ]} />
-
-      <section id="accessibility" className="space-y-md pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
-        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
-          <h3 className="font-body font-semibold text-sm text-foreground">Keyboard Navigation</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
-              <tbody className="divide-y divide-border">
-                <tr><td className="p-2 font-mono">Space</td><td className="p-2">Toggle pressed state</td></tr>
-                <tr><td className="p-2 font-mono">Enter</td><td className="p-2">Toggle pressed state</td></tr>
-                <tr><td className="p-2 font-mono">Tab</td><td className="p-2">Move focus to/from toggle</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
-          <h3 className="font-body font-semibold text-sm text-foreground">ARIA Attributes</h3>
-          <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
-            <li>Radix applies <code className="bg-muted px-1 rounded font-mono">aria-pressed</code> automatically.</li>
-            <li>Use <code className="bg-muted px-1 rounded font-mono">aria-label</code> for icon-only toggles.</li>
-            <li><code className="bg-muted px-1 rounded font-mono">data-state="on" | "off"</code> reflects current state.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="related" className="space-y-md pb-12">
-        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
-        <div className="rounded-xl border border-border divide-y divide-border text-xs">
-          <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Toggle Group</p>
-            <p className="text-muted-foreground mt-0.5">Group of toggle buttons with single or multiple selection.</p>
-          </div>
-          <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Button</p>
-            <p className="text-muted-foreground mt-0.5">Use Button for one-time actions, Toggle for persistent on/off state.</p>
-          </div>
-          <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Switch</p>
-            <p className="text-muted-foreground mt-0.5">Use Switch for settings that take effect immediately.</p>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-
-/* ================================================================
-   Toggle Group Docs
-   ================================================================ */
-
-function ToggleGroupExploreBehavior() {
-  const [type, setType] = useState("single")
-  const [skin, setSkin] = useState("default")
-  const [size, setSize] = useState("default")
-
-  return (
-    <section id="explore-behavior" className="space-y-md">
-      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
-      <div className="rounded-xl border border-border overflow-hidden bg-background">
-        <div className="p-4xl flex items-center justify-center min-h-[120px]">
-          {type === "single" ? (
-            <ToggleGroup type="single" variant={skin === "outlined" ? "outline" : "default"} size={size as "default" | "sm" | "lg" | "mini"} defaultValue="center">
-              <ToggleGroupItem value="left" aria-label="Align left"><AlignLeft className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="center" aria-label="Align center"><AlignCenter className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="right" aria-label="Align right"><AlignRight className="size-md" /></ToggleGroupItem>
-            </ToggleGroup>
-          ) : (
-            <ToggleGroup type="multiple" variant={skin === "outlined" ? "outline" : "default"} size={size as "default" | "sm" | "lg" | "mini"} defaultValue={["bold"]}>
-              <ToggleGroupItem value="bold" aria-label="Bold"><Bold className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="italic" aria-label="Italic"><Italic className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="underline" aria-label="Underline"><Underline className="size-md" /></ToggleGroupItem>
-            </ToggleGroup>
-          )}
-        </div>
-        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
-          <div className="space-y-sm">
-            <PropertyTabs label="Type" value={type} onChange={setType} options={[
-              { value: "single", label: "Single" },
-              { value: "multiple", label: "Multiple" },
-            ]} />
-            <PropertyTabs label="Skin" value={skin} onChange={setSkin} options={[
-              { value: "default", label: "Ghost" },
-              { value: "outlined", label: "Outlined" },
-            ]} />
-            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
-              { value: "lg", label: "Large" },
-              { value: "default", label: "Default" },
-              { value: "sm", label: "Small" },
-              { value: "mini", label: "Mini" },
-            ]} />
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function ToggleGroupPropsTable() {
   return (
     <div className="space-y-md">
-      <h3 className="typo-paragraph-bold">ToggleGroup</h3>
+      <h3 className="typo-paragraph-bold mt-lg">ToggleGroup</h3>
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-sm">
           <thead>
@@ -8157,7 +7935,55 @@ function ToggleGroupPropsTable() {
   )
 }
 
-const toggleGroupSections: TocSection[] = [
+function ToggleTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-muted</td>
+            <td className="p-3 font-mono text-xs">var(--muted)</td>
+            <td className="p-3">Hover bg + Active (on) bg (#f3f3f2)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">text-muted-foreground</td>
+            <td className="p-3 font-mono text-xs">var(--muted-foreground)</td>
+            <td className="p-3">Off-state icon/text (#6f6f6a)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">text-foreground</td>
+            <td className="p-3 font-mono text-xs">var(--foreground)</td>
+            <td className="p-3">Hover + Active icon/text (#252522)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">border-border</td>
+            <td className="p-3 font-mono text-xs">var(--border)</td>
+            <td className="p-3">Outline variant border (#e9e9e7)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">ring-ring</td>
+            <td className="p-3 font-mono text-xs">var(--ring) 3px</td>
+            <td className="p-3">Focus ring</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">opacity-50</td>
+            <td className="p-3 font-mono text-xs">0.5</td>
+            <td className="p-3">Disabled state</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const toggleSections: TocSection[] = [
   { id: "explore-behavior", label: "Explore Behavior" },
   { id: "installation", label: "Installation" },
   { id: "examples", label: "Examples" },
@@ -8169,43 +7995,96 @@ const toggleGroupSections: TocSection[] = [
   { id: "related", label: "Related Components" },
 ]
 
-function ToggleGroupDocs() {
+function ToggleDocs() {
   return (
     <div className="space-y-12">
-      <TableOfContents sections={toggleGroupSections} />
+      <TableOfContents sections={toggleSections} />
 
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
-        <h1 className="typo-heading-2">Toggle Group</h1>
+        <h1 className="typo-heading-2">Toggle & Toggle Group</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A group of toggle buttons supporting single or multiple selection. Ideal for toolbar actions, text formatting, view modes. Built on Radix Toggle Group primitive.
+          Toggle: A two-state button that can be either on or off. Toggle Group: A set of two-state buttons that can be toggled on or off. A single Toggle can be created by using the "single" component variant.
         </p>
       </header>
 
-      <ToggleGroupExploreBehavior />
+      <ToggleExploreBehavior />
 
       <InstallationSection
-        deps="pnpm add @radix-ui/react-toggle-group"
-        importCode={`import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"`}
+        deps="pnpm add @radix-ui/react-toggle @radix-ui/react-toggle-group"
+        importCode={`import { Toggle } from "@/components/ui/toggle"\nimport { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"`}
       />
 
       <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Example
-            title="Single selection"
+            title="Ghost (default)"
+            description="Icon-only toggle with ghost style."
+            code={`<Toggle aria-label="Toggle bold">\n  <Bold className="size-md" />\n</Toggle>`}
+          >
+            <Toggle aria-label="Toggle bold"><Bold className="size-md" /></Toggle>
+          </Example>
+
+          <Example
+            title="Outline"
+            description="Toggle with visible border."
+            code={`<Toggle variant="outline" aria-label="Toggle italic">\n  <Italic className="size-md" />\n</Toggle>`}
+          >
+            <Toggle variant="outline" aria-label="Toggle italic"><Italic className="size-md" /></Toggle>
+          </Example>
+
+          <Example
+            title="With text"
+            description="Toggle button with icon and label."
+            code={`<Toggle aria-label="Toggle italic">\n  <Italic className="size-md" />\n  Italic\n</Toggle>`}
+          >
+            <Toggle aria-label="Toggle italic"><Italic className="size-md" />Italic</Toggle>
+          </Example>
+
+          <Example
+            title="All sizes"
+            description="Mini (24px), Small (32px), Default (36px), Large (40px)."
+            code={`<Toggle size="mini">...</Toggle>\n<Toggle size="sm">...</Toggle>\n<Toggle>...</Toggle>\n<Toggle size="lg">...</Toggle>`}
+          >
+            <div className="flex items-center gap-xs">
+              <Toggle size="mini" aria-label="Bold"><Bold className="size-md" /></Toggle>
+              <Toggle size="sm" aria-label="Bold"><Bold className="size-md" /></Toggle>
+              <Toggle aria-label="Bold"><Bold className="size-md" /></Toggle>
+              <Toggle size="lg" aria-label="Bold"><Bold className="size-md" /></Toggle>
+            </div>
+          </Example>
+
+          <Example
+            title="Pressed (controlled)"
+            description="Toggle in active/on state."
+            code={`<Toggle pressed aria-label="Bold">\n  <Bold className="size-md" />\n</Toggle>`}
+          >
+            <Toggle pressed aria-label="Bold"><Bold className="size-md" /></Toggle>
+          </Example>
+
+          <Example
+            title="Disabled"
+            description="Non-interactive at 50% opacity."
+            code={`<Toggle disabled aria-label="Bold">\n  <Bold className="size-md" />\n</Toggle>`}
+          >
+            <Toggle disabled aria-label="Bold"><Bold className="size-md" /></Toggle>
+          </Example>
+
+          <Example
+            title="Toggle Group — Single"
             description="One active item at a time."
             code={`<ToggleGroup type="single" defaultValue="center">\n  <ToggleGroupItem value="left"><AlignLeft /></ToggleGroupItem>\n  <ToggleGroupItem value="center"><AlignCenter /></ToggleGroupItem>\n  <ToggleGroupItem value="right"><AlignRight /></ToggleGroupItem>\n</ToggleGroup>`}
           >
             <ToggleGroup type="single" defaultValue="center">
-              <ToggleGroupItem value="left" aria-label="Align left"><AlignLeft className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="center" aria-label="Align center"><AlignCenter className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="right" aria-label="Align right"><AlignRight className="size-md" /></ToggleGroupItem>
+              <ToggleGroupItem value="left" aria-label="Left"><AlignLeft className="size-md" /></ToggleGroupItem>
+              <ToggleGroupItem value="center" aria-label="Center"><AlignCenter className="size-md" /></ToggleGroupItem>
+              <ToggleGroupItem value="right" aria-label="Right"><AlignRight className="size-md" /></ToggleGroupItem>
             </ToggleGroup>
           </Example>
 
           <Example
-            title="Multiple selection"
+            title="Toggle Group — Multiple"
             description="Any number of items can be active."
             code={`<ToggleGroup type="multiple" defaultValue={["bold"]}>\n  <ToggleGroupItem value="bold"><Bold /></ToggleGroupItem>\n  <ToggleGroupItem value="italic"><Italic /></ToggleGroupItem>\n  <ToggleGroupItem value="underline"><Underline /></ToggleGroupItem>\n</ToggleGroup>`}
           >
@@ -8217,7 +8096,7 @@ function ToggleGroupDocs() {
           </Example>
 
           <Example
-            title="Outline variant"
+            title="Toggle Group — Outline"
             description="Bordered toggle group items."
             code={`<ToggleGroup type="single" variant="outline" defaultValue="left">\n  ...\n</ToggleGroup>`}
           >
@@ -8229,14 +8108,13 @@ function ToggleGroupDocs() {
           </Example>
 
           <Example
-            title="Mini size"
-            description="Compact 24px toggle group."
-            code={`<ToggleGroup type="multiple" size="mini">\n  ...\n</ToggleGroup>`}
+            title="Toggle Group — With text"
+            description="Toggle group with icon and label."
+            code={`<ToggleGroup type="single" variant="outline" defaultValue="all">\n  <ToggleGroupItem value="all">All</ToggleGroupItem>\n  <ToggleGroupItem value="missed">Missed</ToggleGroupItem>\n</ToggleGroup>`}
           >
-            <ToggleGroup type="multiple" size="mini" defaultValue={["bold"]}>
-              <ToggleGroupItem value="bold" aria-label="Bold"><Bold className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="italic" aria-label="Italic"><Italic className="size-md" /></ToggleGroupItem>
-              <ToggleGroupItem value="underline" aria-label="Underline"><Underline className="size-md" /></ToggleGroupItem>
+            <ToggleGroup type="single" variant="outline" defaultValue="all">
+              <ToggleGroupItem value="all">All</ToggleGroupItem>
+              <ToggleGroupItem value="missed">Missed</ToggleGroupItem>
             </ToggleGroup>
           </Example>
         </div>
@@ -8244,35 +8122,43 @@ function ToggleGroupDocs() {
 
       <section id="props" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <h3 className="typo-paragraph-bold">Toggle</h3>
+        <TogglePropsTable />
         <ToggleGroupPropsTable />
       </section>
 
       <section id="design-tokens" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
-        <p className="text-sm text-muted-foreground">Inherits all tokens from Toggle. See <span className="font-semibold text-foreground">Toggle &rarr; Design Tokens</span>.</p>
+        <ToggleTokensTable />
       </section>
 
       <section id="best-practices" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
         <h3 className="typo-paragraph-bold mt-lg">Content</h3>
-        <DoItem text="Use type='single' for mutually exclusive options like text alignment." />
-        <DontItem text="Don't mix standalone Toggle and ToggleGroup in the same toolbar." />
+        <DoItem text="Always provide an aria-label when using icon-only toggles." />
+        <DontItem text="Don't use text-only toggles without an icon — they look like plain buttons." />
         <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Use Toggle for binary on/off actions (bold, mute, bookmark)." />
+        <DontItem text="Don't use Toggle for navigation — use Tabs or Buttons instead." />
+        <h3 className="typo-paragraph-bold mt-lg">Toggle Group</h3>
+        <DoItem text="Use type='single' for mutually exclusive options like text alignment." />
         <DoItem text="Use type='multiple' for independent options like bold + italic + underline." />
-        <DontItem text="Don't use ToggleGroup for navigation — use Tabs instead." />
+        <DontItem text="Don't mix standalone Toggle and ToggleGroup in the same toolbar." />
       </section>
 
-      <FigmaMapping id="figma-mapping" nodeId="164:20378" rows={[
-        ["Type", "Single", "type", '"single" — one at a time'],
-        ["Type", "Multiple", "type", '"multiple" — any number'],
-        ["Skin", "Ghost", "variant", '"default" (inherits Toggle)'],
-        ["Skin", "Outlined", "variant", '"outline" (inherits Toggle)'],
+      <FigmaMapping id="figma-mapping" nodeId="274:53016" rows={[
+        ["Component", "Toggle Icon Button", "164:20378", "Icon-only toggle"],
+        ["Component", "Toggle Button", "816:112827", "Toggle with text label"],
+        ["Skin", "Ghost", "variant", '"default" — no border'],
+        ["Skin", "Outlined", "variant", '"outline" — visible border'],
         ["Size", "Large (40px)", "size", '"lg"'],
         ["Size", "Default (36px)", "size", '"default"'],
         ["Size", "Small (32px)", "size", '"sm"'],
         ["Size", "Mini (24px)", "size", '"mini"'],
-        ["Position", "Left / Middle / Right", "—", "Handled by flex layout in ToggleGroup"],
-        ["Active?", "Yes / No", "—", "data-[state=on] / data-[state=off]"],
+        ["Active?", "Yes", "pressed", "true — data-[state=on]"],
+        ["Active?", "No", "pressed", "false — data-[state=off]"],
+        ["Position", "Single / Left / Middle / Right", "—", "ToggleGroup handles position via flex"],
+        ["State", "Focus", "focus-visible", "ring-[3px] ring-ring"],
         ["State", "Disabled", "disabled", "true — opacity-50"],
       ]} />
 
@@ -8284,11 +8170,10 @@ function ToggleGroupDocs() {
             <table className="w-full text-xs">
               <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
               <tbody className="divide-y divide-border">
-                <tr><td className="p-2 font-mono">Tab</td><td className="p-2">Move focus into/out of group</td></tr>
-                <tr><td className="p-2 font-mono">Arrow Left/Right</td><td className="p-2">Move focus between items</td></tr>
-                <tr><td className="p-2 font-mono">Space / Enter</td><td className="p-2">Toggle focused item</td></tr>
-                <tr><td className="p-2 font-mono">Home</td><td className="p-2">Focus first item</td></tr>
-                <tr><td className="p-2 font-mono">End</td><td className="p-2">Focus last item</td></tr>
+                <tr><td className="p-2 font-mono">Space / Enter</td><td className="p-2">Toggle pressed state</td></tr>
+                <tr><td className="p-2 font-mono">Tab</td><td className="p-2">Move focus to/from toggle (or into/out of group)</td></tr>
+                <tr><td className="p-2 font-mono">Arrow Left/Right</td><td className="p-2">Move between items in Toggle Group</td></tr>
+                <tr><td className="p-2 font-mono">Home / End</td><td className="p-2">Focus first/last item in Toggle Group</td></tr>
               </tbody>
             </table>
           </div>
@@ -8296,9 +8181,9 @@ function ToggleGroupDocs() {
         <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
           <h3 className="font-body font-semibold text-sm text-foreground">ARIA Attributes</h3>
           <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
-            <li>Radix applies <code className="bg-muted px-1 rounded font-mono">role="group"</code> to the container.</li>
-            <li>Each item has <code className="bg-muted px-1 rounded font-mono">aria-pressed</code> for state.</li>
-            <li>Use <code className="bg-muted px-1 rounded font-mono">aria-label</code> on the group for screen readers.</li>
+            <li>Radix applies <code className="bg-muted px-1 rounded font-mono">aria-pressed</code> automatically.</li>
+            <li>Use <code className="bg-muted px-1 rounded font-mono">aria-label</code> for icon-only toggles.</li>
+            <li><code className="bg-muted px-1 rounded font-mono">data-state="on" | "off"</code> reflects current state.</li>
           </ul>
         </div>
       </section>
@@ -8307,22 +8192,23 @@ function ToggleGroupDocs() {
         <h2 className="font-heading font-semibold text-xl">Related Components</h2>
         <div className="rounded-xl border border-border divide-y divide-border text-xs">
           <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Toggle</p>
-            <p className="text-muted-foreground mt-0.5">Standalone toggle for single on/off actions.</p>
+            <p className="font-semibold text-foreground">Toggle Group</p>
+            <p className="text-muted-foreground mt-0.5">Group of toggle buttons with single or multiple selection.</p>
           </div>
           <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Tabs</p>
-            <p className="text-muted-foreground mt-0.5">Use Tabs for content switching, ToggleGroup for toolbar actions.</p>
+            <p className="font-semibold text-foreground">Button</p>
+            <p className="text-muted-foreground mt-0.5">Use Button for one-time actions, Toggle for persistent on/off state.</p>
           </div>
           <div className="px-5 py-3.5">
-            <p className="font-semibold text-foreground">Radio Group</p>
-            <p className="text-muted-foreground mt-0.5">Use Radio Group for form selections with labels.</p>
+            <p className="font-semibold text-foreground">Switch</p>
+            <p className="text-muted-foreground mt-0.5">Use Switch for settings that take effect immediately.</p>
           </div>
         </div>
       </section>
     </div>
   )
 }
+
 
 /* ================================================================
    Card Docs
@@ -15324,8 +15210,7 @@ const componentCategories = [
       { id: "label", label: "Label" },
       { id: "radio", label: "Radio" },
       { id: "slider", label: "Slider" },
-      { id: "toggle", label: "Toggle" },
-      { id: "toggle-group", label: "Toggle Group" },
+      { id: "toggle", label: "Toggle & Toggle Group" },
       { id: "combobox", label: "Combobox" },
       { id: "calendar", label: "Calendar" },
       { id: "date-picker", label: "Date Picker" },
@@ -15590,7 +15475,6 @@ function App() {
           {active === "label" && <LabelDocs />}
           {active === "radio" && <RadioDocs />}
           {active === "toggle" && <ToggleDocs />}
-          {active === "toggle-group" && <ToggleGroupDocs />}
           {active === "slider" && <SliderDocs />}
           {active === "card" && <CardDocs />}
           {active === "badge" && <BadgeDocs />}
