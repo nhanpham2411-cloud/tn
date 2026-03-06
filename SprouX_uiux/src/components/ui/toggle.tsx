@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils"
  * Figma: [SprouX - DS] Foundation & Component
  *
  * A two-state button that can be toggled on or off (e.g. bold, italic).
- * Variants: default | outline
- * Sizes:    default (36px) | sm (32px) | lg (40px)
+ * Variants: default (ghost) | outline
+ * Sizes:    default (36px) | sm (32px) | lg (40px) | mini (24px)
  */
 const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-xs rounded-lg text-sm font-medium tracking-sm transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg:not([class*='size-'])]:size-md",
+  "inline-flex items-center justify-center gap-xs rounded-lg typo-paragraph-mini-bold transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg:not([class*='size-'])]:size-md",
   {
     variants: {
       variant: {
@@ -27,6 +27,7 @@ const toggleVariants = cva(
         default: "h-9 px-sm min-w-9",
         sm: "h-2xl px-xs min-w-8",
         lg: "h-3xl px-md min-w-10",
+        mini: "h-xl px-3xs min-w-xl rounded-sm",
       },
     },
     defaultVariants: {

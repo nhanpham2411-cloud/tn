@@ -12,6 +12,7 @@ import { toggleVariants } from "@/components/ui/toggle"
  *
  * A group of toggle buttons supporting single or multiple selection.
  * Types: "single" (one at a time) | "multiple" (any number)
+ * Sizes: default | sm | lg | mini (inherited from Toggle)
  */
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants>
