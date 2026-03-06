@@ -6640,18 +6640,18 @@ function RichSwitchGroupTab() {
     <>
       <div className="p-4xl flex items-center justify-center min-h-[200px]">
         <div className={cn(
-          "flex gap-xs items-start rounded-xl border bg-card px-sm py-xs w-[260px]",
+          "flex gap-xs items-start rounded-[10px] border bg-card px-sm py-xs w-[240px]",
           isChecked ? "border-primary" : "border-border",
           isFlipped && "flex-row-reverse"
         )}>
-          <div className="flex items-center h-[20px] shrink-0">
+          <div className="flex items-center pt-[1.5px] shrink-0">
             <Switch
               checked={isChecked}
               onCheckedChange={(v) => setChecked(v ? "true" : "false")}
             />
           </div>
-          <div className="flex-1 min-w-0 space-y-[2px]">
-            <span className="typo-paragraph-sm text-foreground">Label</span>
+          <div className="flex-1 min-w-0">
+            <p className="typo-paragraph-sm text-foreground-subtle">Label</p>
             {showLine2 && (
               <p className="typo-paragraph-mini text-muted-foreground">Secondary text</p>
             )}
