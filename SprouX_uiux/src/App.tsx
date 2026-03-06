@@ -7298,26 +7298,33 @@ function LabelDocs() {
 
 function SliderExploreBehavior() {
   const [type, setType] = useState("default")
+  const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal")
   const [value, setValue] = useState([50])
   const [rangeValue, setRangeValue] = useState([25, 75])
+
+  const isVertical = orientation === "vertical"
 
   return (
     <section id="explore-behavior" className="space-y-md">
       <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
       <div className="rounded-xl border border-border overflow-hidden bg-background">
-        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <div className="p-4xl flex items-center justify-center min-h-[200px]">
           {type === "default" && (
-            <Slider value={value} onValueChange={setValue} max={100} step={1} className="w-[240px]" />
+            <Slider value={value} onValueChange={setValue} max={100} step={1} orientation={orientation} className={isVertical ? "h-[180px]" : "w-[240px]"} />
           )}
           {type === "range-narrow" && (
-            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} className="w-[240px]" />
+            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} orientation={orientation} className={isVertical ? "h-[180px]" : "w-[240px]"} />
           )}
           {type === "range-wide" && (
-            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} className="w-[240px]" />
+            <Slider value={rangeValue} onValueChange={setRangeValue} max={100} step={1} orientation={orientation} className={isVertical ? "h-[180px]" : "w-[240px]"} />
           )}
         </div>
         <div className="border-t border-border bg-muted/50 p-lg space-y-md">
           <div className="space-y-sm">
+            <PropertyTabs label="Orientation" value={orientation} onChange={(v) => setOrientation(v as "horizontal" | "vertical")} options={[
+              { value: "horizontal", label: "Horizontal" },
+              { value: "vertical", label: "Vertical" },
+            ]} />
             <PropertyTabs label="Type" value={type} onChange={(v) => {
               setType(v)
               if (v === "default") setValue([50])
@@ -7383,6 +7390,12 @@ function SliderPropsTable() {
             <td className="p-3 font-mono text-xs">number</td>
             <td className="p-3 font-mono text-xs">1</td>
             <td className="p-3">Step increment.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">orientation</td>
+            <td className="p-3 font-mono text-xs">"horizontal" | "vertical"</td>
+            <td className="p-3 font-mono text-xs">"horizontal"</td>
+            <td className="p-3">Slider axis direction.</td>
           </tr>
           <tr>
             <td className="p-3 font-mono text-xs">disabled</td>
@@ -7510,6 +7523,22 @@ function SliderDocs() {
           </Example>
 
           <Example
+            title="Vertical"
+            description="Vertical orientation slider."
+            code={`<Slider defaultValue={[50]} orientation="vertical" />`}
+          >
+            <Slider defaultValue={[50]} max={100} step={1} orientation="vertical" className="h-[140px]" />
+          </Example>
+
+          <Example
+            title="Vertical Range"
+            description="Vertical with dual thumbs."
+            code={`<Slider defaultValue={[25, 75]} orientation="vertical" />`}
+          >
+            <Slider defaultValue={[25, 75]} max={100} step={1} orientation="vertical" className="h-[140px]" />
+          </Example>
+
+          <Example
             title="Disabled"
             description="Disabled at 50% opacity."
             code={`<Slider defaultValue={[50]} disabled />`}
@@ -7540,9 +7569,11 @@ function SliderDocs() {
       </section>
 
       <FigmaMapping id="figma-mapping" nodeId="65:4902" rows={[
-        ["Track", "6px height", "—", "h-1.5 bg-accent-selected rounded-full"],
+        ["Track", "6px thickness", "—", "h-1.5 / w-1.5 bg-accent-selected rounded-full"],
         ["Range", "Primary fill", "—", "bg-primary"],
         ["Thumb", "14px circle", "—", "size-[14px] bg-background border border-foreground"],
+        ["Orientation", "Horizontal", "65:4902", "data-[orientation=horizontal]"],
+        ["Orientation", "Vertical", "162:17939", "data-[orientation=vertical]"],
         ["Type", "Default", "—", "Single thumb"],
         ["Type", "Range narrow", "—", "Dual thumb, narrow range"],
         ["Type", "Range wide", "—", "Dual thumb, wide range"],
