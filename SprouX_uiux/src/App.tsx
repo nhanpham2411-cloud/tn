@@ -6560,554 +6560,439 @@ const someChecked = items.some(i => i.checked) && !allChecked
    Switch Docs
    ================================================================ */
 
+function SwitchTab() {
+  const [checked, setChecked] = useState("false")
+  const [state, setState] = useState("default")
+  const isChecked = checked === "true"
+  const isDisabled = state === "disabled"
+  const isFocus = state === "focus"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <Switch
+          checked={isChecked}
+          onCheckedChange={(v) => setChecked(v ? "true" : "false")}
+          disabled={isDisabled}
+          className={cn(isFocus && "ring-[3px] ring-ring")}
+        />
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "default", label: "Default" },
+            { value: "focus", label: "Focus" },
+            { value: "disabled", label: "Disabled" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+function SwitchGroupTab() {
+  const [checked, setChecked] = useState("false")
+  const [layout, setLayout] = useState("inline")
+  const isChecked = checked === "true"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <div className={layout === "inline" ? "flex items-center gap-xs" : "space-y-sm"}>
+          <div className="flex items-center gap-xs">
+            <Switch
+              checked={isChecked}
+              onCheckedChange={(v) => setChecked(v ? "true" : "false")}
+              id="sw-grp-explore"
+            />
+            <Label htmlFor="sw-grp-explore">Label</Label>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="Layout" value={layout} onChange={setLayout} options={[
+            { value: "inline", label: "Inline" },
+            { value: "block", label: "Block" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+function RichSwitchGroupTab() {
+  const [checked, setChecked] = useState("false")
+  const [flipped, setFlipped] = useState("false")
+  const [showLine2, setShowLine2] = useState(false)
+  const isChecked = checked === "true"
+  const isFlipped = flipped === "true"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[200px]">
+        <div className={cn(
+          "flex gap-xs items-start rounded-xl border bg-card px-sm py-xs w-[260px]",
+          isChecked ? "border-primary" : "border-border",
+          isFlipped && "flex-row-reverse"
+        )}>
+          <div className="flex items-center h-[20px] shrink-0">
+            <Switch
+              checked={isChecked}
+              onCheckedChange={(v) => setChecked(v ? "true" : "false")}
+            />
+          </div>
+          <div className="flex-1 min-w-0 space-y-[2px]">
+            <span className="typo-paragraph-sm text-foreground">Label</span>
+            {showLine2 && (
+              <p className="typo-paragraph-mini text-muted-foreground">Secondary text</p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="Flipped" value={flipped} onChange={setFlipped} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <div className="flex items-center justify-between">
+            <span className="typo-paragraph-sm text-muted-foreground">Show Line 2</span>
+            <Switch checked={showLine2} onCheckedChange={setShowLine2} />
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const switchBehaviorTabs = [
+  { value: "switch", label: "Switch" },
+  { value: "switch-group", label: "Switch Group" },
+  { value: "rich-switch-group", label: "Rich Switch Group" },
+]
+
+function SwitchExploreBehavior() {
+  const [tab, setTab] = useState("switch")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="flex border-b border-border bg-muted/50">
+          {switchBehaviorTabs.map((t) => (
+            <button
+              key={t.value}
+              onClick={() => setTab(t.value)}
+              className={cn(
+                "px-md py-sm typo-paragraph-sm-medium transition-colors",
+                tab === t.value
+                  ? "text-foreground border-b-2 border-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        {tab === "switch" && <SwitchTab />}
+        {tab === "switch-group" && <SwitchGroupTab />}
+        {tab === "rich-switch-group" && <RichSwitchGroupTab />}
+      </div>
+    </section>
+  )
+}
+
+function SwitchPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">checked</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Controlled checked state.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">defaultChecked</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">false</td>
+            <td className="p-3">Initial checked state (uncontrolled).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">onCheckedChange</td>
+            <td className="p-3 font-mono text-xs">{`(checked: boolean) => void`}</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Callback when checked state changes.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">disabled</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">false</td>
+            <td className="p-3">Disables the switch.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">name</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Form field name.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes merged via cn().</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SwitchTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-accent-selected</td>
+            <td className="p-3 font-mono text-xs">var(--accent-selected)</td>
+            <td className="p-3">Unchecked track background (#dadad7)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-primary</td>
+            <td className="p-3 font-mono text-xs">var(--primary)</td>
+            <td className="p-3">Checked track background</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-background</td>
+            <td className="p-3 font-mono text-xs">var(--background)</td>
+            <td className="p-3">Thumb fill (always white)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">ring-ring</td>
+            <td className="p-3 font-mono text-xs">var(--ring) 3px</td>
+            <td className="p-3">Focus ring</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size-md</td>
+            <td className="p-3 font-mono text-xs">16px</td>
+            <td className="p-3">Thumb size (circle)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">rounded-xl</td>
+            <td className="p-3 font-mono text-xs">12px</td>
+            <td className="p-3">Track border radius (pill)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">opacity-50</td>
+            <td className="p-3 font-mono text-xs">0.5</td>
+            <td className="p-3">Disabled state opacity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const switchSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
 function SwitchDocs() {
   const [checked, setChecked] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    marketing: false,
-  })
-  const [formSubmitted, setFormSubmitted] = useState(false)
 
   return (
     <div className="space-y-12">
-      {/* ---- Header ---- */}
+      <TableOfContents sections={switchSections} />
+
       <header className="space-y-md pb-3xl">
-        <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
-          Components / Forms
-        </p>
+        <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
         <h1 className="typo-heading-2">Switch</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A toggle control for binary on/off settings. Unlike Checkbox, the
-          switch implies an immediate effect — the setting takes effect as soon
-          as it is toggled.
+          A toggle control for binary on/off settings. Unlike Checkbox, the switch implies an immediate effect. Includes Switch, Switch Group with label, and Rich Switch Group with card-style layout. Built on Radix Switch primitive.
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "switch", label: "Checked", prop: "checked", defaultValue: false },
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-        ]}
-        render={(p) => (
-          <div className="flex items-center gap-xs">
-            <Switch id="playground-switch" checked={p.checked} disabled={p.disabled} />
-            <Label htmlFor="playground-switch">{p.checked ? "On" : "Off"}</Label>
-          </div>
-        )}
-      />
+      <SwitchExploreBehavior />
 
-      {/* ---- Installation ---- */}
       <InstallationSection
-        deps={`pnpm add @radix-ui/react-switch`}
-        importCode={`import { Switch } from "@/components/ui/switch"`}
+        deps="pnpm add @radix-ui/react-switch"
+        importCode={`import { Switch } from "@/components/ui/switch"\nimport { Label } from "@/components/ui/label"`}
       />
 
-      {/* ---- Examples ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
-          {/* Default */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Example
-            title="Default switch"
-            description="Basic unchecked switch. Click to toggle."
-            code={`<Switch />`}
+            title="Default"
+            description="Basic switch with label."
+            code={`<div className="flex items-center gap-xs">\n  <Switch id="airplane" />\n  <Label htmlFor="airplane">Airplane Mode</Label>\n</div>`}
           >
-            <Switch />
+            <div className="flex items-center gap-xs">
+              <Switch id="ex-airplane" />
+              <Label htmlFor="ex-airplane">Airplane Mode</Label>
+            </div>
           </Example>
 
-          {/* Default checked */}
-          <Example
-            title="Default checked"
-            description="Use defaultChecked for uncontrolled switches that start in the on state."
-            code={`<Switch defaultChecked />`}
-          >
-            <Switch defaultChecked />
-          </Example>
-
-          {/* Controlled */}
           <Example
             title="Controlled"
             description="Use checked + onCheckedChange for controlled state."
-            code={`const [checked, setChecked] = useState(false)
-
-<Switch
-  checked={checked}
-  onCheckedChange={setChecked}
-/>`}
+            code={`const [checked, setChecked] = useState(false)\n\n<Switch checked={checked} onCheckedChange={setChecked} />`}
           >
-            <div className="flex items-center gap-3">
-              <Switch
-                checked={checked}
-                onCheckedChange={setChecked}
-                id="ctrl-switch"
-              />
-              <label htmlFor="ctrl-switch" className="text-sm cursor-pointer select-none">
-                {checked ? "On" : "Off"}
-              </label>
+            <div className="flex items-center gap-xs">
+              <Switch checked={checked} onCheckedChange={setChecked} id="ex-ctrl" />
+              <Label htmlFor="ex-ctrl">{checked ? "On" : "Off"}</Label>
             </div>
           </Example>
 
-          {/* With label */}
-          <Example
-            title="With label"
-            description="Pair with a <label> via matching id/htmlFor for accessible click targets."
-            code={`<div className="flex items-center gap-3">
-  <Switch id="airplane" />
-  <label htmlFor="airplane" className="text-sm">
-    Airplane Mode
-  </label>
-</div>`}
-          >
-            <div className="flex items-center gap-3">
-              <Switch id="airplane-demo" />
-              <label
-                htmlFor="airplane-demo"
-                className="text-sm cursor-pointer select-none"
-              >
-                Airplane Mode
-              </label>
-            </div>
-          </Example>
-
-          {/* Disabled */}
           <Example
             title="Disabled"
-            description="Disabled switches are non-interactive and visually dimmed to 50% opacity."
-            code={`<Switch disabled />
-<Switch disabled defaultChecked />`}
+            description="Disabled switches at 50% opacity."
+            code={`<Switch disabled />\n<Switch disabled defaultChecked />`}
           >
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <Switch disabled id="dis-off-sw" />
-                <label htmlFor="dis-off-sw" className="text-sm text-muted-foreground">
-                  Disabled off
-                </label>
+            <div className="flex items-center gap-lg">
+              <div className="flex items-center gap-xs">
+                <Switch disabled id="ex-dis-off" />
+                <Label htmlFor="ex-dis-off" className="text-muted-foreground">Off</Label>
               </div>
-              <div className="flex items-center gap-3">
-                <Switch disabled defaultChecked id="dis-on-sw" />
-                <label htmlFor="dis-on-sw" className="text-sm text-muted-foreground">
-                  Disabled on
-                </label>
+              <div className="flex items-center gap-xs">
+                <Switch disabled defaultChecked id="ex-dis-on" />
+                <Label htmlFor="ex-dis-on" className="text-muted-foreground">On</Label>
               </div>
             </div>
           </Example>
 
-          {/* With description */}
-          <Example
-            title="With description"
-            description="Label + supporting text for more context about what the switch controls."
-            code={`<div className="flex items-center justify-between">
-  <div>
-    <label htmlFor="dark" className="text-sm font-medium">
-      Dark mode
-    </label>
-    <p className="text-xs text-muted-foreground">
-      Switch between light and dark themes.
-    </p>
-  </div>
-  <Switch id="dark" />
-</div>`}
-          >
-            <div className="flex items-center justify-between gap-4 max-w-xs w-full">
-              <div>
-                <label
-                  htmlFor="dark-demo"
-                  className="text-sm font-medium cursor-pointer select-none"
-                >
-                  Dark mode
-                </label>
-                <p className="text-xs text-muted-foreground">
-                  Switch between light and dark themes.
-                </p>
-              </div>
-              <Switch
-                id="dark-demo"
-                checked={darkMode}
-                onCheckedChange={setDarkMode}
-              />
-            </div>
-          </Example>
-
-          {/* Settings list */}
           <Example
             title="Settings list"
-            description="Multiple switches in a settings-style layout with labels and descriptions."
-            code={`<div className="divide-y divide-border">
-  {settings.map(s => (
-    <div key={s.id} className="flex items-center justify-between py-3">
-      <div>
-        <label>{s.label}</label>
-        <p>{s.description}</p>
-      </div>
-      <Switch checked={s.checked} onCheckedChange={...} />
-    </div>
-  ))}
-</div>`}
+            description="Multiple switches in a settings layout."
+            code={`<div className="divide-y divide-border">\n  <div className="flex items-center justify-between py-sm">\n    <div>\n      <Label>Email</Label>\n      <p className="typo-paragraph-mini text-muted-foreground">Receive alerts</p>\n    </div>\n    <Switch />\n  </div>\n  ...\n</div>`}
           >
-            <div className="divide-y divide-border max-w-xs w-full">
-              <div className="flex items-center justify-between gap-4 py-3">
+            <div className="divide-y divide-border w-[260px]">
+              <div className="flex items-center justify-between gap-xs py-sm">
                 <div>
-                  <label
-                    htmlFor="set-email"
-                    className="text-sm font-medium cursor-pointer select-none"
-                  >
-                    Email notifications
-                  </label>
-                  <p className="text-xs text-muted-foreground">
-                    Receive email alerts
-                  </p>
-                </div>
-                <Switch
-                  id="set-email"
-                  checked={notifications.email}
-                  onCheckedChange={(v) =>
-                    setNotifications((p) => ({ ...p, email: v }))
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between gap-4 py-3">
-                <div>
-                  <label
-                    htmlFor="set-push"
-                    className="text-sm font-medium cursor-pointer select-none"
-                  >
-                    Push notifications
-                  </label>
-                  <p className="text-xs text-muted-foreground">
-                    Browser push alerts
-                  </p>
-                </div>
-                <Switch
-                  id="set-push"
-                  checked={notifications.push}
-                  onCheckedChange={(v) =>
-                    setNotifications((p) => ({ ...p, push: v }))
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between gap-4 py-3">
-                <div>
-                  <label
-                    htmlFor="set-mkt"
-                    className="text-sm font-medium cursor-pointer select-none"
-                  >
-                    Marketing emails
-                  </label>
-                  <p className="text-xs text-muted-foreground">
-                    Product news & offers
-                  </p>
-                </div>
-                <Switch
-                  id="set-mkt"
-                  checked={notifications.marketing}
-                  onCheckedChange={(v) =>
-                    setNotifications((p) => ({ ...p, marketing: v }))
-                  }
-                />
-              </div>
-            </div>
-          </Example>
-
-          {/* In a card */}
-          <Example
-            title="Card layout"
-            description="Switch used inside a card component for feature toggles."
-            code={`<div className="rounded-lg border p-4">
-  <div className="flex items-center justify-between">
-    <div>
-      <p className="font-medium">Auto-save</p>
-      <p className="text-xs text-muted-foreground">
-        Automatically save changes
-      </p>
-    </div>
-    <Switch defaultChecked />
-  </div>
-</div>`}
-          >
-            <div className="rounded-lg border border-border bg-background p-4 max-w-xs w-full">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium">Auto-save</p>
-                  <p className="text-xs text-muted-foreground">
-                    Automatically save changes as you type
-                  </p>
+                  <p className="typo-paragraph-sm-medium text-foreground">Email</p>
+                  <p className="typo-paragraph-mini text-muted-foreground">Receive alerts</p>
                 </div>
                 <Switch defaultChecked />
               </div>
-            </div>
-          </Example>
-
-          {/* Form usage */}
-          <Example
-            title="Form with switch"
-            description="Switch inside a form. The name and value are submitted with the form data."
-            code={`<form onSubmit={handleSubmit}>
-  <Switch name="newsletter" />
-  <label>Subscribe to newsletter</label>
-  <Button type="submit">Save</Button>
-</form>`}
-          >
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                setFormSubmitted(true)
-                setTimeout(() => setFormSubmitted(false), 3000)
-              }}
-              className="space-y-3 max-w-xs w-full"
-            >
-              <div className="flex items-center gap-3">
-                <Switch name="newsletter" id="form-newsletter" />
-                <label
-                  htmlFor="form-newsletter"
-                  className="text-sm cursor-pointer select-none"
-                >
-                  Subscribe to newsletter
-                </label>
-              </div>
-              <Button type="submit" size="sm">
-                {formSubmitted ? "Saved!" : "Save preferences"}
-              </Button>
-            </form>
-          </Example>
-
-          {/* Right-to-left label */}
-          <Example
-            title="Label on left"
-            description="Place the label before the switch for left-to-right reading flow in settings panels."
-            code={`<label className="flex items-center justify-between w-full">
-  <span className="text-sm font-medium">Wi-Fi</span>
-  <Switch />
-</label>`}
-          >
-            <label className="flex items-center justify-between max-w-xs w-full cursor-pointer">
-              <span className="text-sm font-medium select-none">Wi-Fi</span>
-              <Switch />
-            </label>
-          </Example>
-
-          {/* Compact inline */}
-          <Example
-            title="Compact inline"
-            description="Switch used inline with text in a more compact layout."
-            code={`<p className="text-sm flex items-center gap-2">
-  Show completed tasks <Switch defaultChecked />
-</p>`}
-          >
-            <p className="text-sm flex items-center gap-2">
-              Show completed tasks <Switch defaultChecked />
-            </p>
-          </Example>
-
-          {/* Custom size */}
-          <Example
-            title="Custom size"
-            description="Override dimensions with className. The default is 33×18px per Figma spec."
-            code={`{/* Larger */}
-<Switch className="h-6 w-11 [&>span]:size-5
-  [&>span]:data-[state=checked]:translate-x-5" />`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Switch
-                  className="h-6 w-11 [&>span]:size-5 [&>span]:data-[state=checked]:translate-x-5"
-                  defaultChecked
-                />
-                <span className="text-sm">Large (44×24)</span>
+              <div className="flex items-center justify-between gap-xs py-sm">
+                <div>
+                  <p className="typo-paragraph-sm-medium text-foreground">Push</p>
+                  <p className="typo-paragraph-mini text-muted-foreground">Browser alerts</p>
+                </div>
+                <Switch />
               </div>
             </div>
           </Example>
         </div>
       </section>
 
-      {/* ---- Props ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
-        <p className="typo-paragraph-sm text-muted-foreground">
-          Extends <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
-          Radix SwitchPrimitive.Root</code> — all native props forwarded.
-        </p>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="text-left px-4 py-2 font-medium">Prop</th>
-                <th className="text-left px-4 py-2 font-medium">Type</th>
-                <th className="text-left px-4 py-2 font-medium">Default</th>
-                <th className="text-left px-4 py-2 font-medium">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">checked</td>
-                <td className="px-4 py-2 font-mono text-xs">boolean</td>
-                <td className="px-4 py-2 text-muted-foreground">—</td>
-                <td className="px-4 py-2 text-muted-foreground">Controlled checked state</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">defaultChecked</td>
-                <td className="px-4 py-2 font-mono text-xs">boolean</td>
-                <td className="px-4 py-2 text-muted-foreground">false</td>
-                <td className="px-4 py-2 text-muted-foreground">Initial checked state (uncontrolled)</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">onCheckedChange</td>
-                <td className="px-4 py-2 font-mono text-xs">{"(checked: boolean) => void"}</td>
-                <td className="px-4 py-2 text-muted-foreground">—</td>
-                <td className="px-4 py-2 text-muted-foreground">Called when checked state changes</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">disabled</td>
-                <td className="px-4 py-2 font-mono text-xs">boolean</td>
-                <td className="px-4 py-2 text-muted-foreground">false</td>
-                <td className="px-4 py-2 text-muted-foreground">Disables the switch</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">required</td>
-                <td className="px-4 py-2 font-mono text-xs">boolean</td>
-                <td className="px-4 py-2 text-muted-foreground">false</td>
-                <td className="px-4 py-2 text-muted-foreground">Marks the switch as required for forms</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">name</td>
-                <td className="px-4 py-2 font-mono text-xs">string</td>
-                <td className="px-4 py-2 text-muted-foreground">—</td>
-                <td className="px-4 py-2 text-muted-foreground">Form field name</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">value</td>
-                <td className="px-4 py-2 font-mono text-xs">string</td>
-                <td className="px-4 py-2 text-muted-foreground">"on"</td>
-                <td className="px-4 py-2 text-muted-foreground">Value submitted with forms</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">className</td>
-                <td className="px-4 py-2 font-mono text-xs">string</td>
-                <td className="px-4 py-2 text-muted-foreground">—</td>
-                <td className="px-4 py-2 text-muted-foreground">Additional CSS classes merged via cn()</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <SwitchPropsTable />
       </section>
 
-      {/* ---- Design Tokens ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="design-tokens" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="text-left px-4 py-2 font-medium">Token</th>
-                <th className="text-left px-4 py-2 font-medium">Role</th>
-                <th className="text-left px-4 py-2 font-medium">CSS Variable</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">input</td>
-                <td className="px-4 py-2 text-muted-foreground">Unchecked track background</td>
-                <td className="px-4 py-2 font-mono text-xs">--input</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">primary</td>
-                <td className="px-4 py-2 text-muted-foreground">Checked track background</td>
-                <td className="px-4 py-2 font-mono text-xs">--primary</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">background</td>
-                <td className="px-4 py-2 text-muted-foreground">Thumb color (always white)</td>
-                <td className="px-4 py-2 font-mono text-xs">--background</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 font-mono text-xs">ring</td>
-                <td className="px-4 py-2 text-muted-foreground">Focus ring (3px spread)</td>
-                <td className="px-4 py-2 font-mono text-xs">--ring</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <SwitchTokensTable />
       </section>
 
-      {/* ---- Best Practices ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="best-practices" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Use Switch for settings that take immediate effect (e.g. dark mode, notifications)." />
-          <DontItem text="Don't use Switch when the change requires a form submission — use Checkbox instead." />
-          <DoItem text="Always pair with a visible label describing what the switch controls." />
-          <DontItem text="Don't use a switch for agreeing to terms — use a Checkbox." />
-          <DoItem text="Place the switch to the right of its label in settings panels for consistent scan pattern." />
-          <DontItem text="Don't use Switch for mutually exclusive options — use Radio Group instead." />
-        </div>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Use Switch for settings that take immediate effect (e.g. dark mode, notifications)." />
+        <DontItem text="Don't use Switch when the change requires a form submission — use Checkbox instead." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Always pair with a visible label describing what the switch controls." />
+        <DontItem text="Don't use Switch for mutually exclusive options — use Radio Group instead." />
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping nodeId="16:1801" rows={[
-        ["Checked", "False", "checked", "{false} — neutral track, thumb left"],
-        ["Checked", "True", "checked", "{true} — primary track, thumb right"],
-        ["State", "Default", "—", "default"],
-        ["State", "Focus", "—", "CSS :focus-visible (3px ring)"],
-        ["State", "Disabled", "disabled", "true (50% opacity)"],
+      <FigmaMapping id="figma-mapping" nodeId="16:1801" rows={[
         ["Track Size", "33×18px", "—", "h-[18px] w-[33px]"],
-        ["Thumb Size", "16×16px circle", "—", "size-md rounded-full"],
-        ["Radius", "Pill (12px)", "—", "rounded-full"],
+        ["Track Radius", "12px (pill)", "—", "rounded-xl"],
+        ["Checked?", "False", "data-[state=unchecked]", "bg-accent-selected"],
+        ["Checked?", "True", "data-[state=checked]", "bg-primary"],
+        ["Thumb", "16px white circle", "—", "size-md bg-background rounded-full"],
+        ["State", "Focus", "focus-visible", "ring-[3px] ring-ring"],
+        ["State", "Disabled", "disabled", "opacity-50"],
       ]} />
 
-      {/* ---- Accessibility ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="accessibility" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
-        <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
-          <li>Built on Radix Switch — renders a native <code className="text-xs bg-muted px-1.5 py-0.5 rounded">button</code> with <code className="text-xs bg-muted px-1.5 py-0.5 rounded">role="switch"</code>.</li>
-          <li>Supports <code className="text-xs bg-muted px-1.5 py-0.5 rounded">aria-checked="true" | "false"</code> automatically.</li>
-          <li><code className="text-xs bg-muted px-1.5 py-0.5 rounded">Space</code> key toggles the switch (native button behavior).</li>
-          <li>Always pair with a visible <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{"<label>"}</code> or <code className="text-xs bg-muted px-1.5 py-0.5 rounded">aria-label</code>.</li>
-          <li>Focus ring is 3px with <code className="text-xs bg-muted px-1.5 py-0.5 rounded">--ring</code> token, meeting WCAG 2.4.7.</li>
-          <li>Color contrast between checked (teal-700) and unchecked (neutral) tracks clearly communicates state.</li>
-        </ul>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">Keyboard Navigation</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
+              <tbody className="divide-y divide-border">
+                <tr><td className="p-2 font-mono">Tab</td><td className="p-2">Move focus to/from the switch</td></tr>
+                <tr><td className="p-2 font-mono">Space</td><td className="p-2">Toggle the switch on/off</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">ARIA Attributes</h3>
+          <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
+            <li>Renders as <code className="bg-muted px-1 rounded font-mono">button</code> with <code className="bg-muted px-1 rounded font-mono">role="switch"</code>.</li>
+            <li>Provides <code className="bg-muted px-1 rounded font-mono">aria-checked="true" | "false"</code> automatically.</li>
+            <li>Always pair with a visible <code className="bg-muted px-1 rounded font-mono">Label</code> or <code className="bg-muted px-1 rounded font-mono">aria-label</code>.</li>
+            <li>Focus ring (3px) meets WCAG 2.4.7 focus visible requirement.</li>
+          </ul>
+        </div>
       </section>
 
-      {/* ---- Related Components ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">
-          Related Components
-        </h2>
-        <div className="rounded-lg border border-border divide-y divide-border">
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Checkbox</p>
-              <p className="text-muted-foreground mt-0.5">
-                For form fields where the change is applied on submit, not immediately.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
-              Available
-            </span>
+      <section id="related" className="space-y-md pb-12">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-xl border border-border divide-y divide-border text-xs">
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Checkbox</p>
+            <p className="text-muted-foreground mt-0.5">For form fields where changes are applied on submit, not immediately.</p>
           </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Radio Group</p>
-              <p className="text-muted-foreground mt-0.5">
-                For mutually exclusive choices where only one option can be selected.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
-            </span>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Radio</p>
+            <p className="text-muted-foreground mt-0.5">For mutually exclusive choices where only one option can be selected.</p>
           </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Toggle</p>
-              <p className="text-muted-foreground mt-0.5">
-                A pressable button that toggles between two visual states.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
-            </span>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Toggle</p>
+            <p className="text-muted-foreground mt-0.5">A pressable button that toggles between two visual states.</p>
           </div>
         </div>
       </section>
