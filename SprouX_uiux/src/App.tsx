@@ -11,7 +11,9 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  selectTriggerVariants,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -136,7 +138,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Calendar } from "@/components/ui/calendar"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Combobox } from "@/components/ui/combobox"
@@ -214,6 +216,8 @@ import {
   Github,
   ArrowUp,
   X,
+  CircleDashed,
+  ChevronDown,
 } from "lucide-react"
 import { icons as lucideIcons } from "lucide-react"
 
@@ -557,7 +561,7 @@ function TableOfContents({ sections }: { sections: TocSection[] }) {
 
   return (
     <nav className="hidden xl:block fixed right-8 top-24 w-56 max-h-[calc(100vh-8rem)] overflow-y-auto">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-xs px-sm">
+      <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-xs px-sm">
         On this page
       </p>
       <ul className="space-y-0.5">
@@ -2854,6 +2858,104 @@ function FocusBlurDemo() {
   )
 }
 
+const inputSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function InputExploreBehavior() {
+  const [size, setSize] = useState("default")
+  const [state, setState] = useState("default")
+  const [value, setValue] = useState("placeholder")
+  const [showDecoLeft, setShowDecoLeft] = useState(false)
+  const [showDecoRight, setShowDecoRight] = useState(false)
+  const [showCursor, setShowCursor] = useState(false)
+
+  const isDisabled = state === "disabled"
+  const isError = state === "error" || state === "error-focus"
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        {/* Preview */}
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          <div className="relative max-w-xs w-full">
+            {showDecoLeft && (
+              <CircleDashed className="absolute left-3 top-1/2 -translate-y-1/2 size-md text-muted-foreground pointer-events-none" />
+            )}
+            <Input
+              size={size as "lg" | "default" | "sm" | "xs"}
+              disabled={isDisabled}
+              aria-invalid={isError || undefined}
+              placeholder={value === "placeholder" ? "Placeholder text" : undefined}
+              defaultValue={value === "value" ? "Entered text" : undefined}
+              key={`${size}-${state}-${value}-${showCursor}`}
+              className={[
+                showDecoLeft && "pl-9",
+                showDecoRight && "pr-9",
+              ].filter(Boolean).join(" ") || undefined}
+              autoFocus={showCursor || state === "focus" || state === "error-focus" ? true : undefined}
+            />
+            {showDecoRight && (
+              <CircleDashed className="absolute right-3 top-1/2 -translate-y-1/2 size-md text-muted-foreground pointer-events-none" />
+            )}
+          </div>
+        </div>
+        {/* Controls */}
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          {/* PropertyTabs row */}
+          <div className="space-y-sm">
+            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+              { value: "lg", label: "Large" },
+              { value: "default", label: "Regular" },
+              { value: "sm", label: "Small" },
+              { value: "xs", label: "Mini" },
+            ]} />
+            <PropertyTabs label="State" value={state} onChange={setState} options={[
+              { value: "default", label: "Default" },
+              { value: "focus", label: "Focus" },
+              { value: "error", label: "Error" },
+              { value: "error-focus", label: "Error Focus" },
+              { value: "disabled", label: "Disabled" },
+            ]} />
+            <PropertyTabs label="Value" value={value} onChange={setValue} options={[
+              { value: "empty", label: "Empty" },
+              { value: "placeholder", label: "Placeholder" },
+              { value: "value", label: "Value" },
+            ]} />
+            <PropertyTabs label="Roundness" value="default" onChange={() => {}} options={[
+              { value: "default", label: "Default" },
+            ]} disabled />
+          </div>
+          {/* Toggles row */}
+          <div className="flex flex-wrap gap-lg">
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Show Decoration Left</span>
+              <div><Switch checked={showDecoLeft} onCheckedChange={setShowDecoLeft} /></div>
+            </div>
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Show Decoration Right</span>
+              <div><Switch checked={showDecoRight} onCheckedChange={setShowDecoRight} /></div>
+            </div>
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Show Cursor</span>
+              <div><Switch checked={showCursor} onCheckedChange={setShowCursor} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function InputDocs() {
   const [showPw, setShowPw] = useState(false)
   const [controlled, setControlled] = useState("")
@@ -2878,6 +2980,8 @@ function InputDocs() {
 
   return (
     <div className="space-y-12">
+      <TableOfContents sections={inputSections} />
+
       {/* ---- Header ---- */}
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
@@ -2891,29 +2995,8 @@ function InputDocs() {
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Size", prop: "size", defaultValue: "default", options: [
-            { label: "Large (40px)", value: "lg" },
-            { label: "Default (36px)", value: "default" },
-            { label: "Small (32px)", value: "sm" },
-            { label: "Mini (24px)", value: "xs" },
-          ]},
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-          { type: "switch", label: "Error", prop: "error", defaultValue: false },
-          { type: "text", label: "Placeholder", prop: "placeholder", defaultValue: "Type something…", placeholder: "Placeholder text" },
-        ]}
-        render={(p) => (
-          <Input
-            size={p.size}
-            disabled={p.disabled}
-            aria-invalid={p.error || undefined}
-            placeholder={p.placeholder}
-            className="max-w-xs"
-          />
-        )}
-      />
+      {/* ---- Explore Behavior ---- */}
+      <InputExploreBehavior />
 
       {/* ---- Installation ---- */}
       <InstallationSection
@@ -2922,10 +3005,10 @@ function InputDocs() {
       />
 
       {/* ---- Examples ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Default */}
         <Example
           title="Default input"
@@ -3317,7 +3400,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Props ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           Input extends all native{" "}
@@ -3330,7 +3413,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Design Tokens ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="design-tokens" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           These tokens are defined in{" "}
@@ -3344,7 +3427,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Best Practices ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="best-practices" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
 
         <div className="space-y-4">
@@ -3436,7 +3519,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Figma Mapping ---- */}
-      <FigmaMapping nodeId="2250:904" rows={[
+      <FigmaMapping id="figma-mapping" nodeId="2250:904" rows={[
         ["Size", "Large (40px)", "size", '"lg"'],
         ["Size", "Regular (36px)", "size", '"default"'],
         ["Size", "Small (32px)", "size", '"sm"'],
@@ -3455,7 +3538,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       ]} />
 
       {/* ---- Accessibility ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="accessibility" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <div className="space-y-3 typo-paragraph-sm text-muted-foreground">
           <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
@@ -3567,7 +3650,7 @@ const handleFormSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Related Components ---- */}
-      <section className="space-y-4 pb-12">
+      <section id="related" className="space-y-md pb-12">
         <h2 className="font-heading font-semibold text-xl">
           Related Components
         </h2>
@@ -3579,8 +3662,8 @@ const handleFormSubmit = (e: React.FormEvent) => {
                 Multi-line text input for longer content like descriptions or messages.
               </p>
             </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
+            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
+              Available
             </span>
           </div>
           <div className="px-5 py-3.5 flex justify-between items-center">
@@ -3590,8 +3673,8 @@ const handleFormSubmit = (e: React.FormEvent) => {
                 Dropdown selection for choosing from predefined options.
               </p>
             </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
+            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
+              Available
             </span>
           </div>
           <div className="px-5 py-3.5 flex justify-between items-center">
@@ -3794,6 +3877,78 @@ function TextareaTokensTable() {
   )
 }
 
+const textareaSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function TextareaExploreBehavior() {
+  const [state, setState] = useState("default")
+  const [value, setValue] = useState("placeholder")
+  const [showResizable, setShowResizable] = useState(false)
+
+  const isDisabled = state === "disabled"
+  const isError = state === "error" || state === "error-focus"
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        {/* Preview */}
+        <div className="p-4xl flex items-center justify-center min-h-[200px]">
+          <Textarea
+            disabled={isDisabled}
+            aria-invalid={isError || undefined}
+            placeholder={value === "placeholder" ? "Type your message here." : undefined}
+            defaultValue={value === "value" ? "This is some entered text content that demonstrates the value state of the textarea component." : undefined}
+            key={`${state}-${value}-${showResizable}`}
+            className={[
+              "max-w-sm",
+              !showResizable && "resize-none",
+            ].filter(Boolean).join(" ")}
+            autoFocus={state === "focus" || state === "error-focus" ? true : undefined}
+          />
+        </div>
+        {/* Controls */}
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          {/* PropertyTabs row */}
+          <div className="space-y-sm">
+            <PropertyTabs label="State" value={state} onChange={setState} options={[
+              { value: "default", label: "Default" },
+              { value: "focus", label: "Focus" },
+              { value: "error", label: "Error" },
+              { value: "error-focus", label: "Error Focus" },
+              { value: "disabled", label: "Disabled" },
+            ]} />
+            <PropertyTabs label="Value" value={value} onChange={setValue} options={[
+              { value: "empty", label: "Empty" },
+              { value: "placeholder", label: "Placeholder" },
+              { value: "value", label: "Value" },
+            ]} />
+            <PropertyTabs label="Roundness" value="default" onChange={() => {}} options={[
+              { value: "default", label: "Default" },
+            ]} disabled />
+          </div>
+          {/* Toggles row */}
+          <div className="flex flex-wrap gap-lg">
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Show Resizable</span>
+              <div><Switch checked={showResizable} onCheckedChange={setShowResizable} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function TextareaDocs() {
   const [controlled, setControlled] = useState("")
   const maxLen = 200
@@ -3818,6 +3973,8 @@ function TextareaDocs() {
 
   return (
     <div className="space-y-12">
+      <TableOfContents sections={textareaSections} />
+
       {/* ---- Header ---- */}
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
@@ -3831,22 +3988,8 @@ function TextareaDocs() {
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-          { type: "switch", label: "Error", prop: "error", defaultValue: false },
-          { type: "text", label: "Placeholder", prop: "placeholder", defaultValue: "Type your message here.", placeholder: "Placeholder text" },
-        ]}
-        render={(p) => (
-          <Textarea
-            disabled={p.disabled}
-            aria-invalid={p.error || undefined}
-            placeholder={p.placeholder}
-            className="max-w-sm"
-          />
-        )}
-      />
+      {/* ---- Explore Behavior ---- */}
+      <TextareaExploreBehavior />
 
       {/* ---- Installation ---- */}
       <InstallationSection
@@ -3855,10 +3998,10 @@ function TextareaDocs() {
       />
 
       {/* ---- Examples ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="examples" className="space-y-6 pt-xl border-t border-border">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
         {/* Default */}
         <Example
           title="Default textarea"
@@ -4125,7 +4268,7 @@ const handleSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Props ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           Textarea extends all native{" "}
@@ -4138,7 +4281,7 @@ const handleSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Design Tokens ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="design-tokens" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           These tokens are defined in{" "}
@@ -4152,7 +4295,7 @@ const handleSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Best Practices ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="best-practices" className="space-y-6 pt-xl border-t border-border">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
 
         <div className="space-y-4">
@@ -4241,11 +4384,11 @@ const handleSubmit = (e: React.FormEvent) => {
         ["Value", "Empty", "—", "no value"],
         ["Value", "Placeholder", "placeholder", '"Type your message here."'],
         ["Value", "Value", "value / defaultValue", '"Entered text"'],
-        ["Font", "Geist Regular 14/20", "—", "text-sm (font-normal)"],
+        ["Font", "Geist Regular 14/20", "—", "typo-paragraph-sm"],
       ]} />
 
       {/* ---- Accessibility ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="accessibility" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <div className="space-y-3 typo-paragraph-sm text-muted-foreground">
           <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
@@ -4367,7 +4510,7 @@ const handleSubmit = (e: React.FormEvent) => {
       </section>
 
       {/* ---- Related Components ---- */}
-      <section className="space-y-4 pb-12">
+      <section id="related" className="space-y-4 pb-12">
         <h2 className="font-heading font-semibold text-xl">
           Related Components
         </h2>
@@ -4390,8 +4533,8 @@ const handleSubmit = (e: React.FormEvent) => {
                 Dropdown selection for choosing from predefined options.
               </p>
             </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
+            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
+              Available
             </span>
           </div>
           <div className="px-5 py-3.5 flex justify-between items-center">
@@ -4638,6 +4781,100 @@ function SelectTokensTable() {
   )
 }
 
+const selectSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function SelectExploreBehavior() {
+  const [size, setSize] = useState("default")
+  const [state, setState] = useState("default")
+  const [lines, setLines] = useState("1-line")
+  const [value, setValue] = useState("placeholder")
+
+  const isDisabled = state === "disabled"
+  const isError = state === "error" || state === "error-focus"
+  const isFocus = state === "focus" || state === "error-focus"
+  const showValue = value === "value"
+  const is2Lines = lines === "2-lines"
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        {/* Preview — static face matching Figma spec */}
+        <div className="p-4xl flex items-center justify-center min-h-[200px]">
+          <div
+            className={cn(
+              selectTriggerVariants({ size: size as "lg" | "default" | "sm" | "xs" }),
+              "w-[280px]",
+              is2Lines && "h-auto py-xs [&>span]:line-clamp-none",
+              isFocus && "ring-[3px]",
+              isFocus && !isError && "ring-ring",
+              isError && "border-destructive-border",
+              isError && isFocus && "ring-ring-error",
+              isDisabled && "opacity-50 cursor-not-allowed",
+            )}
+          >
+            {is2Lines ? (
+              <span className="!flex flex-col min-w-0 flex-1">
+                <span className="typo-paragraph-mini-bold text-muted-foreground truncate">Text</span>
+                <span className={cn(
+                  "typo-paragraph-sm truncate",
+                  showValue ? "text-foreground" : "text-muted-foreground"
+                )}>
+                  {showValue ? "Item selected" : "Select an item"}
+                </span>
+              </span>
+            ) : (
+              <span className={cn(
+                "truncate",
+                showValue ? "text-foreground" : "text-muted-foreground"
+              )}>
+                {showValue ? "Item selected" : "Select an item"}
+              </span>
+            )}
+            <ChevronDown className="size-md text-muted-foreground shrink-0" />
+          </div>
+        </div>
+        {/* Controls */}
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+              { value: "lg", label: "Large" },
+              { value: "default", label: "Regular" },
+              { value: "sm", label: "Small" },
+              { value: "xs", label: "Mini" },
+            ]} />
+            <PropertyTabs label="State" value={state} onChange={setState} options={[
+              { value: "default", label: "Default" },
+              { value: "focus", label: "Focus" },
+              { value: "error", label: "Error" },
+              { value: "error-focus", label: "Error Focus" },
+              { value: "disabled", label: "Disabled" },
+            ]} />
+            <PropertyTabs label="Lines" value={lines} onChange={setLines} options={[
+              { value: "1-line", label: "1 Line" },
+              { value: "2-lines", label: "2 Lines" },
+            ]} />
+            <PropertyTabs label="Value" value={value} onChange={setValue} options={[
+              { value: "placeholder", label: "Placeholder" },
+              { value: "value", label: "Value" },
+            ]} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function SelectDocs() {
   const [controlled, setControlled] = useState("")
   const [formRole, setFormRole] = useState("")
@@ -4659,6 +4896,8 @@ function SelectDocs() {
 
   return (
     <div className="space-y-12">
+      <TableOfContents sections={selectSections} />
+
       {/* ---- Header ---- */}
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
@@ -4672,31 +4911,8 @@ function SelectDocs() {
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Size", prop: "size", defaultValue: "default", options: [
-            { label: "Large (40px)", value: "lg" },
-            { label: "Default (36px)", value: "default" },
-            { label: "Small (32px)", value: "sm" },
-            { label: "Mini (24px)", value: "xs" },
-          ]},
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-          { type: "switch", label: "Error", prop: "error", defaultValue: false },
-        ]}
-        render={(p) => (
-          <Select disabled={p.disabled}>
-            <SelectTrigger size={p.size} aria-invalid={p.error || undefined} className="w-[200px]">
-              <SelectValue placeholder="Select option" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="option1">Option 1</SelectItem>
-              <SelectItem value="option2">Option 2</SelectItem>
-              <SelectItem value="option3">Option 3</SelectItem>
-            </SelectContent>
-          </Select>
-        )}
-      />
+      {/* ---- Explore Behavior ---- */}
+      <SelectExploreBehavior />
 
       {/* ---- Installation ---- */}
       <InstallationSection
@@ -4705,10 +4921,10 @@ function SelectDocs() {
       />
 
       {/* ---- Examples ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="examples" className="space-y-6 pt-xl border-t border-border">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
         {/* Default */}
         <Example
           title="Default select"
@@ -5142,7 +5358,7 @@ const handleSubmit = (e) => {
       </section>
 
       {/* ---- Props ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           Select is a compound component built on{" "}
@@ -5155,7 +5371,7 @@ const handleSubmit = (e) => {
       </section>
 
       {/* ---- Design Tokens ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="design-tokens" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           These tokens are defined in{" "}
@@ -5169,7 +5385,7 @@ const handleSubmit = (e) => {
       </section>
 
       {/* ---- Best Practices ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="best-practices" className="space-y-6 pt-xl border-t border-border">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
 
         <div className="space-y-4">
@@ -5266,10 +5482,11 @@ const handleSubmit = (e) => {
         ["Value", "Placeholder", "—", '<SelectValue placeholder="..." />'],
         ["Value", "Value", "value / defaultValue", "string"],
         ["Lines", "1 Line", "—", "[&>span]:line-clamp-1"],
+        ["Lines", "2 Lines", "className", '"[&>span]:line-clamp-2"'],
       ]} />
 
       {/* ---- Accessibility ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="accessibility" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <div className="space-y-3 typo-paragraph-sm text-muted-foreground">
           <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
@@ -5370,7 +5587,7 @@ const handleSubmit = (e) => {
       </section>
 
       {/* ---- Related Components ---- */}
-      <section className="space-y-4 pb-12">
+      <section id="related" className="space-y-4 pb-12">
         <h2 className="font-heading font-semibold text-xl">
           Related Components
         </h2>
@@ -5429,6 +5646,315 @@ const handleSubmit = (e) => {
    Checkbox Docs
    ================================================================ */
 
+const checkboxSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+/* -- Checkbox static face helper -- */
+/* -- Tab 1: Checkbox -- */
+function CheckboxTab() {
+  const [checked, setChecked] = useState<boolean | "indeterminate">(false)
+  const [state, setState] = useState("default")
+  const isDisabled = state === "disabled"
+  const isError = state === "error" || state === "error-focus"
+  const isFocus = state === "focus" || state === "error-focus"
+
+  const checkedTabValue = checked === "indeterminate" ? "indeterminate" : checked ? "true" : "false"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <Checkbox
+          checked={checked}
+          onCheckedChange={(v) => setChecked(v)}
+          disabled={isDisabled}
+          aria-invalid={isError || undefined}
+          className={cn(
+            isFocus && "ring-[3px]",
+            isFocus && !isError && "ring-ring",
+            isFocus && isError && "ring-ring-error",
+          )}
+        />
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked" value={checkedTabValue} onChange={(v) => {
+            if (v === "true") setChecked(true)
+            else if (v === "indeterminate") setChecked("indeterminate")
+            else setChecked(false)
+          }} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+            { value: "indeterminate", label: "Indeterminate" },
+          ]} />
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "default", label: "Default" },
+            { value: "focus", label: "Focus" },
+            { value: "error", label: "Error" },
+            { value: "error-focus", label: "Error Focus" },
+            { value: "disabled", label: "Disabled" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* -- Tab 2: Checkbox Group -- */
+function CheckboxGroupTab() {
+  const [checked, setChecked] = useState<boolean | "indeterminate">(false)
+  const [state, setState] = useState("default")
+  const isDisabled = state === "disable"
+  const isError = state === "error"
+
+  const checkedTabValue = checked === "indeterminate" ? "indeterminate" : checked ? "true" : "false"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <div className="flex items-center gap-xs">
+          <Checkbox
+            id="cb-group-explore"
+            checked={checked}
+            onCheckedChange={(v) => setChecked(v)}
+            disabled={isDisabled}
+            aria-invalid={isError || undefined}
+          />
+          <Label
+            htmlFor="cb-group-explore"
+            size="sm"
+            className={cn(isError && "text-destructive")}
+          >Label</Label>
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked" value={checkedTabValue} onChange={(v) => {
+            if (v === "true") setChecked(true)
+            else if (v === "indeterminate") setChecked("indeterminate")
+            else setChecked(false)
+          }} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+            { value: "indeterminate", label: "Indeterminate" },
+          ]} />
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "default", label: "Default" },
+            { value: "error", label: "Error" },
+            { value: "disable", label: "Disable" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* -- Tab 3: Rich Checkbox Group -- */
+function RichCheckboxGroupTab() {
+  const [checked, setChecked] = useState(false)
+  const [flipped, setFlipped] = useState(false)
+  const [showLine2, setShowLine2] = useState(false)
+
+  const checkedTabValue = checked ? "true" : "false"
+
+  const checkboxEl = (
+    <div className="flex items-center pt-[2.5px] shrink-0">
+      <Checkbox checked={checked} onCheckedChange={(v) => setChecked(v === true)} />
+    </div>
+  )
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <div className="bg-card border border-border rounded-[10px] px-sm py-xs flex items-start gap-xs w-[240px]">
+          {!flipped && checkboxEl}
+          <div className="flex flex-col flex-1 min-w-0">
+            <span className="typo-paragraph-sm text-muted-foreground truncate">Label</span>
+            {showLine2 && <span className="typo-paragraph-mini text-muted-foreground truncate">Secondary text</span>}
+          </div>
+          {flipped && checkboxEl}
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked" value={checkedTabValue} onChange={(v) => setChecked(v === "true")} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+        </div>
+        <div className="flex flex-wrap gap-lg">
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Flipped</span>
+            <div><Switch checked={flipped} onCheckedChange={setFlipped} /></div>
+          </div>
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Show Line 2</span>
+            <div><Switch checked={showLine2} onCheckedChange={setShowLine2} /></div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* -- Tab 4: Rich Checkbox Group / Advanced -- */
+function RichCheckboxAdvancedTab() {
+  const [state, setState] = useState("default")
+  const [iconSize, setIconSize] = useState("regular")
+  const [showDesc, setShowDesc] = useState(true)
+  const [showRecommended, setShowRecommended] = useState(true)
+  const [showSubTitle, setShowSubTitle] = useState(true)
+
+  const isHover = state === "hover" || state === "selected-hover"
+  const isSelected = state === "active" || state === "selected" || state === "selected-hover"
+  const isDisabled = state === "disable" || state === "disable-checked"
+  const isDisabledChecked = state === "disable-checked"
+  const isChecked = isSelected || isDisabledChecked
+  const isRegular = iconSize === "regular"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[200px]">
+        <div className={cn(
+          "bg-card border border-solid content-stretch flex items-start overflow-hidden w-full max-w-[480px]",
+          isRegular ? "gap-sm p-md rounded-xl" : "gap-xs px-md py-sm rounded-xl",
+          isSelected || state === "active" ? "border-border-strong" : "border-border",
+          isDisabled && "bg-muted",
+          isHover && "ring-[3px] ring-ring",
+        )}>
+          {/* Icon */}
+          {isRegular ? (
+            <div className="size-[48px] shrink-0 rounded-lg bg-muted flex items-center justify-center">
+              <Mail className="size-xl text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="shrink-0 flex items-center justify-center pt-px">
+              <Settings className="size-lg text-muted-foreground" />
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="flex flex-col flex-1 min-w-0 gap-xs">
+            <div className="flex flex-col gap-3xs">
+              {/* Title row */}
+              <div className="flex items-center gap-sm">
+                <span className={cn(
+                  "flex-1 min-w-0 truncate",
+                  isRegular ? "typo-paragraph-bold text-foreground" : "typo-paragraph-sm text-foreground"
+                )}>Title</span>
+                {showRecommended && isRegular && (
+                  <Badge variant="emphasis" className="shrink-0">Recommended</Badge>
+                )}
+                <Checkbox checked={isChecked} onCheckedChange={(v) => {
+                  if (v) setState("selected")
+                  else setState("default")
+                }} disabled={isDisabled || isDisabledChecked} />
+              </div>
+              {/* Subtitle */}
+              {showSubTitle && isRegular && (
+                <div className="flex items-center gap-xs typo-paragraph-sm text-secondary-foreground">
+                  <span>Auto-tracked / Manual input</span>
+                  <span className="text-muted-foreground">·</span>
+                  <span>1–2 days</span>
+                </div>
+              )}
+            </div>
+            {/* Description */}
+            {showDesc && isRegular && (
+              <p className="typo-paragraph-sm text-muted-foreground">Description</p>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "default", label: "Default" },
+            { value: "hover", label: "Hover" },
+            { value: "active", label: "Active" },
+            { value: "selected", label: "Selected" },
+          ]} />
+          <PropertyTabs label="" value={state} onChange={setState} options={[
+            { value: "selected-hover", label: "Selected Hover" },
+            { value: "disable", label: "Disable" },
+            { value: "disable-checked", label: "Disable Checked" },
+          ]} />
+          <PropertyTabs label="Icon Size" value={iconSize} onChange={setIconSize} options={[
+            { value: "regular", label: "Regular" },
+            { value: "small", label: "Small" },
+          ]} />
+        </div>
+        <div className="flex flex-wrap gap-lg">
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Description</span>
+            <div><Switch checked={showDesc} onCheckedChange={setShowDesc} /></div>
+          </div>
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Recommended</span>
+            <div><Switch checked={showRecommended} onCheckedChange={setShowRecommended} /></div>
+          </div>
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">SubTitle</span>
+            <div><Switch checked={showSubTitle} onCheckedChange={setShowSubTitle} /></div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* -- Tabbed Explore Behavior wrapper -- */
+const checkboxBehaviorTabs = [
+  { value: "checkbox", label: "Checkbox" },
+  { value: "group", label: "Checkbox Group" },
+  { value: "rich", label: "Rich Checkbox" },
+  { value: "advanced", label: "Rich Advanced" },
+]
+
+function CheckboxExploreBehavior() {
+  const [activeTab, setActiveTab] = useState("checkbox")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        {/* Tab bar */}
+        <div className="border-b border-border px-lg overflow-x-auto">
+          <div className="flex">
+            {checkboxBehaviorTabs.map(tab => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className={cn(
+                  "px-md py-sm typo-paragraph-sm whitespace-nowrap border-b-2 transition-colors",
+                  activeTab === tab.value
+                    ? "border-primary text-foreground typo-paragraph-sm-medium"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Tab content */}
+        {activeTab === "checkbox" && <CheckboxTab />}
+        {activeTab === "group" && <CheckboxGroupTab />}
+        {activeTab === "rich" && <RichCheckboxGroupTab />}
+        {activeTab === "advanced" && <RichCheckboxAdvancedTab />}
+      </div>
+    </section>
+  )
+}
+
 function CheckboxDocs() {
   const [checked1, setChecked1] = useState<boolean | "indeterminate">(false)
   const [items, setItems] = useState([
@@ -5471,6 +5997,8 @@ function CheckboxDocs() {
 
   return (
     <div className="space-y-12">
+      <TableOfContents sections={checkboxSections} />
+
       {/* ---- Header ---- */}
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
@@ -5483,32 +6011,8 @@ function CheckboxDocs() {
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Checked", prop: "checked", defaultValue: "false", options: [
-            { label: "Unchecked", value: "false" },
-            { label: "Checked", value: "true" },
-            { label: "Indeterminate", value: "indeterminate" },
-          ]},
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-          { type: "switch", label: "Error", prop: "error", defaultValue: false },
-        ]}
-        render={(p) => {
-          const checkedVal = p.checked === "true" ? true : p.checked === "indeterminate" ? "indeterminate" as const : false
-          return (
-            <div className="flex items-center gap-xs">
-              <Checkbox
-                id="playground-checkbox"
-                checked={checkedVal}
-                disabled={p.disabled}
-                aria-invalid={p.error || undefined}
-              />
-              <Label htmlFor="playground-checkbox">Label</Label>
-            </div>
-          )
-        }}
-      />
+      {/* ---- Explore Behavior ---- */}
+      <CheckboxExploreBehavior />
 
       {/* ---- Installation ---- */}
       <InstallationSection
@@ -5517,10 +6021,10 @@ function CheckboxDocs() {
       />
 
       {/* ---- Examples ---- */}
-      <section className="space-y-6 pt-xl border-t border-border">
+      <section id="examples" className="space-y-6 pt-xl border-t border-border">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
           {/* Default */}
           <Example
             title="Default checkbox"
@@ -5835,7 +6339,7 @@ const someChecked = items.some(i => i.checked) && !allChecked
       </section>
 
       {/* ---- Props ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Props</h2>
         <p className="typo-paragraph-sm text-muted-foreground">
           Extends <code className="text-xs bg-muted px-1.5 py-0.5 rounded">
@@ -5912,7 +6416,7 @@ const someChecked = items.some(i => i.checked) && !allChecked
       </section>
 
       {/* ---- Design Tokens ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="design-tokens" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
@@ -5925,9 +6429,9 @@ const someChecked = items.some(i => i.checked) && !allChecked
             </thead>
             <tbody className="divide-y divide-border">
               <tr>
-                <td className="px-4 py-2 font-mono text-xs">border</td>
+                <td className="px-4 py-2 font-mono text-xs">border-strong</td>
                 <td className="px-4 py-2 text-muted-foreground">Unchecked border</td>
-                <td className="px-4 py-2 font-mono text-xs">--border</td>
+                <td className="px-4 py-2 font-mono text-xs">--border-strong</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 font-mono text-xs">input</td>
@@ -5970,7 +6474,7 @@ const someChecked = items.some(i => i.checked) && !allChecked
       </section>
 
       {/* ---- Best Practices ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="best-practices" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
         <div className="grid grid-cols-2 gap-6">
           <DoItem text="Always pair with a visible <label> linked via id/htmlFor for accessibility." />
@@ -5994,7 +6498,7 @@ const someChecked = items.some(i => i.checked) && !allChecked
       ]} />
 
       {/* ---- Accessibility ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="accessibility" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
           <li>Built on Radix Checkbox — renders a native <code className="text-xs bg-muted px-1.5 py-0.5 rounded">button</code> with <code className="text-xs bg-muted px-1.5 py-0.5 rounded">role="checkbox"</code>.</li>
@@ -6007,7 +6511,7 @@ const someChecked = items.some(i => i.checked) && !allChecked
       </section>
 
       {/* ---- Related Components ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="related" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">
           Related Components
         </h2>
@@ -6614,9 +7118,142 @@ function SwitchDocs() {
    Label Docs
    ================================================================ */
 
+/* -- Label Explore Behavior -- */
+const labelSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function LabelExploreBehavior() {
+  const [size, setSize] = useState("sm")
+  const [disabled, setDisabled] = useState(false)
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          <Label
+            size={size as "sm" | "default"}
+            className={cn(disabled && "opacity-50 cursor-not-allowed")}
+          >
+            Label
+          </Label>
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+              { value: "sm", label: "Small" },
+              { value: "default", label: "Regular" },
+            ]} />
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Disabled</span>
+              <div><Switch checked={disabled} onCheckedChange={setDisabled} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function LabelPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">size</td>
+            <td className="p-3 font-mono text-xs">{`"sm" | "default"`}</td>
+            <td className="p-3 font-mono text-xs">{`"sm"`}</td>
+            <td className="p-3">Small (14px) or Regular (16px) text size.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">htmlFor</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Associates the label with a form control by ID.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">children</td>
+            <td className="p-3 font-mono text-xs">ReactNode</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Label text content.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function LabelTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">CSS Variable</th>
+            <th className="text-left p-3 font-semibold">Value (Light)</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">text-foreground</td>
+            <td className="p-3 font-mono text-xs">--foreground</td>
+            <td className="p-3"><ColorSwatch hex="#252522" label="foreground" /></td>
+            <td className="p-3">Label text color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">typo-paragraph-sm-medium</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3 font-mono text-xs">Geist 500 14/20 ls:0.07</td>
+            <td className="p-3">Size: Small</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">typo-paragraph-medium</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3 font-mono text-xs">Geist 500 16/24 ls:0</td>
+            <td className="p-3">Size: Regular</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">opacity-50</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3 font-mono text-xs">0.5</td>
+            <td className="p-3">Disabled state (via peer-disabled)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function LabelDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={labelSections} />
       {/* ---- Header ---- */}
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
@@ -6624,156 +7261,147 @@ function LabelDocs() {
         </p>
         <h1 className="typo-heading-2">Label</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          Renders an accessible label associated with form controls. Supports required indicator and disabled state via peer utilities.
+          Renders an accessible label associated with form controls. Supports size variants and disabled state via peer utilities.
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground controls={[]} render={() => <Label>Email address</Label>} />
+      <LabelExploreBehavior />
 
-      {/* ---- Import ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Import</h2>
-        <Example
-          title="Import"
-          code={`import { Label } from "@/components/ui/label"`}
-        >
-          <p className="text-xs text-muted-foreground italic">
-            Import statement only — see examples below.
-          </p>
-        </Example>
+      {/* ---- Installation ---- */}
+      <section id="installation" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Installation</h2>
+        <CodeBlock code="pnpm add @radix-ui/react-label" />
+        <CodeBlock code={`import { Label } from "@/components/ui/label"`} />
       </section>
 
       {/* ---- Examples ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example title="Small (default)" code={`<Label htmlFor="email">Email address</Label>\n<Input id="email" type="email" placeholder="you@example.com" />`}>
+            <div className="space-y-2">
+              <Label htmlFor="email-demo">Email address</Label>
+              <Input id="email-demo" type="email" placeholder="you@example.com" />
+            </div>
+          </Example>
 
-        <Example title="Default" code={`<Label htmlFor="email">Email address</Label>\n<Input id="email" type="email" placeholder="you@example.com" />`}>
-          <div className="space-y-2">
-            <Label htmlFor="email-demo">Email address</Label>
-            <Input id="email-demo" type="email" placeholder="you@example.com" />
-          </div>
-        </Example>
+          <Example title="Regular size" code={`<Label size="default" htmlFor="name">Full name</Label>\n<Input id="name" placeholder="John Doe" />`}>
+            <div className="space-y-2">
+              <Label size="default" htmlFor="name-demo">Full name</Label>
+              <Input id="name-demo" placeholder="John Doe" />
+            </div>
+          </Example>
 
-        <Example title="With Checkbox" code={`<div className="flex items-center gap-2">\n  <Checkbox id="terms" />\n  <Label htmlFor="terms">Accept terms and conditions</Label>\n</div>`}>
-          <div className="flex items-center gap-2">
-            <Checkbox id="terms-demo" />
-            <Label htmlFor="terms-demo">Accept terms and conditions</Label>
-          </div>
-        </Example>
+          <Example title="With Checkbox" code={`<div className="flex items-center gap-2">\n  <Checkbox id="terms" />\n  <Label htmlFor="terms">Accept terms</Label>\n</div>`}>
+            <div className="flex items-center gap-2">
+              <Checkbox id="terms-demo" />
+              <Label htmlFor="terms-demo">Accept terms and conditions</Label>
+            </div>
+          </Example>
 
-        <Example title="With Switch" code={`<div className="flex items-center gap-2">\n  <Switch id="notifications" />\n  <Label htmlFor="notifications">Enable notifications</Label>\n</div>`}>
-          <div className="flex items-center gap-2">
-            <Switch id="notifications-demo" />
-            <Label htmlFor="notifications-demo">Enable notifications</Label>
-          </div>
-        </Example>
-
-        <Example title="Disabled (via peer)" code={`<div className="space-y-2">\n  <Input id="disabled" disabled placeholder="Disabled input" />\n  <Label htmlFor="disabled">Disabled field</Label>\n</div>`}>
-          <div className="flex items-center gap-2">
-            <Checkbox id="disabled-demo" disabled />
-            <Label htmlFor="disabled-demo">Disabled option</Label>
-          </div>
-        </Example>
-      </section>
-
-      {/* ---- API Reference ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">API Reference</h2>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted">
-                <th className="text-left p-3 font-semibold">Prop</th>
-                <th className="text-left p-3 font-semibold">Type</th>
-                <th className="text-left p-3 font-semibold">Default</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="p-3 font-mono text-xs">htmlFor</td>
-                <td className="p-3 font-mono text-xs">string</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Associates the label with a form control by ID.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">className</td>
-                <td className="p-3 font-mono text-xs">string</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Additional CSS classes.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">children</td>
-                <td className="p-3 font-mono text-xs">ReactNode</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Label text content.</td>
-              </tr>
-            </tbody>
-          </table>
+          <Example title="Disabled (via peer)" code={`<div className="flex items-center gap-2">\n  <Checkbox id="disabled" disabled />\n  <Label htmlFor="disabled">Disabled option</Label>\n</div>`}>
+            <div className="flex items-center gap-2">
+              <Checkbox id="disabled-demo" disabled />
+              <Label htmlFor="disabled-demo">Disabled option</Label>
+            </div>
+          </Example>
         </div>
       </section>
 
+      {/* ---- Props ---- */}
+      <section id="props" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <LabelPropsTable />
+      </section>
+
+      {/* ---- Design Tokens ---- */}
+      <section id="design-tokens" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <LabelTokensTable />
+      </section>
+
       {/* ---- Best Practices ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="best-practices" className="space-y-4 pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Always pair every form control with a visible Label linked via htmlFor/id." />
-          <DontItem text="Don't use placeholder text as a replacement for a Label." />
+        <h3 className="typo-paragraph-bold">Content</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <DoItem text="Keep label text short and descriptive — users should know what to enter at a glance." />
+          <DontItem text="Don't use placeholder text as a replacement for a Label." />
+        </div>
+        <h3 className="typo-paragraph-bold">Structure</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DoItem text="Always pair every form control with a visible Label linked via htmlFor/id." />
           <DontItem text="Don't use Label for non-form elements — use a heading or paragraph instead." />
         </div>
       </section>
 
-      {/* ---- Related Components ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">
-          Related Components
-        </h2>
-        <div className="rounded-lg border border-border divide-y divide-border">
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Input</p>
-              <p className="text-muted-foreground mt-0.5">
-                Text input field — pair with Label for accessibility.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
-              Available
-            </span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Checkbox</p>
-              <p className="text-muted-foreground mt-0.5">
-                Checkbox control — pair with Label for click-to-toggle.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
-              Available
-            </span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Form</p>
-              <p className="text-muted-foreground mt-0.5">
-                Full form wrapper with validation — includes built-in label support.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
-            </span>
+      {/* ---- Figma Mapping ---- */}
+      <FigmaMapping id="figma-mapping" nodeId="103:9453" rows={[
+        ["Size", "Small", "size=\"sm\"", "typo-paragraph-sm-medium (14/20)"],
+        ["Size", "Regular", "size=\"default\"", "typo-paragraph-medium (16/24)"],
+        ["Layout", "Block", "—", "Default (block-level)"],
+        ["Layout", "Inline", "—", "Use flex wrapper with gap-xs"],
+        ["State", "Disabled", "peer-disabled", "opacity-50, cursor-not-allowed"],
+      ]} />
+
+      {/* ---- Accessibility ---- */}
+      <section id="accessibility" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="space-y-md">
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted">
+                  <th className="text-left p-3 font-semibold">Feature</th>
+                  <th className="text-left p-3 font-semibold">Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                <tr>
+                  <td className="p-3 font-mono text-xs">htmlFor</td>
+                  <td className="p-3">Links label to form control — clicking label focuses/toggles the control.</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-mono text-xs">Radix primitive</td>
+                  <td className="p-3">Built on @radix-ui/react-label — handles ARIA association automatically.</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-mono text-xs">peer-disabled</td>
+                  <td className="p-3">Visually dims label when associated control is disabled.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["State", "Default", "—", "default"],
-        ["State", "Disabled", "—", "peer-disabled:opacity-50"],
-        ["Font", "Geist Medium 14/20", "—", "text-sm font-medium"],
-        ["Required Indicator", "Visible", "data-required", "Shows * indicator"],
-      ]} />
+      {/* ---- Related Components ---- */}
+      <section id="related" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-lg border border-border divide-y divide-border">
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Input</p>
+              <p className="text-muted-foreground mt-0.5">Text input field — pair with Label for accessibility.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Checkbox</p>
+              <p className="text-muted-foreground mt-0.5">Checkbox control — pair with Label for click-to-toggle.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Switch</p>
+              <p className="text-muted-foreground mt-0.5">Toggle control — pair with Label for accessibility.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -7749,64 +8377,263 @@ function AvatarDocs() {
    Progress Docs
    ================================================================ */
 
+const progressSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function ProgressExploreBehavior() {
+  const [value, setValue] = useState(50)
+  const [size, setSize] = useState("default")
+  const [variant, setVariant] = useState("default")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          <Progress value={value} size={size as any} variant={variant as any} className="w-80" />
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+              { value: "default", label: "Default" },
+              { value: "sm", label: "Small" },
+            ]} />
+            <PropertyTabs label="Value" value={variant} onChange={setVariant} options={[
+              { value: "default", label: "Primary" },
+              { value: "success", label: "Success" },
+            ]} />
+            <div className="space-y-xs">
+              <span className="text-xs font-medium text-muted-foreground">Progress: {value}%</span>
+              <input type="range" min={0} max={100} value={value} onChange={e => setValue(Number(e.target.value))} className="w-full accent-primary" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ProgressPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">value</td>
+            <td className="p-3 font-mono text-xs">number</td>
+            <td className="p-3 font-mono text-xs">0</td>
+            <td className="p-3">Current progress (0–100).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size</td>
+            <td className="p-3 font-mono text-xs">{`"default" | "sm"`}</td>
+            <td className="p-3 font-mono text-xs">{`"default"`}</td>
+            <td className="p-3">Track height: default (8px) or small (4px).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">variant</td>
+            <td className="p-3 font-mono text-xs">{`"default" | "success"`}</td>
+            <td className="p-3 font-mono text-xs">{`"default"`}</td>
+            <td className="p-3">Indicator color: primary (teal) or success (green).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes for the track.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function ProgressTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-muted</td>
+            <td className="p-3 font-mono text-xs">#f3f3f2</td>
+            <td className="p-3">Track background</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-primary</td>
+            <td className="p-3 font-mono text-xs">#0f766e</td>
+            <td className="p-3">Default indicator color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-success</td>
+            <td className="p-3 font-mono text-xs">#16a34a</td>
+            <td className="p-3">Success indicator color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">h-xs</td>
+            <td className="p-3 font-mono text-xs">8px</td>
+            <td className="p-3">Default track height</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">h-3xs</td>
+            <td className="p-3 font-mono text-xs">4px</td>
+            <td className="p-3">Small track height</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">rounded-full</td>
+            <td className="p-3 font-mono text-xs">9999px</td>
+            <td className="p-3">Pill shape for track and indicator</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function ProgressDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={progressSections} />
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Data Display</p>
         <h1 className="typo-heading-2">Progress</h1>
-        <p className="typo-paragraph text-muted-foreground max-w-3xl">Progress bar indicating completion status. Supports determinate values (0-100).</p>
+        <p className="typo-paragraph text-muted-foreground max-w-3xl">
+          Determinate progress bar showing completion status. Two sizes (default 8px, small 4px) and two color variants (primary, success).
+        </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Value", prop: "value", defaultValue: "50", options: [
-            { label: "0%", value: "0" },
-            { label: "25%", value: "25" },
-            { label: "50%", value: "50" },
-            { label: "75%", value: "75" },
-          ]},
-        ]}
-        render={(p) => <Progress value={Number(p.value)} className="w-60" />}
+      <ProgressExploreBehavior />
+
+      <InstallationSection
+        deps="pnpm add @radix-ui/react-progress"
+        importCode={`import { Progress } from "@/components/ui/progress"`}
       />
 
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
-        <Example title="25%" code={`<Progress value={25} />`}>
-          <Progress value={25} className="w-60" />
-        </Example>
-        <Example title="50%" code={`<Progress value={50} />`}>
-          <Progress value={50} className="w-60" />
-        </Example>
-        <Example title="75%" code={`<Progress value={75} />`}>
-          <Progress value={75} className="w-60" />
-        </Example>
-        <Example title="100%" code={`<Progress value={100} />`}>
-          <Progress value={100} className="w-60" />
-        </Example>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Default"
+            description="Standard primary progress bar."
+            code={`<Progress value={50} />`}
+          >
+            <Progress value={50} />
+          </Example>
+
+          <Example
+            title="Success variant"
+            description="Green indicator for completed or positive progress."
+            code={`<Progress value={75} variant="success" />`}
+          >
+            <Progress value={75} variant="success" />
+          </Example>
+
+          <Example
+            title="Small size"
+            description="Compact 4px height for tight layouts."
+            code={`<Progress value={60} size="sm" />`}
+          >
+            <Progress value={60} size="sm" />
+          </Example>
+
+          <Example
+            title="Complete"
+            description="Full progress with success variant."
+            code={`<Progress value={100} variant="success" />`}
+          >
+            <Progress value={100} variant="success" />
+          </Example>
+        </div>
       </section>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">API Reference</h2>
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <ProgressPropsTable />
+      </section>
+
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <ProgressTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Use progress when the completion percentage is known. Use Spinner for indeterminate loading." />
+        <DontItem text="Animate progress backwards — always move forward to give a sense of accomplishment." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Use success variant when progress reaches 100% to signal completion." />
+        <DontItem text="Stack multiple progress bars in a single view — consolidate into one if possible." />
+      </section>
+
+      <FigmaMapping id="figma-mapping" nodeId="438:64981" rows={[
+        ["Size", "Default (8px)", "size", '"default" — h-xs'],
+        ["Size", "Small (4px)", "size", '"sm" — h-3xs'],
+        ["Value", "Primary (teal)", "variant", '"default" — bg-primary'],
+        ["Value", "Success (green)", "variant", '"success" — bg-success'],
+        ["Progress", "0–100", "value", "number (0–100)"],
+        ["Track", "Muted background", "—", "bg-muted"],
+        ["Radius", "Full (pill)", "—", "rounded-full"],
+      ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
-            <thead><tr className="border-b border-border bg-muted"><th className="text-left p-3 font-semibold">Prop</th><th className="text-left p-3 font-semibold">Type</th><th className="text-left p-3 font-semibold">Default</th><th className="text-left p-3 font-semibold">Description</th></tr></thead>
+            <thead>
+              <tr className="border-b border-border bg-muted">
+                <th className="text-left p-3 font-semibold">Feature</th>
+                <th className="text-left p-3 font-semibold">Details</th>
+              </tr>
+            </thead>
             <tbody className="divide-y divide-border">
-              <tr><td className="p-3 font-mono text-xs">value</td><td className="p-3 font-mono text-xs">number</td><td className="p-3 font-mono text-xs">0</td><td className="p-3">Current progress (0–100).</td></tr>
+              <tr>
+                <td className="p-3 font-medium">role</td>
+                <td className="p-3">Radix provides <code className="text-xs bg-muted px-1 py-0.5 rounded">role="progressbar"</code> automatically.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">aria-valuenow</td>
+                <td className="p-3">Set automatically by Radix from the <code className="text-xs bg-muted px-1 py-0.5 rounded">value</code> prop.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">aria-label</td>
+                <td className="p-3">Provide a descriptive label (e.g. <code className="text-xs bg-muted px-1 py-0.5 rounded">aria-label="Upload progress"</code>).</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["Track Height", "6px", "—", "h-1.5"],
-        ["Track Color", "Muted", "—", "bg-muted"],
-        ["Indicator Color", "Primary", "—", "bg-primary"],
-        ["Value", "0–100", "value", "number (0–100)"],
-        ["Radius", "Full (pill)", "—", "rounded-full"],
-      ]} />
+      <section id="related" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <ul className="list-disc list-inside space-y-xs typo-paragraph text-muted-foreground">
+          <li><strong>Spinner</strong> — Use for indeterminate loading with no known percentage.</li>
+          <li><strong>Skeleton</strong> — Use for layout-aware content placeholders.</li>
+        </ul>
+      </section>
     </div>
   )
 }
@@ -8403,8 +9230,13 @@ function AlertDocs() {
    Badge Docs
    ================================================================ */
 
-function BadgeExploreBehavior() {
-  const [component, setComponent] = useState<"label" | "round" | "dot">("label")
+const badgeBehaviorTabs = [
+  { value: "label", label: "Label" },
+  { value: "round", label: "Round" },
+  { value: "dot", label: "Dot" },
+]
+
+function BadgeLabelTab() {
   const [variant, setVariant] = useState("default")
   const [level, setLevel] = useState("primary")
   const [size, setSize] = useState("default")
@@ -8413,109 +9245,157 @@ function BadgeExploreBehavior() {
   const [showIconRight, setShowIconRight] = useState(false)
   const [iconLeftName, setIconLeftName] = useState("Circle")
   const [iconRightName, setIconRightName] = useState("X")
-  const [roundType, setRoundType] = useState<"numeric" | "icon">("numeric")
-  const [roundIconName, setRoundIconName] = useState("Bell")
-  const [roundNumber, setRoundNumber] = useState("3")
   const [label, setLabel] = useState("Badge")
 
   const IconLeft = allLucideIcons.find((i) => i.name === iconLeftName)?.icon ?? allLucideIcons.find((i) => i.name === "Circle")!.icon
   const IconRight = allLucideIcons.find((i) => i.name === iconRightName)?.icon ?? allLucideIcons.find((i) => i.name === "X")!.icon
-  const RoundIcon = allLucideIcons.find((i) => i.name === roundIconName)?.icon ?? allLucideIcons.find((i) => i.name === "Bell")!.icon
-
-  // Badge/Dot only supports 6 variants (no outline/ghost)
-  const dotVariants = ["default", "secondary", "destructive", "emphasis", "success", "warning"]
-  const effectiveVariant = component === "dot" && !dotVariants.includes(variant) ? "default" : variant
-
-  // Badge size labels removed — PropertyTabs uses short labels (SM/MD/LG)
 
   return (
-    <div className="rounded-xl border border-border overflow-hidden bg-background">
+    <>
       <div className="p-4xl flex items-center justify-center min-h-[200px] bg-background">
-        {component === "label" && (
-          <Badge variant={effectiveVariant as any} level={level as any} size={size as any} className={state === "Focus" ? "ring-[3px] ring-ring" : ""}>
-            {showIconLeft && <IconLeft />}
-            {label}
-            {showIconRight && <IconRight />}
-          </Badge>
-        )}
-        {component === "round" && (
-          <BadgeRound variant={effectiveVariant as any} size={size as any} className={state === "Focus" ? "ring-[3px] ring-ring" : ""}>
-            {roundType === "numeric" ? roundNumber : <RoundIcon />}
-          </BadgeRound>
-        )}
-        {component === "dot" && (
-          <BadgeDot variant={effectiveVariant as any} size={size as any} />
-        )}
+        <Badge variant={variant as any} level={level as any} size={size as any} className={state === "Focus" ? "ring-[3px] ring-ring" : ""}>
+          {showIconLeft && <IconLeft />}
+          {label}
+          {showIconRight && <IconRight />}
+        </Badge>
       </div>
       <div className="border-t border-border bg-muted/50 p-lg space-y-md">
-        {/* Tabs — vertical stack */}
         <div className="space-y-sm">
-          <PropertyTabs label="Component" value={component} onChange={(v) => {
-            setComponent(v as any)
-            if (v === "dot" && !dotVariants.includes(variant)) setVariant("default")
-          }} options={[
-            { value: "label", label: "Label" }, { value: "round", label: "Round" }, { value: "dot", label: "Dot" },
+          <PropertyTabs label="Level" value={level} onChange={setLevel} options={[
+            { value: "primary", label: "Primary" }, { value: "secondary", label: "Secondary" },
           ]} />
-          <PropertyTabs label="Variant" value={effectiveVariant} onChange={setVariant} options={[
+          <PropertyTabs label="Variant" value={variant} onChange={setVariant} options={[
             { value: "default", label: "Primary" }, { value: "secondary", label: "Secondary" },
-            ...(component !== "dot" ? [{ value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" }] : []),
+            { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" },
             { value: "destructive", label: "Destructive" }, { value: "emphasis", label: "Emphasis" },
             { value: "success", label: "Success" }, { value: "warning", label: "Warning" },
           ]} />
-          {component === "label" && (
-            <PropertyTabs label="Level" value={level} onChange={setLevel} options={[
-              { value: "primary", label: "Primary" }, { value: "secondary", label: "Secondary" },
-            ]} />
-          )}
-          <PropertyTabs label="Size" value={size} onChange={setSize} options={[
-            { value: "sm", label: "SM" }, { value: "default", label: "MD" }, { value: "lg", label: "LG" },
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "Default", label: "Default" }, { value: "Focus", label: "Focus" },
           ]} />
-          {component !== "dot" && (
-            <PropertyTabs label="State" value={state} onChange={setState} options={[
-              { value: "Default", label: "Default" }, { value: "Focus", label: "Focus" },
-            ]} />
-          )}
-          {component === "round" && (
-            <PropertyTabs label="Type" value={roundType} onChange={(v) => setRoundType(v as any)} options={[
-              { value: "numeric", label: "Numeric" }, { value: "icon", label: "Icon" },
-            ]} />
-          )}
+          <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+            { value: "sm", label: "Small" }, { value: "default", label: "Regular" }, { value: "lg", label: "Large" },
+          ]} />
         </div>
-        {/* Toggles & inputs — horizontal row */}
         <div className="flex flex-wrap items-center gap-lg">
-          {component === "round" && (
-            roundType === "numeric" ? (
-              <div className="space-y-xs">
-                <Label className="text-xs text-muted-foreground">Number</Label>
-                <Input value={roundNumber} onChange={(e) => setRoundNumber(e.target.value)} className="h-8 text-xs w-20" />
-              </div>
-            ) : (
-              <div className="space-y-xs">
-                <Label className="text-xs text-muted-foreground">Icon</Label>
-                <IconPicker value={roundIconName} onChange={setRoundIconName} size="sm" />
-              </div>
-            )
-          )}
-          {component === "label" && (
-            <>
-              <div className="space-y-xs">
-                <Label className="text-xs text-muted-foreground">Label</Label>
-                <Input value={label} onChange={(e) => setLabel(e.target.value)} className="h-8 text-xs w-24" />
-              </div>
-              <div className="space-y-xs"><span className="text-xs font-medium text-muted-foreground">Show Icon Left</span><div><Switch checked={showIconLeft} onCheckedChange={setShowIconLeft} /></div></div>
-              <div className={["space-y-xs", !showIconLeft ? "opacity-50 pointer-events-none" : ""].filter(Boolean).join(" ")}>
-                <span className="text-xs font-medium text-muted-foreground">Icon Left</span>
-                <IconPicker value={iconLeftName} onChange={setIconLeftName} disabled={!showIconLeft} size="sm" />
-              </div>
-              <div className="space-y-xs"><span className="text-xs font-medium text-muted-foreground">Show Icon Right</span><div><Switch checked={showIconRight} onCheckedChange={setShowIconRight} /></div></div>
-              <div className={["space-y-xs", !showIconRight ? "opacity-50 pointer-events-none" : ""].filter(Boolean).join(" ")}>
-                <span className="text-xs font-medium text-muted-foreground">Icon Right</span>
-                <IconPicker value={iconRightName} onChange={setIconRightName} disabled={!showIconRight} size="sm" />
-              </div>
-            </>
+          <div className="space-y-xs">
+            <Label className="text-xs text-muted-foreground">Label</Label>
+            <Input value={label} onChange={(e) => setLabel(e.target.value)} className="h-8 text-xs w-24" />
+          </div>
+          <div className="space-y-xs"><span className="text-xs font-medium text-muted-foreground">Show icon left</span><div><Switch checked={showIconLeft} onCheckedChange={setShowIconLeft} /></div></div>
+          <div className={cn("space-y-xs", !showIconLeft && "opacity-50 pointer-events-none")}>
+            <span className="text-xs font-medium text-muted-foreground">Icon left</span>
+            <IconPicker value={iconLeftName} onChange={setIconLeftName} disabled={!showIconLeft} size="sm" />
+          </div>
+          <div className="space-y-xs"><span className="text-xs font-medium text-muted-foreground">Show icon right</span><div><Switch checked={showIconRight} onCheckedChange={setShowIconRight} /></div></div>
+          <div className={cn("space-y-xs", !showIconRight && "opacity-50 pointer-events-none")}>
+            <span className="text-xs font-medium text-muted-foreground">Icon right</span>
+            <IconPicker value={iconRightName} onChange={setIconRightName} disabled={!showIconRight} size="sm" />
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function BadgeRoundTab() {
+  const [variant, setVariant] = useState("default")
+  const [size, setSize] = useState("default")
+  const [state, setState] = useState("Default")
+  const [roundType, setRoundType] = useState<"numeric" | "icon">("numeric")
+  const [roundIconName, setRoundIconName] = useState("Bell")
+  const [roundNumber, setRoundNumber] = useState("3")
+
+  const RoundIcon = allLucideIcons.find((i) => i.name === roundIconName)?.icon ?? allLucideIcons.find((i) => i.name === "Bell")!.icon
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[200px] bg-background">
+        <BadgeRound variant={variant as any} size={size as any} className={state === "Focus" ? "ring-[3px] ring-ring" : ""}>
+          {roundType === "numeric" ? roundNumber : <RoundIcon />}
+        </BadgeRound>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Type" value={roundType} onChange={(v) => setRoundType(v as any)} options={[
+            { value: "numeric", label: "Numeric" }, { value: "icon", label: "Icon" },
+          ]} />
+          <PropertyTabs label="Variant" value={variant} onChange={setVariant} options={[
+            { value: "default", label: "Primary" }, { value: "secondary", label: "Secondary" },
+            { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" },
+            { value: "destructive", label: "Destructive" }, { value: "emphasis", label: "Emphasis" },
+            { value: "success", label: "Success" }, { value: "warning", label: "Warning" },
+          ]} />
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "Default", label: "Default" }, { value: "Focus", label: "Focus" },
+          ]} />
+          <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+            { value: "sm", label: "Small" }, { value: "default", label: "Regular" }, { value: "lg", label: "Large" },
+          ]} />
+        </div>
+        <div className="flex flex-wrap items-center gap-lg">
+          {roundType === "numeric" ? (
+            <div className="space-y-xs">
+              <Label className="text-xs text-muted-foreground">Number</Label>
+              <Input value={roundNumber} onChange={(e) => setRoundNumber(e.target.value)} className="h-8 text-xs w-20" />
+            </div>
+          ) : (
+            <div className="space-y-xs">
+              <Label className="text-xs text-muted-foreground">Icon</Label>
+              <IconPicker value={roundIconName} onChange={setRoundIconName} size="sm" />
+            </div>
           )}
         </div>
       </div>
+    </>
+  )
+}
+
+function BadgeDotTab() {
+  const [variant, setVariant] = useState("default")
+  const [size, setSize] = useState("default")
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[200px] bg-background">
+        <BadgeDot variant={variant as any} size={size as any} />
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Variant" value={variant} onChange={setVariant} options={[
+            { value: "default", label: "Primary" }, { value: "secondary", label: "Secondary" },
+            { value: "destructive", label: "Destructive" }, { value: "emphasis", label: "Emphasis" },
+            { value: "success", label: "Success" }, { value: "warning", label: "Warning" },
+          ]} />
+          <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+            { value: "sm", label: "Small" }, { value: "default", label: "Regular" }, { value: "lg", label: "Large" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+function BadgeExploreBehavior() {
+  const [activeTab, setActiveTab] = useState("label")
+  return (
+    <div className="rounded-xl border border-border overflow-hidden bg-background">
+      <div className="border-b border-border px-lg overflow-x-auto">
+        <div className="flex">
+          {badgeBehaviorTabs.map(tab => (
+            <button key={tab.value} onClick={() => setActiveTab(tab.value)}
+              className={cn(
+                "px-md py-sm typo-paragraph-sm whitespace-nowrap border-b-2 transition-colors",
+                activeTab === tab.value
+                  ? "border-primary text-foreground typo-paragraph-sm-medium"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}>{tab.label}</button>
+          ))}
+        </div>
+      </div>
+      {activeTab === "label" && <BadgeLabelTab />}
+      {activeTab === "round" && <BadgeRoundTab />}
+      {activeTab === "dot" && <BadgeDotTab />}
     </div>
   )
 }
@@ -8943,78 +9823,334 @@ function BadgeDocs() {
    Separator Docs
    ================================================================ */
 
+/* -- Separator Explore Behavior -- */
+const separatorSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+const separatorBehaviorTabs = [
+  { value: "divider", label: "Divider" },
+  { value: "dot", label: "Dot" },
+]
+
+function SeparatorDividerTab() {
+  const [direction, setDirection] = useState("horizontal")
+  const isVertical = direction === "vertical"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        {isVertical ? (
+          <div className="flex items-center gap-md h-xl">
+            <span className="typo-paragraph-sm text-muted-foreground">Left</span>
+            <Separator orientation="vertical" />
+            <span className="typo-paragraph-sm text-muted-foreground">Right</span>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-md items-center w-[200px]">
+            <span className="typo-paragraph-sm text-muted-foreground">Content above</span>
+            <Separator orientation="horizontal" />
+            <span className="typo-paragraph-sm text-muted-foreground">Content below</span>
+          </div>
+        )}
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Direction" value={direction} onChange={setDirection} options={[
+            { value: "horizontal", label: "Default" },
+            { value: "vertical", label: "Vertical" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+function SeparatorDotTab() {
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <div className="flex items-center gap-xs">
+          <span className="typo-paragraph-sm text-muted-foreground">Item 1</span>
+          <div className="size-[3px] rounded-full bg-muted-foreground" />
+          <span className="typo-paragraph-sm text-muted-foreground">Item 2</span>
+          <div className="size-[3px] rounded-full bg-muted-foreground" />
+          <span className="typo-paragraph-sm text-muted-foreground">Item 3</span>
+        </div>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg">
+        <p className="typo-paragraph-sm text-muted-foreground">Dot separator has no configurable properties. 3×3px circle, color: muted-foreground.</p>
+      </div>
+    </>
+  )
+}
+
+function SeparatorExploreBehavior() {
+  const [activeTab, setActiveTab] = useState("divider")
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="border-b border-border px-lg overflow-x-auto">
+          <div className="flex">
+            {separatorBehaviorTabs.map(tab => (
+              <button key={tab.value} onClick={() => setActiveTab(tab.value)}
+                className={cn(
+                  "px-md py-sm typo-paragraph-sm whitespace-nowrap border-b-2 transition-colors",
+                  activeTab === tab.value
+                    ? "border-primary text-foreground typo-paragraph-sm-medium"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}>{tab.label}</button>
+            ))}
+          </div>
+        </div>
+        {activeTab === "divider" && <SeparatorDividerTab />}
+        {activeTab === "dot" && <SeparatorDotTab />}
+      </div>
+    </section>
+  )
+}
+
+function SeparatorPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">orientation</td>
+            <td className="p-3 font-mono text-xs">{`"horizontal" | "vertical"`}</td>
+            <td className="p-3 font-mono text-xs">{`"horizontal"`}</td>
+            <td className="p-3">Direction of the divider line.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">decorative</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">true</td>
+            <td className="p-3">If true, hidden from screen readers (role=none).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SeparatorTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">CSS Variable</th>
+            <th className="text-left p-3 font-semibold">Value (Light)</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-border</td>
+            <td className="p-3 font-mono text-xs">--border</td>
+            <td className="p-3"><ColorSwatch hex="#E9E9E7" label="border" /></td>
+            <td className="p-3">Divider line color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-muted-foreground</td>
+            <td className="p-3 font-mono text-xs">--muted-foreground</td>
+            <td className="p-3"><ColorSwatch hex="#6F6F6A" label="muted-fg" /></td>
+            <td className="p-3">Dot separator color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">h-px / w-px</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3 font-mono text-xs">1px</td>
+            <td className="p-3">Divider line thickness</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size-[3px]</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3 font-mono text-xs">3×3px</td>
+            <td className="p-3">Dot size</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function SeparatorDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={separatorSections} />
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Data Display</p>
         <h1 className="typo-heading-2">Separator</h1>
-        <p className="typo-paragraph text-muted-foreground max-w-3xl">Visually separates content with a horizontal or vertical line.</p>
+        <p className="typo-paragraph text-muted-foreground max-w-3xl">Visually separates content with a horizontal or vertical line, or a dot between inline items.</p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Orientation", prop: "orientation", defaultValue: "horizontal", options: [
-            { label: "Horizontal", value: "horizontal" },
-            { label: "Vertical", value: "vertical" },
-          ]},
-        ]}
-        render={(p) => (
-          p.orientation === "horizontal" ? (
+      <SeparatorExploreBehavior />
+
+      {/* ---- Installation ---- */}
+      <section id="installation" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Installation</h2>
+        <CodeBlock code={`import { Separator } from "@/components/ui/separator"`} />
+      </section>
+
+      {/* ---- Examples ---- */}
+      <section id="examples" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example title="Horizontal" code={`<Separator />`}>
             <div className="space-y-4 w-60">
               <p className="text-sm">Content above</p>
               <Separator />
               <p className="text-sm">Content below</p>
             </div>
-          ) : (
+          </Example>
+
+          <Example title="Vertical" code={`<Separator orientation="vertical" />`}>
             <div className="flex items-center gap-4 h-8">
               <span className="text-sm">Left</span>
               <Separator orientation="vertical" />
               <span className="text-sm">Right</span>
             </div>
-          )
-        )}
-      />
+          </Example>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Examples</h2>
-        <Example title="Horizontal" code={`<Separator />`}>
-          <div className="space-y-4 w-60">
-            <p className="text-sm">Content above</p>
-            <Separator />
-            <p className="text-sm">Content below</p>
-          </div>
-        </Example>
-        <Example title="Vertical" code={`<Separator orientation="vertical" />`}>
-          <div className="flex items-center gap-4 h-8">
-            <span className="text-sm">Left</span>
-            <Separator orientation="vertical" />
-            <span className="text-sm">Right</span>
-          </div>
-        </Example>
+          <Example title="In a card" code={`<div className="space-y-4">\n  <div>\n    <h4 className="font-semibold">Title</h4>\n    <p className="text-sm text-muted-foreground">Description</p>\n  </div>\n  <Separator />\n  <p className="text-sm">Footer content</p>\n</div>`}>
+            <div className="space-y-4 w-60">
+              <div>
+                <h4 className="font-semibold">Title</h4>
+                <p className="text-sm text-muted-foreground">Description text here</p>
+              </div>
+              <Separator />
+              <p className="text-sm">Footer content</p>
+            </div>
+          </Example>
+
+          <Example title="Dot separator (custom)" code={`<div className="flex items-center gap-2">\n  <span className="text-sm">Item 1</span>\n  <div className="size-[3px] rounded-full bg-muted-foreground" />\n  <span className="text-sm">Item 2</span>\n</div>`}>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Item 1</span>
+              <div className="size-[3px] rounded-full bg-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Item 2</span>
+              <div className="size-[3px] rounded-full bg-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Item 3</span>
+            </div>
+          </Example>
+        </div>
       </section>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">API Reference</h2>
+      {/* ---- Props ---- */}
+      <section id="props" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <SeparatorPropsTable />
+      </section>
+
+      {/* ---- Design Tokens ---- */}
+      <section id="design-tokens" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <SeparatorTokensTable />
+      </section>
+
+      {/* ---- Best Practices ---- */}
+      <section id="best-practices" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
+        <h3 className="typo-paragraph-bold">Structure</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DoItem text="Use horizontal separators between stacked content sections." />
+          <DontItem text="Don't use separators between every element — only between distinct groups." />
+        </div>
+        <h3 className="typo-paragraph-bold">Content</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <DoItem text="Use dot separators between inline metadata items (e.g., author · date · category)." />
+          <DontItem text="Don't mix divider and dot separators in the same context." />
+        </div>
+      </section>
+
+      {/* ---- Figma Mapping ---- */}
+      <FigmaMapping id="figma-mapping" nodeId="176:26202" rows={[
+        ["Direction", "Default (H)", "orientation=\"horizontal\"", "h-px w-full bg-border"],
+        ["Direction", "Vertical", "orientation=\"vertical\"", "w-px h-full bg-border"],
+        ["Spacing", "None / Regular / Spacious", "—", "Controlled by parent layout gap"],
+        ["Dot", "3×3px circle", "—", "size-[3px] rounded-full bg-muted-foreground"],
+      ]} />
+
+      {/* ---- Accessibility ---- */}
+      <section id="accessibility" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
-            <thead><tr className="border-b border-border bg-muted"><th className="text-left p-3 font-semibold">Prop</th><th className="text-left p-3 font-semibold">Type</th><th className="text-left p-3 font-semibold">Default</th><th className="text-left p-3 font-semibold">Description</th></tr></thead>
+            <thead>
+              <tr className="border-b border-border bg-muted">
+                <th className="text-left p-3 font-semibold">Feature</th>
+                <th className="text-left p-3 font-semibold">Details</th>
+              </tr>
+            </thead>
             <tbody className="divide-y divide-border">
-              <tr><td className="p-3 font-mono text-xs">orientation</td><td className="p-3 font-mono text-xs">"horizontal" | "vertical"</td><td className="p-3 font-mono text-xs">"horizontal"</td><td className="p-3">Direction of the divider.</td></tr>
-              <tr><td className="p-3 font-mono text-xs">decorative</td><td className="p-3 font-mono text-xs">boolean</td><td className="p-3 font-mono text-xs">true</td><td className="p-3">If true, hides from screen readers.</td></tr>
+              <tr>
+                <td className="p-3 font-mono text-xs">role</td>
+                <td className="p-3">decorative=true → role="none" (hidden). decorative=false → role="separator".</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-mono text-xs">aria-orientation</td>
+                <td className="p-3">Set automatically when decorative=false. Communicates direction to assistive technology.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-mono text-xs">data-orientation</td>
+                <td className="p-3">Always set — useful for CSS styling hooks.</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["Orientation", "Horizontal", "orientation", '"horizontal" — h-px w-full'],
-        ["Orientation", "Vertical", "orientation", '"vertical" — h-full w-px'],
-        ["Color", "Border", "—", "bg-border"],
-        ["Decorative", "true", "decorative", "true (hidden from screen readers)"],
-      ]} />
+      {/* ---- Related Components ---- */}
+      <section id="related" className="space-y-4 pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-lg border border-border divide-y divide-border">
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Card</p>
+              <p className="text-muted-foreground mt-0.5">Commonly uses Separator between header and content.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Dropdown Menu</p>
+              <p className="text-muted-foreground mt-0.5">Uses separator between menu item groups.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+          <div className="px-5 py-3.5 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-foreground">Breadcrumb</p>
+              <p className="text-muted-foreground mt-0.5">Uses separator between breadcrumb items.</p>
+            </div>
+            <span className="text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">Available</span>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -9023,80 +10159,258 @@ function SeparatorDocs() {
    Skeleton Docs
    ================================================================ */
 
+const skeletonSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function SkeletonExploreBehavior() {
+  const [shape, setShape] = useState("card")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          {shape === "card" && (
+            <div className="flex items-start gap-sm">
+              <Skeleton className="size-[48px] rounded-full shrink-0" />
+              <div className="flex flex-col gap-sm w-[260px]">
+                <Skeleton className="h-md w-full" />
+                <Skeleton className="h-[132px] w-full rounded-lg" />
+              </div>
+            </div>
+          )}
+          {shape === "text" && (
+            <div className="space-y-xs w-60">
+              <Skeleton className="h-md w-full" />
+              <Skeleton className="h-md w-4/5" />
+              <Skeleton className="h-md w-3/5" />
+            </div>
+          )}
+          {shape === "circle" && (
+            <Skeleton className="size-4xl rounded-full" />
+          )}
+          {shape === "object" && (
+            <Skeleton className="w-[260px] h-[132px] rounded-lg" />
+          )}
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Skeleton" value={shape} onChange={setShape} options={[
+              { value: "card", label: "Default" },
+              { value: "circle", label: "Placeholder Avatar" },
+              { value: "text", label: "Placeholder Line" },
+              { value: "object", label: "Placeholder Object" },
+            ]} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SkeletonPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Controls dimensions and shape. Use h-*, w-*, rounded-full, etc.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SkeletonTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-muted</td>
+            <td className="p-3 font-mono text-xs">#f5f5f4</td>
+            <td className="p-3">Placeholder background color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">rounded-lg</td>
+            <td className="p-3 font-mono text-xs">8px</td>
+            <td className="p-3">Default border radius</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">animate-pulse</td>
+            <td className="p-3 font-mono text-xs">opacity 0→1→0</td>
+            <td className="p-3">Shimmer animation</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function SkeletonDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={skeletonSections} />
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Data Display</p>
         <h1 className="typo-heading-2">Skeleton</h1>
-        <p className="typo-paragraph text-muted-foreground max-w-3xl">Loading placeholder with a pulse animation. Use to indicate content is being loaded.</p>
+        <p className="typo-paragraph text-muted-foreground max-w-3xl">
+          Loading placeholder with a pulse animation. Shape and size are fully controlled via className — compose multiple skeletons to match any content layout.
+        </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Shape", prop: "shape", defaultValue: "card", options: [
-            { label: "Card", value: "card" },
-            { label: "Text Block", value: "text" },
-            { label: "Circle", value: "circle" },
-          ]},
-        ]}
-        render={(p) =>
-          p.shape === "card" ? (
-            <div className="flex items-center gap-4">
-              <Skeleton className="size-12 rounded-full" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[200px]" />
-                <Skeleton className="h-4 w-[160px]" />
-              </div>
-            </div>
-          ) : p.shape === "text" ? (
-            <div className="space-y-2 w-60">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-4/5" />
-              <Skeleton className="h-4 w-3/5" />
-            </div>
-          ) : (
-            <Skeleton className="size-16 rounded-full" />
-          )
-        }
+      <SkeletonExploreBehavior />
+
+      <InstallationSection
+        deps="# No additional dependencies"
+        importCode={`import { Skeleton } from "@/components/ui/skeleton"`}
       />
 
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
-        <Example title="Card skeleton" code={`<div className="flex items-center gap-4">\n  <Skeleton className="size-12 rounded-full" />\n  <div className="space-y-2">\n    <Skeleton className="h-4 w-[200px]" />\n    <Skeleton className="h-4 w-[160px]" />\n  </div>\n</div>`}>
-          <div className="flex items-center gap-4">
-            <Skeleton className="size-12 rounded-full" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[200px]" />
-              <Skeleton className="h-4 w-[160px]" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Card skeleton"
+            description="Avatar + text lines mimicking a user card."
+            code={`<div className="flex items-center gap-md">\n  <Skeleton className="size-3xl rounded-full" />\n  <div className="space-y-xs">\n    <Skeleton className="h-md w-[200px]" />\n    <Skeleton className="h-md w-[160px]" />\n  </div>\n</div>`}
+          >
+            <div className="flex items-center gap-md">
+              <Skeleton className="size-3xl rounded-full" />
+              <div className="space-y-xs">
+                <Skeleton className="h-md w-[200px]" />
+                <Skeleton className="h-md w-[160px]" />
+              </div>
             </div>
-          </div>
-        </Example>
-        <Example title="Text block" code={`<div className="space-y-2">\n  <Skeleton className="h-4 w-full" />\n  <Skeleton className="h-4 w-4/5" />\n  <Skeleton className="h-4 w-3/5" />\n</div>`}>
-          <div className="space-y-2 w-60">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-4/5" />
-            <Skeleton className="h-4 w-3/5" />
-          </div>
-        </Example>
-      </section>
+          </Example>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Match the skeleton shape and size to the actual content it replaces." />
-          <DontItem text="Don't use Skeleton for instant content — it should only appear during loading." />
+          <Example
+            title="Text block"
+            description="Multiple lines with decreasing width."
+            code={`<div className="space-y-xs w-60">\n  <Skeleton className="h-md w-full" />\n  <Skeleton className="h-md w-4/5" />\n  <Skeleton className="h-md w-3/5" />\n</div>`}
+          >
+            <div className="space-y-xs w-60">
+              <Skeleton className="h-md w-full" />
+              <Skeleton className="h-md w-4/5" />
+              <Skeleton className="h-md w-3/5" />
+            </div>
+          </Example>
+
+          <Example
+            title="Image placeholder"
+            description="A large rectangular skeleton for image areas."
+            code={`<Skeleton className="h-[180px] w-full rounded-xl" />`}
+          >
+            <Skeleton className="h-[180px] w-full rounded-xl" />
+          </Example>
+
+          <Example
+            title="Table rows"
+            description="Skeleton rows simulating a data table."
+            code={`<div className="space-y-sm">\n  {[1, 2, 3].map(i => (\n    <div key={i} className="flex gap-md">\n      <Skeleton className="h-md w-1/4" />\n      <Skeleton className="h-md w-1/2" />\n      <Skeleton className="h-md w-1/4" />\n    </div>\n  ))}\n</div>`}
+          >
+            <div className="space-y-sm">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="flex gap-md">
+                  <Skeleton className="h-md w-1/4" />
+                  <Skeleton className="h-md w-1/2" />
+                  <Skeleton className="h-md w-1/4" />
+                </div>
+              ))}
+            </div>
+          </Example>
         </div>
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <SkeletonPropsTable />
+      </section>
+
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <SkeletonTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Match the skeleton shape and size to the actual content it replaces." />
+        <DontItem text="Use skeleton for content that loads instantly — only for async loading states." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Use rounded-full for avatar placeholders and rounded-lg for text/card areas." />
+        <DontItem text="Show a single skeleton for an entire page — compose multiple to match the layout." />
+      </section>
+
+      <FigmaMapping id="figma-mapping" rows={[
         ["Animation", "Pulse", "—", "animate-pulse"],
-        ["Shape", "Rounded", "—", "rounded-lg"],
-        ["Color", "Muted", "—", "bg-muted"],
-        ["Sizing", "Custom via className", "className", "h-4 w-[200px]"],
+        ["Shape", "Rounded", "—", "rounded-lg (default)"],
+        ["Color", "Muted background", "—", "bg-muted"],
+        ["Sizing", "Custom via className", "className", "h-*, w-*, size-*"],
       ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted">
+                <th className="text-left p-3 font-semibold">Feature</th>
+                <th className="text-left p-3 font-semibold">Details</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr>
+                <td className="p-3 font-medium">aria-busy</td>
+                <td className="p-3">Add <code className="text-xs bg-muted px-1 py-0.5 rounded">aria-busy="true"</code> to the parent container while loading.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">aria-label</td>
+                <td className="p-3">Provide <code className="text-xs bg-muted px-1 py-0.5 rounded">aria-label="Loading content"</code> on the skeleton container.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">Motion</td>
+                <td className="p-3">The <code className="text-xs bg-muted px-1 py-0.5 rounded">animate-pulse</code> respects <code className="text-xs bg-muted px-1 py-0.5 rounded">prefers-reduced-motion</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="related" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <ul className="list-disc list-inside space-y-xs typo-paragraph text-muted-foreground">
+          <li><strong>Spinner</strong> — Use for indeterminate loading without layout structure.</li>
+          <li><strong>Progress</strong> — Use when loading progress percentage is known.</li>
+        </ul>
+      </section>
     </div>
   )
 }
@@ -11507,6 +12821,160 @@ function CollapsibleDocs() {
    Scroll Area Docs
    ================================================================ */
 
+function ScrollAreaExploreBehavior() {
+  const [type, setType] = useState("vertical")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[200px]">
+          {type === "vertical" ? (
+            <ScrollArea className="h-[200px] w-[300px] rounded-md border border-border p-md">
+              <div className="space-y-sm">
+                {Array.from({ length: 20 }, (_, i) => (
+                  <p key={i} className="typo-paragraph-sm">Item {i + 1} — Scroll to see more content below.</p>
+                ))}
+              </div>
+            </ScrollArea>
+          ) : (
+            <ScrollArea className="w-[300px] whitespace-nowrap rounded-md border border-border p-md">
+              <div className="flex gap-md">
+                {Array.from({ length: 15 }, (_, i) => (
+                  <div key={i} className="shrink-0 w-[120px] h-[80px] rounded-md bg-muted flex items-center justify-center typo-paragraph-sm text-muted-foreground">
+                    Card {i + 1}
+                  </div>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          )}
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Type" value={type} onChange={setType} options={[
+              { value: "vertical", label: "Vertical" },
+              { value: "horizontal", label: "Horizontal" },
+            ]} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ScrollAreaPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes for the scroll area root.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">children</td>
+            <td className="p-3 font-mono text-xs">ReactNode</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Scrollable content.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function ScrollBarPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">orientation</td>
+            <td className="p-3 font-mono text-xs">{`"vertical" | "horizontal"`}</td>
+            <td className="p-3 font-mono text-xs">{`"vertical"`}</td>
+            <td className="p-3">Scrollbar direction.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes for the scrollbar track.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function ScrollAreaTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-border</td>
+            <td className="p-3 font-mono text-xs">var(--border)</td>
+            <td className="p-3">Scrollbar thumb fill</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">w-2.5</td>
+            <td className="p-3 font-mono text-xs">10px</td>
+            <td className="p-3">Vertical scrollbar width</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">h-2.5</td>
+            <td className="p-3 font-mono text-xs">10px</td>
+            <td className="p-3">Horizontal scrollbar height</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">rounded-full</td>
+            <td className="p-3 font-mono text-xs">9999px</td>
+            <td className="p-3">Scrollbar thumb radius</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const scrollAreaSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
 function ScrollAreaDocs() {
   const tags = Array.from({ length: 50 }).map(
     (_, i, a) => `v1.2.0-beta.${a.length - i}`
@@ -11514,60 +12982,153 @@ function ScrollAreaDocs() {
 
   return (
     <div className="space-y-12">
+      <TableOfContents sections={scrollAreaSections} />
+
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Layout</p>
         <h1 className="typo-heading-2">Scroll Area</h1>
-        <p className="typo-paragraph text-muted-foreground max-w-3xl">Custom scrollbar overlay for constrained regions. Cross-browser consistent.</p>
+        <p className="typo-paragraph text-muted-foreground max-w-3xl">Custom scrollbar overlay for constrained regions. Cross-browser consistent styling with vertical and horizontal support.</p>
       </header>
 
-      <Playground controls={[]} render={() => (
-        <ScrollArea className="h-[200px] w-[300px] rounded-md border p-4">
-          <div className="space-y-4">
-            {Array.from({ length: 20 }, (_, i) => (
-              <p key={i} className="text-sm">Item {i + 1} — Scroll to see more content below.</p>
-            ))}
-          </div>
-        </ScrollArea>
-      )} />
+      <ScrollAreaExploreBehavior />
 
-      <section className="space-y-3 pt-xl border-t border-border">
-        <h2 className="typo-paragraph-bold">Import</h2>
-        <CodeBlock code={`import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"`} />
-      </section>
+      <InstallationSection
+        deps="pnpm add @radix-ui/react-scroll-area"
+        importCode={`import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"`}
+      />
 
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Vertical — Tag List"
+            description="Scrollable list of tags with separators."
+            code={`<ScrollArea className="h-72 w-48 rounded-md border">\n  <div className="p-4">\n    <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>\n    {tags.map((tag) => (\n      <div key={tag}>\n        <div className="text-sm">{tag}</div>\n        <Separator className="my-2" />\n      </div>\n    ))}\n  </div>\n</ScrollArea>`}
+          >
+            <ScrollArea className="h-72 w-48 rounded-md border border-border">
+              <div className="p-4">
+                <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+                {tags.map((tag) => (
+                  <div key={tag}>
+                    <div className="text-sm">{tag}</div>
+                    <Separator className="my-2" />
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </Example>
 
-        <Example title="Vertical" code={`<ScrollArea className="h-72 w-48 rounded-md border">\n  <div className="p-4">\n    <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>\n    {tags.map((tag) => (\n      <div key={tag} className="text-sm">{tag}</div>\n    ))}\n  </div>\n</ScrollArea>`}>
-          <ScrollArea className="h-72 w-48 rounded-md border border-border">
-            <div className="p-4">
-              <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
-              {tags.map((tag) => (
-                <div key={tag}>
-                  <div className="text-sm">{tag}</div>
-                  <Separator className="my-2" />
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </Example>
-      </section>
+          <Example
+            title="Horizontal — Card Carousel"
+            description="Horizontally scrollable row of cards."
+            code={`<ScrollArea className="w-96 whitespace-nowrap rounded-md border">\n  <div className="flex gap-md p-md">\n    {items.map((item) => (\n      <div key={item} className="shrink-0 w-[150px] h-[100px] rounded-md bg-muted" />\n    ))}\n  </div>\n  <ScrollBar orientation="horizontal" />\n</ScrollArea>`}
+          >
+            <ScrollArea className="w-96 whitespace-nowrap rounded-md border border-border">
+              <div className="flex gap-md p-md">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <div key={i} className="shrink-0 w-[150px] h-[100px] rounded-md bg-muted flex items-center justify-center typo-paragraph-sm text-muted-foreground">
+                    Card {i + 1}
+                  </div>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </Example>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Use ScrollArea for constrained containers with lots of content." />
-          <DontItem text="Don't use ScrollArea where native scroll is sufficient." />
+          <Example
+            title="Both Axes"
+            description="Content that scrolls in both directions."
+            code={`<ScrollArea className="h-[200px] w-[300px] rounded-md border">\n  <div className="w-[600px] p-md space-y-sm">\n    {rows.map((row) => (\n      <p className="whitespace-nowrap typo-paragraph-sm">{row}</p>\n    ))}\n  </div>\n  <ScrollBar orientation="horizontal" />\n</ScrollArea>`}
+          >
+            <ScrollArea className="h-[200px] w-[300px] rounded-md border border-border">
+              <div className="w-[600px] p-md space-y-sm">
+                {Array.from({ length: 30 }, (_, i) => (
+                  <p key={i} className="whitespace-nowrap typo-paragraph-sm">
+                    Row {i + 1} — This is a long line of text that extends beyond the visible scroll area width.
+                  </p>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </Example>
         </div>
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["Orientation", "Vertical (default)", "orientation", '"vertical" — w-2.5 scrollbar'],
-        ["Orientation", "Horizontal", "orientation", '"horizontal" — h-2.5 scrollbar'],
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <h3 className="typo-paragraph-bold">ScrollArea</h3>
+        <ScrollAreaPropsTable />
+        <h3 className="typo-paragraph-bold mt-lg">ScrollBar</h3>
+        <ScrollBarPropsTable />
+      </section>
+
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <ScrollAreaTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Use ScrollArea for constrained containers with lots of content (dropdowns, sidebars, modals)." />
+        <DontItem text="Don't use ScrollArea where native scroll is sufficient — only use when custom scrollbar styling matters." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Add ScrollBar orientation='horizontal' explicitly when horizontal scrolling is needed — only vertical is included by default." />
+        <DontItem text="Don't nest multiple ScrollAreas — it creates confusing scroll behavior for users." />
+      </section>
+
+      <FigmaMapping id="figma-mapping" nodeId="164:18669" rows={[
+        ["Type", "Vertical", "orientation", '"vertical" — w-2.5 scrollbar'],
+        ["Type", "Horizontal", "orientation", '"horizontal" — h-2.5 scrollbar'],
         ["Thumb", "Rounded pill", "—", "rounded-full bg-border"],
-        ["Viewport", "Full coverage", "—", "overflow-hidden rounded-[inherit]"],
+        ["Thumb Size (V)", "6×48px", "—", "w-2.5 (Shadcn) — includes padding"],
+        ["Thumb Size (H)", "48×6px", "—", "h-2.5 (Shadcn) — includes padding"],
+        ["Viewport", "Full coverage", "—", "size-full rounded-[inherit]"],
       ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">Keyboard Navigation</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
+              <tbody className="divide-y divide-border">
+                <tr><td className="p-2 font-mono">Arrow Up/Down</td><td className="p-2">Scroll vertically</td></tr>
+                <tr><td className="p-2 font-mono">Arrow Left/Right</td><td className="p-2">Scroll horizontally (when horizontal scrollbar present)</td></tr>
+                <tr><td className="p-2 font-mono">Page Up/Down</td><td className="p-2">Scroll by page</td></tr>
+                <tr><td className="p-2 font-mono">Home/End</td><td className="p-2">Scroll to start/end</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">ARIA & Behavior</h3>
+          <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
+            <li>Radix renders a native scrollable viewport — screen readers treat it as standard scrollable content.</li>
+            <li>The custom scrollbar is purely visual — assistive technology uses native scroll mechanisms.</li>
+            <li>Viewport is focusable with visible focus ring for keyboard users.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="related" className="space-y-md pb-12">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-xl border border-border divide-y divide-border text-xs">
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Sheet</p>
+            <p className="text-muted-foreground mt-0.5">Uses ScrollArea internally for scrollable side panel content.</p>
+          </div>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Dialog</p>
+            <p className="text-muted-foreground mt-0.5">Combine with ScrollArea for modals with long scrollable content.</p>
+          </div>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Sidebar</p>
+            <p className="text-muted-foreground mt-0.5">Uses ScrollArea for navigation lists that exceed viewport height.</p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -11784,245 +13345,441 @@ function ComboboxDocs() {
    Radio Group Docs
    ================================================================ */
 
+function RadioTab() {
+  const [checked, setChecked] = useState("false")
+  const [state, setState] = useState("default")
+  const isDisabled = state === "disabled"
+  const isError = state === "error" || state === "error-focus"
+  const isFocus = state === "focus" || state === "error-focus"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <RadioGroup
+          value={checked === "true" ? "on" : undefined}
+          onValueChange={() => setChecked(checked === "true" ? "false" : "true")}
+          disabled={isDisabled}
+        >
+          <RadioGroupItem
+            value="on"
+            aria-invalid={isError || undefined}
+            className={cn(
+              isFocus && "ring-[3px]",
+              isFocus && !isError && "ring-ring",
+              isFocus && isError && "ring-ring-error",
+            )}
+          />
+        </RadioGroup>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="State" value={state} onChange={setState} options={[
+            { value: "default", label: "Default" },
+            { value: "focus", label: "Focus" },
+            { value: "error", label: "Error" },
+            { value: "error-focus", label: "Error Focus" },
+            { value: "disabled", label: "Disabled" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+function RadioGroupTab() {
+  const [checked, setChecked] = useState("false")
+  const [layout, setLayout] = useState("inline")
+  const radioValue = checked === "true" ? "option-1" : undefined
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[160px]">
+        <RadioGroup
+          value={radioValue}
+          onValueChange={(v) => setChecked(v ? "true" : "false")}
+          className={layout === "inline" ? "flex items-center gap-xs" : "grid gap-sm w-[240px]"}
+        >
+          <div className="flex items-center gap-xs">
+            <RadioGroupItem value="option-1" id="rg-explore-1" />
+            <Label htmlFor="rg-explore-1">Option</Label>
+          </div>
+        </RadioGroup>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="Layout" value={layout} onChange={setLayout} options={[
+            { value: "inline", label: "Inline" },
+            { value: "block", label: "Block" },
+          ]} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+const radioBehaviorTabs = [
+  { value: "radio", label: "Radio" },
+  { value: "radio-group", label: "Radio Group" },
+]
+
+function RadioExploreBehavior() {
+  const [tab, setTab] = useState("radio")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="flex border-b border-border bg-muted/50">
+          {radioBehaviorTabs.map((t) => (
+            <button
+              key={t.value}
+              onClick={() => setTab(t.value)}
+              className={cn(
+                "px-md py-sm typo-paragraph-sm-medium transition-colors",
+                tab === t.value
+                  ? "text-foreground border-b-2 border-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        {tab === "radio" && <RadioTab />}
+        {tab === "radio-group" && <RadioGroupTab />}
+      </div>
+    </section>
+  )
+}
+
+function RadioGroupPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">defaultValue</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Initially selected value (uncontrolled).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">value</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Selected value (controlled).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">onValueChange</td>
+            <td className="p-3 font-mono text-xs">{`(value: string) => void`}</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Callback when selection changes.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">disabled</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">false</td>
+            <td className="p-3">Disables all radio items.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes for the group container.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function RadioGroupItemPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">value</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Unique value for this radio item (required).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">disabled</td>
+            <td className="p-3 font-mono text-xs">boolean</td>
+            <td className="p-3 font-mono text-xs">false</td>
+            <td className="p-3">Disables this specific item.</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes for the radio item.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function RadioTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">size-md</td>
+            <td className="p-3 font-mono text-xs">16px</td>
+            <td className="p-3">Radio item size (matches Checkbox)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">bg-input</td>
+            <td className="p-3 font-mono text-xs">var(--input)</td>
+            <td className="p-3">Background fill (all states)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">border-border-strong</td>
+            <td className="p-3 font-mono text-xs">var(--border-strong)</td>
+            <td className="p-3">Border color (all states)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">fill-primary</td>
+            <td className="p-3 font-mono text-xs">var(--primary)</td>
+            <td className="p-3">Checked dot fill (8px)</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">ring-ring</td>
+            <td className="p-3 font-mono text-xs">var(--ring) 3px</td>
+            <td className="p-3">Focus ring</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">ring-ring-error</td>
+            <td className="p-3 font-mono text-xs">var(--ring-error) 3px</td>
+            <td className="p-3">Error focus ring</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">opacity-30</td>
+            <td className="p-3 font-mono text-xs">0.3</td>
+            <td className="p-3">Disabled state opacity</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">gap-sm</td>
+            <td className="p-3 font-mono text-xs">12px</td>
+            <td className="p-3">Group gap between items</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const radioGroupSections: TocSection[] = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
 function RadioGroupDocs() {
   return (
     <div className="space-y-12">
-      {/* ---- Header ---- */}
+      <TableOfContents sections={radioGroupSections} />
+
       <header className="space-y-md pb-3xl">
-        <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">
-          Components / Forms
-        </p>
+        <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
         <h1 className="typo-heading-2">Radio Group</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A set of checkable buttons — known as radio buttons — where only one can be checked at a time.
+          A set of checkable buttons — known as radio buttons — where only one can be checked at a time. Built on Radix Radio Group primitive.
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "switch", label: "Disabled", prop: "disabled", defaultValue: false },
-        ]}
-        render={(p) => (
-          <RadioGroup defaultValue="option-1" disabled={p.disabled}>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-1" id="pg-r1" />
-              <Label htmlFor="pg-r1">Option One</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-2" id="pg-r2" />
-              <Label htmlFor="pg-r2">Option Two</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-3" id="pg-r3" />
-              <Label htmlFor="pg-r3">Option Three</Label>
-            </div>
-          </RadioGroup>
-        )}
+      <RadioExploreBehavior />
+
+      <InstallationSection
+        deps="pnpm add @radix-ui/react-radio-group"
+        importCode={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"\nimport { Label } from "@/components/ui/label"`}
       />
 
-      {/* ---- Import ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">Import</h2>
-        <Example
-          title="Import"
-          code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"\nimport { Label } from "@/components/ui/label"`}
-        >
-          <p className="text-xs text-muted-foreground italic">
-            Import statement only — see examples below.
-          </p>
-        </Example>
-      </section>
-
-      {/* ---- Examples ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="examples" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Default"
+            description="Vertical radio group with labels."
+            code={`<RadioGroup defaultValue="option-1">\n  <div className="flex items-center gap-xs">\n    <RadioGroupItem value="option-1" id="r1" />\n    <Label htmlFor="r1">Option One</Label>\n  </div>\n  <div className="flex items-center gap-xs">\n    <RadioGroupItem value="option-2" id="r2" />\n    <Label htmlFor="r2">Option Two</Label>\n  </div>\n</RadioGroup>`}
+          >
+            <RadioGroup defaultValue="option-1">
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="option-1" id="ex-r1" />
+                <Label htmlFor="ex-r1">Option One</Label>
+              </div>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="option-2" id="ex-r2" />
+                <Label htmlFor="ex-r2">Option Two</Label>
+              </div>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="option-3" id="ex-r3" />
+                <Label htmlFor="ex-r3">Option Three</Label>
+              </div>
+            </RadioGroup>
+          </Example>
 
-        <Example title="Default" code={`<RadioGroup defaultValue="option-1">\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="option-1" id="r1" />\n    <Label htmlFor="r1">Option One</Label>\n  </div>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="option-2" id="r2" />\n    <Label htmlFor="r2">Option Two</Label>\n  </div>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="option-3" id="r3" />\n    <Label htmlFor="r3">Option Three</Label>\n  </div>\n</RadioGroup>`}>
-          <RadioGroup defaultValue="option-1">
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-1" id="r1" />
-              <Label htmlFor="r1">Option One</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-2" id="r2" />
-              <Label htmlFor="r2">Option Two</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="option-3" id="r3" />
-              <Label htmlFor="r3">Option Three</Label>
-            </div>
-          </RadioGroup>
-        </Example>
+          <Example
+            title="Horizontal"
+            description="Inline layout using flex."
+            code={`<RadioGroup defaultValue="sm" className="flex gap-lg">\n  <div className="flex items-center gap-xs">\n    <RadioGroupItem value="sm" id="h-sm" />\n    <Label htmlFor="h-sm">Small</Label>\n  </div>\n  ...\n</RadioGroup>`}
+          >
+            <RadioGroup defaultValue="sm" className="flex gap-lg">
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="sm" id="h-sm" />
+                <Label htmlFor="h-sm">Small</Label>
+              </div>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="md" id="h-md" />
+                <Label htmlFor="h-md">Medium</Label>
+              </div>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="lg" id="h-lg" />
+                <Label htmlFor="h-lg">Large</Label>
+              </div>
+            </RadioGroup>
+          </Example>
 
-        <Example title="Horizontal" code={`<RadioGroup defaultValue="sm" className="flex gap-4">\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="sm" id="size-sm" />\n    <Label htmlFor="size-sm">Small</Label>\n  </div>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="md" id="size-md" />\n    <Label htmlFor="size-md">Medium</Label>\n  </div>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="lg" id="size-lg" />\n    <Label htmlFor="size-lg">Large</Label>\n  </div>\n</RadioGroup>`}>
-          <RadioGroup defaultValue="sm" className="flex gap-4">
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="sm" id="size-sm" />
-              <Label htmlFor="size-sm">Small</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="md" id="size-md" />
-              <Label htmlFor="size-md">Medium</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="lg" id="size-lg" />
-              <Label htmlFor="size-lg">Large</Label>
-            </div>
-          </RadioGroup>
-        </Example>
-
-        <Example title="Disabled" code={`<RadioGroup defaultValue="active" disabled>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="active" id="d1" />\n    <Label htmlFor="d1">Active</Label>\n  </div>\n  <div className="flex items-center gap-2">\n    <RadioGroupItem value="inactive" id="d2" />\n    <Label htmlFor="d2">Inactive</Label>\n  </div>\n</RadioGroup>`}>
-          <RadioGroup defaultValue="active" disabled>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="active" id="d1" />
-              <Label htmlFor="d1">Active</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="inactive" id="d2" />
-              <Label htmlFor="d2">Inactive</Label>
-            </div>
-          </RadioGroup>
-        </Example>
-      </section>
-
-      {/* ---- API Reference ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">API Reference</h2>
-
-        <h3 className="font-heading font-semibold text-lg">RadioGroup</h3>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted">
-                <th className="text-left p-3 font-semibold">Prop</th>
-                <th className="text-left p-3 font-semibold">Type</th>
-                <th className="text-left p-3 font-semibold">Default</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="p-3 font-mono text-xs">defaultValue</td>
-                <td className="p-3 font-mono text-xs">string</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Initially selected value (uncontrolled).</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">value</td>
-                <td className="p-3 font-mono text-xs">string</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Selected value (controlled).</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">onValueChange</td>
-                <td className="p-3 font-mono text-xs">(value: string) =&gt; void</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Callback when selection changes.</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">disabled</td>
-                <td className="p-3 font-mono text-xs">boolean</td>
-                <td className="p-3 font-mono text-xs">false</td>
-                <td className="p-3">Disables all radio items.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 className="font-heading font-semibold text-lg mt-6">RadioGroupItem</h3>
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted">
-                <th className="text-left p-3 font-semibold">Prop</th>
-                <th className="text-left p-3 font-semibold">Type</th>
-                <th className="text-left p-3 font-semibold">Default</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="p-3 font-mono text-xs">value</td>
-                <td className="p-3 font-mono text-xs">string</td>
-                <td className="p-3 font-mono text-xs">—</td>
-                <td className="p-3">Unique value for this radio item (required).</td>
-              </tr>
-              <tr>
-                <td className="p-3 font-mono text-xs">disabled</td>
-                <td className="p-3 font-mono text-xs">boolean</td>
-                <td className="p-3 font-mono text-xs">false</td>
-                <td className="p-3">Disables this specific item.</td>
-              </tr>
-            </tbody>
-          </table>
+          <Example
+            title="Disabled"
+            description="All items disabled via group prop."
+            code={`<RadioGroup defaultValue="active" disabled>\n  ...\n</RadioGroup>`}
+          >
+            <RadioGroup defaultValue="active" disabled>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="active" id="dis-1" />
+                <Label htmlFor="dis-1">Active</Label>
+              </div>
+              <div className="flex items-center gap-xs">
+                <RadioGroupItem value="inactive" id="dis-2" />
+                <Label htmlFor="dis-2">Inactive</Label>
+              </div>
+            </RadioGroup>
+          </Example>
         </div>
       </section>
 
-      {/* ---- Best Practices ---- */}
-      <section className="space-y-4 pt-3xl">
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <h3 className="typo-paragraph-bold">RadioGroup</h3>
+        <RadioGroupPropsTable />
+        <h3 className="typo-paragraph-bold mt-lg">RadioGroupItem</h3>
+        <RadioGroupItemPropsTable />
+      </section>
+
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <RadioTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
         <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
-        <div className="grid grid-cols-2 gap-6">
-          <DoItem text="Use Radio Group for mutually exclusive choices (e.g. size, plan, payment method)." />
-          <DontItem text="Don't use Radio Group for on/off toggles — use Switch or Checkbox instead." />
-          <DoItem text="Always pair each RadioGroupItem with a visible Label." />
-          <DontItem text="Don't use Radio Group when multiple selections are allowed — use Checkbox group." />
-        </div>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Use Radio Group for mutually exclusive choices (e.g. size, plan, payment method)." />
+        <DontItem text="Don't use Radio Group for on/off toggles — use Switch or Checkbox instead." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Always pair each RadioGroupItem with a visible Label using htmlFor." />
+        <DontItem text="Don't use Radio Group when multiple selections are allowed — use Checkbox group." />
       </section>
 
-      {/* ---- Related Components ---- */}
-      <section className="space-y-4 pt-3xl">
-        <h2 className="font-heading font-semibold text-xl">
-          Related Components
-        </h2>
-        <div className="rounded-lg border border-border divide-y divide-border">
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Checkbox</p>
-              <p className="text-muted-foreground mt-0.5">
-                For multiple selections — use when more than one option can be selected.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
-              Available
-            </span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Select</p>
-              <p className="text-muted-foreground mt-0.5">
-                Dropdown selection — use when there are many options or limited space.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-teal-50 text-teal-700 px-2 py-0.5 rounded">
-              Available
-            </span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center">
-            <div>
-              <p className="font-semibold text-foreground">Toggle Group</p>
-              <p className="text-muted-foreground mt-0.5">
-                Button-style single/multiple selection with visual emphasis.
-              </p>
-            </div>
-            <span className="text-muted-foreground text-[10px] font-mono bg-muted px-2 py-0.5 rounded">
-              Planned
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
-        ["Item Size", "16×16px", "—", "size-md"],
-        ["State", "Default", "—", "border-border-strong bg-input"],
-        ["State", "Checked", "—", "data-[state=checked]:border-primary bg-primary"],
-        ["State", "Focus", "—", "focus-visible:ring-[3px] ring-ring"],
-        ["State", "Error", "aria-invalid", "destructive border + ring-error"],
-        ["State", "Disabled", "disabled", "opacity-50"],
-        ["Indicator", "Circle", "—", "size-2.5 fill-primary-foreground"],
-        ["Group Gap", "Gap sm", "—", "gap-sm"],
+      <FigmaMapping id="figma-mapping" nodeId="16:1796" rows={[
+        ["Item Size", "16×16px", "—", "size-md rounded-full"],
+        ["Checked?", "False", "—", "bg-input border-border-strong"],
+        ["Checked?", "True", "data-[state=checked]", "bg-input border-border-strong + primary dot (8px)"],
+        ["State", "Focus", "—", "ring-[3px] ring-ring"],
+        ["State", "Error", "aria-invalid", "border-destructive-border"],
+        ["State", "Error Focus", "aria-invalid", "border-destructive-border + ring-ring-error"],
+        ["State", "Disabled", "disabled", "opacity-30"],
+        ["Dot", "Primary circle 8px", "—", "size-xs fill-primary"],
+        ["Group Gap", "12px", "—", "gap-sm"],
+        ["Layout", "Block / Inline", "className", "grid gap-sm / flex gap-lg"],
       ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">Keyboard Navigation</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="border-b border-border"><th className="text-left p-2 font-semibold">Key</th><th className="text-left p-2 font-semibold">Action</th></tr></thead>
+              <tbody className="divide-y divide-border">
+                <tr><td className="p-2 font-mono">Tab</td><td className="p-2">Move focus to the radio group</td></tr>
+                <tr><td className="p-2 font-mono">Arrow Down/Right</td><td className="p-2">Move to next radio item and select it</td></tr>
+                <tr><td className="p-2 font-mono">Arrow Up/Left</td><td className="p-2">Move to previous radio item and select it</td></tr>
+                <tr><td className="p-2 font-mono">Space</td><td className="p-2">Select the focused radio item</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border p-5 space-y-3 text-xs">
+          <h3 className="font-body font-semibold text-sm text-foreground">ARIA Attributes</h3>
+          <ul className="space-y-1.5 list-disc list-inside text-muted-foreground">
+            <li>Radix provides <code className="bg-muted px-1 rounded font-mono">role="radiogroup"</code> on the group container.</li>
+            <li>Each item has <code className="bg-muted px-1 rounded font-mono">role="radio"</code> with <code className="bg-muted px-1 rounded font-mono">aria-checked</code> state.</li>
+            <li>Use <code className="bg-muted px-1 rounded font-mono">aria-invalid</code> for error states — triggers destructive border and ring styling.</li>
+            <li>Associate each item with a Label using <code className="bg-muted px-1 rounded font-mono">htmlFor</code> for screen reader support.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="related" className="space-y-md pb-12">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <div className="rounded-xl border border-border divide-y divide-border text-xs">
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Checkbox</p>
+            <p className="text-muted-foreground mt-0.5">For multiple selections — use when more than one option can be selected.</p>
+          </div>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Select</p>
+            <p className="text-muted-foreground mt-0.5">Dropdown selection — use when there are many options or limited space.</p>
+          </div>
+          <div className="px-5 py-3.5">
+            <p className="font-semibold text-foreground">Toggle Group</p>
+            <p className="text-muted-foreground mt-0.5">Button-style single/multiple selection with visual emphasis.</p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -12120,81 +13877,251 @@ function InputOTPDocs() {
    Spinner
    ================================================================ */
 
+const spinnerSections = [
+  { id: "explore-behavior", label: "Explore Behavior" },
+  { id: "installation", label: "Installation" },
+  { id: "examples", label: "Examples" },
+  { id: "props", label: "Props" },
+  { id: "design-tokens", label: "Design Tokens" },
+  { id: "best-practices", label: "Best Practices" },
+  { id: "figma-mapping", label: "Figma Mapping" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "related", label: "Related Components" },
+]
+
+function SpinnerExploreBehavior() {
+  const [size, setSize] = useState("default")
+
+  return (
+    <section id="explore-behavior" className="space-y-md">
+      <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
+        <div className="p-4xl flex items-center justify-center min-h-[160px]">
+          <Spinner size={size as "sm" | "default" | "lg"} />
+        </div>
+        <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+          <div className="space-y-sm">
+            <PropertyTabs label="Size" value={size} onChange={setSize} options={[
+              { value: "sm", label: "Small" },
+              { value: "default", label: "Default" },
+              { value: "lg", label: "Large" },
+            ]} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SpinnerPropsTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Prop</th>
+            <th className="text-left p-3 font-semibold">Type</th>
+            <th className="text-left p-3 font-semibold">Default</th>
+            <th className="text-left p-3 font-semibold">Description</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">size</td>
+            <td className="p-3 font-mono text-xs">{`"sm" | "default" | "lg"`}</td>
+            <td className="p-3 font-mono text-xs">{`"default"`}</td>
+            <td className="p-3">Spinner size: sm (16px), default (24px), lg (32px).</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">className</td>
+            <td className="p-3 font-mono text-xs">string</td>
+            <td className="p-3 font-mono text-xs">—</td>
+            <td className="p-3">Additional CSS classes. Use to override color.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SpinnerTokensTable() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left p-3 font-semibold">Token</th>
+            <th className="text-left p-3 font-semibold">Value</th>
+            <th className="text-left p-3 font-semibold">Usage</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          <tr>
+            <td className="p-3 font-mono text-xs">text-foreground</td>
+            <td className="p-3 font-mono text-xs">#252522</td>
+            <td className="p-3">Default spinner color</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size-md</td>
+            <td className="p-3 font-mono text-xs">16px</td>
+            <td className="p-3">Small size</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size-xl</td>
+            <td className="p-3 font-mono text-xs">24px</td>
+            <td className="p-3">Default size</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">size-2xl</td>
+            <td className="p-3 font-mono text-xs">32px</td>
+            <td className="p-3">Large size</td>
+          </tr>
+          <tr>
+            <td className="p-3 font-mono text-xs">animate-spin</td>
+            <td className="p-3 font-mono text-xs">360° rotation</td>
+            <td className="p-3">Continuous rotation animation</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function SpinnerDocs() {
   return (
     <div className="space-y-12">
+      <TableOfContents sections={spinnerSections} />
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Data Display</p>
         <h1 className="typo-heading-2">Spinner</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          Animated loading indicator. Three sizes: sm (16px), default (24px), lg (32px).
+          Animated loading indicator with continuous rotation. Available in three sizes: sm (16px), default (24px), and lg (32px).
         </p>
       </header>
 
-      {/* Interactive playground */}
-      <Playground
-        controls={[
-          { type: "select", label: "Size", prop: "size", defaultValue: "default", options: [
-            { label: "Small (16px)", value: "sm" },
-            { label: "Default (24px)", value: "default" },
-            { label: "Large (32px)", value: "lg" },
-          ]},
-          { type: "select", label: "Color", prop: "color", defaultValue: "", options: [
-            { label: "Default", value: "" },
-            { label: "Primary", value: "text-primary" },
-            { label: "Destructive", value: "text-destructive" },
-          ]},
-        ]}
-        render={(p) => <Spinner size={p.size} className={p.color || undefined} />}
+      <SpinnerExploreBehavior />
+
+      <InstallationSection
+        deps="# No additional dependencies"
+        importCode={`import { Spinner } from "@/components/ui/spinner"`}
       />
 
-      <section className="space-y-3 pt-xl border-t border-border">
-        <h2 className="typo-paragraph-bold">Import</h2>
-        <CodeBlock code={`import { Spinner } from "@/components/ui/spinner"`} />
+      <section id="examples" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Example
+            title="Sizes"
+            description="All three spinner sizes side by side."
+            code={`<div className="flex items-center gap-lg">\n  <Spinner size="sm" />\n  <Spinner />\n  <Spinner size="lg" />\n</div>`}
+          >
+            <div className="flex items-center gap-lg">
+              <Spinner size="sm" />
+              <Spinner />
+              <Spinner size="lg" />
+            </div>
+          </Example>
+
+          <Example
+            title="Custom color"
+            description="Override the default color with className."
+            code={`<Spinner className="text-primary" />\n<Spinner className="text-destructive" />`}
+          >
+            <div className="flex items-center gap-lg">
+              <Spinner className="text-primary" />
+              <Spinner className="text-destructive" />
+            </div>
+          </Example>
+
+          <Example
+            title="With text"
+            description="Pair with a loading label for context."
+            code={`<div className="flex items-center gap-xs">\n  <Spinner size="sm" />\n  <span className="typo-paragraph-sm text-muted-foreground">Loading...</span>\n</div>`}
+          >
+            <div className="flex items-center gap-xs">
+              <Spinner size="sm" />
+              <span className="typo-paragraph-sm text-muted-foreground">Loading...</span>
+            </div>
+          </Example>
+
+          <Example
+            title="Centered in container"
+            description="Center the spinner in a bounded area."
+            code={`<div className="flex items-center justify-center h-[120px] border border-dashed border-border rounded-lg">\n  <Spinner />\n</div>`}
+          >
+            <div className="flex items-center justify-center h-[120px] border border-dashed border-border rounded-lg">
+              <Spinner />
+            </div>
+          </Example>
+        </div>
       </section>
 
-      <section className="space-y-4 pt-3xl">
-        <h2 className="typo-paragraph-bold">Examples</h2>
-
-        <Example
-          title="Sizes"
-          description="All three spinner sizes."
-          code={`<Spinner size="sm" />\n<Spinner />\n<Spinner size="lg" />`}
-        >
-          <Spinner size="sm" />
-          <Spinner />
-          <Spinner size="lg" />
-        </Example>
-
-        <Example
-          title="Custom color"
-          description="Override the color with className."
-          code={`<Spinner className="text-primary" />`}
-        >
-          <Spinner className="text-primary" />
-          <Spinner className="text-destructive" />
-        </Example>
-
-        <Example
-          title="With text"
-          description="Combine with a loading label."
-          code={`<div className="flex items-center gap-2">\n  <Spinner size="sm" />\n  <span className="text-sm text-muted-foreground">Loading...</span>\n</div>`}
-        >
-          <div className="flex items-center gap-2">
-            <Spinner size="sm" />
-            <span className="text-sm text-muted-foreground">Loading...</span>
-          </div>
-        </Example>
+      <section id="props" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Props</h2>
+        <SpinnerPropsTable />
       </section>
 
-      {/* ---- Figma Mapping ---- */}
-      <FigmaMapping rows={[
+      <section id="design-tokens" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Design Tokens</h2>
+        <SpinnerTokensTable />
+      </section>
+
+      <section id="best-practices" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Best Practices</h2>
+        <h3 className="typo-paragraph-bold mt-lg">Content</h3>
+        <DoItem text="Pair with a descriptive label when the loading context isn't obvious." />
+        <DontItem text="Use a spinner as the only feedback — provide text context for accessibility." />
+        <h3 className="typo-paragraph-bold mt-lg">Structure</h3>
+        <DoItem text="Use the sm size inside buttons or inline elements." />
+        <DontItem text="Use the lg size inside compact UI areas like table cells." />
+        <DoItem text="Center the spinner in its container for visual balance." />
+        <DontItem text="Show multiple spinners simultaneously in the same view." />
+      </section>
+
+      <FigmaMapping id="figma-mapping" nodeId="757:154511" rows={[
+        ["Type", "Default", "—", "Default arc direction"],
+        ["Type", "Mirrored", "—", "Mirrored arc direction"],
         ["Size", "Small (16px)", "size", '"sm" — size-md'],
         ["Size", "Default (24px)", "size", '"default" — size-xl'],
         ["Size", "Large (32px)", "size", '"lg" — size-2xl'],
+        ["Color", "Foreground", "—", "text-foreground (#252522)"],
         ["Animation", "Spin", "—", "animate-spin"],
-        ["Color", "Muted foreground", "—", "text-muted-foreground"],
       ]} />
+
+      <section id="accessibility" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Accessibility</h2>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted">
+                <th className="text-left p-3 font-semibold">Feature</th>
+                <th className="text-left p-3 font-semibold">Details</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              <tr>
+                <td className="p-3 font-medium">role</td>
+                <td className="p-3">Add <code className="text-xs bg-muted px-1 py-0.5 rounded">role="status"</code> for screen readers.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">aria-label</td>
+                <td className="p-3">Provide <code className="text-xs bg-muted px-1 py-0.5 rounded">aria-label="Loading"</code> for non-visual context.</td>
+              </tr>
+              <tr>
+                <td className="p-3 font-medium">Motion</td>
+                <td className="p-3">The <code className="text-xs bg-muted px-1 py-0.5 rounded">animate-spin</code> class respects <code className="text-xs bg-muted px-1 py-0.5 rounded">prefers-reduced-motion</code> via Tailwind defaults.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="related" className="space-y-md pt-3xl">
+        <h2 className="font-heading font-semibold text-xl">Related Components</h2>
+        <ul className="list-disc list-inside space-y-xs typo-paragraph text-muted-foreground">
+          <li><strong>Button</strong> — Use Spinner inside a button to indicate loading state.</li>
+          <li><strong>Skeleton</strong> — Content placeholder for layout-aware loading.</li>
+        </ul>
+      </section>
     </div>
   )
 }
@@ -12364,7 +14291,7 @@ function AspectRatioDocs() {
       </header>
 
       {/* ---- Explore Behavior ---- */}
-      <section id="explore-behavior" className="space-y-4">
+      <section id="explore-behavior" className="space-y-md">
         <h2 className="font-heading font-semibold text-xl">Explore Behavior</h2>
         <AspectRatioExploreBehavior />
       </section>
@@ -12802,53 +14729,80 @@ const foundations = [
   { id: "illustrations", label: "Illustrations" },
 ] as const
 
-const components = [
-  { id: "accordion", label: "Accordion" },
-  { id: "alert", label: "Alert" },
-  { id: "alert-dialog", label: "Alert Dialog" },
-  { id: "aspect-ratio", label: "Aspect Ratio" },
-  { id: "avatar", label: "Avatar" },
-  { id: "badge", label: "Badge" },
-  { id: "breadcrumb", label: "Breadcrumb" },
-  { id: "button", label: "Button" },
-  { id: "calendar", label: "Calendar" },
-  { id: "card", label: "Card" },
-  { id: "checkbox", label: "Checkbox" },
-  { id: "collapsible", label: "Collapsible" },
-  { id: "combobox", label: "Combobox" },
-  { id: "command", label: "Command" },
-  { id: "context-menu", label: "Context Menu" },
-  { id: "date-picker", label: "Date Picker" },
-  { id: "dialog", label: "Dialog" },
-  { id: "drawer", label: "Drawer" },
-  { id: "dropdown-menu", label: "Dropdown Menu" },
-  { id: "hover-card", label: "Hover Card" },
-  { id: "input", label: "Input" },
-  { id: "input-otp", label: "Input OTP" },
-  { id: "label", label: "Label" },
-  { id: "pagination", label: "Pagination" },
-  { id: "popover", label: "Popover" },
-  { id: "progress", label: "Progress" },
-  { id: "radio-group", label: "Radio Group" },
-  { id: "scroll-area", label: "Scroll Area" },
-  { id: "select", label: "Select" },
-  { id: "separator", label: "Separator" },
-  { id: "sheet", label: "Sheet" },
-  { id: "sidebar", label: "Sidebar" },
-  { id: "skeleton", label: "Skeleton" },
-  { id: "slider", label: "Slider" },
-  { id: "spinner", label: "Spinner" },
-  { id: "switch", label: "Switch" },
-  { id: "table", label: "Table" },
-  { id: "tabs", label: "Tabs" },
-  { id: "textarea", label: "Textarea" },
-  { id: "toast", label: "Toast (Sonner)" },
-  { id: "toggle", label: "Toggle" },
-  { id: "toggle-group", label: "Toggle Group" },
-  { id: "tooltip", label: "Tooltip" },
+const componentCategories = [
+  {
+    category: "Forms",
+    items: [
+      { id: "button", label: "Button" },
+      { id: "input", label: "Input" },
+      { id: "textarea", label: "Textarea" },
+      { id: "select", label: "Select" },
+      { id: "checkbox", label: "Checkbox" },
+      { id: "switch", label: "Switch" },
+      { id: "label", label: "Label" },
+      { id: "radio-group", label: "Radio Group" },
+      { id: "slider", label: "Slider" },
+      { id: "toggle", label: "Toggle" },
+      { id: "toggle-group", label: "Toggle Group" },
+      { id: "combobox", label: "Combobox" },
+      { id: "calendar", label: "Calendar" },
+      { id: "date-picker", label: "Date Picker" },
+      { id: "input-otp", label: "Input OTP" },
+    ],
+  },
+  {
+    category: "Data Display",
+    items: [
+      { id: "card", label: "Card" },
+      { id: "badge", label: "Badge" },
+      { id: "avatar", label: "Avatar" },
+      { id: "table", label: "Table" },
+      { id: "separator", label: "Separator" },
+      { id: "skeleton", label: "Skeleton" },
+      { id: "progress", label: "Progress" },
+      { id: "alert", label: "Alert" },
+      { id: "spinner", label: "Spinner" },
+    ],
+  },
+  {
+    category: "Overlay & Feedback",
+    items: [
+      { id: "dialog", label: "Dialog" },
+      { id: "alert-dialog", label: "Alert Dialog" },
+      { id: "sheet", label: "Sheet" },
+      { id: "drawer", label: "Drawer" },
+      { id: "popover", label: "Popover" },
+      { id: "tooltip", label: "Tooltip" },
+      { id: "hover-card", label: "Hover Card" },
+      { id: "toast", label: "Toast (Sonner)" },
+    ],
+  },
+  {
+    category: "Navigation",
+    items: [
+      { id: "tabs", label: "Tabs" },
+      { id: "breadcrumb", label: "Breadcrumb" },
+      { id: "pagination", label: "Pagination" },
+      { id: "dropdown-menu", label: "Dropdown Menu" },
+      { id: "context-menu", label: "Context Menu" },
+      { id: "command", label: "Command" },
+    ],
+  },
+  {
+    category: "Layout",
+    items: [
+      { id: "accordion", label: "Accordion" },
+      { id: "collapsible", label: "Collapsible" },
+      { id: "scroll-area", label: "Scroll Area" },
+      { id: "aspect-ratio", label: "Aspect Ratio" },
+      { id: "sidebar", label: "Sidebar" },
+    ],
+  },
 ] as const
 
-type ComponentId = (typeof foundations)[number]["id"] | (typeof components)[number]["id"]
+type ComponentId = (typeof foundations)[number]["id"] | (typeof componentCategories)[number]["items"][number]["id"]
+
+const components = componentCategories.flatMap(c => [...c.items]) as ReadonlyArray<{ id: ComponentId; label: string }>
 
 /* ================================================================
    Components Grid (Home page)
@@ -13000,7 +14954,7 @@ function App() {
         <aside className="fixed left-0 top-16 w-[260px] h-[calc(100vh-4rem)] bg-background border-r border-border/50 overflow-y-auto z-10">
           <nav className="p-md space-y-lg">
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-xs px-sm">Foundations</p>
+              <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-xs px-sm">Foundations</p>
               <div className="flex flex-col gap-0.5">
                 {foundations.map(c => (
                   <button key={c.id} onClick={() => setActive(c.id)}
@@ -13014,21 +14968,23 @@ function App() {
                 ))}
               </div>
             </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-xs px-sm">Components</p>
-              <div className="flex flex-col gap-0.5">
-                {components.map(c => (
-                  <button key={c.id} onClick={() => setActive(c.id)}
-                    className={`w-full text-left px-sm py-1 rounded-md text-sm transition-colors ${
-                      active === c.id
-                        ? "bg-muted font-medium text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}>
-                    {c.label}
-                  </button>
-                ))}
+            {componentCategories.map(group => (
+              <div key={group.category}>
+                <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-xs px-sm">{group.category}</p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map(c => (
+                    <button key={c.id} onClick={() => setActive(c.id)}
+                      className={`w-full text-left px-sm py-1 rounded-md text-sm transition-colors ${
+                        active === c.id
+                          ? "bg-muted font-medium text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}>
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
           </nav>
         </aside>
       )}
