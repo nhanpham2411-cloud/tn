@@ -6670,7 +6670,10 @@ function RichSwitchGroupTab() {
           ]} />
           <div className="flex items-center justify-between">
             <span className="typo-paragraph-sm text-muted-foreground">Show Line 2</span>
-            <Switch checked={showLine2} onCheckedChange={setShowLine2} />
+            <div className="flex items-center gap-xs">
+              <span className="typo-paragraph-mini text-muted-foreground">{showLine2 ? "True" : "False"}</span>
+              <Switch checked={showLine2} onCheckedChange={setShowLine2} />
+            </div>
           </div>
         </div>
       </div>
