@@ -218,6 +218,7 @@ import {
   X,
   CircleDashed,
   ChevronDown,
+  SquareDashed,
 } from "lucide-react"
 import { icons as lucideIcons } from "lucide-react"
 
@@ -13342,7 +13343,7 @@ function ComboboxDocs() {
 }
 
 /* ================================================================
-   Radio Group Docs
+   Radio Docs
    ================================================================ */
 
 function RadioTab() {
@@ -13425,9 +13426,87 @@ function RadioGroupTab() {
   )
 }
 
+function RichRadioGroupTab() {
+  const [checked, setChecked] = useState("false")
+  const [flipped, setFlipped] = useState("false")
+  const [showLine2, setShowLine2] = useState(true)
+  const [showBadge, setShowBadge] = useState(true)
+  const [showIconDecoration, setShowIconDecoration] = useState(false)
+  const isChecked = checked === "true"
+  const isFlipped = flipped === "true"
+
+  return (
+    <>
+      <div className="p-4xl flex items-center justify-center min-h-[200px]">
+        <RadioGroup
+          value={isChecked ? "rich-1" : undefined}
+          onValueChange={() => setChecked(isChecked ? "false" : "true")}
+          className="w-[280px]"
+        >
+          <label
+            className={cn(
+              "flex gap-xs items-start rounded-xl border bg-card px-sm py-xs cursor-pointer transition-colors",
+              isChecked ? "border-primary" : "border-border",
+              isFlipped && "flex-row-reverse"
+            )}
+          >
+            <div className="flex items-center h-[20px] shrink-0">
+              <RadioGroupItem value="rich-1" />
+            </div>
+            {showIconDecoration && (
+              <div className="flex items-center justify-center size-[36px] rounded-full border border-border shrink-0">
+                <SquareDashed className="size-md text-muted-foreground" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0 space-y-[2px]">
+              <div className="flex items-center gap-xs">
+                <span className="typo-paragraph-sm text-foreground flex-1">Label</span>
+                {showBadge && (
+                  <span className="typo-paragraph-mini text-emphasis-subtle-foreground bg-emphasis-subtle px-2xs rounded-full min-h-[20px] flex items-center">Best</span>
+                )}
+              </div>
+              {showLine2 && (
+                <p className="typo-paragraph-mini text-muted-foreground">Secondary text</p>
+              )}
+            </div>
+          </label>
+        </RadioGroup>
+      </div>
+      <div className="border-t border-border bg-muted/50 p-lg space-y-md">
+        <div className="space-y-sm">
+          <PropertyTabs label="Checked?" value={checked} onChange={setChecked} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="Flipped" value={flipped} onChange={setFlipped} options={[
+            { value: "false", label: "False" },
+            { value: "true", label: "True" },
+          ]} />
+          <PropertyTabs label="Inline" value="false" onChange={() => {}} options={[
+            { value: "false", label: "False" },
+          ]} />
+          <div className="flex items-center justify-between">
+            <span className="typo-paragraph-sm text-muted-foreground">Show Line 2</span>
+            <Switch checked={showLine2} onCheckedChange={setShowLine2} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="typo-paragraph-sm text-muted-foreground">Show Badge</span>
+            <Switch checked={showBadge} onCheckedChange={setShowBadge} />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="typo-paragraph-sm text-muted-foreground">Show Icon Decoration</span>
+            <Switch checked={showIconDecoration} onCheckedChange={setShowIconDecoration} />
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 const radioBehaviorTabs = [
   { value: "radio", label: "Radio" },
   { value: "radio-group", label: "Radio Group" },
+  { value: "rich-radio-group", label: "Rich Radio Group" },
 ]
 
 function RadioExploreBehavior() {
@@ -13455,6 +13534,7 @@ function RadioExploreBehavior() {
         </div>
         {tab === "radio" && <RadioTab />}
         {tab === "radio-group" && <RadioGroupTab />}
+        {tab === "rich-radio-group" && <RichRadioGroupTab />}
       </div>
     </section>
   )
@@ -13604,7 +13684,7 @@ function RadioTokensTable() {
   )
 }
 
-const radioGroupSections: TocSection[] = [
+const radioSections: TocSection[] = [
   { id: "explore-behavior", label: "Explore Behavior" },
   { id: "installation", label: "Installation" },
   { id: "examples", label: "Examples" },
@@ -13616,16 +13696,16 @@ const radioGroupSections: TocSection[] = [
   { id: "related", label: "Related Components" },
 ]
 
-function RadioGroupDocs() {
+function RadioDocs() {
   return (
     <div className="space-y-12">
-      <TableOfContents sections={radioGroupSections} />
+      <TableOfContents sections={radioSections} />
 
       <header className="space-y-md pb-3xl">
         <p className="text-xs text-muted-foreground font-mono tracking-wide uppercase">Components / Forms</p>
-        <h1 className="typo-heading-2">Radio Group</h1>
+        <h1 className="typo-heading-2">Radio</h1>
         <p className="typo-paragraph text-muted-foreground max-w-3xl">
-          A set of checkable buttons — known as radio buttons — where only one can be checked at a time. Built on Radix Radio Group primitive.
+          A set of checkable buttons — known as radio buttons — where only one can be checked at a time. Includes basic Radio, Radio Group with labels, and Rich Radio Group with card-style layout. Built on Radix Radio Group primitive.
         </p>
       </header>
 
@@ -13695,6 +13775,45 @@ function RadioGroupDocs() {
                 <RadioGroupItem value="inactive" id="dis-2" />
                 <Label htmlFor="dis-2">Inactive</Label>
               </div>
+            </RadioGroup>
+          </Example>
+
+          <Example
+            title="Rich Radio Group"
+            description="Card-style radio items with label, description, and badge."
+            code={`<RadioGroup defaultValue="pro" className="grid gap-sm">\n  <label className="flex gap-xs items-start rounded-xl border border-border bg-card px-sm py-xs cursor-pointer has-[data-state=checked]:border-primary">\n    <div className="flex items-center h-[20px] shrink-0">\n      <RadioGroupItem value="free" />\n    </div>\n    <div className="flex-1 space-y-[2px]">\n      <span className="typo-paragraph-sm">Free</span>\n      <p className="typo-paragraph-mini text-muted-foreground">Basic features</p>\n    </div>\n  </label>\n  <label className="flex gap-xs items-start rounded-xl border border-border bg-card px-sm py-xs cursor-pointer has-[data-state=checked]:border-primary">\n    <div className="flex items-center h-[20px] shrink-0">\n      <RadioGroupItem value="pro" />\n    </div>\n    <div className="flex-1 space-y-[2px]">\n      <div className="flex items-center gap-xs">\n        <span className="typo-paragraph-sm">Pro</span>\n        <span className="typo-paragraph-mini bg-emphasis-subtle text-emphasis-subtle-foreground px-2xs rounded-full">Best</span>\n      </div>\n      <p className="typo-paragraph-mini text-muted-foreground">All features included</p>\n    </div>\n  </label>\n</RadioGroup>`}
+          >
+            <RadioGroup defaultValue="pro" className="grid gap-sm w-[260px]">
+              <label className="flex gap-xs items-start rounded-xl border border-border bg-card px-sm py-xs cursor-pointer has-[data-state=checked]:border-primary">
+                <div className="flex items-center h-[20px] shrink-0">
+                  <RadioGroupItem value="free" />
+                </div>
+                <div className="flex-1 space-y-[2px]">
+                  <span className="typo-paragraph-sm text-foreground">Free</span>
+                  <p className="typo-paragraph-mini text-muted-foreground">Basic features</p>
+                </div>
+              </label>
+              <label className="flex gap-xs items-start rounded-xl border border-border bg-card px-sm py-xs cursor-pointer has-[data-state=checked]:border-primary">
+                <div className="flex items-center h-[20px] shrink-0">
+                  <RadioGroupItem value="pro" />
+                </div>
+                <div className="flex-1 space-y-[2px]">
+                  <div className="flex items-center gap-xs">
+                    <span className="typo-paragraph-sm text-foreground">Pro</span>
+                    <span className="typo-paragraph-mini bg-emphasis-subtle text-emphasis-subtle-foreground px-2xs rounded-full min-h-[20px] flex items-center">Best</span>
+                  </div>
+                  <p className="typo-paragraph-mini text-muted-foreground">All features included</p>
+                </div>
+              </label>
+              <label className="flex gap-xs items-start rounded-xl border border-border bg-card px-sm py-xs cursor-pointer has-[data-state=checked]:border-primary">
+                <div className="flex items-center h-[20px] shrink-0">
+                  <RadioGroupItem value="enterprise" />
+                </div>
+                <div className="flex-1 space-y-[2px]">
+                  <span className="typo-paragraph-sm text-foreground">Enterprise</span>
+                  <p className="typo-paragraph-mini text-muted-foreground">Custom solutions</p>
+                </div>
+              </label>
             </RadioGroup>
           </Example>
         </div>
@@ -14740,7 +14859,7 @@ const componentCategories = [
       { id: "checkbox", label: "Checkbox" },
       { id: "switch", label: "Switch" },
       { id: "label", label: "Label" },
-      { id: "radio-group", label: "Radio Group" },
+      { id: "radio", label: "Radio" },
       { id: "slider", label: "Slider" },
       { id: "toggle", label: "Toggle" },
       { id: "toggle-group", label: "Toggle Group" },
@@ -15006,7 +15125,7 @@ function App() {
           {active === "checkbox" && <CheckboxDocs />}
           {active === "switch" && <SwitchDocs />}
           {active === "label" && <LabelDocs />}
-          {active === "radio-group" && <RadioGroupDocs />}
+          {active === "radio" && <RadioDocs />}
           {active === "toggle" && <ToggleDocs />}
           {active === "toggle-group" && <ToggleGroupDocs />}
           {active === "slider" && <SliderDocs />}
