@@ -6668,12 +6668,9 @@ function RichSwitchGroupTab() {
             { value: "false", label: "False" },
             { value: "true", label: "True" },
           ]} />
-          <div className="flex items-center justify-between">
-            <span className="typo-paragraph-sm text-muted-foreground">Show Line 2</span>
-            <div className="flex items-center gap-xs">
-              <span className="typo-paragraph-mini text-muted-foreground">{showLine2 ? "True" : "False"}</span>
-              <Switch checked={showLine2} onCheckedChange={setShowLine2} />
-            </div>
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Show Line 2</span>
+            <div><Switch checked={showLine2} onCheckedChange={setShowLine2} /></div>
           </div>
         </div>
       </div>
@@ -13373,17 +13370,17 @@ function RichRadioGroupTab() {
           <PropertyTabs label="Inline" value="false" onChange={() => {}} options={[
             { value: "false", label: "False" },
           ]} />
-          <div className="flex items-center justify-between">
-            <span className="typo-paragraph-sm text-muted-foreground">Show Line 2</span>
-            <Switch checked={showLine2} onCheckedChange={setShowLine2} />
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Show Line 2</span>
+            <div><Switch checked={showLine2} onCheckedChange={setShowLine2} /></div>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="typo-paragraph-sm text-muted-foreground">Show Badge</span>
-            <Switch checked={showBadge} onCheckedChange={setShowBadge} />
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Show Badge</span>
+            <div><Switch checked={showBadge} onCheckedChange={setShowBadge} /></div>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="typo-paragraph-sm text-muted-foreground">Show Icon Decoration</span>
-            <Switch checked={showIconDecoration} onCheckedChange={setShowIconDecoration} />
+          <div className="space-y-xs">
+            <span className="text-xs font-medium text-muted-foreground">Show Icon Decoration</span>
+            <div><Switch checked={showIconDecoration} onCheckedChange={setShowIconDecoration} /></div>
           </div>
         </div>
       </div>
