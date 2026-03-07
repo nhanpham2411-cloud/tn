@@ -1,0 +1,144 @@
+{
+  "components": [
+    {
+      "name": "Hover Card",
+      "description": "Rich preview card that appears on hover or focus — for user profiles, link metadata, and entity details. Content-only panel (trigger is separate). w-72 (288px), bg-card, border-border, rounded-md, p-md, shadow-md. No arrow — use Tooltip for arrow-based hints. Single variant — Side/Align are runtime-only props with no visual difference.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-hover-card",
+        "import": "import {\n  HoverCard,\n  HoverCardTrigger,\n  HoverCardContent,\n} from \"@/components/ui/hover-card\""
+      },
+
+      "properties": {},
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "md",
+        "width": 288,
+        "heightMode": "hug",
+        "radius": "md",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "card",
+        "paddingX": "md",
+        "paddingY": "md",
+        "effectStyleName": "Shadows/md",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Avatar",
+            "type": "instance",
+            "component": "Avatar",
+            "variants": { "Type": "Image", "Size": "Default" }
+          },
+          {
+            "name": "Info",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "start",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "fill": "transparent",
+            "heightMode": "hug",
+            "children": [
+              {
+                "name": "Handle",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "@nextjs",
+                "textFill": "foreground"
+              },
+              {
+                "name": "Bio",
+                "type": "text",
+                "textStyle": "SP/Caption",
+                "textContent": "The React Framework — created and maintained by @vercel.",
+                "textFill": "muted-foreground"
+              },
+              {
+                "name": "Meta",
+                "type": "text",
+                "textStyle": "SP/Caption",
+                "textContent": "Joined December 2021",
+                "textFill": "muted-foreground"
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {},
+
+      "examples": [
+        {
+          "name": "User Profile",
+          "description": "Avatar with handle, bio, and join date — the canonical HoverCard content pattern.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": {} }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "openDelay", "type": "number", "default": "700", "description": "Delay in ms before the card opens after hover starts (HoverCard root)" },
+        { "name": "closeDelay", "type": "number", "default": "300", "description": "Delay in ms before the card closes after hover ends (HoverCard root)" },
+        { "name": "open", "type": "boolean", "default": "--", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "--", "description": "Callback when open state changes" },
+        { "name": "asChild", "type": "boolean", "default": "false", "description": "Merge props onto child element instead of rendering a span (HoverCardTrigger)" },
+        { "name": "side", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "default": "\"bottom\"", "description": "Side of the trigger to render on (HoverCardContent)" },
+        { "name": "align", "type": "\"start\" | \"center\" | \"end\"", "default": "\"center\"", "description": "Alignment along the trigger edge (HoverCardContent)" },
+        { "name": "sideOffset", "type": "number", "default": "4", "description": "Distance from the trigger in px (HoverCardContent)" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes — use w-* to control width (HoverCardContent)" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-card", "value": "white / zinc-900", "description": "HoverCardContent background (bg-card)" },
+        { "token": "--color-card-foreground", "value": "zinc-950 / zinc-50", "description": "HoverCardContent text color" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "HoverCardContent border (border-border)" },
+        { "token": "--radius-md", "value": "8px", "description": "HoverCardContent border radius (rounded-md)" },
+        { "token": "Shadows/md", "value": "0 4px 8px -2px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.2)", "description": "HoverCardContent shadow (shadow-md)" },
+        { "token": "--spacing-md", "value": "16px", "description": "HoverCardContent padding (p-md) and gap between avatar and info" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use HoverCard for supplementary info only — user bio, link preview, metric breakdown. Content must make sense even if the user never sees it.", "dont": "Put essential content in HoverCard — touch users and keyboard users relying on screen readers may not trigger it." },
+        { "do": "Keep content read-only: text, avatars, badges, and stats. Use openDelay={0} in demos to reduce friction during testing.", "dont": "Add buttons, forms, or links inside HoverCardContent — use Popover for interactive overlays." },
+        { "do": "Set an explicit width via className (e.g. w-64, w-72) to prevent layout shifts when content length varies.", "dont": "Let the card width be unconstrained — it will reflow based on content and break alignment." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Hover Card", "value": "bg-card, border-border, rounded-md, shadow-md, p-md", "code": "HoverCardContent", "codeValue": "z-50 w-64 rounded-md border border-border bg-card p-md shadow-md" },
+        { "figma": "Side (runtime)", "value": "bottom / top / left / right — no visual diff on card", "code": "side", "codeValue": "\"bottom\" (default)" },
+        { "figma": "Align (runtime)", "value": "start / center / end — no visual diff on card", "code": "align", "codeValue": "\"center\" (default)" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the trigger to show the hover card" },
+          { "key": "Escape", "action": "Dismiss the hover card" }
+        ],
+        "notes": [
+          "HoverCard opens on both hover and keyboard focus — keyboard users can access content.",
+          "Touch devices cannot hover — never put essential content here; use Popover or Dialog instead.",
+          "HoverCardContent renders in a portal (z-50) — ensure it does not overlap critical UI.",
+          "HoverCardTrigger should always be a focusable element (button or link) — use asChild to avoid nested interactive elements."
+        ]
+      },
+
+      "related": [
+        { "name": "Tooltip", "desc": "Plain text hint on hover. Use instead of HoverCard when content is a single short label with no rich layout." },
+        { "name": "Popover", "desc": "Interactive overlay triggered by click. Use when the preview needs buttons, forms, or other interactive elements." },
+        { "name": "Dialog", "desc": "Full modal for focused tasks. Use when the entity being previewed needs a dedicated detail view." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

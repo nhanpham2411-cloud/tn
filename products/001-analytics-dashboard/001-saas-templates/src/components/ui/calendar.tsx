@@ -52,8 +52,13 @@ function Calendar({
             : "[&:has([aria-selected])]:rounded-sm"
         ),
         day_button: cn(
-          buttonVariants({ variant: "ghost" }),
-          "size-[48px] rounded-sm p-xs font-normal aria-selected:opacity-100"
+          "inline-flex items-center justify-center whitespace-nowrap transition-colors",
+          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
+          "disabled:pointer-events-none disabled:opacity-50",
+          "size-[48px] rounded-sm p-xs font-normal",
+          "bg-transparent text-foreground hover:bg-ghost-hover",
+          "aria-selected:bg-primary aria-selected:text-primary-foreground",
+          "aria-selected:hover:bg-primary aria-selected:hover:text-primary-foreground",
         ),
         range_start: "day-range-start rounded-l-sm",
         range_end: "day-range-end rounded-r-sm",
@@ -64,7 +69,7 @@ function Calendar({
           "day-outside text-muted-foreground/40 aria-selected:text-primary-foreground/70",
         disabled: "text-muted-foreground opacity-50",
         range_middle:
-          "aria-selected:bg-primary/10 aria-selected:text-foreground aria-selected:rounded-none aria-selected:hover:bg-primary/20",
+          "day-range-middle aria-selected:bg-primary/10 aria-selected:text-foreground aria-selected:rounded-none aria-selected:hover:bg-primary/20 [&>button]:aria-selected:bg-transparent [&>button]:aria-selected:text-foreground [&>button]:aria-selected:hover:bg-transparent [&>button]:aria-selected:hover:text-foreground",
         hidden: "invisible",
         ...classNames,
       }}

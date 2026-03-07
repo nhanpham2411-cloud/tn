@@ -190,6 +190,27 @@
       line-height: 1.4;
       flex-shrink: 0;
     }
+
+    /* ─── Spec Label Row (label + import btn) ─── */
+    .spec-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .spec-label-row label { margin-bottom: 0; }
+    .btn-import {
+      padding: 3px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      font-size: 10px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-import:hover { border-color: #18A0FB; color: #18A0FB; background: #f0f8ff; }
   </style>
 </head>
 <body>
@@ -220,8 +241,11 @@
     </div>
 
     <div class="spec-area">
-      <label>JSON Spec</label>
-      <textarea id="foundation-spec" placeholder='Paste foundation JSON spec here...'></textarea>
+      <div class="spec-label-row">
+        <label>JSON Spec</label>
+        <button class="btn-import" data-target="foundation-spec">Import JSON</button>
+      </div>
+      <textarea id="foundation-spec" placeholder='Paste or import a JSON spec...'></textarea>
     </div>
 
     <div class="buttons">
@@ -242,12 +266,11 @@
     </div>
 
     <div class="spec-area">
-      <label>JSON Spec</label>
-      <textarea id="generate-spec" placeholder='Paste page/flow JSON spec here...
-{
-  "pageName": "Auth — Sign In",
-  "roots": [...]
-}'></textarea>
+      <div class="spec-label-row">
+        <label>JSON Spec</label>
+        <button class="btn-import" data-target="generate-spec">Import JSON</button>
+      </div>
+      <textarea id="generate-spec" placeholder='Paste or import a JSON spec...'></textarea>
     </div>
 
     <div class="buttons">
@@ -365,12 +388,16 @@
       selectedFoundationType = detectedType;
 
       btnFoundationGenerate.disabled = true;
-      foundationStatus.textContent = 'Generating...';
+      foundationStatus.textContent = 'Fetching images...';
       foundationStatus.className = 'status';
       foundationLog.className = 'log';
       foundationLog.textContent = '';
 
-      parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'foundation' } }, '*');
+      prefetchImages(spec).then(function(imageMap) {
+        spec._imageData = imageMap;
+        foundationStatus.textContent = 'Generating...';
+        parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'foundation' } }, '*');
+      });
     });
 
     // ─── Generate UI ───
@@ -379,6 +406,36 @@
     var generateLog = document.getElementById('generate-log');
     var btnGenerate = document.getElementById('btn-generate');
     var btnClear = document.getElementById('btn-clear');
+
+    // Scan spec for imageUrl fields, fetch all, embed as _imageData map
+    function collectImageUrls(obj) {
+      var urls = [];
+      if (!obj || typeof obj !== 'object') return urls;
+      if (obj.imageUrl) urls.push(obj.imageUrl);
+      var keys = Object.keys(obj);
+      for (var i = 0; i < keys.length; i++) {
+        if (typeof obj[keys[i]] === 'object') urls = urls.concat(collectImageUrls(obj[keys[i]]));
+      }
+      return urls;
+    }
+
+    function prefetchImages(spec) {
+      var urls = collectImageUrls(spec);
+      // Deduplicate
+      var unique = [];
+      for (var i = 0; i < urls.length; i++) {
+        if (unique.indexOf(urls[i]) === -1) unique.push(urls[i]);
+      }
+      if (unique.length === 0) return Promise.resolve({});
+      var imageMap = {};
+      var fetches = unique.map(function(url) {
+        return fetch(url)
+          .then(function(r) { return r.arrayBuffer(); })
+          .then(function(buf) { imageMap[url] = Array.from(new Uint8Array(buf)); })
+          .catch(function(e) { console.warn('Image fetch failed:', url, e); });
+      });
+      return Promise.all(fetches).then(function() { return imageMap; });
+    }
 
     btnGenerate.addEventListener('click', function() {
       var raw = generateSpec.value.trim();
@@ -398,12 +455,16 @@
 
       btnGenerate.disabled = true;
       btnClear.disabled = true;
-      generateStatus.textContent = 'Generating...';
+      generateStatus.textContent = 'Fetching images...';
       generateStatus.className = 'status';
       generateLog.className = 'log';
       generateLog.textContent = '';
 
-      parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'generate' } }, '*');
+      prefetchImages(spec).then(function(imageMap) {
+        spec._imageData = imageMap;
+        generateStatus.textContent = 'Generating...';
+        parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'generate' } }, '*');
+      });
     });
 
     btnClear.addEventListener('click', function() {
@@ -469,10 +530,59 @@
       exportStatus.className = 'status success';
     }
 
+    // ─── Import JSON file ───
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    var importTarget = null;
+
+    document.querySelectorAll('.btn-import').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        importTarget = document.getElementById(btn.getAttribute('data-target'));
+        fileInput.value = '';
+        fileInput.click();
+      });
+    });
+
+    fileInput.addEventListener('change', function() {
+      if (!fileInput.files.length || !importTarget) return;
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        importTarget.value = e.target.result;
+        // Find the status element for the active tab
+        var statusEl = importTarget.id.startsWith('foundation') ? foundationStatus : generateStatus;
+        statusEl.textContent = 'Imported: ' + file.name;
+        statusEl.className = 'status success';
+      };
+      reader.onerror = function() {
+        var statusEl = importTarget.id.startsWith('foundation') ? foundationStatus : generateStatus;
+        statusEl.textContent = 'Error reading file.';
+        statusEl.className = 'status error';
+      };
+      reader.readAsText(file);
+    });
+
     // ─── Message handler ───
     window.onmessage = function(event) {
       var msg = event.data.pluginMessage;
       if (!msg) return;
+
+      // ─── Image fetch (plugin requests image from URL) ───
+      if (msg.type === 'fetch-image') {
+        fetch(msg.url)
+          .then(function(r) { return r.arrayBuffer(); })
+          .then(function(buf) {
+            parent.postMessage({ pluginMessage: { type: 'image-data', id: msg.id, bytes: Array.from(new Uint8Array(buf)) } }, '*');
+          })
+          .catch(function(e) {
+            parent.postMessage({ pluginMessage: { type: 'image-data', id: msg.id, error: e.message } }, '*');
+          });
+        return;
+      }
 
       if (msg.type === 'status') {
         var source = msg.source || 'generate';

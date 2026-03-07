@@ -59,8 +59,8 @@
 - [ ] Error messages linked với aria-invalid
 - [ ] Modal/dialog trap focus đúng
 
-### Component Documentation (theo `component-docs-pattern.md`)
-- [ ] Mọi component có đủ 10 sections: Header, Explore Behavior, Installation, Examples, Props, Design Tokens, Best Practices, Figma Mapping, Accessibility, Related
+### Component Documentation — Web (theo `component-docs-pattern.md`)
+- [ ] Mọi component trên web có đủ 10 sections: Header, Explore Behavior, Installation, Examples, Props, Design Tokens, Best Practices, Figma Mapping, Accessibility, Related
 - [ ] Explore Behavior shows component face — KHÔNG show trigger
 - [ ] Overlay/trigger components có Interactive Demo trong Examples
 - [ ] Props table 100% coverage — match React source code
@@ -68,6 +68,14 @@
 - [ ] Toggle controls xếp hàng ngang, select controls xếp dọc
 - [ ] FigmaMapping table khớp với JSON spec (component name, property path, variant)
 - [ ] Không lặp bất kỳ mistake nào trong `common-mistakes.md`
+
+### Component Documentation — Figma (theo `plugin-json-pattern.md`)
+- [ ] Figma showcase chỉ tạo 3 sections: Header, Component grid, Installation
+- [ ] `showcase.sections` set to `["header", "component", "installation"]` trong JSON
+- [ ] Spacing values (`paddingX`, `paddingY`, `gap`) dùng string tokens cho variable binding
+- [ ] All fill/stroke/textFill dùng semantic tokens (không hex, không color scale)
+- [ ] Component properties match web ExploreBehavior controls 1:1
+- [ ] Sub-elements matching existing ComponentSets (Button, Checkbox, Switch, etc.) dùng `"type": "instance"` — KHÔNG tạo manual frame
 
 ---
 

@@ -1,0 +1,134 @@
+{
+  "components": [
+    {
+      "name": "Radio",
+      "description": "A single radio item for single-selection within a group. Only one option can be active at a time. Built on Radix RadioGroup with a filled circle indicator.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-radio-group",
+        "import": "import { RadioGroup, RadioGroupItem } from \"@/components/ui/radio-group\""
+      },
+
+      "properties": {
+        "Value": ["Unchecked", "Checked"],
+        "State": ["Default", "Hover", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "xs",
+        "indicator": {
+          "width": 16,
+          "height": 16,
+          "radius": "full",
+          "thumb": {
+            "width": 6,
+            "height": 6,
+            "radius": "full",
+            "fill": "primary-foreground"
+          }
+        },
+        "fill": "input",
+        "stroke": "border-strong",
+        "showThumb": false,
+        "textStyle": "SP/Body",
+        "textContent": "Option label",
+        "textFill": "foreground"
+      },
+
+      "variantStyles": {
+        "Value=Unchecked": {},
+        "Value=Checked": { "fill": "primary", "stroke": "primary", "showThumb": true },
+
+        "State=Default": {},
+        "State=Hover": { "stroke": "primary", "strokeOpacity": 0.6 },
+        "State=Focus": { "focusRing": "ring" },
+        "State=Disabled": { "opacity": 0.5 },
+
+        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary" },
+        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
+        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Default States",
+          "description": "Unchecked and checked radio items side by side.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Unchecked", "props": { "Value": "Unchecked", "State": "Default" } },
+            { "label": "Checked", "props": { "Value": "Checked", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Interactive States",
+          "description": "Hover, focus, and disabled states.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Hover", "props": { "Value": "Unchecked", "State": "Hover" } },
+            { "label": "Focus", "props": { "Value": "Checked", "State": "Focus" } },
+            { "label": "Disabled", "props": { "Value": "Checked", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "string", "default": "—", "description": "Item value matched against RadioGroup value (required)" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable this specific item" },
+        { "name": "aria-invalid", "type": "boolean", "default": "false", "description": "Show error border and ring" },
+        { "name": "id", "type": "string", "default": "—", "description": "ID for Label association via htmlFor" }
+      ],
+
+      "designTokens": [
+        { "token": "--primary", "value": "violet-600", "description": "Selected indicator fill and border" },
+        { "token": "--primary-foreground", "value": "white", "description": "Inner dot color" },
+        { "token": "--border-strong", "value": "zinc-400", "description": "Unselected item border" },
+        { "token": "--input", "value": "transparent", "description": "Unselected background" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" },
+        { "token": "--ring-error", "value": "red-500/30", "description": "Error focus ring" },
+        { "token": "--destructive", "value": "red-600", "description": "Error checked fill" },
+        { "token": "--destructive-border", "value": "red-500", "description": "Error state border" }
+      ],
+
+      "bestPractices": [
+        { "do": "Keep groups to 2-5 options so the user can compare choices at a glance.", "dont": "Use Radio for long lists — reach for Select or Combobox when there are more than 5 options." },
+        { "do": "Display every radio option upfront so the user can compare choices before deciding.", "dont": "Hide radio items behind a toggle or 'show more' — partial visibility defeats the purpose of radio." },
+        { "do": "Use RadioGroup when the selection is part of a form submitted explicitly by the user.", "dont": "Use radio buttons for binary on/off settings — prefer Switch for choices that take immediate effect." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Indicator", "value": "16x16 rounded-full", "code": "RadioGroupItem", "codeValue": "size-md rounded-full border border-border-strong bg-input" },
+        { "figma": "Value=Unchecked", "value": "bg-input, border-strong", "code": "unchecked", "codeValue": "No dot" },
+        { "figma": "Value=Checked", "value": "bg-primary, border-primary, Circle dot", "code": "data-[state=checked]", "codeValue": "data-[state=checked]:bg-primary data-[state=checked]:border-primary" },
+        { "figma": "State=Hover", "value": "border-primary/60", "code": "hover:", "codeValue": "hover:border-primary/60" },
+        { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus into the radio group" },
+          { "key": "Arrow Up / Down", "action": "Navigate between options (vertical)" },
+          { "key": "Arrow Left / Right", "action": "Navigate between options (horizontal)" },
+          { "key": "Space", "action": "Select the focused option" }
+        ],
+        "notes": [
+          "Uses role='radiogroup' on the container and role='radio' on each item",
+          "Arrow keys move selection — Tab moves focus out of the group entirely",
+          "Wrap the group in a <fieldset> with <legend> so assistive technology announces the group question"
+        ]
+      },
+
+      "related": [
+        { "name": "Checkbox", "desc": "Allows multiple independent options to be selected simultaneously." },
+        { "name": "Select", "desc": "Collapses options into a dropdown, saving vertical space for long lists." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

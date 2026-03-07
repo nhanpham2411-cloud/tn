@@ -1,0 +1,262 @@
+{
+  "components": [
+    {
+      "name": "Breadcrumb Item",
+      "description": "Individual breadcrumb segment — either a navigable link (muted-foreground, hover transitions to foreground) or the current page indicator (semibold foreground, non-clickable). Used inside the Breadcrumb parent component via instance swap.",
+      "category": "Navigation",
+      "installation": {
+        "import": "import {\n  BreadcrumbItem,\n  BreadcrumbLink,\n  BreadcrumbPage,\n} from \"@/components/ui/breadcrumb\""
+      },
+
+      "properties": {
+        "Type": ["Link", "Current Page"],
+        "State": ["Default", "Hover"]
+      },
+
+      "variantRestrictions": {
+        "Type=Current Page": {
+          "State": ["Default"]
+        }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "textStyle": "SP/Body",
+        "textContent": "Dashboard",
+        "textFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "State=Default": {},
+        "State=Hover": {
+          "textFill": "foreground"
+        },
+        "Type=Current Page": {
+          "textStyle": "SP/Body Semibold",
+          "textFill": "foreground",
+          "textContent": "Settings"
+        },
+        "Type=Current Page,State=Hover": {
+          "textStyle": "SP/Body Semibold",
+          "textFill": "foreground"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Link States",
+          "description": "Default and hover states for breadcrumb link items.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Link", "State": "Default" } },
+            { "label": "Hover", "props": { "Type": "Link", "State": "Hover" } }
+          ]
+        },
+        {
+          "name": "Current Page",
+          "description": "Non-clickable current page indicator with semibold foreground text.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Current Page", "props": { "Type": "Current Page", "State": "Default" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "Label text for the breadcrumb item" },
+        { "name": "href (Link)", "type": "string", "default": "--", "description": "Navigation URL for link items" },
+        { "name": "asChild (Link)", "type": "boolean", "default": "false", "description": "Merge props onto child element — use with router Link components" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Default link text color" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Hover link color + current page text color" },
+        { "token": "SP/Body", "value": "Inter 400 14px/20px", "description": "Link item text style" },
+        { "token": "SP/Body Semibold", "value": "Inter 600 14px/20px", "description": "Current page text style (font-semibold)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Type=Link for intermediate navigation items. Use Type=Current Page only for the last item in the breadcrumb trail.", "dont": "Use Type=Current Page for intermediate items — only the final segment should be non-clickable." },
+        { "do": "Link items transition to foreground color on hover for clear interactivity. Current page has no hover state — it is always non-interactive.", "dont": "Style the current page as a link — it should never be clickable." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Link", "value": "text-muted-foreground", "code": "BreadcrumbLink", "codeValue": "Navigable anchor element" },
+        { "figma": "Type=Current Page", "value": "font-semibold text-foreground", "code": "BreadcrumbPage", "codeValue": "span with aria-current=\"page\"" },
+        { "figma": "State=Default", "value": "Default appearance", "code": "--", "codeValue": "Default state" },
+        { "figma": "State=Hover", "value": "text-foreground (Link only)", "code": "hover:", "codeValue": "hover:text-foreground" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the link item" },
+          { "key": "Enter", "action": "Follow the focused link" }
+        ],
+        "notes": [
+          "BreadcrumbLink renders as an anchor — receives focus via Tab.",
+          "BreadcrumbPage renders with aria-current='page' — non-focusable span.",
+          "Current page items are excluded from tab order (span, not anchor)."
+        ]
+      },
+
+      "related": [
+        { "name": "Breadcrumb", "desc": "Parent container that composes multiple Breadcrumb Items with separators." },
+        { "name": "Navigation Menu", "desc": "Top-level app navigation — use Breadcrumb for hierarchical context." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Breadcrumb",
+      "description": "Horizontal navigation trail showing the user's current location in a hierarchy. Links are muted-foreground, current page is semibold foreground. Separator defaults to ChevronRight icon, can be overridden with slash text.",
+      "category": "Navigation",
+      "installation": {
+        "import": "import {\n  Breadcrumb,\n  BreadcrumbList,\n  BreadcrumbItem,\n  BreadcrumbLink,\n  BreadcrumbPage,\n  BreadcrumbSeparator,\n  BreadcrumbEllipsis,\n} from \"@/components/ui/breadcrumb\""
+      },
+
+      "properties": {
+        "Items": ["2", "3", "4", "5"],
+        "Separator": ["Chevron", "Slash"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "min",
+        "counterAlign": "center",
+        "gap": "xs",
+        "paddingX": "none",
+        "paddingY": "none",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          { "name": "Home", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Home" } },
+
+          { "name": "S1-C", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Separator=Chevron" },
+          { "name": "S1-S", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Separator=Slash" },
+
+          { "name": "L2-i3", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Dashboard" }, "showWhen": "Items=3" },
+          { "name": "S2-C-i3", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=3,Separator=Chevron" },
+          { "name": "S2-S-i3", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=3,Separator=Slash" },
+
+          { "name": "L2-i4", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Dashboard" }, "showWhen": "Items=4" },
+          { "name": "S2-C-i4", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=4,Separator=Chevron" },
+          { "name": "S2-S-i4", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=4,Separator=Slash" },
+          { "name": "L3-i4", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Settings" }, "showWhen": "Items=4" },
+          { "name": "S3-C-i4", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=4,Separator=Chevron" },
+          { "name": "S3-S-i4", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=4,Separator=Slash" },
+
+          { "name": "L2-i5", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Dashboard" }, "showWhen": "Items=5" },
+          { "name": "S2-C-i5", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=5,Separator=Chevron" },
+          { "name": "S2-S-i5", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=5,Separator=Slash" },
+          { "name": "L3-i5", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Settings" }, "showWhen": "Items=5" },
+          { "name": "S3-C-i5", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=5,Separator=Chevron" },
+          { "name": "S3-S-i5", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=5,Separator=Slash" },
+          { "name": "L4-i5", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Link", "State": "Default" }, "textOverrides": { "Label": "Account" }, "showWhen": "Items=5" },
+          { "name": "S4-C-i5", "type": "icon", "iconName": "ChevronRight", "iconSize": 14, "iconFill": "muted-foreground", "showWhen": "Items=5,Separator=Chevron" },
+          { "name": "S4-S-i5", "type": "text", "textStyle": "SP/Body", "textContent": "/", "textFill": "muted-foreground", "showWhen": "Items=5,Separator=Slash" },
+
+          { "name": "Page", "type": "instance", "component": "Breadcrumb Item", "variants": { "Type": "Current Page", "State": "Default" }, "textOverrides": { "Label": "Profile" } }
+        ]
+      },
+
+      "variantStyles": {
+        "Items=2": {},
+        "Items=3": {},
+        "Items=4": {},
+        "Items=5": {},
+        "Separator=Chevron": {},
+        "Separator=Slash": {}
+      },
+
+      "examples": [
+        {
+          "name": "Separator Styles",
+          "description": "ChevronRight icon (default) and slash text separator.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Chevron", "props": { "Items": "3", "Separator": "Chevron" } },
+            { "label": "Slash", "props": { "Items": "3", "Separator": "Slash" } }
+          ]
+        },
+        {
+          "name": "Item Counts",
+          "description": "From 2-level to 5-level breadcrumb trails.",
+          "layout": "vertical",
+          "items": [
+            { "label": "2 Items", "props": { "Items": "2", "Separator": "Chevron" } },
+            { "label": "3 Items", "props": { "Items": "3", "Separator": "Chevron" } },
+            { "label": "4 Items", "props": { "Items": "4", "Separator": "Chevron" } },
+            { "label": "5 Items", "props": { "Items": "5", "Separator": "Chevron" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "BreadcrumbList containing BreadcrumbItem, BreadcrumbSeparator, etc." },
+        { "name": "href (BreadcrumbLink)", "type": "string", "default": "--", "description": "Navigation URL for each link" },
+        { "name": "asChild (BreadcrumbLink)", "type": "boolean", "default": "false", "description": "Merge props onto child element — use with router Link" },
+        { "name": "children (BreadcrumbSeparator)", "type": "ReactNode", "default": "ChevronRight", "description": "Custom separator — pass a string or icon to override" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Inactive link and separator color" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Current page text color + link hover color" },
+        { "token": "--spacing-xs", "value": "8px", "description": "Gap between items and separators (gap-xs)" },
+        { "token": "SP/Body", "value": "Inter 400 14px/20px", "description": "Breadcrumb list text style (typo-paragraph-sm)" },
+        { "token": "SP/Body Semibold", "value": "Inter 600 14px/20px", "description": "Current page text style (font-semibold)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always render the last item as BreadcrumbPage — it gets aria-current='page' and is non-clickable.", "dont": "Make the current page a BreadcrumbLink — clicking it reloads the same page with no benefit." },
+        { "do": "Use BreadcrumbEllipsis to collapse intermediate levels when the path exceeds 4 items.", "dont": "Show every nested level on mobile — the trail overflows and pushes other header content." },
+        { "do": "Place the breadcrumb above the page title inside the page header area.", "dont": "Use breadcrumb as the sole navigation mechanism — always provide sidebar or back-button alternatives." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Items=2", "value": "Home > Profile", "code": "--", "codeValue": "2 BreadcrumbItems" },
+        { "figma": "Items=3", "value": "Home > Dashboard > Profile", "code": "--", "codeValue": "3 BreadcrumbItems" },
+        { "figma": "Items=4", "value": "Home > Dashboard > Settings > Profile", "code": "--", "codeValue": "4 BreadcrumbItems" },
+        { "figma": "Items=5", "value": "Home > Dashboard > Settings > Account > Profile", "code": "--", "codeValue": "5 BreadcrumbItems" },
+        { "figma": "Separator=Chevron", "value": "ChevronRight 14px icon", "code": "BreadcrumbSeparator", "codeValue": "Default (no children)" },
+        { "figma": "Separator=Slash", "value": "'/' text", "code": "BreadcrumbSeparator", "codeValue": "children=\"/\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the next breadcrumb link" },
+          { "key": "Shift+Tab", "action": "Move focus to the previous breadcrumb link" },
+          { "key": "Enter", "action": "Follow the focused link" }
+        ],
+        "notes": [
+          "Root nav element has aria-label='breadcrumb' for landmark navigation.",
+          "BreadcrumbPage renders with aria-current='page' to identify the active location.",
+          "BreadcrumbSeparator has role='presentation' and aria-hidden='true' — excluded from the accessibility tree.",
+          "BreadcrumbEllipsis has aria-hidden='true' with a visually-hidden 'More' label for screen readers."
+        ]
+      },
+
+      "related": [
+        { "name": "Breadcrumb Item", "desc": "Sub-component — individual link or current page segment." },
+        { "name": "Pagination", "desc": "Navigates between pages of a data set. Use Pagination for numbered page controls." },
+        { "name": "Tabs", "desc": "Switches between sibling views within the same page." },
+        { "name": "Navigation Menu", "desc": "Top-level app navigation with dropdowns." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

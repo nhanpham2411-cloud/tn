@@ -1,0 +1,138 @@
+{
+  "components": [
+    {
+      "name": "Spinner",
+      "description": "Animated SVG loading indicator for indeterminate states. Static representation in Figma using two overlapping ellipses: full donut track (opacity 25%) + quarter arc segment (opacity 75%). Animation is runtime only. Three sizes and three color options.",
+      "category": "Feedback",
+      "installation": {
+        "import": "import { Spinner } from \"@/components/ui/spinner\""
+      },
+
+      "properties": {
+        "Size": ["SM", "Default", "LG"],
+        "Color": ["Default", "Primary", "Foreground"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 24,
+        "height": 24,
+        "hideLabel": true,
+        "ellipses": [
+          {
+            "name": "Track",
+            "fill": "muted-foreground",
+            "opacity": 0.25,
+            "innerRadius": 0.667
+          },
+          {
+            "name": "Arc",
+            "fill": "muted-foreground",
+            "opacity": 0.75,
+            "arcStart": -90,
+            "arcSweep": 90,
+            "innerRadius": 0.667
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Size=SM": { "width": 16, "height": 16 },
+        "Size=Default": {},
+        "Size=LG": { "width": 32, "height": 32 },
+
+        "Color=Default": {},
+        "Color=Primary": {
+          "ellipses": [
+            { "name": "Track", "fill": "primary", "opacity": 0.25, "innerRadius": 0.667 },
+            { "name": "Arc", "fill": "primary", "opacity": 0.75, "arcStart": -90, "arcSweep": 90, "innerRadius": 0.667 }
+          ]
+        },
+        "Color=Foreground": {
+          "ellipses": [
+            { "name": "Track", "fill": "foreground", "opacity": 0.25, "innerRadius": 0.667 },
+            { "name": "Arc", "fill": "foreground", "opacity": 0.75, "arcStart": -90, "arcSweep": 90, "innerRadius": 0.667 }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "All Sizes",
+          "description": "SM (16px), Default (24px), LG (32px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "SM", "props": { "Size": "SM", "Color": "Default" } },
+            { "label": "Default", "props": { "Size": "Default", "Color": "Default" } },
+            { "label": "LG", "props": { "Size": "LG", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Colors",
+          "description": "Default (muted-foreground), Primary, and Foreground color options.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Size": "Default", "Color": "Default" } },
+            { "label": "Primary", "props": { "Size": "Default", "Color": "Primary" } },
+            { "label": "Foreground", "props": { "Size": "Default", "Color": "Foreground" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "size", "type": "\"sm\" | \"default\" | \"lg\"", "default": "\"default\"", "description": "Spinner diameter — sm 16px, default 24px, lg 32px" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes — use text-* to override color" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Default spinner color (track + arc)" },
+        { "token": "--primary", "value": "violet-600", "description": "Primary color override via text-primary" },
+        { "token": "--foreground", "value": "zinc-950 / zinc-50", "description": "Foreground color override via text-foreground" }
+      ],
+
+      "bestPractices": [
+        { "do": "Wrap the Spinner in a container with role=\"status\" and aria-label=\"Loading\" for screen reader announcement.", "dont": "Use Spinner alone without an accessible wrapper — it is a decorative SVG (aria-hidden=\"true\")." },
+        { "do": "Add a visible text label near the spinner (e.g., \"Loading data...\") so sighted users understand what is loading.", "dont": "Show a spinner without context — users should know what they are waiting for." },
+        { "do": "Use size=\"sm\" inside buttons and inline contexts; size=\"lg\" for full-page or empty-state loaders.", "dont": "Use the large spinner in tight spaces like table cells or inline badges." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Track (full donut)", "value": "Filled ellipse, opacity 25%, innerRadius 0.65", "code": "circle", "codeValue": "opacity-25 stroke=currentColor strokeWidth=4" },
+        { "figma": "Arc (quarter donut)", "value": "Filled arc 90deg, opacity 75%, innerRadius 0.65", "code": "path", "codeValue": "opacity-75 fill=currentColor (arc segment)" },
+        { "figma": "Size=SM", "value": "16x16", "code": "size", "codeValue": "\"sm\"" },
+        { "figma": "Size=Default", "value": "24x24", "code": "size", "codeValue": "\"default\"" },
+        { "figma": "Size=LG", "value": "32x32", "code": "size", "codeValue": "\"lg\"" },
+        { "figma": "Color=Default", "value": "muted-foreground", "code": "className", "codeValue": "(default — no override)" },
+        { "figma": "Color=Primary", "value": "primary", "code": "className", "codeValue": "\"text-primary\"" },
+        { "figma": "Color=Foreground", "value": "foreground", "code": "className", "codeValue": "\"text-foreground\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Spinner is decorative (aria-hidden=\"true\") and not focusable" }
+        ],
+        "notes": [
+          "Spinner SVG must have aria-hidden=\"true\" — it is purely visual decoration.",
+          "The parent container must provide role=\"status\" and a descriptive aria-label (e.g., \"Loading dashboard data\").",
+          "For button loading states, disable the button and keep the button's accessible name (e.g., \"Saving...\").",
+          "Avoid using spinners as the sole indicator — pair with visible text for users who may not perceive the animation."
+        ]
+      },
+
+      "related": [
+        { "name": "Progress", "desc": "Use when the loading progress percentage is known (determinate state)." },
+        { "name": "Skeleton", "desc": "Placeholder shimmer for content layout — better than spinner for known page structures." },
+        { "name": "Button", "desc": "Embed size=\"sm\" Spinner inside a disabled button for loading actions." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

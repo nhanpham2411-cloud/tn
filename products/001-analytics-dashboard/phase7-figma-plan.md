@@ -22,7 +22,7 @@
 | 6 | 🔤 Typography | 1-2 | Type scale + type pairing |
 | 7 | 🎨 Colors | 3-4 | Raw palette, semantic tokens, chart colors, status colors |
 | 8 | 🔣 Icons | 1-2 | 30 Lucide icon components + showcase grid (stroke bound to foreground variable) |
-| 9 | 🧩 Components | 6-10 | Button, Input, Card, Table, Badge, Chart, Navigation, Overlay — mỗi component có showcase page (title, description, variant grid, states, examples) |
+| 9 | 🧩 Components | 6-10 | Button, Input, Card, Table, Badge, Chart, Navigation, Overlay — mỗi component có showcase (header, component grid, installation). Detailed docs (examples, props, tokens, etc.) are web-only |
 | 10 | 📱 Visual | ~100 | Tất cả màn hình app: Auth, Dashboard, Management, Settings, Utility, Edge Cases, Responsive |
 | 11 | 📋 Change Log | 1 | Version info |
 | | **Tổng** | **~140** | |

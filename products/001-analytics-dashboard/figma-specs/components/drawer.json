@@ -1,0 +1,280 @@
+{
+  "components": [
+    {
+      "name": "Drawer Slot",
+      "description": "Swappable content slot for Drawer body. Swap this instance to customize the overlay content.",
+      "category": "Overlay",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Field Goal",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Goal" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "350" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "This is the content area of the drawer. You can swap this slot to display custom content such as forms, pickers, or selections.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Drawer",
+      "description": "A mobile-first bottom sheet that slides up with swipe-to-close gesture support. Built on vaul — not Radix Dialog.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add vaul",
+        "import": "import {\n  Drawer, DrawerTrigger, DrawerContent,\n  DrawerHeader, DrawerFooter, DrawerTitle,\n  DrawerDescription, DrawerClose\n} from \"@/components/ui/drawer\""
+      },
+
+      "properties": {
+        "Show Handle": ["Yes", "No"],
+        "Show Description": ["Yes", "No"],
+        "Show Footer": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 384,
+        "fill": "card",
+        "stroke": "border",
+        "radiusTopLeft": 10,
+        "radiusTopRight": 10,
+        "radiusBottomLeft": 0,
+        "radiusBottomRight": 0,
+        "paddingX": 0,
+        "paddingY": 0,
+        "gap": 0,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Handle",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "center",
+            "fillWidth": true,
+            "paddingY": "md",
+            "showWhen": "Show Handle=Yes",
+            "children": [
+              {
+                "name": "Handle Bar",
+                "type": "frame",
+                "width": 100,
+                "height": 6,
+                "radius": 9999,
+                "fill": "muted"
+              }
+            ]
+          },
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "2xs",
+            "paddingX": "md",
+            "paddingY": "md",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/H4",
+                "textContent": "Move Goal",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "Description",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "Set your daily activity goal.",
+                "textFill": "muted-foreground",
+                "fillWidth": true,
+                "showWhen": "Show Description=Yes"
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "md",
+            "paddingY": "md",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Drawer Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "xs",
+            "paddingX": "md",
+            "paddingY": "md",
+            "showWhen": "Show Footer=Yes",
+            "children": [
+              {
+                "name": "Submit",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Submit" },
+                "fillWidth": true
+              },
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "fillWidth": true
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Show Handle=Yes": {},
+        "Show Handle=No": {},
+        "Show Description=Yes": {},
+        "Show Description=No": {},
+        "Show Footer=Yes": {},
+        "Show Footer=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Default",
+          "description": "Bottom drawer with handle bar, header, and footer actions.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Full", "props": { "Show Handle": "Yes", "Show Description": "Yes", "Show Footer": "Yes" } },
+            { "label": "No Footer", "props": { "Show Handle": "Yes", "Show Description": "Yes", "Show Footer": "No" } }
+          ]
+        },
+        {
+          "name": "Minimal",
+          "description": "Handle-only and no-description variants.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "No Description", "props": { "Show Handle": "Yes", "Show Description": "No", "Show Footer": "Yes" } },
+            { "label": "No Handle", "props": { "Show Handle": "No", "Show Description": "Yes", "Show Footer": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "—", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "—", "description": "Callback when open state changes" },
+        { "name": "shouldScaleBackground", "type": "boolean", "default": "true", "description": "Scale the page background when the drawer opens" },
+        { "name": "dismissible", "type": "boolean", "default": "true", "description": "Allow dismissal via overlay click or swipe-down" },
+        { "name": "snapPoints", "type": "number[]", "default": "—", "description": "Snap heights as fractions of screen (e.g. [0.5, 1])" },
+        { "name": "asChild", "type": "boolean", "default": "false", "description": "Merge trigger/close behavior onto child element" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Content panel background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Content panel border" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Drag handle bar color" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Title text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description text color" },
+        { "token": "black/50", "value": "—", "description": "Overlay backdrop opacity" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Drawer for mobile-friendly bottom sheets — confirmations, pickers, quick actions.", "dont": "Use Drawer for complex multi-step flows — prefer a full page or Dialog." },
+        { "do": "Include a visible drag handle so users discover swipe-to-close.", "dont": "Remove the handle bar — users need the visual affordance for swipe dismiss." },
+        { "do": "Keep drawer height short — show only essential content.", "dont": "Fill the drawer with too much content — use Sheet or a dedicated page." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Overlay", "value": "black/50", "code": "DrawerOverlay", "codeValue": "fixed inset-0 z-50 bg-black/50" },
+        { "figma": "Content", "value": "bg-card, border, rounded-t-[10px]", "code": "DrawerContent", "codeValue": "fixed inset-x-0 bottom-0 rounded-t-[10px]" },
+        { "figma": "Handle bar", "value": "100x4px rounded-full muted", "code": "—", "codeValue": "mx-auto mt-md h-2xs w-[100px] rounded-full bg-muted" },
+        { "figma": "Header", "value": "Title + Description", "code": "DrawerHeader", "codeValue": "grid gap-2xs p-md" },
+        { "figma": "Title", "value": "SP/H4", "code": "DrawerTitle", "codeValue": "sp-h4 text-foreground" },
+        { "figma": "Description", "value": "SP/Body", "code": "DrawerDescription", "codeValue": "typo-paragraph-sm text-muted-foreground" },
+        { "figma": "Footer", "value": "Vertical button stack", "code": "DrawerFooter", "codeValue": "mt-auto flex flex-col gap-xs p-md" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus within drawer (focus trapped)" },
+          { "key": "Shift+Tab", "action": "Move focus backwards" },
+          { "key": "Escape", "action": "Close the drawer" },
+          { "key": "Enter / Space", "action": "Activate focused button" }
+        ],
+        "notes": [
+          "Focus is trapped inside the drawer while open",
+          "Returns focus to the trigger element on close",
+          "Swipe-to-close gesture handled natively by vaul",
+          "Built on vaul — accessibility model differs from Sheet/Dialog",
+          "Always include DrawerTitle for screen reader announcement"
+        ]
+      },
+
+      "related": [
+        { "name": "Sheet", "desc": "Side panel from any edge — better for desktop." },
+        { "name": "Dialog", "desc": "Centered modal for interruptions and confirmations." },
+        { "name": "AlertDialog", "desc": "Non-dismissible modal for destructive confirmations." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

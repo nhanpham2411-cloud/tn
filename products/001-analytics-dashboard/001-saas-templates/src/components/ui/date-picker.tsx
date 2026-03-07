@@ -3,6 +3,7 @@ import { format, subDays, startOfYear, startOfMonth, endOfMonth, subMonths } fro
 import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
@@ -84,7 +85,8 @@ const RANGE_PRESETS = [
  * Date range selection using a 2-month Calendar in a Popover with preset shortcuts.
  * Left panel: quick presets (Last 7/14/30/60/90 days, This month, Last month, This year).
  * Right panel: 2-month calendar for custom range selection.
- * Trigger shows "Start – End" format or placeholder.
+ * Footer: selected range label + Cancel / Apply buttons.
+ * Changes are staged (pending) and only committed on Apply.
  */
 function DateRangePicker({
   from,
@@ -100,48 +102,59 @@ function DateRangePicker({
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const [range, setRange] = React.useState<{
-    from: Date | undefined
-    to: Date | undefined
-  }>({ from, to })
+  // committed = what the trigger shows (last applied value)
+  const [committed, setCommitted] = React.useState<{ from: Date | undefined; to: Date | undefined }>({ from, to })
+  // pending = what the user is currently selecting inside the popover
+  const [pending, setPending] = React.useState<{ from: Date | undefined; to: Date | undefined }>({ from, to })
   const [activePreset, setActivePreset] = React.useState("")
 
-  const handleSelect = (selected: { from?: Date; to?: Date } | undefined) => {
-    const newRange = { from: selected?.from, to: selected?.to }
-    setRange(newRange)
-    setActivePreset("")
-    onRangeChange?.(newRange)
-    if (newRange.from && newRange.to) {
-      setOpen(false)
+  const handleOpenChange = (next: boolean) => {
+    if (next) {
+      // Reset pending to committed every time the popover opens
+      setPending(committed)
+      setActivePreset("")
     }
+    setOpen(next)
+  }
+
+  const handleSelect = (selected: { from?: Date; to?: Date } | undefined) => {
+    setPending({ from: selected?.from, to: selected?.to })
+    setActivePreset("")
   }
 
   const handlePreset = (preset: typeof RANGE_PRESETS[number]) => {
-    const value = preset.getValue()
-    setRange(value)
+    setPending(preset.getValue())
     setActivePreset(preset.label)
-    onRangeChange?.(value)
+  }
+
+  const handleApply = () => {
+    setCommitted(pending)
+    onRangeChange?.(pending)
+    setOpen(false)
+  }
+
+  const handleCancel = () => {
     setOpen(false)
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           data-slot="date-range-picker-trigger"
           className={cn(
-            "flex h-9 items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-            !range.from && "text-muted-foreground",
+            "flex h-9 w-full sm:w-[280px] items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+            !committed.from && "text-muted-foreground",
             className
           )}
         >
           <CalendarIcon className="size-md shrink-0" />
           <span className="flex-1 text-left">
-            {range.from ? (
-              range.to ? (
-                `${format(range.from, "LLL dd, y")} – ${format(range.to, "LLL dd, y")}`
+            {committed.from ? (
+              committed.to ? (
+                `${format(committed.from, "MMM d")} – ${format(committed.to, "MMM d, yyyy")}`
               ) : (
-                format(range.from, "LLL dd, y")
+                format(committed.from, "MMM d, yyyy")
               )
             ) : (
               "Pick a date range"
@@ -169,14 +182,27 @@ function DateRangePicker({
               ))}
             </div>
           )}
-          <div>
+          <div className="flex flex-col">
             <Calendar
               mode="range"
-              selected={range.from ? { from: range.from, to: range.to } : undefined}
+              selected={pending.from ? { from: pending.from, to: pending.to } : undefined}
               onSelect={handleSelect}
               numberOfMonths={2}
               initialFocus
             />
+            <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
+              <p className="sp-caption text-muted-foreground">
+                {pending.from && pending.to
+                  ? `${format(pending.from, "MMM d")} – ${format(pending.to, "MMM d, yyyy")}`
+                  : pending.from
+                    ? `${format(pending.from, "MMM d, yyyy")} – ...`
+                    : "Select a range"}
+              </p>
+              <div className="flex items-center gap-sm">
+                <Button variant="ghost" size="sm" onClick={handleCancel}>Cancel</Button>
+                <Button size="sm" disabled={!pending.from || !pending.to} onClick={handleApply}>Apply</Button>
+              </div>
+            </div>
           </div>
         </div>
       </PopoverContent>

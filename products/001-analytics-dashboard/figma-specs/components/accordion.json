@@ -1,0 +1,211 @@
+{
+  "components": [
+    {
+      "name": "Accordion",
+      "description": "A single collapsible item with trigger label, chevron icon, and expandable content area. Bottom border separates stacked items (hidden on last via End Item). Built on @radix-ui/react-accordion.",
+      "category": "Data Display",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-accordion",
+        "import": "import {\n  Accordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Type": ["Open", "Closed"],
+        "End Item": ["False", "True"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "min",
+        "counterAlign": "stretch",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Trigger",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "space-between",
+            "counterAlign": "center",
+            "gap": "xs",
+            "paddingX": "none",
+            "paddingY": "sm",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "children": [
+              {
+                "name": "Label",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "Is it accessible?",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "ChevronDown",
+                "type": "icon",
+                "iconName": "ChevronDown",
+                "iconSize": 16,
+                "iconFill": "ghost-foreground",
+                "showWhen": "Type=Closed"
+              },
+              {
+                "name": "ChevronUp",
+                "type": "icon",
+                "iconName": "ChevronUp",
+                "iconSize": 16,
+                "iconFill": "ghost-foreground",
+                "showWhen": "Type=Open"
+              }
+            ]
+          },
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "min",
+            "counterAlign": "stretch",
+            "gap": "none",
+            "paddingTop": "none",
+            "paddingBottom": "sm",
+            "paddingLeft": "none",
+            "paddingRight": "none",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "showWhen": "Type=Open",
+            "children": [
+              {
+                "name": "Text",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "Yes. It adheres to the WAI-ARIA design pattern.",
+                "textFill": "foreground",
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Border",
+            "type": "frame",
+            "layout": "horizontal",
+            "width": 320,
+            "height": 1,
+            "widthMode": "fill",
+            "heightMode": "fixed",
+            "fill": "border",
+            "showWhen": "End Item=False"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Focus": {
+          "focusRing": "ring",
+          "radius": "lg"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover (underline on trigger label), focus (ring), and disabled (50% opacity).",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
+            { "label": "Hover", "props": { "State": "Hover", "Type": "Closed", "End Item": "False" } },
+            { "label": "Focus", "props": { "State": "Focus", "Type": "Closed", "End Item": "False" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Type": "Closed", "End Item": "False" } }
+          ]
+        },
+        {
+          "name": "Open / Closed",
+          "description": "Closed shows only the trigger; open reveals the content below with the chevron rotated.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Closed", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
+            { "label": "Open", "props": { "State": "Default", "Type": "Open", "End Item": "False" } }
+          ]
+        },
+        {
+          "name": "End Item",
+          "description": "End Item=True removes the bottom border — use for the last item in a stacked group.",
+          "layout": "vertical",
+          "items": [
+            { "label": "With border", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
+            { "label": "End item (no border)", "props": { "State": "Default", "Type": "Closed", "End Item": "True" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "type", "type": "\"single\" | \"multiple\"", "default": "--", "description": "Selection mode — required. single: one item open; multiple: several open simultaneously" },
+        { "name": "collapsible", "type": "boolean", "default": "false", "description": "Allow all items to be closed (single mode only)" },
+        { "name": "defaultValue", "type": "string | string[]", "default": "--", "description": "Uncontrolled: item(s) open by default on mount" },
+        { "name": "value", "type": "string | string[]", "default": "--", "description": "Controlled open item(s) — pair with onValueChange" },
+        { "name": "onValueChange", "type": "(value: string | string[]) => void", "default": "--", "description": "Fires when open item(s) change" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable all triggers in the accordion" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes on the root element" }
+      ],
+
+      "designTokens": [
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "AccordionItem bottom divider line" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Trigger label text color" },
+        { "token": "--ghost-foreground", "value": "zinc-400 / zinc-500", "description": "ChevronDown icon color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus-visible ring on trigger" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use type='single' when sections are mutually exclusive — only one answer/section is relevant at a time.", "dont": "Default to type='multiple' — it causes information overload and users can't find what they need." },
+        { "do": "Add collapsible={true} on single-mode accordions so users can close all panels when done.", "dont": "Leave collapsible={false} as it traps users with content open they can't dismiss." },
+        { "do": "Keep trigger labels short and scannable — users read triggers to decide whether to expand.", "dont": "Put critical, must-read content inside collapsed sections — users may never see it." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "No visual effects", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "Trigger label underline", "code": "--", "codeValue": "Auto via hover:underline" },
+        { "figma": "State=Focus", "value": "Focus ring around item", "code": "--", "codeValue": "Auto via focus-visible:ring-focus" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true (root or item)" },
+        { "figma": "Type=Open", "value": "Content visible, chevron up", "code": "value / defaultValue", "codeValue": "item value string" },
+        { "figma": "Type=Closed", "value": "Content hidden, chevron down", "code": "--", "codeValue": "No value match" },
+        { "figma": "End Item=True", "value": "No bottom border", "code": "AccordionItem", "codeValue": "last item — last:border-b-0" },
+        { "figma": "End Item=False", "value": "1px bottom border", "code": "--", "codeValue": "Default border-b border-border" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the next accordion trigger" },
+          { "key": "Shift + Tab", "action": "Move focus to the previous accordion trigger" },
+          { "key": "Enter / Space", "action": "Toggle the focused section open or closed" },
+          { "key": "Arrow Down", "action": "Move focus to the next trigger (wraps to first)" },
+          { "key": "Arrow Up", "action": "Move focus to the previous trigger (wraps to last)" },
+          { "key": "Home", "action": "Move focus to the first trigger" },
+          { "key": "End", "action": "Move focus to the last trigger" }
+        ],
+        "notes": [
+          "AccordionTrigger renders as a <button> inside an <h3> — the heading level aids page structure for screen readers.",
+          "Each trigger has aria-expanded reflecting its open/closed state, and aria-controls pointing to the content panel.",
+          "Content panels have role='region' and aria-labelledby pointing back to their trigger.",
+          "Disabled items have pointer-events-none and opacity-50 — still present in the DOM and announced as disabled."
+        ]
+      },
+
+      "related": [
+        { "name": "Collapsible", "desc": "Single toggle section — use when you only need one expandable area rather than a stacked list." },
+        { "name": "Tabs", "desc": "Horizontal section switcher — use when sections are mutually exclusive and space is limited." },
+        { "name": "Card", "desc": "Always-visible content container — use when content should not be hidden behind an interaction." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

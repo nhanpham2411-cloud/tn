@@ -87,7 +87,7 @@ import { toast } from "sonner"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -385,12 +385,12 @@ export default function ReportsPage() {
             </Select>
             {/* Desktop: Pill tabs */}
             <Tabs value={tab} onValueChange={(v) => { setTab(v); setPage(1) }}>
-              <TabsList className="rounded-full hidden sm:inline-flex">
-                <TabsTrigger value="all" className="rounded-full">All</TabsTrigger>
-                <TabsTrigger value="revenue" className="rounded-full">Revenue</TabsTrigger>
-                <TabsTrigger value="customers" className="rounded-full">Customers</TabsTrigger>
-                <TabsTrigger value="products" className="rounded-full">Products</TabsTrigger>
-                <TabsTrigger value="channels" className="rounded-full">Channels</TabsTrigger>
+              <TabsList variant="pill" className="hidden sm:inline-flex">
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="revenue">Revenue</TabsTrigger>
+                <TabsTrigger value="customers">Customers</TabsTrigger>
+                <TabsTrigger value="products">Products</TabsTrigger>
+                <TabsTrigger value="channels">Channels</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>

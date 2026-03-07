@@ -1,0 +1,248 @@
+{
+  "components": [
+    {
+      "name": "Tooltip",
+      "description": "A floating label bubble with arrow that provides brief supplementary context on hover or keyboard focus. Non-interactive — use Popover for clickable floating content. Arrow is a triangle (fill-foreground), direction changes per side.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-tooltip",
+        "import": "import {\n  Tooltip,\n  TooltipTrigger,\n  TooltipContent,\n  TooltipProvider,\n} from \"@/components/ui/tooltip\""
+      },
+
+      "properties": {
+        "Side": ["Top", "Right", "Bottom", "Left"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "fill": "transparent",
+        "children": [
+          {
+            "name": "Bubble",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "center",
+            "counterAlign": "center",
+            "gap": "2xs",
+            "paddingX": "sm",
+            "paddingY": "2xs",
+            "radius": "md",
+            "widthMode": "hug",
+            "heightMode": "hug",
+            "fill": "foreground",
+            "children": [
+              {
+                "name": "Label",
+                "type": "text",
+                "textStyle": "SP/Caption",
+                "textContent": "Tooltip text",
+                "textFill": "background"
+              }
+            ]
+          },
+          {
+            "name": "Arrow",
+            "type": "arrow",
+            "direction": "down",
+            "width": 12,
+            "height": 6,
+            "fill": "foreground"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Side=Top": {},
+        "Side=Bottom": {
+          "children": [
+            {
+              "name": "Arrow",
+              "type": "arrow",
+              "direction": "up",
+              "width": 12,
+              "height": 6,
+              "fill": "foreground"
+            },
+            {
+              "name": "Bubble",
+              "type": "frame",
+              "layout": "horizontal",
+              "primaryAlign": "center",
+              "counterAlign": "center",
+              "gap": "2xs",
+              "paddingX": "sm",
+              "paddingY": "2xs",
+              "radius": "md",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "fill": "foreground",
+              "children": [
+                {
+                  "name": "Label",
+                  "type": "text",
+                  "textStyle": "SP/Caption",
+                  "textContent": "Tooltip text",
+                  "textFill": "background"
+                }
+              ]
+            }
+          ]
+        },
+        "Side=Left": {
+          "layout": "horizontal",
+          "children": [
+            {
+              "name": "Bubble",
+              "type": "frame",
+              "layout": "horizontal",
+              "primaryAlign": "center",
+              "counterAlign": "center",
+              "gap": "2xs",
+              "paddingX": "sm",
+              "paddingY": "2xs",
+              "radius": "md",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "fill": "foreground",
+              "children": [
+                {
+                  "name": "Label",
+                  "type": "text",
+                  "textStyle": "SP/Caption",
+                  "textContent": "Tooltip text",
+                  "textFill": "background"
+                }
+              ]
+            },
+            {
+              "name": "Arrow",
+              "type": "arrow",
+              "direction": "right",
+              "width": 6,
+              "height": 12,
+              "fill": "foreground"
+            }
+          ]
+        },
+        "Side=Right": {
+          "layout": "horizontal",
+          "children": [
+            {
+              "name": "Arrow",
+              "type": "arrow",
+              "direction": "left",
+              "width": 6,
+              "height": 12,
+              "fill": "foreground"
+            },
+            {
+              "name": "Bubble",
+              "type": "frame",
+              "layout": "horizontal",
+              "primaryAlign": "center",
+              "counterAlign": "center",
+              "gap": "2xs",
+              "paddingX": "sm",
+              "paddingY": "2xs",
+              "radius": "md",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "fill": "foreground",
+              "children": [
+                {
+                  "name": "Label",
+                  "type": "text",
+                  "textStyle": "SP/Caption",
+                  "textContent": "Tooltip text",
+                  "textFill": "background"
+                }
+              ]
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Positions",
+          "description": "Tooltip can appear on any side of the trigger using the side prop. Arrow points toward the trigger element.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Top", "props": { "Side": "Top" } },
+            { "label": "Right", "props": { "Side": "Right" } },
+            { "label": "Bottom", "props": { "Side": "Bottom" } },
+            { "label": "Left", "props": { "Side": "Left" } }
+          ]
+        },
+        {
+          "name": "Content Variations",
+          "description": "Short labels for icon buttons, action names, or keyboard shortcuts.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Side": "Top" }, "textOverrides": { "Label": "Add to library" } },
+            { "label": "Action", "props": { "Side": "Top" }, "textOverrides": { "Label": "Edit" } },
+            { "label": "Short", "props": { "Side": "Top" }, "textOverrides": { "Label": "Delete" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "side", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "default": "\"top\"", "description": "Preferred side relative to the trigger" },
+        { "name": "sideOffset", "type": "number", "default": "4", "description": "Distance from trigger in px" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes for the bubble" },
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "Tooltip content — keep to 1 short phrase" },
+        { "name": "delayDuration", "type": "number", "default": "700", "description": "Delay in ms before tooltip shows on hover (Tooltip root)" },
+        { "name": "skipDelayDuration", "type": "number", "default": "300", "description": "How quickly to re-show when moving between triggers (TooltipProvider)" }
+      ],
+
+      "designTokens": [
+        { "token": "--foreground", "value": "zinc-950 / zinc-50", "description": "Tooltip bubble background + arrow fill (inverted surface)" },
+        { "token": "--background", "value": "zinc-50 / zinc-950", "description": "Tooltip text color (inverted foreground)" },
+        { "token": "rounded-md", "value": "6px", "description": "Border radius of the tooltip bubble" },
+        { "token": "--spacing-sm", "value": "12px", "description": "Horizontal padding (px-sm)" },
+        { "token": "--spacing-2xs", "value": "6px", "description": "Vertical padding (py-2xs)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Tooltip for supplementary context on icon-only buttons and truncated text — label should be a short phrase or keyboard shortcut.", "dont": "Put essential information only in tooltips. Tooltips are invisible on touch devices and hidden from users who rely on pointer interactions." },
+        { "do": "Keep tooltip text to one line — a noun phrase or imperative verb ('Edit profile', 'Delete item', 'Copy link').", "dont": "Place links, buttons, or form controls inside TooltipContent — use Popover for interactive floating content." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Side=Top", "value": "Bubble above trigger, arrow points down", "code": "side", "codeValue": "\"top\" (default)" },
+        { "figma": "Side=Right", "value": "Bubble right of trigger, arrow points left", "code": "side", "codeValue": "\"right\"" },
+        { "figma": "Side=Bottom", "value": "Bubble below trigger, arrow points up", "code": "side", "codeValue": "\"bottom\"" },
+        { "figma": "Side=Left", "value": "Bubble left of trigger, arrow points right", "code": "side", "codeValue": "\"left\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus trigger to show tooltip" },
+          { "key": "Escape", "action": "Dismiss tooltip" }
+        ],
+        "notes": [
+          "TooltipContent is linked to its trigger via aria-describedby — screen readers announce the tooltip text after the button label.",
+          "Tooltip must not contain interactive elements (links, buttons, inputs) — use Popover for that pattern.",
+          "Always provide visible labels for icon-only buttons via TooltipContent, but also consider aria-label on the trigger for completeness."
+        ]
+      },
+
+      "related": [
+        { "name": "Popover", "desc": "For interactive floating panels — supports forms, links, and custom content." },
+        { "name": "HoverCard", "desc": "For rich hover previews with structured content (avatar, bio, links)." },
+        { "name": "ContextMenu", "desc": "For right-click triggered menus with actions and submenus." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

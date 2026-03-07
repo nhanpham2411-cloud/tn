@@ -17,13 +17,12 @@ You are **Nhan**, the BredarStudio template production specialist. You manage th
 
 ## Project Context
 
-- **Base dir**: `/Users/evt-pc-dev-thanhnhan/SprouX/BredarStudio_Templates/`
+- **Base dir**: `/Users/nhan/Documents/tn/`
 - **Process doc**: `_refs/process.md` (11 giai đoạn)
 - **Pipeline templates**: `_pipeline/templates/` (5 templates)
 - **Products**: `products/` (each product has its own folder)
 - **Figma plugin**: `plugins/Generate SaaS Template/`
-- **SprouX DS (source to fork)**: `/Users/evt-pc-dev-thanhnhan/SprouX/SprouX_uiux/`
-- **React apps**: `~/sproux-*-templates/` (separate repos per product)
+- **React apps**: `products/{NNN}/saas-app/` (embedded per product, SprouX DS forked inside)
 
 ### Pipeline (11 giai đoạn)
 ```
@@ -220,6 +219,16 @@ Execute Phase 6: Review & Iterate.
    - Dark mode: every `bg-*` has dark counterpart or uses semantic tokens
    - Imports: all UI from `@/components/ui/*`, no direct `@radix-ui/` imports
    - DCard pattern + form components consistent
+   - **Group+Item instance check**: Component cha (Table, Tabs, Calendar, DatePicker, Input OTP, Navigation Menu, Breadcrumb, Pagination) PHẢI móc instance của component con (item) vào sử dụng — verify trên cả web React (render sub-component) VÀ Figma JSON (`"type": "instance"` với `component`/`variants`)
+   - **Figma property 1:1 check**: Mỗi ComponentSet trên Figma PHẢI có đầy đủ và đúng property như component trên React (xem `*Docs()` Explore controls). Tên property và tên value phải giống 100% React (Title Case, cùng số lượng values). Không thừa, không thiếu. Tham chiếu: `_refs/plugin-json-pattern.md` → "Golden Rule" + "Figma Component = Web Variant 1:1 Principle"
+   - **Property value filtering check (common-mistake #70)**: Property controls LUÔN visible, nhưng FILTER values không applicable (breadcrumb pattern). VD: Type=Checkbox → Alignment chỉ show ["Left"] (hide "Right"); Type=Current → State chỉ show ["Default"]. KHÔNG ẩn cả property control. Reset về default khi switch. Figma JSON PHẢI dùng `variantRestrictions` để loại bỏ combos không hợp lệ tương ứng (xem common-mistake #69)
+   - **CSS-contextual property check (common-mistake #71)**: Khi CSS parent dùng `:last-child`/`:first-child`/`:nth-child` thay đổi style con → component con PHẢI có property tương ứng trên Figma (VD: Table Row cần `Border [Yes, No]` vì `[&_tr:last-child]:border-0`)
+   - **Variant width check (common-mistake #72)**: Khi web CSS dùng width khác nhau cho từng variant (`w-px`, `w-fit`, `w-auto`, `max-w-*`) → Figma JSON variant PHẢI override `"widthMode": "hug"` hoặc `"width"` tương ứng. KHÔNG để base width áp dụng cho tất cả variants. VD: Cell Row Type=Checkbox web dùng `w-px` → Figma set `"widthMode": "hug"` (không dùng base 140px)
+   - **ComponentSet canvas order check (common-mistake #73)**: Thứ tự ComponentSet trên Figma canvas (trên → dưới) PHẢI match thứ tự tab Explore Behavior trên web (trái → phải). VD: Table web tabs = Table | Table Header | Table Row | Cell Header | Cell Row → Figma canvas cùng thứ tự từ trên xuống
+   - **Instance icon accuracy check (common-mistake #74)**: Khi JSON dùng `"type": "instance"` → verify icon hiển thị trên Figma khớp icon trên web. Plugin KHÔNG hỗ trợ `iconOverrides` — instance luôn hiện default icon của variant đó. Nếu cần icon khác → PHẢI dùng `"type": "frame"` + `"type": "icon"` thay thế. VD: Collapsible trigger cần ChevronsUpDown nhưng Button Icon Only default = Plus → dùng frame + icon
+   - **Icon name verification (common-mistake #81)**: Mọi `"component": "Icon / X"` trong JSON → verify tên X tồn tại trong `foundation-icons.json`. Lucide rename icons giữa versions (AlertCircle→CircleAlert, CheckCircle2→CircleCheck, AlertTriangle→TriangleAlert). KHÔNG tin trí nhớ.
+   - **Children icon `iconFill` check (common-mistake #82)**: Mọi icon instance trong `children` array CÓ variant-specific color trên web → PHẢI có `iconFill` trong JSON. Check React CSS `[&>svg]:text-{color}` → map sang `iconFill`. Thiếu → icon kế thừa default color.
+   - **ComponentSet visual standard**: Mỗi ComponentSet trên Figma PHẢI có: border inside 1px, style DASH, stroke color = foreground, border radius = 16px. Variants trong ComponentSet phải được sắp xếp theo lưới gọn gàng (property values chiều ngang × chiều dọc). Tham chiếu: `_refs/plugin-json-pattern.md` → "ComponentSet Visual Standard"
 5. **Animation & transition review**:
    - `PageTransition` wraps `<Outlet />` in both layouts (not `<Routes>`)
    - CSS keyframes exist: `page-in`, `slide-up`, `scale-in`, `shimmer`
@@ -247,6 +256,25 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
 1. Locate React app repo: `~/sproux-{name}-template/` (or `~/sproux-saas-templates/` for 001)
 2. Run `pnpm build` — must pass with zero errors
 3. **Automated scans** (Claude runs these via Grep/Glob on the codebase):
+
+   **A0. Group+Item Instance Connection (BẮT BUỘC cho compound components)**
+   - [ ] Component cha (Table, Tabs, Calendar, DatePicker, Input OTP, Navigation Menu, Breadcrumb, Pagination) render sub-component con đúng cách trên web React
+   - [ ] Figma JSON: parent dùng `"type": "instance"` với `component`/`variants` để móc child ComponentSet — KHÔNG tạo manual frame
+   - [ ] Design System page: parent component có tab riêng cho mỗi sub-component (Group+Item tabbed pattern)
+
+   **A1. Figma Property & ComponentSet Quality (BẮT BUỘC cho JSON spec và Figma output)**
+   - [ ] Mỗi ComponentSet có đầy đủ properties như React Explore controls — không thừa, không thiếu
+   - [ ] Tên property và tên value giống 100% React (Title Case, cùng số values). VD: React có `State: [Default, Hover, Focus, Disabled]` → Figma phải có đúng 4 values đó
+   - [ ] ComponentSet visual: border inside 1px, style DASH, stroke = foreground, radius = 16px
+   - [ ] Variants xếp lưới gọn gàng: 1 property axis chiều ngang, property khác chiều dọc
+   - [ ] Tham chiếu: `_refs/plugin-json-pattern.md` → "Golden Rule", "Figma Component = Web Variant 1:1 Principle", "ComponentSet Visual Standard"
+   - [ ] Property value filtering: Property controls LUÔN visible, filter values không applicable (breadcrumb pattern, common-mistake #70). KHÔNG ẩn cả property control. Reset về default khi switch
+   - [ ] CSS-contextual properties: mọi `:last-child`/`:first-child`/`:nth-child` CSS rule có property tương ứng trên Figma (common-mistake #71)
+   - [ ] Variant width match: mỗi variant check web CSS width (`w-px`, `w-fit`, `w-auto`, explicit width). Variant nào web dùng width khác base → JSON PHẢI override `"widthMode": "hug"` hoặc `"width"` tương ứng (common-mistake #72)
+   - [ ] ComponentSet canvas order: thứ tự ComponentSet trên Figma (trên → dưới) PHẢI match thứ tự tab Explore Behavior trên web (trái → phải). VD: Table tabs = Table | Table Header | Table Row | Cell Header | Cell Row → canvas cùng thứ tự (common-mistake #73)
+   - [ ] Instance icon accuracy: mỗi `"type": "instance"` verify icon Figma = icon web. Plugin không có iconOverrides → nếu cần icon khác default → dùng frame + icon (common-mistake #74)
+   - [ ] Icon name match foundation: mọi `"component": "Icon / X"` → verify X tồn tại trong `foundation-icons.json`. Lucide rename icons giữa versions (common-mistake #81)
+   - [ ] Children icon `iconFill`: icon instance trong `children` có variant-specific color → PHẢI có `iconFill`. Check web `[&>svg]:text-{color}` per variant (common-mistake #82)
 
    **A. Code Quality Scan**
    - [ ] No `text-*` custom typography (must use `sp-*` or project prefix)
@@ -457,24 +485,22 @@ List all products with their current phase.
 ### SprouX Component Fork (Phase 4)
 When forking SprouX components to a new project:
 ```bash
-# Copy all 47 UI components
-cp -r ~/SprouX/SprouX_uiux/src/components/ui/ ~/sproux-{name}-template/src/components/ui/
-
-# Copy foundation tokens
-cp ~/SprouX/SprouX_uiux/src/index.css ~/sproux-{name}-template/src/index.css
-
-# Copy utils
-cp ~/SprouX/SprouX_uiux/src/lib/utils.ts ~/sproux-{name}-template/src/lib/utils.ts
+# Fork SprouX DS into new product (run from base dir)
+cp -r _refs/sproux-base/src/components/ui/ products/{NNN}/saas-app/src/components/ui/
+cp _refs/sproux-base/src/index.css products/{NNN}/saas-app/src/index.css
+cp _refs/sproux-base/src/lib/utils.ts products/{NNN}/saas-app/src/lib/utils.ts
 ```
-**After copying**: Customize tokens + components to match art direction. NEVER touch SprouX repo again.
+**After copying**: Customize tokens + components to match art direction. NEVER touch source again.
 
 ### Typography Rule (CRITICAL)
 - **NEVER** use `text-*` prefix for custom typography — tailwind-merge will strip duplicates
-- Use the product's custom prefix (e.g., `sp-*` for ShopPulse, `typo-*` for SprouX showcase)
+- Use the product's custom prefix (e.g., `sp-*` for ShopPulse)
 - Each product defines its own typography utilities in `index.css` via `@utility`
-- Example: `sp-body-semibold text-foreground` ✅ (ShopPulse)
-- Example: `typo-paragraph-sm-semibold text-foreground` ✅ (SprouX showcase)
+- `typo-*` is SprouX's **internal** CSS class system — valid only inside `src/components/ui/`, NEVER in product pages/layouts
+- Example: `sp-body-semibold text-foreground` ✅ (product page)
+- Example: `typo-paragraph-sm-semibold` ✅ (inside `src/components/ui/` components only)
 - Example: `text-paragraph-sm-semibold text-foreground` ❌ (merge strips first)
+- Example: `typo-paragraph-sm-semibold` in a page/layout ❌ (use `sp-*` instead)
 
 ### Spacing Tokens
 Use semantic tokens, not hardcoded values:

@@ -1,0 +1,386 @@
+{
+  "components": [
+    {
+      "name": "OTP Slot",
+      "description": "Individual digit cell for Input OTP. 48×48px with border-y border-r border-border-strong (matching web CSS). Position determines corner radius and left border: First gets border-l + rounded-l-md, Last gets rounded-r-md. State controls content: empty, caret, digit, or disabled.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add input-otp",
+        "import": "import {\n  InputOTPSlot,\n} from \"@/components/ui/input-otp\""
+      },
+
+      "properties": {
+        "Position": ["First", "Middle", "Last"],
+        "State": ["Default", "Active", "Filled", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "width": 48,
+        "height": 48,
+        "widthMode": "fixed",
+        "heightMode": "fixed",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "radius": "none",
+        "fill": "background",
+        "clipsContent": true,
+        "stroke": "border-strong",
+        "strokeSides": "top,right,bottom",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Digit",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "5",
+            "textFill": "foreground",
+            "showWhen": "State=Filled"
+          },
+          {
+            "name": "Caret",
+            "type": "frame",
+            "width": 1,
+            "height": 16,
+            "widthMode": "fixed",
+            "heightMode": "fixed",
+            "fill": "foreground",
+            "showWhen": "State=Active"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Position=First": { "strokeSides": "all", "radiusTopLeft": "md", "radiusBottomLeft": "md" },
+        "Position=Last": { "radiusTopRight": "md", "radiusBottomRight": "md" },
+
+        "State=Active": { "focusRing": "ring" },
+        "State=Disabled": { "opacity": 0.5 },
+
+        "Position=First,State=Active": { "strokeSides": "all", "radiusTopLeft": "md", "radiusBottomLeft": "md", "focusRing": "ring" },
+        "Position=First,State=Disabled": { "strokeSides": "all", "radiusTopLeft": "md", "radiusBottomLeft": "md", "opacity": 0.5 },
+        "Position=Last,State=Active": { "radiusTopRight": "md", "radiusBottomRight": "md", "focusRing": "ring" },
+        "Position=Last,State=Disabled": { "radiusTopRight": "md", "radiusBottomRight": "md", "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Position Variants",
+          "description": "First, middle, and last positions with rounded corners on edges.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "First", "props": { "Position": "First", "State": "Default" } },
+            { "label": "Middle", "props": { "Position": "Middle", "State": "Default" } },
+            { "label": "Last", "props": { "Position": "Last", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "States",
+          "description": "All interactive states for a middle-position slot.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Position": "Middle", "State": "Default" } },
+            { "label": "Active", "props": { "Position": "Middle", "State": "Active" } },
+            { "label": "Filled", "props": { "Position": "Middle", "State": "Filled" } },
+            { "label": "Disabled", "props": { "Position": "Middle", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "index", "type": "number", "default": "--", "description": "Zero-based slot position within the OTP group (required)" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes on the slot cell" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border-strong", "value": "zinc-400 / zinc-600", "description": "Slot border color (border-y border-r, first gets border-l)" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring on active slot (3px)" },
+        { "token": "--color-foreground", "value": "zinc-950 / zinc-50", "description": "Digit text and caret color" },
+        { "token": "--size-3xl", "value": "48px", "description": "Slot dimensions (width and height)" },
+        { "token": "--radius-md", "value": "6px", "description": "Corner radius on first/last slot" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use OTP Slot instances inside Input OTP for consistent styling.", "dont": "Create manual slot frames — always use the OTP Slot sub-component." },
+        { "do": "Set Position=First on the first slot and Position=Last on the last slot.", "dont": "Use Middle position for edge slots — the rounded corners will be missing." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Position=First", "value": "border-l rounded-l-md (left border + left corners)", "code": "first:rounded-l-md first:border-l", "codeValue": "Applied via CSS :first-child" },
+        { "figma": "Position=Middle", "value": "border-y border-r only (no left border, no radius)", "code": "--", "codeValue": "Default middle slot" },
+        { "figma": "Position=Last", "value": "rounded-r-md (right corners)", "code": "last:rounded-r-md", "codeValue": "Applied via CSS :last-child" },
+        { "figma": "State=Default", "value": "Empty slot", "code": "--", "codeValue": "No char, no caret" },
+        { "figma": "State=Active", "value": "Focus ring + blinking caret", "code": "isActive", "codeValue": "ring-[3px] ring-ring + caret div" },
+        { "figma": "State=Filled", "value": "Digit character visible", "code": "char", "codeValue": "Slot displays the entered digit" },
+        { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "Inherited from parent InputOTP disabled prop" }
+      ],
+
+      "accessibility": {
+        "keyboard": [],
+        "notes": [
+          "Slot cells are visual only (role=presentation). Keyboard focus stays on the hidden input of the parent InputOTP.",
+          "Individual slots are not focusable — the OTP component manages focus internally."
+        ]
+      },
+
+      "related": [
+        { "name": "Input OTP", "desc": "Parent container that composes multiple OTP Slot instances." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Input OTP",
+      "description": "Multi-cell one-time-password input for verification codes and PINs. Simple flex container (no border) holding OTP Slot instances — each slot handles its own border. Matches web InputOTPGroup: flex items-center with no wrapper border.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add input-otp",
+        "import": "import {\n  InputOTP,\n  InputOTPGroup,\n  InputOTPSlot,\n  InputOTPSeparator,\n} from \"@/components/ui/input-otp\""
+      },
+
+      "properties": {
+        "Length": ["4", "6", "8"],
+        "Value": ["Empty", "Partial", "Filled"],
+        "Disabled": ["No", "Yes"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 288,
+        "height": 48,
+        "heightMode": "hug",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "L4-Empty", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=4,Value=Empty",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Default" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L4-Partial", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=4,Value=Partial",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L4-Filled", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=4,Value=Filled",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "3" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Filled" }, "textOverrides": { "Digit": "4" } }
+            ]
+          },
+
+          {
+            "name": "L6-Empty", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=6,Value=Empty",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Default" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L6-Partial", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=6,Value=Partial",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "3" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L6-Filled", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=6,Value=Filled",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "3" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "4" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "5" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Filled" }, "textOverrides": { "Digit": "6" } }
+            ]
+          },
+
+          {
+            "name": "L8-Empty", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=8,Value=Empty",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Default" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S7", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S8", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L8-Partial", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=8,Value=Partial",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "3" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "4" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S7", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Default" } },
+              { "name": "S8", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Default" } }
+            ]
+          },
+          {
+            "name": "L8-Filled", "type": "frame", "layout": "horizontal", "gap": "none", "counterAlign": "center",
+            "widthMode": "hug", "heightMode": "fixed", "height": 48,
+            "showWhen": "Length=8,Value=Filled",
+            "children": [
+              { "name": "S1", "type": "instance", "component": "OTP Slot", "variants": { "Position": "First", "State": "Filled" }, "textOverrides": { "Digit": "1" } },
+              { "name": "S2", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "2" } },
+              { "name": "S3", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "3" } },
+              { "name": "S4", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "4" } },
+              { "name": "S5", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "5" } },
+              { "name": "S6", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "6" } },
+              { "name": "S7", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Middle", "State": "Filled" }, "textOverrides": { "Digit": "7" } },
+              { "name": "S8", "type": "instance", "component": "OTP Slot", "variants": { "Position": "Last", "State": "Filled" }, "textOverrides": { "Digit": "8" } }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Length=4": { "width": 192 },
+        "Length=8": { "width": 384 },
+        "Disabled=Yes": { "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Lengths",
+          "description": "4, 6, and 8 digit OTP inputs.",
+          "layout": "vertical",
+          "items": [
+            { "label": "4 Digits", "props": { "Length": "4", "Value": "Empty", "Disabled": "No" } },
+            { "label": "6 Digits", "props": { "Length": "6", "Value": "Empty", "Disabled": "No" } },
+            { "label": "8 Digits", "props": { "Length": "8", "Value": "Empty", "Disabled": "No" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Empty, partially filled, and fully filled states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Empty", "props": { "Length": "6", "Value": "Empty", "Disabled": "No" } },
+            { "label": "Partial", "props": { "Length": "6", "Value": "Partial", "Disabled": "No" } },
+            { "label": "Filled", "props": { "Length": "6", "Value": "Filled", "Disabled": "No" } }
+          ]
+        },
+        {
+          "name": "Disabled",
+          "description": "Disabled state prevents interaction.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Disabled Empty", "props": { "Length": "6", "Value": "Empty", "Disabled": "Yes" } },
+            { "label": "Disabled Filled", "props": { "Length": "6", "Value": "Filled", "Disabled": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "maxLength", "type": "number", "default": "--", "description": "Total number of OTP digits (required)" },
+        { "name": "value", "type": "string", "default": "\"\"", "description": "Controlled current value" },
+        { "name": "onChange", "type": "(value: string) => void", "default": "--", "description": "Callback fired on each digit change" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable all input interaction -- opacity-50 + cursor-not-allowed" },
+        { "name": "containerClassName", "type": "string", "default": "\"\"", "description": "CSS classes on the outer container div" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border-strong", "value": "zinc-400 / zinc-600", "description": "Slot border color (each slot has border-y border-r, first gets border-l)" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring on active slot (3px)" },
+        { "token": "--color-foreground", "value": "zinc-950 / zinc-50", "description": "Digit text color" },
+        { "token": "--size-3xl", "value": "48px", "description": "Slot dimensions (width and height)" },
+        { "token": "--radius-md", "value": "6px", "description": "Corner radius on first/last slot edges" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use OTP Slot sub-component instances for every digit cell in the group.", "dont": "Create manual slot frames — always use OTP Slot instances for consistency." },
+        { "do": "Use maxLength matching the exact code length so users know how many digits to enter.", "dont": "Use a generic text input for OTP codes -- users lose auto-advance and paste behavior." },
+        { "do": "Always support paste so users can copy from SMS or email in one action.", "dont": "Block paste functionality -- it is the most common way users receive verification codes." },
+        { "do": "Trigger verification automatically when all slots are filled.", "dont": "Require an extra Submit click after the last digit is entered." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Length=4", "value": "4 OTP Slot instances, 192px wide", "code": "maxLength", "codeValue": "4" },
+        { "figma": "Length=6", "value": "6 OTP Slot instances, 288px wide", "code": "maxLength", "codeValue": "6" },
+        { "figma": "Length=8", "value": "8 OTP Slot instances, 384px wide", "code": "maxLength", "codeValue": "8" },
+        { "figma": "Value=Empty", "value": "All slots State=Default", "code": "value", "codeValue": "\"\"" },
+        { "figma": "Value=Partial", "value": "First half State=Filled with digits", "code": "value", "codeValue": "\"123\"" },
+        { "figma": "Value=Filled", "value": "All slots State=Filled with digits", "code": "value", "codeValue": "\"123456\"" },
+        { "figma": "Disabled=Yes", "value": "opacity-50 on container", "code": "disabled", "codeValue": "true" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "0-9", "action": "Enter digit and auto-advance to next slot" },
+          { "key": "Backspace", "action": "Delete current digit and move focus back" },
+          { "key": "Arrow Left / Right", "action": "Navigate between slots" },
+          { "key": "Tab", "action": "Move focus into the OTP field" },
+          { "key": "Ctrl+V / Cmd+V", "action": "Paste full code and distribute across slots" }
+        ],
+        "notes": [
+          "Rendered as a single hidden input -- screen readers see one field, not individual slots.",
+          "Add aria-label to InputOTP for context: aria-label='Verification code'.",
+          "Slot cells are visual only (role=presentation); keyboard focus stays on the hidden input.",
+          "Auto-advances after each digit -- no additional navigation required."
+        ]
+      },
+
+      "related": [
+        { "name": "OTP Slot", "desc": "Sub-component for each digit cell in the OTP input. Defined in this same file — generated first on Figma canvas." },
+        { "name": "Input", "desc": "Standard single-line text field. Use when the code is free-form rather than fixed-length." },
+        { "name": "Dialog", "desc": "Commonly wraps an OTP field for step-up authentication flows." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

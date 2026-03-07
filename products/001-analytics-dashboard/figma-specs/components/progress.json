@@ -1,0 +1,138 @@
+{
+  "components": [
+    {
+      "name": "Progress",
+      "description": "Determinate progress bar showing completion percentage. Track is 6px tall with rounded-full corners. Indicator fills from left. Optional label row shows title + percentage above the bar.",
+      "category": "Feedback",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-progress",
+        "import": "import { Progress } from \"@/components/ui/progress\""
+      },
+
+      "properties": {
+        "Value": ["0", "25", "50", "75", "100"],
+        "Show Label": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "xs",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Label Row",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "space-between",
+            "counterAlign": "center",
+            "gap": "auto",
+            "widthMode": "fill",
+            "showWhen": "Show Label=Yes",
+            "children": [
+              { "name": "Label", "type": "text", "textContent": "Progress", "textStyle": "sp-label", "textFill": "foreground" },
+              { "name": "Pct 0", "type": "text", "textContent": "0%", "textStyle": "sp-label", "textFill": "muted-foreground", "showWhen": "Value=0" },
+              { "name": "Pct 25", "type": "text", "textContent": "25%", "textStyle": "sp-label", "textFill": "muted-foreground", "showWhen": "Value=25" },
+              { "name": "Pct 50", "type": "text", "textContent": "50%", "textStyle": "sp-label", "textFill": "muted-foreground", "showWhen": "Value=50" },
+              { "name": "Pct 75", "type": "text", "textContent": "75%", "textStyle": "sp-label", "textFill": "muted-foreground", "showWhen": "Value=75" },
+              { "name": "Pct 100", "type": "text", "textContent": "100%", "textStyle": "sp-label", "textFill": "muted-foreground", "showWhen": "Value=100" }
+            ]
+          },
+          {
+            "name": "Track",
+            "type": "frame",
+            "layout": "horizontal",
+            "height": 6,
+            "heightMode": "fixed",
+            "widthMode": "fill",
+            "radius": "full",
+            "fill": "muted",
+            "clipsContent": true,
+            "children": [
+              { "name": "Indicator 25", "type": "frame", "width": 80, "widthMode": "fixed", "height": 6, "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=25" },
+              { "name": "Indicator 50", "type": "frame", "width": 160, "widthMode": "fixed", "height": 6, "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=50" },
+              { "name": "Indicator 75", "type": "frame", "width": 240, "widthMode": "fixed", "height": 6, "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=75" },
+              { "name": "Indicator 100", "type": "frame", "widthMode": "fill", "height": 6, "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=100" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {},
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Progress at different completion levels — 0%, 25%, 50%, 75%, 100%.",
+          "layout": "vertical",
+          "items": [
+            { "label": "0%", "props": { "Value": "0", "Show Label": "No" } },
+            { "label": "25%", "props": { "Value": "25", "Show Label": "No" } },
+            { "label": "50%", "props": { "Value": "50", "Show Label": "No" } },
+            { "label": "75%", "props": { "Value": "75", "Show Label": "No" } },
+            { "label": "100%", "props": { "Value": "100", "Show Label": "No" } }
+          ]
+        },
+        {
+          "name": "With Label",
+          "description": "Progress bar with title and percentage label above.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Labeled", "props": { "Value": "50", "Show Label": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "number", "default": "0", "description": "Completion percentage (0–100). Controls indicator width via translateX." },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Tailwind classes for the track — e.g. 'h-2' for thicker bar or 'bg-secondary' for custom track color" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Track background color (bg-muted)" },
+        { "token": "--color-primary", "value": "violet-600 / violet-500", "description": "Indicator fill color (bg-primary)" },
+        { "token": "--radius-full", "value": "9999px", "description": "Fully rounded track and indicator (rounded-full)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always pair with a label or aria-label so users know what is progressing — 'Uploading file… 45%'.", "dont": "Show a progress bar without any context — users won't know what it represents." },
+        { "do": "Use Progress for determinate operations where percentage is known. Use Spinner for indeterminate waits.", "dont": "Fake progress by animating from 0 to 90% and stalling — it erodes trust when reality doesn't match." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=0", "value": "Empty track, no indicator", "code": "value", "codeValue": "{0}" },
+        { "figma": "Value=25", "value": "25% filled", "code": "value", "codeValue": "{25}" },
+        { "figma": "Value=50", "value": "50% filled", "code": "value", "codeValue": "{50}" },
+        { "figma": "Value=75", "value": "75% filled", "code": "value", "codeValue": "{75}" },
+        { "figma": "Value=100", "value": "Fully filled", "code": "value", "codeValue": "{100}" },
+        { "figma": "Show Label=Yes", "value": "Label row visible above track", "code": "—", "codeValue": "Compose label + Progress manually" },
+        { "figma": "Show Label=No", "value": "Track only", "code": "—", "codeValue": "Default <Progress value={n} />" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Progress is not interactive — no keyboard interaction" }
+        ],
+        "notes": [
+          "Radix Progress renders role='progressbar' with aria-valuenow, aria-valuemin=0, aria-valuemax=100 automatically.",
+          "Add aria-label or aria-labelledby when no visible label is present — e.g. aria-label='Upload progress'.",
+          "Screen readers announce value changes — avoid rapid updates (debounce to ~500ms intervals)."
+        ]
+      },
+
+      "related": [
+        { "name": "Spinner", "desc": "Indeterminate loading indicator. Use Spinner when completion percentage is unknown; Progress when it's measurable." },
+        { "name": "Skeleton", "desc": "Layout-aware loading placeholder. Use Skeleton for content loading; Progress for task completion." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

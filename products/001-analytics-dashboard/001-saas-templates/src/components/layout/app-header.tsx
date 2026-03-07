@@ -28,6 +28,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { SearchBox } from "@/components/ui/search-box"
 import { Badge } from "@/components/ui/badge"
 import {
   Sheet,
@@ -290,12 +291,14 @@ export function AppHeader() {
                           <p className="sp-caption text-muted-foreground truncate mt-[1px]">{n.desc}</p>
                           <p className="sp-caption text-muted-foreground/50 mt-2xs">{n.time}</p>
                         </div>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={(e) => { e.stopPropagation(); removeNotif(n.id) }}
-                          className="size-[24px] shrink-0 rounded-md flex items-center justify-center text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted dark:hover:bg-white/[0.06] opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="size-[24px] shrink-0 text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted dark:hover:bg-white/[0.06] opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <X className="size-[12px]" />
-                        </button>
+                        </Button>
                       </div>
                     ))
                   )}
@@ -316,13 +319,15 @@ export function AppHeader() {
             {/* User Profile Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="relative rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  <Avatar className="size-[36px] ring-2 ring-primary/30 cursor-pointer">
-                    <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
-                  </Avatar>
-                  <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-2 ring-background" />
-                </button>
+                <Button variant="ghost" className="rounded-full p-0 border-0 shadow-none hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-transparent">
+                  <div className="relative size-[36px]">
+                    <Avatar className="size-[36px] ring-2 ring-primary/30 cursor-pointer">
+                      <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                    </Avatar>
+                    <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                  </div>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[220px]">
                 <DropdownMenuLabel className="font-normal">
@@ -359,16 +364,13 @@ export function AppHeader() {
             <h1 className="sp-h3 sm:sp-h2 text-foreground">Good morning, Linh</h1>
             <p className="sp-caption sm:sp-body text-muted-foreground mt-3xs hidden sm:block">Stay on top of your tasks, monitor progress, and track status.</p>
           </div>
-          <button
+          <SearchBox
+            placeholder="Search product"
+            shortcut
+            readOnly
             onClick={() => setOpen(true)}
-            className="hidden sm:flex items-center gap-xs bg-muted dark:bg-white/[0.04] rounded-full px-md py-xs border border-border/50 hover:border-border/80 dark:border-white/[0.08] dark:hover:border-white/[0.15] transition-colors cursor-pointer"
-          >
-            <Search className="size-[16px] text-muted-foreground" />
-            <span className="sp-body text-muted-foreground/70 pr-md">Search product</span>
-            <kbd className="pointer-events-none hidden sm:inline-flex h-[20px] items-center gap-[2px] rounded bg-foreground/5 dark:bg-white/[0.06] border border-border/40 dark:border-white/[0.1] px-[6px] sp-caption text-muted-foreground/70">
-              <span className="text-[11px]">⌘</span>K
-            </kbd>
-          </button>
+            className="hidden sm:flex w-[280px] cursor-pointer"
+          />
         </div>
         </div>
       </header>

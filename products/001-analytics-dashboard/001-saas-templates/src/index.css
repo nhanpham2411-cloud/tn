@@ -1399,3 +1399,17 @@ html.dark,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   Calendar — selected day button color overrides
+   Tailwind utility order causes aria-selected: variants to lose
+   to base text-foreground. Use direct CSS with higher specificity.
+   ============================================================ */
+[data-slot="calendar"] button[aria-selected="true"] {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+[data-slot="calendar"] button[aria-selected="true"]:hover {
+  background-color: var(--primary-hover);
+  color: #ffffff;
+}

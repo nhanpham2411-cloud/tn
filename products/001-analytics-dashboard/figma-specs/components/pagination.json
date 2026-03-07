@@ -1,0 +1,327 @@
+{
+  "components": [
+    {
+      "name": "Pagination Item",
+      "description": "Individual pagination control — page number (ghost/outline button), previous/next navigation, or ellipsis indicator. Used inside the Pagination parent component via instance swap.",
+      "category": "Navigation",
+      "installation": {
+        "import": "import {\n  PaginationItem,\n  PaginationLink,\n  PaginationPrevious,\n  PaginationNext,\n  PaginationEllipsis,\n} from \"@/components/ui/pagination\""
+      },
+
+      "properties": {
+        "Type": ["Page", "Previous", "Next", "Ellipsis"],
+        "State": ["Default", "Hover", "Disabled"],
+        "Active": ["True", "False"]
+      },
+
+      "variantRestrictions": {
+        "Type=Previous": { "Active": ["False"] },
+        "Type=Next": { "Active": ["False"] },
+        "Type=Ellipsis": { "State": ["Default"], "Active": ["False"] }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "width": 36,
+        "height": 36,
+        "radius": "lg",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "textStyle": "SP/Body",
+        "textContent": "1",
+        "textFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "State=Default": {},
+        "State=Disabled": { "opacity": 0.5 },
+        "Active=True": {},
+        "Active=False": {},
+
+        "Type=Page": {},
+        "Type=Page,Active=True": {
+          "fill": "background",
+          "stroke": "border",
+          "textFill": "foreground"
+        },
+        "Type=Page,State=Hover": {
+          "fill": "accent",
+          "textFill": "accent-foreground"
+        },
+        "Type=Page,Active=True,State=Hover": {
+          "fill": "accent",
+          "stroke": "border",
+          "textFill": "accent-foreground"
+        },
+
+        "Type=Previous": {
+          "widthMode": "hug",
+          "height": 36,
+          "gap": "3xs",
+          "paddingLeft": 10,
+          "paddingRight": "md",
+          "paddingY": "none",
+          "iconLeft": true,
+          "iconLeftName": "ChevronLeft",
+          "iconFill": "muted-foreground",
+          "textStyle": "SP/Body Semibold",
+          "textContent": "Previous",
+          "textFill": "muted-foreground"
+        },
+        "Type=Previous,State=Hover": {
+          "fill": "accent",
+          "textFill": "accent-foreground",
+          "iconFill": "accent-foreground"
+        },
+
+        "Type=Next": {
+          "widthMode": "hug",
+          "height": 36,
+          "gap": "3xs",
+          "paddingLeft": "md",
+          "paddingRight": 10,
+          "paddingY": "none",
+          "iconRight": true,
+          "iconRightName": "ChevronRight",
+          "iconFill": "muted-foreground",
+          "textStyle": "SP/Body Semibold",
+          "textContent": "Next",
+          "textFill": "muted-foreground"
+        },
+        "Type=Next,State=Hover": {
+          "fill": "accent",
+          "textFill": "accent-foreground",
+          "iconFill": "accent-foreground"
+        },
+
+        "Type=Ellipsis": {
+          "hideLabel": true,
+          "iconLeft": true,
+          "iconLeftName": "Ellipsis",
+          "iconFill": "muted-foreground"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Page States",
+          "description": "Default, hover, active, and disabled states for page number items.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Page", "State": "Default", "Active": "False" } },
+            { "label": "Hover", "props": { "Type": "Page", "State": "Hover", "Active": "False" } },
+            { "label": "Active", "props": { "Type": "Page", "State": "Default", "Active": "True" } },
+            { "label": "Active Hover", "props": { "Type": "Page", "State": "Hover", "Active": "True" } },
+            { "label": "Disabled", "props": { "Type": "Page", "State": "Disabled", "Active": "False" } }
+          ]
+        },
+        {
+          "name": "Navigation",
+          "description": "Previous and Next navigation items with default and hover states.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Previous", "props": { "Type": "Previous", "State": "Default", "Active": "False" } },
+            { "label": "Previous Hover", "props": { "Type": "Previous", "State": "Hover", "Active": "False" } },
+            { "label": "Next", "props": { "Type": "Next", "State": "Default", "Active": "False" } },
+            { "label": "Next Hover", "props": { "Type": "Next", "State": "Hover", "Active": "False" } }
+          ]
+        },
+        {
+          "name": "Ellipsis",
+          "description": "Non-interactive ellipsis indicator for collapsed page ranges.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Ellipsis", "props": { "Type": "Ellipsis", "State": "Default", "Active": "False" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "isActive", "type": "boolean", "default": "false", "description": "Whether the page item is the current page — applies outline variant and aria-current" },
+        { "name": "size", "type": "\"icon\" | \"default\"", "default": "\"icon\"", "description": "Button size — icon (36x36) for page numbers, default (h-9 hug) for prev/next" },
+        { "name": "href", "type": "string", "default": "--", "description": "Navigation URL for the pagination link" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Inactive page number and prev/next text + icon color" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Active page number text color (outline variant)" },
+        { "token": "--accent", "value": "zinc-100 / zinc-800", "description": "Hover background for page, previous, and next items" },
+        { "token": "--accent-foreground", "value": "zinc-900 / zinc-50", "description": "Hover text and icon color" },
+        { "token": "--background", "value": "white / zinc-950", "description": "Active page item fill (outline variant bg)" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Active page item border (outline variant)" },
+        { "token": "SP/Body", "value": "Inter 400 14px/20px", "description": "Page number text style" },
+        { "token": "SP/Body Semibold", "value": "Inter 600 14px/20px", "description": "Previous/Next label text style" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Type=Page with Active=True for the current page — it renders with outline variant (border + background).", "dont": "Use Active=True on Previous, Next, or Ellipsis — the Active property only affects Page type visually." },
+        { "do": "Use Type=Ellipsis as a non-interactive indicator between page number gaps.", "dont": "Make the ellipsis clickable — it is a static indicator with aria-hidden." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Page,Active=False", "value": "No fill, muted-foreground text (ghost)", "code": "PaginationLink", "codeValue": "buttonVariants({ variant: 'ghost', size: 'icon' })" },
+        { "figma": "Type=Page,Active=True", "value": "background fill, border stroke, foreground text (outline)", "code": "PaginationLink isActive", "codeValue": "buttonVariants({ variant: 'outline', size: 'icon' })" },
+        { "figma": "Type=Previous", "value": "ChevronLeft + 'Previous', hug width", "code": "PaginationPrevious", "codeValue": "size='default', gap-1 pl-2.5" },
+        { "figma": "Type=Next", "value": "'Next' + ChevronRight, hug width", "code": "PaginationNext", "codeValue": "size='default', gap-1 pr-2.5" },
+        { "figma": "Type=Ellipsis", "value": "Ellipsis 16px, no hover/disabled", "code": "PaginationEllipsis", "codeValue": "size-9, aria-hidden, non-interactive" },
+        { "figma": "State=Hover (Page/Prev/Next)", "value": "accent bg + accent-foreground text", "code": "hover:", "codeValue": "Hover states from buttonVariants" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled:", "codeValue": "disabled:pointer-events-none disabled:opacity-50" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the next pagination link" },
+          { "key": "Enter", "action": "Follow the focused pagination link" }
+        ],
+        "notes": [
+          "PaginationLink uses aria-current='page' when isActive is true.",
+          "PaginationEllipsis has aria-hidden='true' with sr-only 'More pages' text.",
+          "PaginationPrevious/Next have aria-label for screen reader context.",
+          "Disabled items have pointer-events-none and opacity-50."
+        ]
+      },
+
+      "related": [
+        { "name": "Pagination", "desc": "Parent container that composes multiple Pagination Items." },
+        { "name": "Button", "desc": "Pagination items use buttonVariants (ghost + outline) for styling." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Pagination",
+      "description": "Horizontal page navigation controls with previous/next buttons, page numbers, and optional ellipsis for collapsed ranges. Centered layout with gap-1 (4px) between items.",
+      "category": "Navigation",
+      "installation": {
+        "import": "import {\n  Pagination,\n  PaginationContent,\n  PaginationItem,\n  PaginationLink,\n  PaginationPrevious,\n  PaginationNext,\n  PaginationEllipsis,\n} from \"@/components/ui/pagination\""
+      },
+
+      "properties": {
+        "Ellipsis": ["True", "False"],
+        "Show Prev": ["True", "False"],
+        "Show Next": ["True", "False"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "3xs",
+        "paddingX": "none",
+        "paddingY": "none",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          { "name": "Prev", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Previous", "State": "Default", "Active": "False" }, "showWhen": "Show Prev=True" },
+          { "name": "P1", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "1" } },
+          { "name": "P2", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "2" } },
+          { "name": "P3", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "True" }, "textOverrides": { "Label": "3" } },
+          { "name": "P4", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "4" } },
+          { "name": "P5", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "5" } },
+          { "name": "Dots", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Ellipsis", "State": "Default", "Active": "False" }, "showWhen": "Ellipsis=True" },
+          { "name": "P20", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "20" }, "showWhen": "Ellipsis=True" },
+          { "name": "Next", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Next", "State": "Default", "Active": "False" }, "showWhen": "Show Next=True" }
+        ]
+      },
+
+      "variantStyles": {
+        "Ellipsis=True": {},
+        "Ellipsis=False": {},
+        "Show Prev=True": {},
+        "Show Prev=False": {},
+        "Show Next=True": {},
+        "Show Next=False": {}
+      },
+
+      "examples": [
+        {
+          "name": "Full Controls",
+          "description": "Pagination with prev, next, page numbers, ellipsis, and last page.",
+          "layout": "vertical",
+          "items": [
+            { "label": "All Controls", "props": { "Ellipsis": "True", "Show Prev": "True", "Show Next": "True" } }
+          ]
+        },
+        {
+          "name": "Without Ellipsis",
+          "description": "Simple sequential page numbers with navigation.",
+          "layout": "vertical",
+          "items": [
+            { "label": "No Ellipsis", "props": { "Ellipsis": "False", "Show Prev": "True", "Show Next": "True" } }
+          ]
+        },
+        {
+          "name": "Pages Only",
+          "description": "Page numbers without previous or next buttons.",
+          "layout": "vertical",
+          "items": [
+            { "label": "No Nav", "props": { "Ellipsis": "False", "Show Prev": "False", "Show Next": "False" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "PaginationContent containing PaginationItem elements" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Inactive page numbers, navigation text, and separator color" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Active page text color" },
+        { "token": "--accent", "value": "zinc-100 / zinc-800", "description": "Hover background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Active page border (outline variant)" },
+        { "token": "--background", "value": "white / zinc-950", "description": "Active page fill (outline variant)" },
+        { "token": "--spacing-3xs", "value": "4px", "description": "Gap between pagination items (gap-1)" },
+        { "token": "SP/Body", "value": "Inter 400 14px/20px", "description": "Page number text style" },
+        { "token": "SP/Body Semibold", "value": "Inter 600 14px/20px", "description": "Previous/Next text style" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Ellipsis=True when the total page count exceeds the visible range — show first pages, ellipsis, and last page.", "dont": "Show all page numbers when there are many pages — the row overflows on smaller viewports." },
+        { "do": "Center the pagination below the data table or content list it controls.", "dont": "Place pagination inside the table header or in a sidebar — it belongs below the data." },
+        { "do": "Always include Previous and Next buttons for keyboard and screen reader users.", "dont": "Remove Previous/Next buttons and rely only on page numbers — this reduces accessibility." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Ellipsis=True", "value": "P1-P5 + ... + P20", "code": "--", "codeValue": "Includes PaginationEllipsis + extra PaginationLink" },
+        { "figma": "Ellipsis=False", "value": "P1-P5 only", "code": "--", "codeValue": "Sequential PaginationLink items only" },
+        { "figma": "Show Prev=True", "value": "Previous button visible", "code": "--", "codeValue": "PaginationPrevious rendered" },
+        { "figma": "Show Prev=False", "value": "Previous button hidden", "code": "--", "codeValue": "PaginationPrevious not rendered" },
+        { "figma": "Show Next=True", "value": "Next button visible", "code": "--", "codeValue": "PaginationNext rendered" },
+        { "figma": "Show Next=False", "value": "Next button hidden", "code": "--", "codeValue": "PaginationNext not rendered" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus through pagination links sequentially" },
+          { "key": "Shift+Tab", "action": "Move focus to the previous pagination link" },
+          { "key": "Enter", "action": "Follow the focused pagination link" }
+        ],
+        "notes": [
+          "Root nav element has role='navigation' and aria-label='pagination'.",
+          "Active page link has aria-current='page'.",
+          "Ellipsis has aria-hidden='true' with sr-only 'More pages' label.",
+          "Previous/Next buttons include descriptive aria-label attributes."
+        ]
+      },
+
+      "related": [
+        { "name": "Pagination Item", "desc": "Sub-component — individual page link, navigation button, or ellipsis." },
+        { "name": "Table", "desc": "Data tables commonly pair with Pagination for paged data sets." },
+        { "name": "Breadcrumb", "desc": "Hierarchical navigation — use Pagination for sequential page navigation." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

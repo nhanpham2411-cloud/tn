@@ -51,7 +51,7 @@ import { toast } from "sonner"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -90,8 +90,8 @@ const quickLinks = [
     title: "Video Tutorials",
     description: "Watch step-by-step walkthroughs",
     action: "Watch Now",
-    bg: "bg-violet-500/10 dark:bg-violet-500/20",
-    color: "text-violet-600 dark:text-violet-400",
+    bg: "bg-primary/10 dark:bg-primary/20",
+    color: "text-primary",
   },
   {
     icon: MessageSquare,
@@ -355,8 +355,8 @@ export default function HelpSupportPage() {
             {/* Contact Support */}
             <DCard>
               <div className="flex items-center gap-sm mb-lg">
-                <div className="size-[36px] rounded-lg bg-violet-500/10 dark:bg-violet-500/20 flex items-center justify-center">
-                  <Mail className="size-[18px] text-violet-600 dark:text-violet-400" />
+                <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                  <Mail className="size-[18px] text-primary" />
                 </div>
                 <div>
                   <h3 className="sp-h4 text-foreground">Contact Support</h3>

@@ -1,0 +1,195 @@
+{
+  "components": [
+    {
+      "name": "Combobox",
+      "description": "Searchable dropdown trigger built on Button variant=outline. Shows selected value or placeholder with ChevronsUpDown indicator. Width 200px, height 36px. Supports icon/prefix/suffix addons and external textLeft/textRight labels.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-popover cmdk",
+        "import": "import { Combobox, type ComboboxOption } from \"@/components/ui/combobox\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Value": ["Placeholder", "Filled"],
+        "Left": ["None", "Icon", "Prefix", "Text Left"],
+        "Right": ["None", "Icon", "Suffix", "Text Right"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "space-between",
+        "counterAlign": "center",
+        "gap": "xs",
+        "width": 200,
+        "height": 36,
+        "heightMode": "fixed",
+        "radius": "lg",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "outline",
+        "paddingX": "md",
+        "paddingY": "none",
+        "textContent": "Select framework...",
+        "textStyle": "SP/Body Semibold",
+        "textFill": "muted-foreground",
+        "labelFill": true,
+        "iconRight": true,
+        "iconRightName": "ChevronsUpDown",
+        "iconFill": "muted-foreground",
+        "iconOpacity": 0.5
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "stroke": "border-strong"
+        },
+        "State=Focus": {
+          "effectStyleName": "Ring/default",
+          "stroke": "border-strong"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        },
+
+        "Value=Filled": {
+          "textContent": "React",
+          "textFill": "foreground"
+        },
+
+        "Left=Icon": {
+          "iconLeft": true,
+          "iconLeftName": "Globe"
+        },
+        "Left=Prefix": {
+          "prefix": "$"
+        },
+        "Left=Text Left": {
+          "textLeft": "Filter"
+        },
+
+        "Right=Icon": {
+          "iconRightName": "Info"
+        },
+        "Right=Suffix": {
+          "suffix": "%"
+        },
+        "Right=Text Right": {
+          "textRight": "USD"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover, focus (ring), and disabled states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder", "Left": "None", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Placeholder (muted) and filled (foreground) states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Left Addons",
+          "description": "Icon, prefix text, and external text-left label.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Icon", "props": { "State": "Default", "Value": "Filled", "Left": "Icon", "Right": "None" } },
+            { "label": "Prefix", "props": { "State": "Default", "Value": "Filled", "Left": "Prefix", "Right": "None" } },
+            { "label": "Text Left", "props": { "State": "Default", "Value": "Filled", "Left": "Text Left", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Right Addons",
+          "description": "Icon, suffix text, and external text-right label.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Icon", "props": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "Icon" } },
+            { "label": "Suffix", "props": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "Suffix" } },
+            { "label": "Text Right", "props": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "Text Right" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "options", "type": "ComboboxOption[]", "default": "[]", "description": "Array of { value, label } objects for the dropdown list" },
+        { "name": "value", "type": "string", "default": "—", "description": "Controlled selected value" },
+        { "name": "onValueChange", "type": "(value: string) => void", "default": "—", "description": "Callback when selection changes" },
+        { "name": "placeholder", "type": "string", "default": "\"Select...\"", "description": "Placeholder text when no value is selected" },
+        { "name": "searchPlaceholder", "type": "string", "default": "\"Search...\"", "description": "Placeholder for the search input inside the popover" },
+        { "name": "emptyText", "type": "string", "default": "\"No results.\"", "description": "Text shown when search yields no matches" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the combobox — opacity-50 + cursor-not-allowed" },
+        { "name": "className", "type": "string", "default": "—", "description": "Additional CSS classes for the trigger button" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-outline", "value": "transparent / transparent", "description": "Trigger background (bg-outline from Button outline variant)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Trigger border" },
+        { "token": "--color-border-strong", "value": "zinc-300 / zinc-600", "description": "Hover and focus border" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring (3px spread)" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Selected value text color" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text and ChevronsUpDown icon color" },
+        { "token": "--spacing-md", "value": "16px", "description": "Horizontal padding (px-md)" },
+        { "token": "--spacing-xs", "value": "8px", "description": "Gap between elements (gap-xs)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Combobox when the option list exceeds 8 items — the built-in search helps users find values quickly.", "dont": "Use Combobox for 3-4 options — use Select or Radio instead." },
+        { "do": "Provide a descriptive placeholder that hints at the expected selection (e.g. 'Select framework...').", "dont": "Leave the trigger blank or use generic 'Select...' when a specific hint would be clearer." },
+        { "do": "Use textLeft/textRight addons to provide contextual labels (e.g. 'Filter', 'USD').", "dont": "Stack multiple addon types on the same side — pick one per side." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "border-border, bg-outline", "code": "—", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border-strong", "code": "—", "codeValue": "Auto via hover:border-border-strong" },
+        { "figma": "State=Focus", "value": "Ring/default effect + border-strong", "code": "—", "codeValue": "Auto via focus-visible" },
+        { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "true" },
+        { "figma": "Value=Placeholder", "value": "Muted-foreground text", "code": "placeholder", "codeValue": "\"Select framework...\"" },
+        { "figma": "Value=Filled", "value": "Foreground text", "code": "value", "codeValue": "\"React\"" },
+        { "figma": "Left=Icon", "value": "Globe icon left", "code": "iconLeft", "codeValue": "Custom via children" },
+        { "figma": "Left=Prefix", "value": "\"$\" prefix text", "code": "prefix", "codeValue": "Custom via children" },
+        { "figma": "Left=Text Left", "value": "External left label", "code": "textLeft", "codeValue": "Wrapper span with bg-muted" },
+        { "figma": "Right=Icon", "value": "Info icon replaces ChevronsUpDown", "code": "iconRight", "codeValue": "Custom via children" },
+        { "figma": "Right=Suffix", "value": "\"%\" suffix text", "code": "suffix", "codeValue": "Custom via children" },
+        { "figma": "Right=Text Right", "value": "External right label", "code": "textRight", "codeValue": "Wrapper span with bg-muted" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the trigger button" },
+          { "key": "Enter / Space", "action": "Open the popover with search input" },
+          { "key": "Arrow Up / Down", "action": "Navigate options in the command list" },
+          { "key": "Enter", "action": "Select highlighted option and close" },
+          { "key": "Escape", "action": "Close the popover" }
+        ],
+        "notes": [
+          "Built on Radix Popover + cmdk for accessible search-as-you-type.",
+          "Trigger is a Button with role='combobox' and aria-expanded.",
+          "Search input auto-focuses on open for immediate typing.",
+          "Selected option shows a Check icon for visual confirmation."
+        ]
+      },
+
+      "related": [
+        { "name": "Select", "desc": "Simple dropdown without search. Use Select when options are under 8 items." },
+        { "name": "Input", "desc": "Free-form text field. Use Input when the user types their own value." },
+        { "name": "Date Picker", "desc": "Specialized combobox-like trigger for date selection." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "components": [
+    {
+      "name": "Day Cell",
+      "description": "A single day cell used inside Calendar and DatePicker. Displays a day number with state-dependent styling for selection, ranges, and disabled states.",
+      "category": "Primitives",
+      "installation": {
+        "dependencies": "",
+        "import": "// Internal sub-component — used by Calendar and DatePicker\n// Not exported separately"
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Today", "Selected", "Outside", "Disabled", "Range Start", "Range Middle", "Range End", "Range Hover"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "width": 48,
+        "height": 48,
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "fill": "transparent",
+        "radius": "sm",
+        "hideLabel": true,
+        "gap": 0,
+        "children": [
+          {
+            "name": "Day",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "14",
+            "textFill": "foreground"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Default": {},
+        "State=Hover": {
+          "fill": "ghost-hover"
+        },
+        "State=Today": {
+          "stroke": "primary",
+          "strokeOpacity": 0.4
+        },
+        "State=Selected": {
+          "fill": "primary",
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "primary-foreground"
+            }
+          ]
+        },
+        "State=Outside": {
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "muted-foreground",
+              "textOpacity": 0.4
+            }
+          ]
+        },
+        "State=Disabled": {
+          "opacity": 0.5,
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "muted-foreground"
+            }
+          ]
+        },
+        "State=Range Start": {
+          "radiusTopLeft": 4,
+          "radiusBottomLeft": 4,
+          "radiusTopRight": 0,
+          "radiusBottomRight": 0,
+          "fill": "primary",
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "primary-foreground"
+            }
+          ]
+        },
+        "State=Range Middle": {
+          "radius": 0,
+          "fill": "primary",
+          "fillOpacity": 0.1,
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "foreground"
+            }
+          ]
+        },
+        "State=Range End": {
+          "radiusTopLeft": 0,
+          "radiusBottomLeft": 0,
+          "radiusTopRight": 4,
+          "radiusBottomRight": 4,
+          "fill": "primary",
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "primary-foreground"
+            }
+          ]
+        },
+        "State=Range Hover": {
+          "fill": "primary",
+          "fillOpacity": 0.2,
+          "children": [
+            {
+              "name": "Day",
+              "textFill": "foreground"
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Single States",
+          "description": "Individual day cell states for single date selection.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default" } },
+            { "label": "Hover", "props": { "State": "Hover" } },
+            { "label": "Today", "props": { "State": "Today" } },
+            { "label": "Selected", "props": { "State": "Selected" } },
+            { "label": "Outside", "props": { "State": "Outside" } },
+            { "label": "Disabled", "props": { "State": "Disabled" } }
+          ]
+        },
+        {
+          "name": "Range States",
+          "description": "Day cell states for date range selection.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Range Start", "props": { "State": "Range Start" } },
+            { "label": "Range Middle", "props": { "State": "Range Middle" } },
+            { "label": "Range End", "props": { "State": "Range End" } },
+            { "label": "Range Hover", "props": { "State": "Range Hover" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "state", "type": "DayCellState", "default": "\"default\"", "description": "Visual state of the day cell" },
+        { "name": "children", "type": "ReactNode", "default": "—", "description": "Day number text content" }
+      ],
+
+      "designTokens": [
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Default day text color" },
+        { "token": "--primary", "value": "violet-600", "description": "Selected / range start/end background" },
+        { "token": "--primary-foreground", "value": "white", "description": "Selected day text color" },
+        { "token": "--ghost-hover", "value": "zinc-100 / zinc-800", "description": "Hover state background" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Outside / disabled text color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use DayCell as instance swap inside Calendar and DatePicker.", "dont": "Render DayCell standalone outside calendar context." },
+        { "do": "Keep all 10 states to cover single + range selection.", "dont": "Remove range states even if only single mode is used — buyers may need both." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Day Cell", "value": "48×48, center aligned", "code": "DayCell", "codeValue": "size-[48px] flex items-center justify-center" },
+        { "figma": "State=Default", "value": "transparent bg, foreground text", "code": "default", "codeValue": "rounded-sm text-foreground bg-transparent" },
+        { "figma": "State=Hover", "value": "ghost-hover bg", "code": "hover", "codeValue": "rounded-sm bg-ghost-hover" },
+        { "figma": "State=Today", "value": "ring-1 primary/40", "code": "today", "codeValue": "ring-1 ring-primary/40" },
+        { "figma": "State=Selected", "value": "primary bg, primary-foreground text", "code": "selected", "codeValue": "bg-primary text-primary-foreground" },
+        { "figma": "State=Range Start", "value": "rounded-l-sm, primary bg", "code": "range-start", "codeValue": "rounded-l-sm bg-primary text-primary-foreground" },
+        { "figma": "State=Range Middle", "value": "no radius, primary/10 bg", "code": "range-middle", "codeValue": "bg-primary/10 text-foreground" },
+        { "figma": "State=Range End", "value": "rounded-r-sm, primary bg", "code": "range-end", "codeValue": "rounded-r-sm bg-primary text-primary-foreground" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Arrow keys", "action": "Navigate between days in the calendar grid" },
+          { "key": "Enter / Space", "action": "Select the focused day" }
+        ],
+        "notes": [
+          "Day cells receive aria-selected when selected",
+          "Outside days have aria-disabled for screen readers",
+          "Today's date announced via aria-current=\"date\""
+        ]
+      },
+
+      "related": [
+        { "name": "Calendar", "desc": "Month calendar grid using Day Cell instances." },
+        { "name": "Date Picker", "desc": "Popover trigger + Calendar for date selection." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Date Picker",
+      "description": "A trigger button that opens a Calendar popup for selecting a single date or date range. DateRangePicker adds a two-month calendar with preset shortcuts sidebar. Uses Popover + Calendar internally.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add react-day-picker date-fns",
+        "import": "import { DatePicker, DateRangePicker } from \"@/components/ui/date-picker\""
+      },
+
+      "properties": {
+        "Mode": ["Single", "Range"],
+        "State": ["Placeholder", "Filled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "width": 280,
+        "height": 36,
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "fill": "input",
+        "stroke": "border",
+        "radius": 8,
+        "paddingX": "sm",
+        "paddingY": 0,
+        "gap": "xs",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Calendar Icon",
+            "type": "frame",
+            "width": 16,
+            "height": 16,
+            "fill": "foreground"
+          },
+          {
+            "name": "Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "Pick a date",
+            "textFill": "muted-foreground",
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Mode=Single": {},
+        "Mode=Range": {
+          "children": [
+            {
+              "name": "Text",
+              "textContent": "Pick a date range"
+            }
+          ]
+        },
+        "State=Placeholder": {},
+        "State=Filled": {
+          "children": [
+            {
+              "name": "Text",
+              "textContent": "March 7, 2026",
+              "textFill": "foreground"
+            }
+          ]
+        },
+        "Mode=Range,State=Filled": {
+          "children": [
+            {
+              "name": "Text",
+              "textContent": "Mar 1 – Mar 14, 2026",
+              "textFill": "foreground"
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Modes",
+          "description": "Single date and date range trigger variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Single Placeholder", "props": { "Mode": "Single", "State": "Placeholder" } },
+            { "label": "Single Filled", "props": { "Mode": "Single", "State": "Filled" } },
+            { "label": "Range Placeholder", "props": { "Mode": "Range", "State": "Placeholder" } },
+            { "label": "Range Filled", "props": { "Mode": "Range", "State": "Filled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "date", "type": "Date | undefined", "default": "—", "description": "Controlled selected date (DatePicker)" },
+        { "name": "onDateChange", "type": "(date: Date | undefined) => void", "default": "—", "description": "Callback when date changes (DatePicker)" },
+        { "name": "from", "type": "Date | undefined", "default": "—", "description": "Controlled range start (DateRangePicker)" },
+        { "name": "to", "type": "Date | undefined", "default": "—", "description": "Controlled range end (DateRangePicker)" },
+        { "name": "onRangeChange", "type": "(range: {from?: Date; to?: Date}) => void", "default": "—", "description": "Callback when range changes (DateRangePicker)" },
+        { "name": "presets", "type": "boolean", "default": "true", "description": "Show preset shortcut sidebar (DateRangePicker)" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes on trigger" }
+      ],
+
+      "designTokens": [
+        { "token": "--input", "value": "zinc-50 / zinc-900", "description": "Trigger background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Trigger border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Filled state text + icon color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring on trigger" },
+        { "token": "--primary", "value": "violet-600", "description": "Selected date in Calendar" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use DatePicker for single dates and DateRangePicker for date ranges.", "dont": "Build a custom date input — use the pre-built picker for consistency." },
+        { "do": "Set sensible default dates close to the expected selection.", "dont": "Open the calendar defaulting to January 1970 — default to today or the relevant context date." },
+        { "do": "Use presets in DateRangePicker for common ranges (Last 7/30 days, This month).", "dont": "Skip presets when users frequently select the same date ranges." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Trigger", "value": "h-36, w-280, rounded-lg, border, bg-input", "code": "trigger button", "codeValue": "h-9 w-full sm:w-[280px] rounded-lg border bg-input px-sm" },
+        { "figma": "Calendar Icon", "value": "16×16, foreground", "code": "CalendarIcon", "codeValue": "size-md shrink-0" },
+        { "figma": "Placeholder", "value": "SP/Body, muted-foreground", "code": "!selected", "codeValue": "text-muted-foreground" },
+        { "figma": "Filled", "value": "SP/Body, foreground", "code": "selected", "codeValue": "text-foreground, format(date, 'PPP')" },
+        { "figma": "Focus", "value": "ring-3 ring", "code": "focus-visible", "codeValue": "ring-[3px] ring-ring" },
+        { "figma": "Popover", "value": "Uses Popover + Calendar", "code": "PopoverContent", "codeValue": "w-auto p-0" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the trigger button" },
+          { "key": "Enter / Space", "action": "Open the calendar popover" },
+          { "key": "Arrow Keys", "action": "Navigate days within the calendar" },
+          { "key": "Enter", "action": "Select the focused date" },
+          { "key": "Escape", "action": "Close the popover" }
+        ],
+        "notes": [
+          "Uses Calendar component internally — inherits all Calendar accessibility",
+          "DateRangePicker shows 2-month view with preset sidebar",
+          "Focus moves into the popover on open",
+          "Focus returns to trigger on close"
+        ]
+      },
+
+      "related": [
+        { "name": "Calendar", "desc": "Standalone calendar without trigger — use for inline date selection." },
+        { "name": "Day Cell", "desc": "Sub-component for individual day states inside Calendar." },
+        { "name": "Popover", "desc": "Floating panel used to host the calendar dropdown." },
+        { "name": "Input", "desc": "For manual text-based date entry." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

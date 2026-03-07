@@ -1,0 +1,190 @@
+{
+  "components": [
+    {
+      "name": "Skeleton",
+      "description": "Layout-aware loading placeholder with pulse animation. Compose multiple Skeleton elements to mirror the shape of content being fetched. Sizing and shape come from className utilities.",
+      "category": "Feedback",
+      "installation": {
+        "import": "import { Skeleton } from \"@/components/ui/skeleton\""
+      },
+
+      "properties": {
+        "Shape": ["Avatar", "Text", "Card", "Table"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "xs",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 240,
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": []
+      },
+
+      "variantStyles": {
+        "Shape=Avatar": {
+          "layout": "horizontal",
+          "counterAlign": "center",
+          "gap": "md",
+          "children": [
+            {
+              "name": "Avatar",
+              "type": "frame",
+              "width": 40,
+              "height": 40,
+              "widthMode": "fixed",
+              "heightMode": "fixed",
+              "radius": "full",
+              "fill": "muted"
+            },
+            {
+              "name": "Lines",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": "xs",
+              "widthMode": "fill",
+              "children": [
+                { "name": "Line 1", "type": "frame", "height": 16, "heightMode": "fixed", "fill": "muted", "radius": "lg", "widthMode": "fill" },
+                { "name": "Line 2", "type": "frame", "height": 12, "heightMode": "fixed", "width": 108, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+              ]
+            }
+          ]
+        },
+
+        "Shape=Text": {
+          "gap": "xs",
+          "width": 320,
+          "children": [
+            { "name": "Heading", "type": "frame", "height": 20, "heightMode": "fixed", "width": 128, "widthMode": "fixed", "fill": "muted", "radius": "lg" },
+            { "name": "Line 1", "type": "frame", "height": 16, "heightMode": "fixed", "fill": "muted", "radius": "lg", "widthMode": "fill" },
+            { "name": "Line 2", "type": "frame", "height": 16, "heightMode": "fixed", "width": 256, "widthMode": "fixed", "fill": "muted", "radius": "lg" },
+            { "name": "Line 3", "type": "frame", "height": 16, "heightMode": "fixed", "width": 192, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+          ]
+        },
+
+        "Shape=Card": {
+          "gap": "sm",
+          "width": 320,
+          "children": [
+            { "name": "Image", "type": "frame", "height": 120, "heightMode": "fixed", "fill": "muted", "radius": "xl", "widthMode": "fill" },
+            { "name": "Title", "type": "frame", "height": 20, "heightMode": "fixed", "width": 192, "widthMode": "fixed", "fill": "muted", "radius": "lg" },
+            { "name": "Line 1", "type": "frame", "height": 16, "heightMode": "fixed", "width": 256, "widthMode": "fixed", "fill": "muted", "radius": "lg" },
+            { "name": "Line 2", "type": "frame", "height": 16, "heightMode": "fixed", "width": 128, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+          ]
+        },
+
+        "Shape=Table": {
+          "gap": "xs",
+          "width": 320,
+          "children": [
+            {
+              "name": "Row 1",
+              "type": "frame",
+              "layout": "horizontal",
+              "counterAlign": "center",
+              "gap": "md",
+              "widthMode": "fill",
+              "children": [
+                { "name": "Avatar", "type": "frame", "width": 32, "height": 32, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted" },
+                { "name": "Name", "type": "frame", "height": 16, "heightMode": "fixed", "fill": "muted", "radius": "lg", "widthMode": "fill" },
+                { "name": "Value", "type": "frame", "height": 16, "heightMode": "fixed", "width": 64, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+              ]
+            },
+            {
+              "name": "Row 2",
+              "type": "frame",
+              "layout": "horizontal",
+              "counterAlign": "center",
+              "gap": "md",
+              "widthMode": "fill",
+              "children": [
+                { "name": "Avatar", "type": "frame", "width": 32, "height": 32, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted" },
+                { "name": "Name", "type": "frame", "height": 16, "heightMode": "fixed", "fill": "muted", "radius": "lg", "widthMode": "fill" },
+                { "name": "Value", "type": "frame", "height": 16, "heightMode": "fixed", "width": 64, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+              ]
+            },
+            {
+              "name": "Row 3",
+              "type": "frame",
+              "layout": "horizontal",
+              "counterAlign": "center",
+              "gap": "md",
+              "widthMode": "fill",
+              "children": [
+                { "name": "Avatar", "type": "frame", "width": 32, "height": 32, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted" },
+                { "name": "Name", "type": "frame", "height": 16, "heightMode": "fixed", "fill": "muted", "radius": "lg", "widthMode": "fill" },
+                { "name": "Value", "type": "frame", "height": 16, "heightMode": "fixed", "width": 64, "widthMode": "fixed", "fill": "muted", "radius": "lg" }
+              ]
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "User Row",
+          "description": "Avatar circle + name + subtitle — use in lists, comment threads.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Avatar", "props": { "Shape": "Avatar" } }
+          ]
+        },
+        {
+          "name": "KPI Card",
+          "description": "Stat headline + label + trend line — use in dashboard panels.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Card", "props": { "Shape": "Card" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Tailwind classes that define size (h-*, w-*), shape (rounded-full, rounded-xl), and any override" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Skeleton fill color (bg-muted)" },
+        { "token": "--radius-lg", "value": "8px", "description": "Default border radius (rounded-lg) — override with rounded-full or rounded-xl via className" },
+        { "token": "animate-pulse", "value": "opacity 0.5→1, 2s ease, infinite", "description": "Pulse animation (not representable in static Figma)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Mirror the exact shape of the content being loaded — rounded-full for avatars, h-4 for text lines, rounded-xl for images.", "dont": "Use a single full-width rectangle for all loading states — it fails to set expectations about the incoming layout." },
+        { "do": "Render the same number of skeleton rows/cards as the real content will contain — prevents layout shift.", "dont": "Render one or two skeleton rows when the real list will have ten — the layout jump disorients users." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Shape=Avatar", "value": "40px circle + 2 text lines", "code": "className", "codeValue": "\"size-10 rounded-full\" + \"h-4 w-full\" + \"h-3 w-3/5\"" },
+        { "figma": "Shape=Text", "value": "1 heading + 3 text lines", "code": "className", "codeValue": "\"h-5 w-2/5\" + \"h-4 w-full\" + \"h-4 w-4/5\" + \"h-4 w-3/5\"" },
+        { "figma": "Shape=Card", "value": "120px image + 3 lines", "code": "className", "codeValue": "\"h-[120px] rounded-xl\" + \"h-5 w-3/5\" + \"h-4 w-4/5\" + \"h-4 w-2/5\"" },
+        { "figma": "Shape=Table", "value": "3 rows: 32px circle + 2 columns", "code": "className", "codeValue": "\"size-8 rounded-full\" + \"h-4 flex-1\" + \"h-4 w-16\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Skeleton is static — not keyboard interactive" }
+        ],
+        "notes": [
+          "Add aria-hidden=\"true\" to the skeleton container so screen readers skip decorative placeholders.",
+          "Wrap the loading region with role=\"status\" and aria-label=\"Loading [content name]\" to announce the state.",
+          "Remove skeleton elements from the DOM once content loads — do not hide with CSS while keeping them mounted."
+        ]
+      },
+
+      "related": [
+        { "name": "Spinner", "desc": "Indeterminate loading indicator without layout structure. Use Spinner for opaque async operations; Skeleton when content layout is known." },
+        { "name": "Progress", "desc": "Determinate percentage bar. Use Progress when completion is measurable; Skeleton for content-level placeholders." },
+        { "name": "Card", "desc": "The real container a Skeleton card often wraps — match Skeleton dimensions to Card size prop padding." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

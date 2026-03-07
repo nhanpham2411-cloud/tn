@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import {
-  Search,
   Plus,
   LayoutGrid,
   List,
@@ -24,6 +23,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { SearchBox } from "@/components/ui/search-box"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -93,7 +93,7 @@ import { products, type Product } from "@/data/products"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -163,11 +163,11 @@ const statusConfig: Record<string, { label: string; dotClass: string; badgeClass
 }
 
 const categoryColors: Record<string, string> = {
-  electronics: "text-violet-600 dark:text-violet-400",
+  electronics: "text-primary",
   fashion: "text-cyan-600 dark:text-cyan-400",
-  accessories: "text-amber-600 dark:text-amber-400",
+  accessories: "text-warning",
   sports: "text-rose-600 dark:text-rose-400",
-  home: "text-emerald-600 dark:text-emerald-400",
+  home: "text-success",
 }
 
 /* ------------------------------------------------------------------ */
@@ -387,8 +387,8 @@ export default function ProductsPage() {
           {[
             { icon: Package, label: "Total Products", value: totalCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
             { icon: Package, label: "Active", value: activeCount, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: DollarSign, label: "Total Revenue", value: `$${(totalRevenue / 1_000_000).toFixed(1)}M`, iconBg: "bg-violet-100 dark:bg-violet-500/20", iconColor: "text-violet-600 dark:text-violet-400" },
-            { icon: TrendingUp, label: "Avg Rating", value: avgRating, iconBg: "bg-amber-100 dark:bg-amber-500/20", iconColor: "text-amber-600 dark:text-amber-400" },
+            { icon: DollarSign, label: "Total Revenue", value: `$${(totalRevenue / 1_000_000).toFixed(1)}M`, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
+            { icon: TrendingUp, label: "Avg Rating", value: avgRating, iconBg: "bg-warning-subtle", iconColor: "text-warning" },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
@@ -481,13 +481,12 @@ export default function ProductsPage() {
 
           {/* Search + Category filter */}
           <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
-            <div className="relative flex-1">
-              <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
-              <Input
+            <div className="flex-1">
+              <SearchBox
                 placeholder="Search products..."
                 value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-                className="pl-2xl"
+                onChange={(v) => { setSearch(v); setPage(1) }}
+                shortcut
                 aria-label="Search"
               />
             </div>
@@ -536,7 +535,7 @@ export default function ProductsPage() {
                             <span>·</span>
                             <span className="text-foreground font-semibold">${product.price}</span>
                             <span>·</span>
-                            <span className="flex items-center gap-3xs"><Star className="size-[10px] fill-current text-amber-500" />{product.rating}</span>
+                            <span className="flex items-center gap-3xs"><Star className="size-[10px] fill-current text-warning" />{product.rating}</span>
                           </div>
                         </div>
                         <StatusBadge status={product.status} />
@@ -595,7 +594,7 @@ export default function ProductsPage() {
                         <TableCell className="sp-caption text-muted-foreground">{product.sales.toLocaleString()}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3xs">
-                            <Star className="size-[12px] fill-current text-amber-500" />
+                            <Star className="size-[12px] fill-current text-warning" />
                             <span className="sp-caption">{product.rating}</span>
                           </div>
                         </TableCell>
@@ -642,7 +641,7 @@ export default function ProductsPage() {
                         <div className="flex items-center justify-between mt-auto">
                           <span className="sp-body-semibold text-foreground">${product.price}</span>
                           <div className="flex items-center gap-3xs text-muted-foreground">
-                            <Star className="size-[12px] fill-current text-amber-500" />
+                            <Star className="size-[12px] fill-current text-warning" />
                             <span className="sp-caption">{product.rating}</span>
                           </div>
                         </div>

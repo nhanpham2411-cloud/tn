@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { Link } from "react-router-dom"
 import {
-  Search,
   MoreHorizontal,
   RefreshCw,
   WifiOff,
@@ -19,6 +18,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { SearchBox } from "@/components/ui/search-box"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -82,7 +82,7 @@ import { orders, type Order } from "@/data/orders"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -451,13 +451,12 @@ export default function OrdersPage() {
 
           {/* Search + Payment filter */}
           <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
-            <div className="relative flex-1">
-              <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
-              <Input
+            <div className="flex-1">
+              <SearchBox
                 placeholder="Search by order ID, customer or email..."
                 value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-                className="pl-2xl"
+                onChange={(v) => { setSearch(v); setPage(1) }}
+                shortcut
                 aria-label="Search"
               />
             </div>

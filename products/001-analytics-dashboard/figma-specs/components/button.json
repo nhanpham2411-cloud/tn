@@ -1,0 +1,225 @@
+{
+  "components": [
+    {
+      "name": "Button",
+      "description": "Displays a button or a component that looks like a button. Supports 7 variants, 4 sizes, and icon compositions.",
+      "category": "Actions",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-slot",
+        "import": "import { Button } from \"@/components/ui/button\""
+      },
+
+      "properties": {
+        "Variant": ["Default", "Secondary", "Outline", "Ghost", "Ghost Muted", "Destructive", "Destructive Secondary"],
+        "Size": ["Large", "Default", "Small", "Mini"],
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Icon": ["None", "Left", "Right", "Both", "Icon Only"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "width": 120,
+        "height": 36,
+        "gap": "xs",
+        "fill": "primary",
+        "radius": "lg",
+        "paddingX": "md",
+        "paddingY": "none",
+        "textStyle": "SP/Body Semibold",
+        "textContent": "Button",
+        "textFill": "primary-foreground",
+        "iconSize": 16
+      },
+
+      "variantStyles": {
+        "Variant=Default": {},
+        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground" },
+        "Variant=Outline": { "fill": "outline", "stroke": "border", "textFill": "foreground" },
+        "Variant=Ghost": { "fill": "ghost", "textFill": "ghost-foreground" },
+        "Variant=Ghost Muted": { "fill": "ghost", "textFill": "ghost-foreground" },
+        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground" },
+        "Variant=Destructive Secondary": { "fill": "destructive-subtle", "stroke": "destructive-border", "textFill": "destructive-subtle-foreground" },
+
+        "Size=Large": { "height": 40, "paddingX": "xl", "gap": "xs" },
+        "Size=Default": {},
+        "Size=Small": { "height": 32, "paddingX": "sm", "gap": "2xs" },
+        "Size=Mini": { "height": 24, "paddingX": "xs", "gap": "2xs", "textStyle": "SP/Label" },
+
+        "State=Default": {},
+        "State=Hover": {},
+        "State=Focus": {},
+        "State=Disabled": { "opacity": 0.5 },
+
+        "Icon=None": {},
+        "Icon=Left": { "iconLeft": true, "iconLeftName": "Plus" },
+        "Icon=Right": { "iconRight": true, "iconRightName": "ChevronRight" },
+        "Icon=Both": { "iconLeft": true, "iconRight": true, "iconLeftName": "Plus", "iconRightName": "ChevronRight" },
+        "Icon=Icon Only": { "iconLeft": true, "iconLeftName": "Plus", "hideLabel": true, "paddingX": "none", "paddingY": "none", "gap": "none" },
+
+        "Variant=Default,State=Hover": { "fill": "primary-hover" },
+        "Variant=Secondary,State=Hover": { "fill": "secondary-hover" },
+        "Variant=Outline,State=Hover": { "fill": "outline-hover" },
+        "Variant=Ghost,State=Hover": { "fill": "ghost-hover", "textFill": "foreground" },
+        "Variant=Ghost Muted,State=Hover": { "fill": "ghost-hover", "textFill": "foreground" },
+        "Variant=Destructive,State=Hover": {},
+        "Variant=Destructive Secondary,State=Hover": {},
+
+        "Variant=Default,State=Focus": { "focusRing": "ring" },
+        "Variant=Secondary,State=Focus": { "focusRing": "ring" },
+        "Variant=Outline,State=Focus": { "focusRing": "ring", "stroke": "border-strong" },
+        "Variant=Ghost,State=Focus": { "focusRing": "ring" },
+        "Variant=Ghost Muted,State=Focus": { "focusRing": "ring" },
+        "Variant=Destructive,State=Focus": { "focusRing": "ring-error" },
+        "Variant=Destructive Secondary,State=Focus": { "focusRing": "ring-error" },
+
+        "Size=Large,Icon=Icon Only": { "width": 40 },
+        "Size=Default,Icon=Icon Only": { "width": 36 },
+        "Size=Small,Icon=Icon Only": { "width": 32 },
+        "Size=Mini,Icon=Icon Only": { "width": 24 }
+      },
+
+      "examples": [
+        {
+          "name":"Variants",
+          "description": "All 7 visual variants at default size.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Secondary", "props": { "Variant": "Secondary", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Outline", "props": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Ghost", "props": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Ghost Muted", "props": { "Variant": "Ghost Muted", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Destructive", "props": { "Variant": "Destructive", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Destructive Secondary", "props": { "Variant": "Destructive Secondary", "Size": "Default", "State": "Default", "Icon": "None" } }
+          ]
+        },
+        {
+          "name":"Sizes",
+          "description": "Large (40px), Default (36px), Small (32px), Mini (24px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Large", "props": { "Variant": "Default", "Size": "Large", "State": "Default", "Icon": "None" } },
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Small", "props": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "None" } },
+            { "label": "Mini", "props": { "Variant": "Default", "Size": "Mini", "State": "Default", "Icon": "None" } }
+          ]
+        },
+        {
+          "name":"With Icons",
+          "description": "Leading, trailing, both, and icon-only compositions.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Left", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "Left" } },
+            { "label": "Right", "props": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "Right" } },
+            { "label": "Both", "props": { "Variant": "Secondary", "Size": "Default", "State": "Default", "Icon": "Both" } },
+            { "label": "Icon Only", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "Icon Only" } }
+          ]
+        },
+        {
+          "name":"States",
+          "description": "Default, Hover, Focus, and Disabled states.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Hover", "props": { "Variant": "Default", "Size": "Default", "State": "Hover", "Icon": "None" } },
+            { "label": "Focus", "props": { "Variant": "Default", "Size": "Default", "State": "Focus", "Icon": "None" } },
+            { "label": "Disabled", "props": { "Variant": "Default", "Size": "Default", "State": "Disabled", "Icon": "None" } }
+          ]
+        },
+        {
+          "name":"Destructive Confirm",
+          "description": "Common cancel/delete action pair.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Cancel", "props": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Delete", "props": { "Variant": "Destructive", "Size": "Default", "State": "Default", "Icon": "None" } }
+          ]
+        },
+        {
+          "name":"Icon Only Sizes",
+          "description": "Square icon buttons at each size.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Large", "props": { "Variant": "Default", "Size": "Large", "State": "Default", "Icon": "Icon Only" } },
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "Icon Only" } },
+            { "label": "Small", "props": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "Icon Only" } },
+            { "label": "Mini", "props": { "Variant": "Ghost", "Size": "Mini", "State": "Default", "Icon": "Icon Only" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "variant", "type": "\"default\" | \"secondary\" | \"outline\" | \"ghost\" | \"ghost-muted\" | \"destructive\" | \"destructive-secondary\"", "default": "\"default\"", "description": "Visual style variant" },
+        { "name": "size", "type": "\"lg\" | \"default\" | \"sm\" | \"xs\" | \"icon\" | \"icon-sm\" | \"icon-lg\"", "default": "\"default\"", "description": "Button size" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the button" },
+        { "name": "asChild", "type": "boolean", "default": "false", "description": "Render as child element (Radix Slot)" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--primary", "value": "violet-600", "description": "Default variant background" },
+        { "token": "--primary-hover", "value": "violet-700", "description": "Default variant hover" },
+        { "token": "--primary-foreground", "value": "white", "description": "Default variant text" },
+        { "token": "--secondary", "value": "zinc-100 / zinc-800", "description": "Secondary variant background" },
+        { "token": "--secondary-hover", "value": "zinc-200 / zinc-700", "description": "Secondary hover" },
+        { "token": "--secondary-foreground", "value": "zinc-900 / zinc-50", "description": "Secondary text" },
+        { "token": "--outline", "value": "white / transparent", "description": "Outline variant background" },
+        { "token": "--outline-hover", "value": "zinc-50 / zinc-800", "description": "Outline hover" },
+        { "token": "--ghost", "value": "transparent", "description": "Ghost variant background" },
+        { "token": "--ghost-hover", "value": "zinc-100 / zinc-800", "description": "Ghost hover" },
+        { "token": "--ghost-foreground", "value": "zinc-600 / zinc-400", "description": "Ghost text" },
+        { "token": "--destructive", "value": "red-500", "description": "Destructive variant background" },
+        { "token": "--destructive-foreground", "value": "white", "description": "Destructive text" },
+        { "token": "--destructive-subtle", "value": "red-50 / red-950", "description": "Destructive Secondary background" },
+        { "token": "--destructive-border", "value": "red-200 / red-800", "description": "Destructive Secondary border" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring color" },
+        { "token": "--ring-error", "value": "red-500/30", "description": "Destructive focus ring" },
+        { "token": "--radius-lg", "value": "8px", "description": "Button border radius" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use one primary action per section to establish clear hierarchy — label should be a verb (Save, Delete, Continue).", "dont": "Place multiple primary buttons side by side — use secondary or outline for less important actions." },
+        { "do": "Include aria-label on icon-only buttons so screen reader users know the action.", "dont": "Use icon-only buttons without a tooltip or accessible label — the icon alone is not enough context." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Variant=Default", "value": "bg-primary", "code": "variant", "codeValue": "\"default\"" },
+        { "figma": "Variant=Secondary", "value": "bg-secondary", "code": "variant", "codeValue": "\"secondary\"" },
+        { "figma": "Variant=Outline", "value": "bg-outline + border", "code": "variant", "codeValue": "\"outline\"" },
+        { "figma": "Variant=Ghost", "value": "bg-ghost", "code": "variant", "codeValue": "\"ghost\"" },
+        { "figma": "Variant=Ghost Muted", "value": "bg-ghost", "code": "variant", "codeValue": "\"ghost-muted\"" },
+        { "figma": "Variant=Destructive", "value": "bg-destructive", "code": "variant", "codeValue": "\"destructive\"" },
+        { "figma": "Variant=Destructive Secondary", "value": "bg-destructive-subtle + border", "code": "variant", "codeValue": "\"destructive-secondary\"" },
+        { "figma": "Size=Large (40px)", "value": "h-3xl px-xl", "code": "size", "codeValue": "\"lg\"" },
+        { "figma": "Size=Default (36px)", "value": "h-9 px-md", "code": "size", "codeValue": "\"default\"" },
+        { "figma": "Size=Small (32px)", "value": "h-2xl px-sm", "code": "size", "codeValue": "\"sm\"" },
+        { "figma": "Size=Mini (24px)", "value": "h-xl px-xs", "code": "size", "codeValue": "\"xs\"" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true" },
+        { "figma": "Icon=Left", "value": "Plus 16px", "code": "children", "codeValue": "<Icon /> Label" },
+        { "figma": "Icon=Icon Only", "value": "Square, no label", "code": "size", "codeValue": "\"icon\" | \"icon-sm\" | \"icon-lg\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to button" },
+          { "key": "Enter / Space", "action": "Activate button" }
+        ],
+        "notes": [
+          "Icon-only buttons must include aria-label",
+          "Use type=\"submit\" for form submission"
+        ]
+      },
+
+      "related": [
+        { "name": "Toggle", "desc": "Stateful button that stays pressed to represent an on/off value." },
+        { "name": "Badge", "desc": "Non-interactive label for status or category display." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -69,7 +69,7 @@ import { toast } from "sonner"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -277,7 +277,7 @@ function GeographySection({ error, onRetry }: { error?: boolean; onRetry?: () =>
   const [highlightCity, setHighlightCity] = useState<string | null>(null)
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-md">
         <div className="flex items-center gap-md">
@@ -357,7 +357,7 @@ function RevenueOverview({ p }: { p: string[] }) {
   ]
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex items-center justify-between mb-lg">
         <h3 className="sp-h4 text-foreground">Revenue Overview</h3>
         <Badge variant="default" level="secondary" size="sm">Channels</Badge>
@@ -444,7 +444,7 @@ function TrafficSources({ p }: { p: string[] }) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null)
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex items-center justify-between mb-lg">
         <h3 className="sp-h4 text-foreground">Traffic Sources</h3>
         <Badge variant="default" level="secondary" size="sm">Channels</Badge>
@@ -535,7 +535,7 @@ function TrafficSources({ p }: { p: string[] }) {
 
 function RevenueForecast({ colors }: { colors: Record<string, string> }) {
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex items-center justify-between mb-lg">
         <h3 className="sp-h4 text-foreground">Revenue Forecast</h3>
         <div className="flex items-center gap-lg">
@@ -599,7 +599,7 @@ function ConversionFunnel({ colors, p, refreshing, onRefresh }: { colors: Record
   }))
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex items-center justify-between mb-md">
         <div className="flex items-center gap-sm">
           <h3 className="sp-h4 text-foreground">Conversion Funnel</h3>
@@ -698,7 +698,7 @@ function DailyOrders({ colors }: { colors: Record<string, string> }) {
   const weekChange = ((totalThisWeek - totalPrevWeek) / totalPrevWeek * 100).toFixed(1)
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-lg">
         <div>
           <h3 className="sp-h4 text-foreground">Daily Orders</h3>
@@ -762,7 +762,7 @@ function ProductCategories({ p }: { p: string[] }) {
   const maxValue = Math.max(...categoryData.map((c) => c.value))
 
   return (
-    <DCard className="p-2xl flex flex-col">
+    <DCard className="flex flex-col">
       <div className="flex items-center justify-between mb-lg">
         <h3 className="sp-h4 text-foreground">Product Categories</h3>
         <Badge variant="default" level="secondary" size="sm">{categoryData.length} categories</Badge>

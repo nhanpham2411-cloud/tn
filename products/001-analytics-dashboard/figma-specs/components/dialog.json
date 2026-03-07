@@ -1,0 +1,526 @@
+{
+  "components": [
+    {
+      "name": "Dialog Slot",
+      "description": "Swappable content slot for Dialog body. Swap this instance to customize the overlay content.",
+      "category": "Overlay",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Field Name",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Name" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "Pedro Duarte" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Field Username",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Username" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "@peduarte" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "This is the content area of the dialog. You can swap this slot to display custom content such as forms, lists, or any layout.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Dialog",
+      "description": "A modal dialog with overlay. Interrupts the user with important content and expects a response. Can be dismissed by clicking the overlay or pressing Escape.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-dialog",
+        "import": "import {\n  Dialog, DialogTrigger, DialogContent,\n  DialogHeader, DialogFooter, DialogTitle,\n  DialogDescription, DialogClose\n} from \"@/components/ui/dialog\""
+      },
+
+      "properties": {
+        "Type": ["Desktop", "Desktop Scrollable", "Mobile", "Mobile Full Screen"],
+        "Show Close": ["Yes", "No"],
+        "Show Description": ["Yes", "No"],
+        "Show Footer": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 512,
+        "fill": "card",
+        "stroke": "border",
+        "radius": "xl",
+        "effectStyleName": "Shadows/sm",
+        "paddingX": "none",
+        "paddingY": "md",
+        "gap": "xs",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "horizontal",
+            "counterAlign": "start",
+            "gap": "xs",
+            "paddingX": "md",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Text Group",
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "xs",
+                "fillWidth": true,
+                "children": [
+                  {
+                    "name": "Title",
+                    "type": "text",
+                    "textStyle": "SP/H4",
+                    "textContent": "Edit profile",
+                    "textFill": "foreground",
+                    "fillWidth": true
+                  },
+                  {
+                    "name": "Description",
+                    "type": "text",
+                    "textStyle": "SP/Body",
+                    "textContent": "Make changes to your profile here. Click save when you're done.",
+                    "textFill": "muted-foreground",
+                    "fillWidth": true,
+                    "showWhen": "Show Description=Yes"
+                  }
+                ]
+              },
+              {
+                "name": "Close Icon",
+                "type": "instance",
+                "component": "Icon / X",
+                "width": 16,
+                "height": 16,
+                "iconFill": "muted-foreground",
+                "showWhen": "Show Close=Yes"
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "md",
+            "paddingY": "md",
+            "fillWidth": true,
+            "showWhen": "Type=Desktop",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Scrollable",
+            "type": "frame",
+            "layout": "vertical",
+            "strokeSides": "top,bottom",
+            "stroke": "border",
+            "paddingX": "md",
+            "paddingY": "md",
+            "height": 160,
+            "fillWidth": true,
+            "clipsContent": true,
+            "showWhen": "Type=Desktop Scrollable,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Scrollable No Footer",
+            "type": "frame",
+            "layout": "vertical",
+            "strokeSides": "top",
+            "stroke": "border",
+            "paddingX": "md",
+            "paddingY": "md",
+            "height": 160,
+            "fillWidth": true,
+            "clipsContent": true,
+            "showWhen": "Type=Desktop Scrollable,Show Footer=No",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Mobile",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "md",
+            "paddingY": "md",
+            "fillWidth": true,
+            "showWhen": "Type=Mobile",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Mobile Full",
+            "type": "frame",
+            "layout": "vertical",
+            "strokeSides": "top,bottom",
+            "stroke": "border",
+            "paddingX": "md",
+            "paddingY": "md",
+            "height": 160,
+            "fillWidth": true,
+            "clipsContent": true,
+            "showWhen": "Type=Mobile Full Screen,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Mobile Full No Footer",
+            "type": "frame",
+            "layout": "vertical",
+            "strokeSides": "top",
+            "stroke": "border",
+            "paddingX": "md",
+            "paddingY": "md",
+            "height": 160,
+            "fillWidth": true,
+            "clipsContent": true,
+            "showWhen": "Type=Mobile Full Screen,Show Footer=No",
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Dialog Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer Desktop",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "end",
+            "counterAlign": "center",
+            "paddingX": "md",
+            "gap": "xs",
+            "showWhen": "Type=Desktop,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" }
+              },
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save changes" }
+              }
+            ]
+          },
+          {
+            "name": "Footer Desktop Scrollable",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "end",
+            "counterAlign": "center",
+            "paddingX": "md",
+            "gap": "xs",
+            "showWhen": "Type=Desktop Scrollable,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" }
+              },
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save changes" }
+              }
+            ]
+          },
+          {
+            "name": "Footer Mobile",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "md",
+            "gap": "xs",
+            "showWhen": "Type=Mobile,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save changes" },
+                "fillWidth": true
+              },
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer Mobile Full Screen",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "md",
+            "gap": "xs",
+            "showWhen": "Type=Mobile Full Screen,Show Footer=Yes",
+            "children": [
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save changes" },
+                "fillWidth": true
+              },
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "fillWidth": true
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Desktop": {},
+        "Type=Desktop Scrollable": {},
+        "Type=Mobile": { "width": 320 },
+        "Type=Mobile Full Screen": { "width": 320, "radius": "none" },
+        "Show Close=Yes": {},
+        "Show Close=No": {},
+        "Show Description=Yes": {},
+        "Show Description=No": {},
+        "Show Footer=Yes": {},
+        "Show Footer=No": { "paddingBottom": 0 }
+      },
+
+      "examples": [
+        {
+          "name": "With Form",
+          "description": "Edit dialog with labeled inputs — the most common Dialog pattern.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "Desktop",
+              "props": { "Type": "Desktop", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "Yes" }
+            },
+            {
+              "label": "No Close",
+              "props": { "Type": "Desktop", "Show Close": "No", "Show Description": "Yes", "Show Footer": "Yes" }
+            }
+          ]
+        },
+        {
+          "name": "Scrollable Content",
+          "description": "Dialog with scrollable body area between header and footer.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "Desktop Scrollable",
+              "props": { "Type": "Desktop Scrollable", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "Yes" }
+            },
+            {
+              "label": "Info Only",
+              "props": { "Type": "Desktop", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "No" }
+            }
+          ]
+        },
+        {
+          "name": "Mobile Layouts",
+          "description": "On small screens, buttons stack vertically. Full Screen removes border radius.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "Mobile",
+              "props": { "Type": "Mobile", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "Yes" }
+            },
+            {
+              "label": "Mobile Full Screen",
+              "props": { "Type": "Mobile Full Screen", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "Yes" }
+            }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "—", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "—", "description": "Callback fired when open state changes" },
+        { "name": "modal", "type": "boolean", "default": "true", "description": "Block interaction with content outside the dialog" },
+        { "name": "showCloseButton", "type": "boolean", "default": "true", "description": "Show/hide the X close button in the top-right corner" },
+        { "name": "onEscapeKeyDown", "type": "(e: KeyboardEvent) => void", "default": "—", "description": "Intercept Escape key — call e.preventDefault() to block close" },
+        { "name": "forceMount", "type": "boolean", "default": "—", "description": "Keep content mounted for external animation libraries" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes on the content panel" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Content background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Content border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Title text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description text color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring on close button" },
+        { "token": "--radius-xl", "value": "12px", "description": "Content border radius (sm:rounded-xl)" },
+        { "token": "black/50", "value": "—", "description": "Overlay backdrop opacity" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Dialog for non-destructive tasks (forms, data entry, info). Use AlertDialog for blocking confirmations.", "dont": "Use Dialog for critical confirmations — it can be dismissed by clicking the overlay." },
+        { "do": "Keep dialog content focused on a single task. Use a multi-step form pattern if more steps are needed.", "dont": "Nest dialogs or chain overlays — flatten the flow instead." },
+        { "do": "Always include a DialogTitle even if visually hidden — required for screen readers.", "dont": "Omit DialogTitle — dialog content will be inaccessible to assistive technologies." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Overlay", "value": "Black 50%", "code": "DialogOverlay", "codeValue": "fixed inset-0 z-50 bg-black/50" },
+        { "figma": "Content", "value": "bg-card, border, shadow", "code": "DialogContent", "codeValue": "sm:max-w-lg sm:rounded-xl p-md gap-xs" },
+        { "figma": "Header", "value": "Title + Description stack", "code": "DialogHeader", "codeValue": "flex flex-col gap-xs" },
+        { "figma": "Title", "value": "SP/H4", "code": "DialogTitle", "codeValue": "sp-h4 text-foreground" },
+        { "figma": "Description", "value": "SP/Body", "code": "DialogDescription", "codeValue": "typo-paragraph-sm text-muted-foreground" },
+        { "figma": "Footer Desktop", "value": "flex, justify-end, gap-xs", "code": "DialogFooter", "codeValue": "flex justify-end gap-xs" },
+        { "figma": "Footer Mobile", "value": "flex-col-reverse, gap-xs", "code": "DialogFooter", "codeValue": "flex flex-col-reverse gap-xs" },
+        { "figma": "Close", "value": "X icon, top-right, opacity-70", "code": "showCloseButton", "codeValue": "absolute right-md top-md, size-md icon" },
+        { "figma": "Type=Desktop", "value": "max-w-lg (512px)", "code": "sm:max-w-lg", "codeValue": "Desktop breakpoint" },
+        { "figma": "Type=Mobile", "value": "max-w-xs (320px)", "code": "max-w-xs", "codeValue": "Mobile breakpoint" },
+        { "figma": "Type=Mobile Full Screen", "value": "rounded-none", "code": "rounded-none", "codeValue": "Full screen — no border radius" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus between interactive elements (focus trapped)" },
+          { "key": "Shift+Tab", "action": "Move focus backwards" },
+          { "key": "Escape", "action": "Close the dialog (unless overridden)" },
+          { "key": "Enter / Space", "action": "Activate focused button" }
+        ],
+        "notes": [
+          "Focus is trapped inside the dialog when open",
+          "Focus returns to the trigger element on close",
+          "role=\"dialog\" aria-modal=\"true\" on DialogContent",
+          "DialogTitle is required — linked via aria-labelledby",
+          "DialogDescription linked via aria-describedby"
+        ]
+      },
+
+      "related": [
+        { "name": "AlertDialog", "desc": "Non-dismissible confirmation — cannot be closed by clicking the overlay." },
+        { "name": "Sheet", "desc": "Slide-in side panel — better for detail views, filters, and larger content." },
+        { "name": "Drawer", "desc": "Bottom sheet variant — mobile-friendly slide-up for forms and selections." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

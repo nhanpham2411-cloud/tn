@@ -1,0 +1,314 @@
+{
+  "components": [
+    {
+      "name": "Sheet Slot",
+      "description": "Swappable content slot for Sheet body. Swap this instance to customize the overlay content.",
+      "category": "Overlay",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Field Name",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Name" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "Pedro Duarte" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Field Email",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Email" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "pedro@example.com" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "This is the content area of the sheet panel. You can swap this slot to display custom content such as forms, filters, or navigation.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Sheet",
+      "description": "A slide-out panel from any screen edge. Built on Radix Dialog. Use for detail views, filters, navigation, or supplementary content.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-dialog",
+        "import": "import {\n  Sheet, SheetTrigger, SheetContent,\n  SheetHeader, SheetFooter, SheetTitle,\n  SheetDescription, SheetClose\n} from \"@/components/ui/sheet\""
+      },
+
+      "properties": {
+        "Side": ["Right", "Left", "Top", "Bottom"],
+        "Show Close": ["Yes", "No"],
+        "Show Description": ["Yes", "No"],
+        "Show Footer": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 384,
+        "height": 280,
+        "fill": "card",
+        "strokeSides": "left",
+        "stroke": "border",
+        "paddingX": "md",
+        "paddingY": "md",
+        "gap": "md",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "horizontal",
+            "counterAlign": "start",
+            "gap": "xs",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Text Group",
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "xs",
+                "fillWidth": true,
+                "children": [
+                  {
+                    "name": "Title",
+                    "type": "text",
+                    "textStyle": "SP/H4",
+                    "textContent": "Edit Settings",
+                    "textFill": "foreground",
+                    "fillWidth": true
+                  },
+                  {
+                    "name": "Description",
+                    "type": "text",
+                    "textStyle": "SP/Body",
+                    "textContent": "Update your account preferences.",
+                    "textFill": "muted-foreground",
+                    "fillWidth": true,
+                    "showWhen": "Show Description=Yes"
+                  }
+                ]
+              },
+              {
+                "name": "Close Icon",
+                "type": "instance",
+                "component": "Icon / X",
+                "width": 16,
+                "height": 16,
+                "iconFill": "muted-foreground",
+                "showWhen": "Show Close=Yes"
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Sheet Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "end",
+            "counterAlign": "center",
+            "gap": "xs",
+            "showWhen": "Show Footer=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" }
+              },
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save" }
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Side=Right": {},
+        "Side=Left": { "strokeSides": "right" },
+        "Side=Top": { "width": 512, "height": 160, "strokeSides": "bottom" },
+        "Side=Bottom": { "width": 512, "height": 160, "strokeSides": "top" },
+        "Show Close=Yes": {},
+        "Show Close=No": {},
+        "Show Description=Yes": {},
+        "Show Description=No": {},
+        "Show Footer=Yes": {},
+        "Show Footer=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Side Variants",
+          "description": "Panels slide in from any edge — right is the default for edit forms.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Right", "props": { "Side": "Right", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "Yes" } },
+            { "label": "Left", "props": { "Side": "Left", "Show Close": "Yes", "Show Description": "No", "Show Footer": "No" } }
+          ]
+        },
+        {
+          "name": "Horizontal Sides",
+          "description": "Top and bottom panels span the full width for search bars or action sheets.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Top", "props": { "Side": "Top", "Show Close": "Yes", "Show Description": "No", "Show Footer": "No" } },
+            { "label": "Bottom", "props": { "Side": "Bottom", "Show Close": "Yes", "Show Description": "No", "Show Footer": "Yes" } }
+          ]
+        },
+        {
+          "name": "Content Variations",
+          "description": "Toggle visibility of header sections and footer.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "No Footer", "props": { "Side": "Right", "Show Close": "Yes", "Show Description": "Yes", "Show Footer": "No" } },
+            { "label": "Minimal", "props": { "Side": "Right", "Show Close": "Yes", "Show Description": "No", "Show Footer": "No" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "—", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "—", "description": "Callback fired when open state changes" },
+        { "name": "modal", "type": "boolean", "default": "true", "description": "Block interaction outside the sheet panel" },
+        { "name": "side", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "default": "\"right\"", "description": "Edge the panel slides in from" },
+        { "name": "onEscapeKeyDown", "type": "(e: KeyboardEvent) => void", "default": "—", "description": "Intercept Escape key" },
+        { "name": "forceMount", "type": "boolean", "default": "—", "description": "Keep panel mounted for animation libraries" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Panel background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Panel edge border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Title text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description text color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring on close button" },
+        { "token": "black/50", "value": "—", "description": "Overlay backdrop opacity" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use right side for detail views and edit forms — matches natural reading direction.", "dont": "Use Sheet for critical confirmations — use AlertDialog instead." },
+        { "do": "Use left side for navigation menus — consistent with sidebar patterns.", "dont": "Put too much content in a Sheet — use a dedicated page for complex forms." },
+        { "do": "Always include SheetTitle even if visually hidden — required for screen readers.", "dont": "Use Sheet when the task requires full attention — use Dialog for that." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Overlay", "value": "Black 50%", "code": "SheetOverlay", "codeValue": "fixed inset-0 z-50 bg-black/50" },
+        { "figma": "Panel right", "value": "inset-y-0 right-0, border-l", "code": "side=\"right\"", "codeValue": "w-3/4 sm:max-w-sm, slide-in-from-right" },
+        { "figma": "Panel left", "value": "inset-y-0 left-0, border-r", "code": "side=\"left\"", "codeValue": "w-3/4 sm:max-w-sm, slide-in-from-left" },
+        { "figma": "Panel top", "value": "inset-x-0 top-0, border-b", "code": "side=\"top\"", "codeValue": "slide-in-from-top" },
+        { "figma": "Panel bottom", "value": "inset-x-0 bottom-0, border-t", "code": "side=\"bottom\"", "codeValue": "slide-in-from-bottom" },
+        { "figma": "Header", "value": "Title + Description stack", "code": "SheetHeader", "codeValue": "flex flex-col gap-xs" },
+        { "figma": "Title", "value": "SP/H4", "code": "SheetTitle", "codeValue": "sp-h4 text-foreground" },
+        { "figma": "Close", "value": "X icon, top-right", "code": "SheetClose", "codeValue": "absolute right-md top-md, size-md icon" },
+        { "figma": "Animation", "value": "Slide", "code": "data-[state]", "codeValue": "open: 500ms, close: 300ms ease-in-out" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus within the panel (focus trapped)" },
+          { "key": "Shift+Tab", "action": "Move focus backwards" },
+          { "key": "Escape", "action": "Close the sheet" }
+        ],
+        "notes": [
+          "Focus trapped inside when open",
+          "Returns focus to trigger on close",
+          "role=\"dialog\" aria-modal=\"true\" on SheetContent",
+          "Overlay click closes by default",
+          "SheetTitle linked via aria-labelledby — always required"
+        ]
+      },
+
+      "related": [
+        { "name": "Dialog", "desc": "Centered modal — better for focused tasks." },
+        { "name": "Drawer", "desc": "Bottom sheet for mobile — richer mobile UX than side=\"bottom\"." },
+        { "name": "AlertDialog", "desc": "Non-dismissible confirmation." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "components": [
+    {
+      "name": "Label",
+      "description": "An accessible form label linked to a control via htmlFor. Supports a required indicator (red asterisk). Automatically dims when the paired control is disabled.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-label",
+        "import": "import { Label } from \"@/components/ui/label\""
+      },
+
+      "properties": {
+        "Required": ["No", "Yes"],
+        "State": ["Default", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "4xs",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "paddingX": "none",
+        "paddingY": "none",
+        "children": [
+          {
+            "type": "text",
+            "name": "Label",
+            "textStyle": "SP/Body Medium",
+            "textContent": "Label text",
+            "textFill": "foreground"
+          },
+          {
+            "type": "text",
+            "name": "Required Indicator",
+            "textStyle": "SP/Body Medium",
+            "textContent": " *",
+            "textFill": "destructive",
+            "showWhen": "Required=Yes"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Required=No": {},
+        "Required=Yes": {},
+
+        "State=Default": {},
+        "State=Disabled": { "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Default States",
+          "description": "Standard label and required label side by side.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Required": "No", "State": "Default" } },
+            { "label": "Required", "props": { "Required": "Yes", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Disabled States",
+          "description": "Disabled label with and without required indicator.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Disabled", "props": { "Required": "No", "State": "Disabled" } },
+            { "label": "Disabled Required", "props": { "Required": "Yes", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "htmlFor", "type": "string", "default": "—", "description": "ID of the associated form control (required for accessibility)" },
+        { "name": "children", "type": "ReactNode", "default": "—", "description": "Label text — include a destructive span for required indicator" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--foreground", "value": "zinc-950 / zinc-50", "description": "Label text color" },
+        { "token": "--destructive", "value": "red-500", "description": "Required asterisk color" },
+        { "token": "SP/Body Medium", "value": "Inter 14px/20 500", "description": "Font style (paragraph-sm-medium)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always set htmlFor matching the input id — this is required for click-to-focus and screen reader association.", "dont": "Use a plain <span> or <p> as a visual label without htmlFor — screen readers cannot associate it with the input." },
+        { "do": "Place visible labels above or beside every input. Use placeholder only as supplementary hint.", "dont": "Replace labels with placeholders — placeholders disappear on focus and are not accessible labels." },
+        { "do": "Add a destructive asterisk inside the label text to mark required fields consistently.", "dont": "Use color alone to communicate 'required' — always pair it with a text symbol like *." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Text style", "value": "SP/Body Medium (14px/500)", "code": "Label", "codeValue": "typo-paragraph-sm-medium text-foreground" },
+        { "figma": "Color", "value": "foreground (zinc-950/zinc-50)", "code": "—", "codeValue": "text-foreground" },
+        { "figma": "Required=Yes", "value": "red asterisk *", "code": "children", "codeValue": "<span className='text-destructive'>*</span>" },
+        { "figma": "State=Default", "value": "opacity 100%", "code": "—", "codeValue": "Normal label" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "peer-disabled:", "codeValue": "peer-disabled:opacity-50 peer-disabled:cursor-not-allowed" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Click label", "action": "Move focus to the associated form control" }
+        ],
+        "notes": [
+          "htmlFor must match the id of the associated control — required for all screen readers",
+          "Clicking the label programmatically focuses and activates the linked control",
+          "role is implicitly 'label' via the native <label> element — no aria-label needed",
+          "For required fields, also add the required attribute on the input for form validation"
+        ]
+      },
+
+      "related": [
+        { "name": "Input", "desc": "Standard text field — always paired with a Label via htmlFor for accessibility." },
+        { "name": "Checkbox", "desc": "Toggle control — label placed inline beside the checkbox using flex items-center." },
+        { "name": "Switch", "desc": "Boolean control — same inline layout pattern as Checkbox." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

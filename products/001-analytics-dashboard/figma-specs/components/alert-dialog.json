@@ -1,0 +1,310 @@
+{
+  "components": [
+    {
+      "name": "Alert Dialog Slot",
+      "description": "Swappable content slot for Alert Dialog body. Swap this instance to customize the overlay content.",
+      "category": "Overlay",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Field Name",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Confirmation" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "Type DELETE to confirm" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "All associated data, files, and settings will be permanently removed. This action cannot be reversed.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Alert Dialog",
+      "description": "A modal dialog for important confirmations. Cannot be dismissed by clicking outside — the user must take an explicit action.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-alert-dialog",
+        "import": "import {\n  AlertDialog, AlertDialogTrigger, AlertDialogContent,\n  AlertDialogHeader, AlertDialogTitle, AlertDialogDescription,\n  AlertDialogFooter, AlertDialogAction, AlertDialogCancel\n} from \"@/components/ui/alert-dialog\""
+      },
+
+      "properties": {
+        "Type": ["Desktop", "Mobile"],
+        "Show Action": ["Yes", "No"],
+        "Show Action Secondary": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 512,
+        "fill": "card",
+        "stroke": "border",
+        "radius": "xl",
+        "effectStyleName": "Shadows/sm",
+        "paddingX": "xl",
+        "paddingY": "xl",
+        "gap": "lg",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "xs",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/H4",
+                "textContent": "Are you absolutely sure?",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "Description",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+                "textFill": "muted-foreground",
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Alert Dialog Slot",
+                "variants": { "Content": "Text" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer Desktop",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "end",
+            "counterAlign": "center",
+            "gap": "xs",
+            "showWhen": "Type=Desktop,Show Action=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "showWhen": "Show Action Secondary=Yes"
+              },
+              {
+                "name": "Action",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Continue" }
+              }
+            ]
+          },
+          {
+            "name": "Footer Mobile",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "xs",
+            "showWhen": "Type=Mobile,Show Action=Yes",
+            "children": [
+              {
+                "name": "Action",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Continue" },
+                "fillWidth": true
+              },
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "fillWidth": true,
+                "showWhen": "Show Action Secondary=Yes"
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Desktop": {},
+        "Type=Mobile": { "width": 384 },
+        "Show Action=Yes": {},
+        "Show Action=No": {},
+        "Show Action Secondary=Yes": {},
+        "Show Action Secondary=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Basic Confirmation",
+          "description": "Standard confirmation with title, description, and Cancel/Continue buttons.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "Desktop",
+              "props": { "Type": "Desktop", "Show Action": "Yes", "Show Action Secondary": "Yes" }
+            },
+            {
+              "label": "Action Only",
+              "props": { "Type": "Desktop", "Show Action": "Yes", "Show Action Secondary": "No" }
+            }
+          ]
+        },
+        {
+          "name": "Minimal",
+          "description": "Title and description only — no action buttons for pure informational alerts.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "No Actions",
+              "props": { "Type": "Desktop", "Show Action": "No", "Show Action Secondary": "No" }
+            },
+            {
+              "label": "Mobile No Actions",
+              "props": { "Type": "Mobile", "Show Action": "No", "Show Action Secondary": "No" }
+            }
+          ]
+        },
+        {
+          "name": "Mobile Layout",
+          "description": "On small screens, buttons stack vertically — action on top, cancel below.",
+          "layout": "horizontal",
+          "items": [
+            {
+              "label": "Mobile Full",
+              "props": { "Type": "Mobile", "Show Action": "Yes", "Show Action Secondary": "Yes" }
+            },
+            {
+              "label": "Mobile Action Only",
+              "props": { "Type": "Mobile", "Show Action": "Yes", "Show Action Secondary": "No" }
+            }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "—", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "—", "description": "Callback when open state changes" },
+        { "name": "defaultOpen", "type": "boolean", "default": "false", "description": "Initial open state (uncontrolled)" },
+        { "name": "forceMount", "type": "boolean", "default": "—", "description": "Force mounting for animation libraries" },
+        { "name": "variant (Action)", "type": "\"default\" | \"destructive\" | \"outline\" | ...", "default": "\"default\"", "description": "Button visual variant for AlertDialogAction" },
+        { "name": "variant (Cancel)", "type": "\"default\" | \"destructive\" | \"outline\" | ...", "default": "\"outline\"", "description": "Button visual variant for AlertDialogCancel" },
+        { "name": "size", "type": "\"default\" | \"sm\" | \"lg\" | \"icon\"", "default": "\"default\"", "description": "Button size for Action/Cancel" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Content background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Content border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Title text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description text color" },
+        { "token": "--primary", "value": "violet-600", "description": "Action button background" },
+        { "token": "--primary-foreground", "value": "white", "description": "Action button text" },
+        { "token": "--outline", "value": "white / transparent", "description": "Cancel button background" },
+        { "token": "--destructive", "value": "red-500", "description": "Destructive action button" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use AlertDialog for irreversible actions (delete, discard, logout).", "dont": "Use AlertDialog for informational messages — use Dialog or Alert instead." },
+        { "do": "Make the action button label specific: 'Delete Account' not just 'OK'.", "dont": "Use generic labels like 'Yes'/'No' — users should know the action without reading the description." },
+        { "do": "Keep the description short and focused — one action, one consequence.", "dont": "Stack multiple confirmation steps or unrelated decisions inside one dialog." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Content", "value": "bg-card, border, shadow", "code": "AlertDialogContent", "codeValue": "max-w-lg, rounded-xl, p-xl, gap-lg" },
+        { "figma": "Title", "value": "SP/H4", "code": "AlertDialogTitle", "codeValue": "text-base font-semibold font-heading" },
+        { "figma": "Description", "value": "SP/Body", "code": "AlertDialogDescription", "codeValue": "text-sm text-muted-foreground font-body" },
+        { "figma": "Footer Desktop", "value": "flex, justify-end, gap-xs", "code": "AlertDialogFooter", "codeValue": "flex justify-end gap-xs" },
+        { "figma": "Footer Mobile", "value": "flex-col, gap-xs", "code": "AlertDialogFooter", "codeValue": "flex flex-col-reverse gap-xs" },
+        { "figma": "Action", "value": "Button instance (Default/Small)", "code": "AlertDialogAction", "codeValue": "Wraps Radix in Button via asChild" },
+        { "figma": "Cancel", "value": "Button instance (Outline/Small)", "code": "AlertDialogCancel", "codeValue": "Wraps Radix in Button via asChild" },
+        { "figma": "Type=Desktop", "value": "max-w-lg (512px)", "code": "sm:max-w-lg", "codeValue": "Desktop breakpoint" },
+        { "figma": "Type=Mobile", "value": "max-w-sm (384px)", "code": "max-w-sm", "codeValue": "Mobile breakpoint" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus between action and cancel buttons" },
+          { "key": "Shift+Tab", "action": "Move focus backwards between buttons" },
+          { "key": "Enter / Space", "action": "Activate the focused button" },
+          { "key": "Escape", "action": "Close the dialog (same as cancel)" }
+        ],
+        "notes": [
+          "Cannot dismiss by clicking overlay — user must take explicit action",
+          "Focus trapped inside and auto-focused on first interactive element",
+          "Focus returns to trigger element when closed",
+          "role=\"alertdialog\" announces urgent content to screen readers"
+        ]
+      },
+
+      "related": [
+        { "name": "Dialog", "desc": "Dismissible modal for forms and interactions — can close by clicking outside." },
+        { "name": "Sheet", "desc": "Slide-out panel for larger content areas." },
+        { "name": "Drawer", "desc": "Bottom sheet for mobile-friendly interactions." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -63,7 +63,7 @@ BredarStudio_Templates/
 | File | Mục đích | Khi nào đọc |
 |------|----------|-------------|
 | `common-mistakes.md` | 33 bài học phân theo 5 danh mục (Figma Plugin, JSON Spec, Component Docs, Design Token, Workflow) | Trước MỌI phase — tránh lặp lỗi |
-| `products/{NNN}/component-docs-pattern.md` | 10-section pattern chuẩn cho component documentation | Trước Phase 7b (Design System Page) |
+| `_refs/component-docs-pattern.md` | 10-section pattern chuẩn cho component documentation + Group+Item tabbed pattern với instance sync rule | Trước Phase 7b (Design System Page) |
 | `_pipeline/templates/quality-checklist.md` | Checklist quality trước khi publish | Phase 6, 6.5, 9 |
 
 ---
@@ -988,6 +988,7 @@ Xây dựng React app hoàn chỉnh, pixel-perfect, chạy được trên browse
 - [ ] `pnpm build` pass, zero TS errors
 - [ ] Code-split (React.lazy) cho mọi page
 - [ ] Management pages pass edge case checklist (loading, offline, refresh, bulk, tabs, badges, empty state, pagination, actions, validation)
+- [ ] **BẮT BUỘC**: Sau khi tạo/update/điều chỉnh component hoặc foundation trên web React → chạy `/commands review` và `/commands test` để verify chất lượng
 
 ---
 
@@ -1180,19 +1181,27 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 #### 7b. Design System Page
 - Viết component docs theo chuẩn `component-docs-pattern.md` (10 sections)
 - **Nguyên tắc Explore Behavior**: PHẢI show component face (giao diện), KHÔNG show trigger
+- **Group+Item Pattern**: Components dạng navigation/menu/group PHẢI dùng tabbed Explore (Tab 1: Group, Tab 2: Item). Item state ở Tab 2 PHẢI sync vào 1 item trong Tab 1 group (instance sync rule)
 - **Interactive Demo**: Component cần trigger (Dialog, Sheet, Drawer, AlertDialog, Dropdown...) → thêm subsection Interactive Demo trong Examples
 - **Disabled logic**: Cascade property disable khi parent toggle off (ví dụ: `showAction=false` → `showActionSecondary` disabled)
-- Tham chiếu `common-mistakes.md` #14-#22 (Component Docs mistakes)
+- Tham chiếu `common-mistakes.md` #14-#22, #58 (Component Docs mistakes)
 
 #### 7c. Plugin Showcase
-- 8-section showcase matching web 100%
-- Variable binding: gap/padding → `spacing/*`, radius → `border radius/*`
+- Figma showcase generates **3 sections only**: Header, Component grid, Installation
+- Other sections (Explore, Examples, Props, Tokens, etc.) are **web-only** — not rendered in Figma
+- Variable binding: gap/padding → `spacing/*` (string tokens), radius → `border radius/*`
 
 #### 7d. Component Generation
 - Analyze React component tree → convert thành JSON spec format
 - Mỗi page = 1 JSON spec file
 - Lưu tại: `products/{NNN}-{tên}/figma-specs/`
 - Tham chiếu `common-mistakes.md` #9-#13 (JSON Spec mistakes)
+- **BẮT BUỘC: Chạy Review & Test Protocol** (xem `_refs/plugin-json-pattern.md` → "JSON Spec Review & Test Protocol"):
+  1. **Format Validation** — kiểm tra cấu trúc JSON (variantRestrictions object, token types, naming)
+  2. **Web Source Cross-Check** — so sánh JSON vs React code (properties, CSS, sizing, colors)
+  3. **Visual Diff Prediction** — mental render mỗi variant, so sánh với web
+  4. Fix TẤT CẢ issues tìm được TRƯỚC KHI giao cho user chạy plugin
+  5. Report kết quả review (PASS/FIXED/BLOCKED)
 
 #### 7e. Flow Generation
 - Chạy Figma plugin "Generate SaaS Template"
@@ -1208,11 +1217,15 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 - [ ] Foundation variables + text styles + effects synced
 - [ ] Component docs viết theo `component-docs-pattern.md` (10 sections)
 - [ ] Explore Behavior shows component face (NOT trigger)
+- [ ] Group+Item components: Tab 2 item state syncs into Tab 1 group
 - [ ] Interactive Demo cho overlay/trigger components
 - [ ] JSON specs viết cho tất cả pages
-- [ ] Figma plugin chạy thành công
-- [ ] Output khớp với React app
+- [ ] Mỗi JSON spec đã qua Review & Test Protocol (3 bước: Format, Cross-Check, Visual Diff)
+- [ ] Figma plugin chạy thành công (không error)
+- [ ] Output khớp với React app (visual comparison)
 - [ ] Tất cả components đều sử dụng Figma component set (không detach)
+- [ ] ComponentSet visual: border inside 1px DASH foreground, radius 16px, variants xếp lưới gọn gàng
+- [ ] Properties trên Figma khớp 100% React Explore controls (tên property, tên value, số lượng)
 - [ ] `common-mistakes.md` reviewed — no known mistakes repeated
 
 ---

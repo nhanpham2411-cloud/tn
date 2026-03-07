@@ -1,0 +1,157 @@
+{
+  "components": [
+    {
+      "name": "Slider",
+      "description": "Range input for selecting a numeric value by dragging a thumb along a 6px track. Track: rounded-full bg-muted, Range: bg-primary, Thumb: 16x16 circle with 2px primary border. Thumb overlaps the track.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-slider",
+        "import": "import { Slider } from \"@/components/ui/slider\""
+      },
+
+      "properties": {
+        "Value": ["0", "25", "50", "75", "100"],
+        "State": ["Default", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "height": 16,
+        "heightMode": "fixed",
+        "hideLabel": true,
+        "children": [
+          { "name": "Track", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted", "radius": "full" },
+          { "name": "Range 25", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 80, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=25" },
+          { "name": "Range 50", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 160, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=50" },
+          { "name": "Range 75", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 240, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=75" },
+          { "name": "Range 100", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=100" },
+          { "name": "Thumb 0", "type": "frame", "position": "absolute", "x": 0, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "showWhen": "Value=0" },
+          { "name": "Thumb 25", "type": "frame", "position": "absolute", "x": 72, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "showWhen": "Value=25" },
+          { "name": "Thumb 50", "type": "frame", "position": "absolute", "x": 152, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "showWhen": "Value=50" },
+          { "name": "Thumb 75", "type": "frame", "position": "absolute", "x": 232, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "showWhen": "Value=75" },
+          { "name": "Thumb 100", "type": "frame", "position": "absolute", "x": 304, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "showWhen": "Value=100" }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Focus": {
+          "children": [
+            { "name": "Track", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted", "radius": "full" },
+            { "name": "Range 25", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 80, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=25" },
+            { "name": "Range 50", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 160, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=50" },
+            { "name": "Range 75", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 240, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=75" },
+            { "name": "Range 100", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "primary", "radius": "full", "showWhen": "Value=100" },
+            { "name": "Thumb 0", "type": "frame", "position": "absolute", "x": 0, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "effectStyleName": "Ring/default","showWhen": "Value=0" },
+            { "name": "Thumb 25", "type": "frame", "position": "absolute", "x": 72, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "effectStyleName": "Ring/default","showWhen": "Value=25" },
+            { "name": "Thumb 50", "type": "frame", "position": "absolute", "x": 152, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "effectStyleName": "Ring/default","showWhen": "Value=50" },
+            { "name": "Thumb 75", "type": "frame", "position": "absolute", "x": 232, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "effectStyleName": "Ring/default","showWhen": "Value=75" },
+            { "name": "Thumb 100", "type": "frame", "position": "absolute", "x": 304, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2, "effectStyleName": "Ring/default","showWhen": "Value=100" }
+          ]
+        },
+        "State=Disabled": {
+          "opacity": 0.5,
+          "children": [
+            { "name": "Track", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted", "radius": "full" },
+            { "name": "Range 25", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 80, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted-foreground", "fillOpacity": 0.4, "radius": "full", "showWhen": "Value=25" },
+            { "name": "Range 50", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 160, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted-foreground", "fillOpacity": 0.4, "radius": "full", "showWhen": "Value=50" },
+            { "name": "Range 75", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 240, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted-foreground", "fillOpacity": 0.4, "radius": "full", "showWhen": "Value=75" },
+            { "name": "Range 100", "type": "frame", "position": "absolute", "x": 0, "y": 5, "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed", "fill": "muted-foreground", "fillOpacity": 0.4, "radius": "full", "showWhen": "Value=100" },
+            { "name": "Thumb 0", "type": "frame", "position": "absolute", "x": 0, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted", "stroke": "border-strong", "strokeWidth": 2, "showWhen": "Value=0" },
+            { "name": "Thumb 25", "type": "frame", "position": "absolute", "x": 72, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted", "stroke": "border-strong", "strokeWidth": 2, "showWhen": "Value=25" },
+            { "name": "Thumb 50", "type": "frame", "position": "absolute", "x": 152, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted", "stroke": "border-strong", "strokeWidth": 2, "showWhen": "Value=50" },
+            { "name": "Thumb 75", "type": "frame", "position": "absolute", "x": 232, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted", "stroke": "border-strong", "strokeWidth": 2, "showWhen": "Value=75" },
+            { "name": "Thumb 100", "type": "frame", "position": "absolute", "x": 304, "y": 0, "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed", "radius": "full", "fill": "muted", "stroke": "border-strong", "strokeWidth": 2, "showWhen": "Value=100" }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Slider at 0%, 25%, 50%, 75%, and 100% positions.",
+          "layout": "vertical",
+          "items": [
+            { "label": "0%", "props": { "Value": "0" } },
+            { "label": "25%", "props": { "Value": "25" } },
+            { "label": "50%", "props": { "Value": "50" } },
+            { "label": "75%", "props": { "Value": "75" } },
+            { "label": "100%", "props": { "Value": "100" } }
+          ]
+        },
+        {
+          "name": "States",
+          "description": "Slider in default, focus, and disabled states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Value": "50", "State": "Default" } },
+            { "label": "Focus", "props": { "Value": "50", "State": "Focus" } },
+            { "label": "Disabled", "props": { "Value": "50", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "number[]", "default": "--", "description": "Controlled value(s) -- array for single or dual thumb" },
+        { "name": "defaultValue", "type": "number[]", "default": "[0]", "description": "Initial value(s) for uncontrolled usage" },
+        { "name": "min", "type": "number", "default": "0", "description": "Minimum selectable value" },
+        { "name": "max", "type": "number", "default": "100", "description": "Maximum selectable value" },
+        { "name": "step", "type": "number", "default": "1", "description": "Step increment between selectable values" },
+        { "name": "onValueChange", "type": "(value: number[]) => void", "default": "--", "description": "Callback fired when value changes" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the slider -- root: opacity-50 cursor-not-allowed, range: muted-foreground/40, thumb: border-border-strong bg-muted" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-primary", "value": "violet-600 / violet-500", "description": "Thumb border and filled range track (bg-primary, border-primary)" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Empty track background (bg-muted)" },
+        { "token": "--color-background", "value": "white / zinc-950", "description": "Thumb fill color (bg-background)" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring on thumb (ring-ring, 3px spread)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Display the current value alongside the slider -- either as a live label or a static readout.", "dont": "Rely on the thumb position alone -- users cannot determine the exact value without a numeric display." },
+        { "do": "Use a single thumb for a single value (volume, brightness) and dual thumbs for a min/max range (price filter).", "dont": "Use a slider when the user needs to enter a precise value -- use Input[type=number] instead." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=0", "value": "Thumb at left, empty track only", "code": "value", "codeValue": "{[0]}" },
+        { "figma": "Value=25", "value": "25% filled + thumb at 25%", "code": "value", "codeValue": "{[25]}" },
+        { "figma": "Value=50", "value": "50% filled + thumb at 50%", "code": "value", "codeValue": "{[50]}" },
+        { "figma": "Value=75", "value": "75% filled + thumb at 75%", "code": "value", "codeValue": "{[75]}" },
+        { "figma": "Value=100", "value": "Fully filled + thumb at right", "code": "value", "codeValue": "{[100]}" },
+        { "figma": "State=Default", "value": "Normal interactive state", "code": "--", "codeValue": "Default" },
+        { "figma": "State=Focus", "value": "Thumb shows focus ring (3px ring-ring)", "code": "--", "codeValue": "focus-visible:ring-[3px] focus-visible:ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity-50, range muted-foreground/40, thumb border-border-strong bg-muted", "code": "disabled", "codeValue": "{true}" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the slider thumb" },
+          { "key": "Arrow Left / Down", "action": "Decrease value by one step" },
+          { "key": "Arrow Right / Up", "action": "Increase value by one step" },
+          { "key": "Home", "action": "Jump to minimum value" },
+          { "key": "End", "action": "Jump to maximum value" }
+        ],
+        "notes": [
+          "Uses role='slider' with aria-valuenow, aria-valuemin, aria-valuemax -- announced live by screen readers.",
+          "Provide aria-label or aria-labelledby on the Slider root for context (e.g. 'Volume').",
+          "For dual-thumb range sliders, each thumb gets its own aria-label (e.g. 'Minimum price', 'Maximum price')."
+        ]
+      },
+
+      "related": [
+        { "name": "Input", "desc": "Use Input[type=number] when the user needs to enter a precise numeric value. Slider is better when approximate range selection is more natural." },
+        { "name": "Progress", "desc": "Progress is a read-only indicator of system-driven completion. Use Slider when the user controls the value." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

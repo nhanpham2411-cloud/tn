@@ -1,0 +1,145 @@
+{
+  "components": [
+    {
+      "name": "Toggle",
+      "description": "A two-state button that switches between pressed and unpressed — ideal for formatting controls, view options, and toolbar actions. Unlike Switch, Toggle lives in toolbars and responds to button interaction patterns.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-toggle",
+        "import": "import { Toggle } from \"@/components/ui/toggle\""
+      },
+
+      "properties": {
+        "Variant": ["Default", "Outline"],
+        "Size": ["Small", "Default", "Large"],
+        "Value": ["Unpressed", "Pressed"],
+        "State": ["Default", "Hover", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "xs",
+        "width": 36,
+        "height": 36,
+        "paddingX": "sm",
+        "paddingY": "none",
+        "radius": "lg",
+        "hideLabel": true,
+        "iconLeft": true,
+        "iconLeftName": "Bold",
+        "iconSize": 16,
+        "iconFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "Variant=Default": {},
+        "Variant=Outline": { "stroke": "border" },
+
+        "Size=Small": { "width": 32, "height": 32, "paddingX": "xs" },
+        "Size=Default": {},
+        "Size=Large": { "width": 40, "height": 40, "paddingX": "md" },
+
+        "Value=Unpressed": {},
+        "Value=Pressed": { "fill": "muted", "iconFill": "foreground" },
+
+        "State=Default": {},
+        "State=Hover": { "fill": "muted", "iconFill": "foreground" },
+        "State=Focus": { "focusRing": "ring" },
+        "State=Disabled": { "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Default Variant",
+          "description": "Unpressed and pressed states — transparent background until activated.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Unpressed", "props": { "Variant": "Default", "Size": "Default", "Value": "Unpressed", "State": "Default" } },
+            { "label": "Pressed", "props": { "Variant": "Default", "Size": "Default", "Value": "Pressed", "State": "Default" } },
+            { "label": "Hover", "props": { "Variant": "Default", "Size": "Default", "Value": "Unpressed", "State": "Hover" } }
+          ]
+        },
+        {
+          "name": "Outline Variant",
+          "description": "Bordered variant makes the toggle boundary visible at all times.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Unpressed", "props": { "Variant": "Outline", "Size": "Default", "Value": "Unpressed", "State": "Default" } },
+            { "label": "Pressed", "props": { "Variant": "Outline", "Size": "Default", "Value": "Pressed", "State": "Default" } },
+            { "label": "Hover", "props": { "Variant": "Outline", "Size": "Default", "Value": "Unpressed", "State": "Hover" } }
+          ]
+        },
+        {
+          "name": "Sizes",
+          "description": "Three size options — Small (32px), Default (36px), Large (40px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Small", "props": { "Variant": "Default", "Size": "Small", "Value": "Pressed", "State": "Default" } },
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "Value": "Pressed", "State": "Default" } },
+            { "label": "Large", "props": { "Variant": "Default", "Size": "Large", "Value": "Pressed", "State": "Default" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "variant", "type": "\"default\" | \"outline\"", "default": "\"default\"", "description": "Visual style variant" },
+        { "name": "size", "type": "\"sm\" | \"default\" | \"lg\"", "default": "\"default\"", "description": "Button size" },
+        { "name": "pressed", "type": "boolean", "default": "—", "description": "Controlled pressed state" },
+        { "name": "onPressedChange", "type": "(pressed: boolean) => void", "default": "—", "description": "Callback when toggled" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the toggle" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted", "value": "zinc-100", "description": "Pressed and hover background" },
+        { "token": "--muted-foreground", "value": "zinc-500", "description": "Unpressed icon/text color" },
+        { "token": "--foreground", "value": "zinc-900", "description": "Pressed/hover icon/text color" },
+        { "token": "--border", "value": "zinc-200", "description": "Outline variant border" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Toggle for binary view options like grid/list, bold/italic, or active filters that take effect immediately.", "dont": "Use Toggle for navigation or primary one-shot actions — use Button or Tabs instead." },
+        { "do": "Include aria-label on icon-only toggles so screen readers can announce the action clearly.", "dont": "Rely on visual context alone — the toggle's purpose must be programmatically determinable." },
+        { "do": "Use Toggle when the state change takes effect immediately without a form submit.", "dont": "Use Toggle for deferred form selections — use Checkbox for values that are submitted with a form." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Variant=Default", "value": "bg-transparent, no border", "code": "variant=\"default\"", "codeValue": "bg-transparent" },
+        { "figma": "Variant=Outline", "value": "border border-border", "code": "variant=\"outline\"", "codeValue": "border border-border bg-transparent" },
+        { "figma": "Size=Small", "value": "32x32, px-xs", "code": "size=\"sm\"", "codeValue": "h-2xl px-xs min-w-8" },
+        { "figma": "Size=Default", "value": "36x36, px-sm", "code": "size=\"default\"", "codeValue": "h-9 px-sm min-w-9" },
+        { "figma": "Size=Large", "value": "40x40, px-md", "code": "size=\"lg\"", "codeValue": "h-3xl px-md min-w-10" },
+        { "figma": "Value=Unpressed", "value": "no fill, muted-foreground", "code": "pressed={false}", "codeValue": "bg-transparent text-muted-foreground" },
+        { "figma": "Value=Pressed", "value": "bg-muted, foreground", "code": "pressed={true}", "codeValue": "data-[state=on]:bg-muted data-[state=on]:text-foreground" },
+        { "figma": "State=Hover", "value": "bg-muted, foreground", "code": "hover:", "codeValue": "hover:bg-muted hover:text-foreground" },
+        { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the toggle" },
+          { "key": "Enter / Space", "action": "Toggle pressed state" },
+          { "key": "Arrow Left / Right", "action": "Navigate between items in ToggleGroup" }
+        ],
+        "notes": [
+          "Uses aria-pressed to communicate toggle state to screen readers",
+          "Icon-only toggles must have aria-label — without it the action is invisible to assistive tech",
+          "ToggleGroup with type='single' behaves like a radio group; type='multiple' behaves like a checkbox group"
+        ]
+      },
+
+      "related": [
+        { "name": "Button", "desc": "One-time actions that trigger a single event without persisting state." },
+        { "name": "Switch", "desc": "On/off settings in a settings panel context, communicating an instant mode change." },
+        { "name": "Checkbox", "desc": "Deferred selections submitted as part of a form — state does not take effect until submit." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

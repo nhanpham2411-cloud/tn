@@ -1,0 +1,88 @@
+{
+  "components": [
+    {
+      "name": "Separator",
+      "description": "A thin 1px line that visually divides content into distinct groups. Supports horizontal (h-px w-full) and vertical (h-full w-px) orientations. Purely decorative by default.",
+      "category": "Layout",
+      "installation": {
+        "import": "import { Separator } from \"@/components/ui/separator\""
+      },
+
+      "properties": {
+        "Orientation": ["Horizontal", "Vertical"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "height": 1,
+        "fill": "border",
+        "hideLabel": true
+      },
+
+      "variantStyles": {
+        "Orientation=Horizontal": {},
+        "Orientation=Vertical": { "width": 1, "height": 24 }
+      },
+
+      "examples": [
+        {
+          "name": "Orientations",
+          "description": "Horizontal (full-width 1px line) and vertical (1px × 24px inline divider).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Horizontal", "props": { "Orientation": "Horizontal" }, "fill": true },
+            { "label": "Vertical", "props": { "Orientation": "Vertical" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "orientation", "type": "\"horizontal\" | \"vertical\"", "default": "\"horizontal\"", "description": "Direction of the divider line" },
+        { "name": "decorative", "type": "boolean", "default": "true", "description": "When true, hides from screen readers (role='none'). Set false to expose role='separator'." },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Extend sizing or color — e.g. className='my-md' or 'bg-primary/20'" }
+      ],
+
+      "designTokens": [
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Separator line color (bg-border)" },
+        { "token": "h-px / w-px", "value": "1px", "description": "Line thickness — horizontal uses h-px w-full, vertical uses h-full w-px" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Separator to divide distinct content groups — nav sections, form fieldsets, metadata rows.", "dont": "Add a Separator between every item in a list — it creates visual noise. Use gap or padding instead." },
+        { "do": "Leave decorative=true (default) when the separation is already communicated by layout or context.", "dont": "Rely on Separator alone for semantic content grouping — use headings, sections, or fieldsets." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Orientation=Horizontal", "value": "320×1 bg-border", "code": "orientation", "codeValue": "\"horizontal\"" },
+        { "figma": "Orientation=Vertical", "value": "1×24 bg-border", "code": "orientation", "codeValue": "\"vertical\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Separator is not interactive — no keyboard interaction" }
+        ],
+        "notes": [
+          "Default (decorative=true): renders role='none' — invisible to screen readers.",
+          "Semantic (decorative=false): renders role='separator' with aria-orientation.",
+          "Never place focusable content immediately adjacent to a separator without proper landmark or heading structure."
+        ]
+      },
+
+      "related": [
+        { "name": "Card", "desc": "For bordered surface containers that group related content." },
+        { "name": "Accordion", "desc": "For collapsible content sections with built-in dividers." },
+        { "name": "Breadcrumb", "desc": "Uses vertical separators between navigation path segments." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

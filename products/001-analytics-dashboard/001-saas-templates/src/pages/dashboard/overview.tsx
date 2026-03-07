@@ -190,7 +190,7 @@ function ErrorCard({ title, onRetry }: { title: string; onRetry: () => void }) {
 /* Card wrapper — dashboard-specific: 2xl radius, softer border, no shadow */
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl ${className}`}>
+    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none ${className}`}>
       {children}
     </Card>
   )
@@ -341,7 +341,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
   }
 
   return (
-    <DCard className="p-2xl">
+    <DCard>
       {/* Header: title + actions + period tabs */}
       <div className="flex items-center justify-between mb-xl">
         <div className="flex items-center gap-md">
@@ -926,7 +926,7 @@ export default function DashboardOverviewPage() {
 
           {/* ── RIGHT col-span-4: Globe → Upgrade ── */}
           <div className="lg:col-span-4 flex flex-col gap-lg">
-            <DCard className="p-2xl h-[515px] flex flex-col overflow-hidden">
+            <DCard className="h-[502px] flex flex-col overflow-hidden">
               <div className="flex items-center justify-between mb-sm shrink-0">
                 <div className="flex items-center gap-sm">
                   <h3 className="sp-h4 text-foreground">Global Sales</h3>
@@ -992,7 +992,7 @@ export default function DashboardOverviewPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-lg items-start">
 
           {/* ── Recent Orders ──────────────────────────────── */}
-          <DCard className="md:col-span-1 lg:col-span-4 p-2xl">
+          <DCard className="md:col-span-1 lg:col-span-4">
             <div className="flex items-center justify-between mb-xl">
               <div className="flex items-center gap-sm">
                 <h3 className="sp-h4 text-foreground">Recent Orders</h3>
@@ -1078,7 +1078,7 @@ export default function DashboardOverviewPage() {
           </DCard>
 
           {/* ── Top Products ───────────────────────────────── */}
-          <DCard className="md:col-span-1 lg:col-span-4 p-2xl">
+          <DCard className="md:col-span-1 lg:col-span-4">
             <div className="flex items-center justify-between mb-lg">
               <div className="flex items-center gap-sm">
                 <h3 className="sp-h4 text-foreground">Top Products</h3>
@@ -1173,7 +1173,7 @@ export default function DashboardOverviewPage() {
           </DCard>
 
           {/* ── Sales Channels ─────────────────────────────── */}
-          <DCard className="md:col-span-2 lg:col-span-4 p-2xl pb-xl">
+          <DCard className="md:col-span-2 lg:col-span-4">
             <div className="flex items-center justify-between mb-lg">
               <h3 className="sp-h4 text-foreground">Sales Channels</h3>
               <DropdownMenu>

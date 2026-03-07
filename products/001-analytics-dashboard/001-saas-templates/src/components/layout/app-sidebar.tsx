@@ -43,9 +43,9 @@ export function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <Link to="/dashboard">
                 <div className="flex size-2xl items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <span className="typo-paragraph-sm-bold">S</span>
+                  <span className="sp-body font-semibold">S</span>
                 </div>
-                <span className="typo-paragraph-reg-semibold truncate">ShopPulse</span>
+                <span className="sp-body-semibold truncate">ShopPulse</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

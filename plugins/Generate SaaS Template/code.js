@@ -20,12 +20,51 @@ var varCache = {};
 var textStyleCache = {};
 var componentSetCache = {};
 var debugLog = [];
+var _loadedFontsSet = {};   // "family|style" → true, prevents duplicate loadFontAsync
+var _variantMapCache = {};  // componentSet.id → variant map
+var _iconCache = {};        // icon name → component node (or null)
+var _imageHashCache = {};   // url → imageHash (prevents re-fetching same image)
+var _pendingImageRequests = {};
+var _imageRequestId = 0;
+
+function fetchImageFromUI(url) {
+  return new Promise(function(resolve, reject) {
+    var id = ++_imageRequestId;
+    _pendingImageRequests[id] = { resolve: resolve, reject: reject };
+    figma.ui.postMessage({ type: 'fetch-image', url: url, id: id });
+    setTimeout(function() {
+      if (_pendingImageRequests[id]) {
+        delete _pendingImageRequests[id];
+        reject(new Error('Image fetch timeout'));
+      }
+    }, 15000);
+  });
+}
+
+var _prefetchedImages = {}; // url → byte array (from UI pre-fetch)
+
+async function getImageHash(url) {
+  if (_imageHashCache[url]) return _imageHashCache[url];
+  var imgBytes;
+  if (_prefetchedImages[url]) {
+    imgBytes = new Uint8Array(_prefetchedImages[url]);
+  } else {
+    imgBytes = await fetchImageFromUI(url);
+  }
+  var img = figma.createImage(imgBytes);
+  _imageHashCache[url] = img.hash;
+  return img.hash;
+}
 
 async function loadCaches() {
   varCache = {};
   textStyleCache = {};
   componentSetCache = {};
   debugLog = [];
+  _loadedFontsSet = {};
+  _variantMapCache = {};
+  _iconCache = {};
+  _imageHashCache = {};
 
   // Load all pages first (required for dynamic-page document access)
   try { await figma.loadAllPagesAsync(); } catch (e) {}
@@ -160,9 +199,14 @@ function findTextStyle(name) {
 // ============================================================
 
 function makeBoundPaint(variable, opacity) {
-  var paint = { type: "SOLID", color: { r: 0, g: 0, b: 0 } };
+  var paint = figma.variables.setBoundVariableForPaint(
+    { type: "SOLID", color: { r: 0, g: 0, b: 0 } },
+    "color",
+    variable
+  );
+  // Set opacity AFTER binding — setBoundVariableForPaint may drop it from the input
   if (opacity !== undefined && opacity < 1) paint.opacity = opacity;
-  return figma.variables.setBoundVariableForPaint(paint, "color", variable);
+  return paint;
 }
 
 function setFill(node, varName, fallbackHex) {
@@ -192,6 +236,50 @@ function setStroke(node, varName, fallbackHex) {
     var rgb = hexToRgb(fallbackHex);
     node.strokes = [{ type: "SOLID", color: rgb }];
   }
+}
+
+function setStrokeWithOpacity(node, varName, opacity) {
+  var v = findVar(varName);
+  if (v) {
+    node.strokes = [makeBoundPaint(v, opacity)];
+  }
+}
+
+// Per-side stroke weights: "all" | "top,right,bottom" | "top,bottom,left" etc.
+function _applyStrokeSides(node, sides, weight) {
+  if (!sides || sides === "all") return; // uniform stroke, nothing to change
+  var s = sides.split(",").map(function(x) { return x.trim().toLowerCase(); });
+  var w = weight || 1;
+  node.strokeTopWeight = s.indexOf("top") >= 0 ? w : 0;
+  node.strokeRightWeight = s.indexOf("right") >= 0 ? w : 0;
+  node.strokeBottomWeight = s.indexOf("bottom") >= 0 ? w : 0;
+  node.strokeLeftWeight = s.indexOf("left") >= 0 ? w : 0;
+}
+
+// Focus ring → effect style name mapping
+// "ring" → "Ring/default", "ring-error" → "Ring/error", "ring-brand" → "Ring/brand"
+function _focusRingStyleName(ringVal) {
+  if (!ringVal) return null;
+  if (ringVal === "ring") return "Ring/default";
+  var parts = ringVal.split("-");
+  if (parts.length >= 2 && parts[0] === "ring") return "Ring/" + parts.slice(1).join("-");
+  return "Ring/" + ringVal;
+}
+
+// Apply focus ring as effect style ONLY (no manual DROP_SHADOW)
+// Requires effect styles (Ring/default, Ring/error, etc.) to exist in Figma
+async function applyFocusRingEffect(node, ringVal) {
+  var styleName = _focusRingStyleName(ringVal);
+  if (!styleName) return;
+  try {
+    var _frStyles = await figma.getLocalEffectStylesAsync();
+    for (var _fri = 0; _fri < _frStyles.length; _fri++) {
+      if (_frStyles[_fri].name === styleName) {
+        try { await node.setEffectStyleIdAsync(_frStyles[_fri].id); } catch(e) { node.effects = _frStyles[_fri].effects; }
+        return;
+      }
+    }
+  } catch(e) {}
 }
 
 function setTextFill(textNode, varName, fallbackHex) {
@@ -227,22 +315,22 @@ function hexToRgb(hex) {
 
 // Token name → fallback pixel value mapping
 var SPACING_FALLBACKS = {
-  "3xs": 4, "2xs": 6, "xs": 8, "sm": 12, "md": 16,
+  "none": 0, "3xs": 4, "2xs": 6, "xs": 8, "sm": 12, "md": 16,
   "lg": 20, "xl": 24, "2xl": 32, "3xl": 40, "4xl": 48,
   "5xl": 64, "6xl": 80, "7xl": 96, "8xl": 128, "9xl": 160, "10xl": 192
 };
 
 var RADIUS_FALLBACKS = {
-  "sm": 4, "md": 6, "lg": 8, "xl": 12, "2xl": 16, "3xl": 24, "full": 9999
+  "none": 0, "sm": 4, "md": 6, "lg": 8, "xl": 12, "2xl": 16, "3xl": 24, "full": 9999
 };
 
 function getSpacingValue(token) {
   if (typeof token === "number") return token;
-  if (SPACING_FALLBACKS[token]) return SPACING_FALLBACKS[token];
+  if (SPACING_FALLBACKS[token] !== undefined) return SPACING_FALLBACKS[token];
   // Handle full paths like "spacing/md"
   if (token.indexOf("/") !== -1) {
     var lastPart = token.split("/").pop();
-    if (SPACING_FALLBACKS[lastPart]) return SPACING_FALLBACKS[lastPart];
+    if (SPACING_FALLBACKS[lastPart] !== undefined) return SPACING_FALLBACKS[lastPart];
   }
   return parseInt(token) || 0;
 }
@@ -316,6 +404,13 @@ async function loadFontSafe_single(family, style) {
   return null;
 }
 
+// Dedup wrapper: skips loadFontAsync if already loaded in this session
+async function _loadFont(family, style) {
+  var key = family + "|" + style;
+  if (_loadedFontsSet[key]) return;
+  try { await figma.loadFontAsync({ family: family, style: style }); _loadedFontsSet[key] = true; } catch(e) {}
+}
+
 async function preloadCommonFonts() {
   var fonts = [
     // SprouX defaults
@@ -326,11 +421,10 @@ async function preloadCommonFonts() {
     ["Plus Jakarta Sans", "Bold"], ["Plus Jakarta Sans", "ExtraBold"],
     ["JetBrains Mono", "Regular"], ["JetBrains Mono", "Medium"], ["JetBrains Mono", "SemiBold"]
   ];
-  for (var i = 0; i < fonts.length; i++) {
-    await loadFontSafe(fonts[i][0], fonts[i][1]);
-  }
+  // Load all base fonts in parallel
+  await Promise.all(fonts.map(function(f) { return loadFontSafe(f[0], f[1]); }));
 
-  // Preload text style fonts (SprouX + ShopPulse)
+  // Preload text style fonts (SprouX + ShopPulse) — collect unique fontNames then load in parallel
   var styleNames = [
     "heading 1", "heading 2", "heading 3",
     "paragraph regular/regular", "paragraph regular/medium", "paragraph regular/semibold",
@@ -343,12 +437,12 @@ async function preloadCommonFonts() {
     "sp / kpi hero", "sp / kpi lg", "sp / kpi md", "sp / kpi sm",
     "sp / data", "sp / data sm", "sp / order id"
   ];
+  var styleFontPromises = [];
   for (var s = 0; s < styleNames.length; s++) {
     var st = findTextStyle(styleNames[s]);
-    if (st && st.fontName) {
-      try { await figma.loadFontAsync(st.fontName); } catch (e) {}
-    }
+    if (st && st.fontName) styleFontPromises.push(_loadFont(st.fontName.family, st.fontName.style));
   }
+  await Promise.all(styleFontPromises);
 }
 
 // ============================================================
@@ -397,11 +491,12 @@ function normalizeVariantKey(name) {
 
 function makeVariantKey(variants) {
   var keys = Object.keys(variants).sort();
-  var parts = keys.map(function(k) { return k + "=" + variants[k]; });
+  var parts = keys.map(function(k) { return k + "=" + (variants[k] || ""); });
   return parts.join(", ").toLowerCase();
 }
 
 function buildVariantMap(componentSet) {
+  if (_variantMapCache[componentSet.id]) return _variantMapCache[componentSet.id];
   var map = {};
   for (var i = 0; i < componentSet.children.length; i++) {
     var child = componentSet.children[i];
@@ -409,6 +504,7 @@ function buildVariantMap(componentSet) {
       map[normalizeVariantKey(child.name)] = child;
     }
   }
+  _variantMapCache[componentSet.id] = map;
   return map;
 }
 
@@ -423,7 +519,7 @@ function findClosestVariant(variantMap, targetVariants) {
     var targetKeys = Object.keys(targetVariants);
     for (var j = 0; j < targetKeys.length; j++) {
       var prop = targetKeys[j];
-      var expected = (prop + "=" + targetVariants[prop]).toLowerCase();
+      var expected = (prop + "=" + (targetVariants[prop] || "")).toLowerCase();
       if (key.indexOf(expected) !== -1) score++;
     }
     if (score > bestScore) {
@@ -495,6 +591,7 @@ function setNestedInstanceVariant(parentInstance, childName, propName, propValue
 }
 
 function findIconComponent(iconName) {
+  if (_iconCache[iconName] !== undefined) return _iconCache[iconName];
   var patterns = [
     iconName,
     "Icon / " + iconName,
@@ -508,9 +605,10 @@ function findIconComponent(iconName) {
       var found = pages[p].findOne(function(n) {
         return n.type === "COMPONENT" && n.name.toLowerCase() === target;
       });
-      if (found) return found;
+      if (found) { _iconCache[iconName] = found; return found; }
     }
   }
+  _iconCache[iconName] = null;
   return null;
 }
 
@@ -1132,7 +1230,11 @@ function applyPadding(frame, spec) {
 }
 
 function applyGap(frame, spec) {
-  if (!spec.gap) return;
+  if (!spec.gap && spec.gap !== "auto") return;
+  if (spec.gap === "auto") {
+    frame.itemSpacing = 0;
+    return;
+  }
   var gapVal = getSpacingValue(spec.gap);
   if (typeof spec.gap === "string") {
     bindFloat(frame, "itemSpacing", spec.gap, gapVal);
@@ -1324,9 +1426,7 @@ async function doGenerate(specInput) {
     }
   }
 
-  if (allNodes.length > 0) {
-    figma.viewport.scrollAndZoomIntoView(allNodes);
-  }
+  // Never change viewport — user keeps their current view position
 
   var elapsed = Date.now() - startTime;
   debugLog.push("Generation complete: " + allNodes.length + " frame(s) in " + elapsed + "ms");
@@ -1400,73 +1500,163 @@ async function doCreateVariables(spec) {
     return { success: false, error: "No collections found in spec" };
   }
 
-  var createdVars = 0;
-  var createdCollections = 0;
+  // --- Load existing collections & variables for upsert ---
+  var existingCols = [];
+  try { existingCols = await figma.variables.getLocalVariableCollectionsAsync(); } catch (e) {}
+  var existingColMap = {}; // name → collection
+  for (var ec = 0; ec < existingCols.length; ec++) {
+    existingColMap[existingCols[ec].name.toLowerCase()] = existingCols[ec];
+  }
 
-  // GLOBAL lookup for cross-collection alias resolution
+  var existingVarsAll = [];
+  try {
+    var _ec1 = await figma.variables.getLocalVariablesAsync("COLOR");
+    var _ec2 = await figma.variables.getLocalVariablesAsync("FLOAT");
+    var _ec3 = await figma.variables.getLocalVariablesAsync("STRING");
+    existingVarsAll = _ec1.concat(_ec2).concat(_ec3);
+  } catch (e) {}
+
+  // Build lookup: collectionId → { varName → variable }
+  var existingVarsByCol = {};
+  for (var ev = 0; ev < existingVarsAll.length; ev++) {
+    var _v = existingVarsAll[ev];
+    var _colId = _v.variableCollectionId;
+    if (!existingVarsByCol[_colId]) existingVarsByCol[_colId] = {};
+    existingVarsByCol[_colId][_v.name.toLowerCase()] = _v;
+  }
+
+  var stats = { created: 0, updated: 0, deleted: 0, colCreated: 0, colUpdated: 0 };
+
+  // GLOBAL lookup for cross-collection alias resolution (existing + new)
   var globalVarLookup = {};
-  var collectionData = []; // store {col, modeMap, variables} per collection
+  // Pre-populate with ALL existing variables so aliases can resolve
+  for (var _pe = 0; _pe < existingVarsAll.length; _pe++) {
+    var _pv = existingVarsAll[_pe];
+    var _peCol = existingCols.filter(function(c) { return c.id === _pv.variableCollectionId; })[0];
+    if (_peCol) {
+      var _peKey = (_peCol.name + "/" + _pv.name).toLowerCase();
+      globalVarLookup[_peKey] = _pv;
+      var _peShort = _pv.name.toLowerCase();
+      if (!globalVarLookup[_peShort]) globalVarLookup[_peShort] = _pv;
+    }
+  }
 
-  // PASS 1: Create all collections + all variables (no values yet)
+  var collectionData = [];
+
+  // PASS 1: Upsert collections + variables (no values yet)
   for (var ci = 0; ci < collections.length; ci++) {
     var colSpec = collections[ci];
-    log.push("Creating collection: " + colSpec.name);
+    var colKey = colSpec.name.toLowerCase();
+    var col = existingColMap[colKey] || null;
+    var isNewCol = !col;
 
-    var col = figma.variables.createVariableCollection(colSpec.name);
-    createdCollections++;
+    if (isNewCol) {
+      col = figma.variables.createVariableCollection(colSpec.name);
+      stats.colCreated++;
+      log.push("Created collection: " + colSpec.name);
+    } else {
+      stats.colUpdated++;
+      log.push("Updating collection: " + colSpec.name);
+    }
 
     // Setup modes
     var modeMap = {};
-    var existingMode = col.modes[0];
-
-    if (colSpec.modes && colSpec.modes.length > 0) {
-      col.renameMode(existingMode.modeId, colSpec.modes[0]);
-      modeMap[colSpec.modes[0]] = existingMode.modeId;
-
-      for (var mi = 1; mi < colSpec.modes.length; mi++) {
-        var newModeId = col.addMode(colSpec.modes[mi]);
-        modeMap[colSpec.modes[mi]] = newModeId;
-      }
-    } else {
-      modeMap["default"] = existingMode.modeId;
+    var existingModes = col.modes.slice(); // [{modeId, name}]
+    var existingModeNames = {};
+    for (var em = 0; em < existingModes.length; em++) {
+      existingModeNames[existingModes[em].name] = existingModes[em].modeId;
     }
 
-    var variables = colSpec.variables || [];
+    if (colSpec.modes && colSpec.modes.length > 0) {
+      // First mode: rename existing first mode if needed
+      if (existingModes.length > 0 && existingModes[0].name !== colSpec.modes[0]) {
+        col.renameMode(existingModes[0].modeId, colSpec.modes[0]);
+      }
+      modeMap[colSpec.modes[0]] = existingModes[0] ? existingModes[0].modeId : col.modes[0].modeId;
 
-    for (var vi = 0; vi < variables.length; vi++) {
-      var vs = variables[vi];
+      // Additional modes: find existing or add
+      for (var mi = 1; mi < colSpec.modes.length; mi++) {
+        var specModeName = colSpec.modes[mi];
+        if (existingModeNames[specModeName]) {
+          modeMap[specModeName] = existingModeNames[specModeName];
+        } else {
+          var newModeId = col.addMode(specModeName);
+          modeMap[specModeName] = newModeId;
+        }
+      }
+
+      // Remove extra modes not in spec (except the ones we just mapped)
+      var specModeSet = {};
+      for (var sm = 0; sm < colSpec.modes.length; sm++) specModeSet[colSpec.modes[sm]] = true;
+      var currentModes = col.modes.slice();
+      for (var rm = 0; rm < currentModes.length; rm++) {
+        if (!specModeSet[currentModes[rm].name] && currentModes.length > 1) {
+          try { col.removeMode(currentModes[rm].modeId); } catch (e) {}
+        }
+      }
+    } else {
+      modeMap["default"] = col.modes[0].modeId;
+    }
+
+    // Upsert variables within this collection
+    var specVars = colSpec.variables || [];
+    var colVarMap = existingVarsByCol[col.id] || {};
+    var seenVarNames = {};
+
+    for (var vi = 0; vi < specVars.length; vi++) {
+      var vs = specVars[vi];
       var varType = (vs.type || "COLOR").toUpperCase();
-      var v = figma.variables.createVariable(vs.name, col, varType);
+      var varNameKey = vs.name.toLowerCase();
+      seenVarNames[varNameKey] = true;
 
-      // Apply scopes: collection-level or variable-level
-      // scopes=[] hides from all pickers (raw colors), scopes omitted = ALL_SCOPES (default)
+      var v = colVarMap[varNameKey] || null;
+
+      if (v) {
+        // Existing variable — update scopes & hiddenFromPublishing
+        log.push("  Updating variable: " + vs.name);
+        stats.updated++;
+      } else {
+        // New variable
+        v = figma.variables.createVariable(vs.name, col, varType);
+        log.push("  Created variable: " + vs.name);
+        stats.created++;
+      }
+
+      // Apply scopes
       var _scopes = vs.scopes !== undefined ? vs.scopes : colSpec.scopes;
       if (_scopes !== undefined) {
         try { v.scopes = _scopes; } catch (e) {}
       }
 
-      // hiddenFromPublishing: hide variable from team library
+      // hiddenFromPublishing
       if (vs.hiddenFromPublishing !== undefined) {
         try { v.hiddenFromPublishing = vs.hiddenFromPublishing; } catch (e) {}
       } else if (colSpec.hiddenFromPublishing !== undefined) {
         try { v.hiddenFromPublishing = colSpec.hiddenFromPublishing; } catch (e) {}
       }
 
-      // Register in global lookup with FULL path: "collectionName/varName"
+      // Register in global lookup
       var fullKey = (colSpec.name + "/" + vs.name).toLowerCase();
       globalVarLookup[fullKey] = v;
-
-      // Also register short name (for same-collection references)
       var shortKey = vs.name.toLowerCase();
       if (!globalVarLookup[shortKey]) globalVarLookup[shortKey] = v;
-
-      createdVars++;
     }
 
-    collectionData.push({ col: col, modeMap: modeMap, variables: variables, specVars: colSpec.variables, colName: colSpec.name });
+    // Delete variables that exist in Figma but NOT in spec
+    var colVarKeys = Object.keys(colVarMap);
+    for (var dv = 0; dv < colVarKeys.length; dv++) {
+      if (!seenVarNames[colVarKeys[dv]]) {
+        var toDelete = colVarMap[colVarKeys[dv]];
+        log.push("  Deleted variable: " + toDelete.name);
+        try { toDelete.remove(); } catch (e) { log.push("    WARN: could not delete " + toDelete.name + ": " + e.message); }
+        stats.deleted++;
+      }
+    }
+
+    collectionData.push({ col: col, modeMap: modeMap, specVars: colSpec.variables, colName: colSpec.name });
   }
 
-  log.push("Pass 1 done: " + createdVars + " variables created. Setting values...");
+  log.push("Pass 1 done: " + stats.created + " created, " + stats.updated + " updated, " + stats.deleted + " deleted. Setting values...");
 
   // PASS 2: Set all values (now global lookup has everything for alias resolution)
   for (var ci2 = 0; ci2 < collectionData.length; ci2++) {
@@ -1475,7 +1665,6 @@ async function doCreateVariables(spec) {
 
     for (var vi2 = 0; vi2 < variables2.length; vi2++) {
       var vs2 = variables2[vi2];
-      // Use FULL key (collectionName/varName) to avoid cross-collection collisions
       var varKey = (cd.colName + "/" + vs2.name).toLowerCase();
       var variable = globalVarLookup[varKey];
       if (!variable) continue;
@@ -1516,15 +1705,16 @@ async function doCreateVariables(spec) {
         }
       }
     }
-
   }
 
   var elapsed = Date.now() - startTime;
-  log.push("Done! " + createdCollections + " collections, " + createdVars + " variables in " + elapsed + "ms");
+  var summary = stats.colCreated + " new + " + stats.colUpdated + " updated collections, " +
+    stats.created + " new + " + stats.updated + " updated + " + stats.deleted + " deleted variables";
+  log.push("Done! " + summary + " in " + elapsed + "ms");
 
   return {
     success: true,
-    message: createdCollections + " collections, " + createdVars + " variables created",
+    message: summary,
     elapsed: elapsed,
     log: log
   };
@@ -1542,12 +1732,23 @@ async function doCreateTextStyles(spec) {
     return { success: false, error: "No styles found in spec" };
   }
 
-  var created = 0;
+  // --- Load existing text styles for upsert ---
+  var existingStyles = [];
+  try { existingStyles = await figma.getLocalTextStylesAsync(); } catch (e) {}
+  var existingMap = {}; // name → style
+  for (var es = 0; es < existingStyles.length; es++) {
+    existingMap[existingStyles[es].name.toLowerCase()] = existingStyles[es];
+  }
+
+  var stats = { created: 0, updated: 0, deleted: 0 };
+  var seenNames = {};
 
   for (var si = 0; si < styles.length; si++) {
     var s = styles[si];
+    var nameKey = s.name.toLowerCase();
+    seenNames[nameKey] = true;
 
-    // Load font using loadFontSafe (handles SemiBold → Semi Bold etc.)
+    // Load font
     var fontFamily = s.fontFamily || "Inter";
     var fontStyle = s.fontStyle || "Regular";
 
@@ -1562,8 +1763,19 @@ async function doCreateTextStyles(spec) {
       await loadFontSafe("Inter", "Regular");
     }
 
-    var textStyle = figma.createTextStyle();
-    textStyle.name = s.name;
+    // Upsert: find existing or create new
+    var textStyle = existingMap[nameKey] || null;
+    if (textStyle) {
+      stats.updated++;
+      log.push("Updating text style: " + s.name);
+    } else {
+      textStyle = figma.createTextStyle();
+      textStyle.name = s.name;
+      stats.created++;
+      log.push("Created text style: " + s.name + " (" + fontFamily + " " + fontStyle + " " + (s.fontSize || 14) + "px)");
+    }
+
+    // Apply properties (always overwrite to sync)
     textStyle.fontName = { family: fontFamily, style: fontStyle };
     textStyle.fontSize = s.fontSize || 14;
 
@@ -1571,7 +1783,6 @@ async function doCreateTextStyles(spec) {
       textStyle.lineHeight = { value: s.lineHeight, unit: "PIXELS" };
     }
     if (s.letterSpacing) {
-      // Convert em to percent if needed
       if (typeof s.letterSpacing === "string" && s.letterSpacing.endsWith("em")) {
         var emVal = parseFloat(s.letterSpacing);
         textStyle.letterSpacing = { value: emVal * 100, unit: "PERCENT" };
@@ -1580,19 +1791,28 @@ async function doCreateTextStyles(spec) {
       }
     }
     if (s.textCase) {
-      textStyle.textCase = s.textCase; // "UPPER", "LOWER", "TITLE", "ORIGINAL"
+      textStyle.textCase = s.textCase;
     }
+  }
 
-    created++;
-    log.push("Created text style: " + s.name + " (" + fontFamily + " " + fontStyle + " " + (s.fontSize || 14) + "px)");
+  // Delete text styles that exist in Figma but NOT in spec
+  var existingKeys = Object.keys(existingMap);
+  for (var di = 0; di < existingKeys.length; di++) {
+    if (!seenNames[existingKeys[di]]) {
+      var toDelete = existingMap[existingKeys[di]];
+      log.push("Deleted text style: " + toDelete.name);
+      try { toDelete.remove(); } catch (e) { log.push("  WARN: could not delete " + toDelete.name + ": " + e.message); }
+      stats.deleted++;
+    }
   }
 
   var elapsed = Date.now() - startTime;
-  log.push("Done! " + created + " text styles in " + elapsed + "ms");
+  var summary = stats.created + " new + " + stats.updated + " updated + " + stats.deleted + " deleted text styles";
+  log.push("Done! " + summary + " in " + elapsed + "ms");
 
   return {
     success: true,
-    message: created + " text styles created",
+    message: summary,
     elapsed: elapsed,
     log: log
   };
@@ -1610,12 +1830,23 @@ async function doCreateEffectStyles(spec) {
     return { success: false, error: "No styles found in spec" };
   }
 
-  var created = 0;
+  // --- Load existing effect styles for upsert ---
+  var existingStyles = [];
+  try { existingStyles = await figma.getLocalEffectStylesAsync(); } catch (e) {}
+  var existingMap = {}; // name → style
+  for (var es = 0; es < existingStyles.length; es++) {
+    existingMap[existingStyles[es].name.toLowerCase()] = existingStyles[es];
+  }
+
+  var stats = { created: 0, updated: 0, deleted: 0 };
+  var seenNames = {};
 
   for (var si = 0; si < styles.length; si++) {
     var s = styles[si];
+    var nameKey = s.name.toLowerCase();
+    seenNames[nameKey] = true;
 
-    // Build effects array BEFORE creating the style (avoid orphan on error)
+    // Build effects array
     var effects = [];
     var layers = s.effects || [];
 
@@ -1630,7 +1861,6 @@ async function doCreateEffectStyles(spec) {
           radius: e.radius || 0
         };
       } else {
-        // Shadow type (DROP_SHADOW, INNER_SHADOW) — blendMode required
         var color = parseColor(e.color) || { r: 0, g: 0, b: 0 };
         if (e.alpha !== undefined) color.a = e.alpha;
         else if (color.a === undefined) color.a = 0.25;
@@ -1649,20 +1879,40 @@ async function doCreateEffectStyles(spec) {
       effects.push(effect);
     }
 
-    // Only create the style after effects are valid
-    var effectStyle = figma.createEffectStyle();
-    effectStyle.name = s.name;
+    // Upsert: find existing or create new
+    var effectStyle = existingMap[nameKey] || null;
+    if (effectStyle) {
+      stats.updated++;
+      log.push("Updating effect style: " + s.name + " (" + layers.length + " layers)");
+    } else {
+      effectStyle = figma.createEffectStyle();
+      effectStyle.name = s.name;
+      stats.created++;
+      log.push("Created effect style: " + s.name + " (" + layers.length + " layers)");
+    }
+
+    // Apply effects (always overwrite to sync)
     effectStyle.effects = effects;
-    created++;
-    log.push("Created effect style: " + s.name + " (" + layers.length + " layers)");
+  }
+
+  // Delete effect styles that exist in Figma but NOT in spec
+  var existingKeys = Object.keys(existingMap);
+  for (var di = 0; di < existingKeys.length; di++) {
+    if (!seenNames[existingKeys[di]]) {
+      var toDelete = existingMap[existingKeys[di]];
+      log.push("Deleted effect style: " + toDelete.name);
+      try { toDelete.remove(); } catch (e) { log.push("  WARN: could not delete " + toDelete.name + ": " + e.message); }
+      stats.deleted++;
+    }
   }
 
   var elapsed = Date.now() - startTime;
-  log.push("Done! " + created + " effect styles in " + elapsed + "ms");
+  var summary = stats.created + " new + " + stats.updated + " updated + " + stats.deleted + " deleted effect styles";
+  log.push("Done! " + summary + " in " + elapsed + "ms");
 
   return {
     success: true,
-    message: created + " effect styles created",
+    message: summary,
     elapsed: elapsed,
     log: log
   };
@@ -1757,7 +2007,7 @@ async function doCreateIcons(spec) {
 
   // --- Build Icon Showcase ---
   var showcase = figma.createFrame();
-  showcase.name = "Icons — Showcase";
+  showcase.name = "Icons \u2014 Showcase";
   showcase.layoutMode = "VERTICAL";
   showcase.resize(1440, 100);
   showcase.layoutSizingHorizontal = "FIXED";
@@ -1820,7 +2070,7 @@ async function doCreateIcons(spec) {
   targetPage.appendChild(showcase);
   showcase.x = 0; showcase.y = 0;
 
-  figma.viewport.scrollAndZoomIntoView([showcase]);
+  // Never change viewport — user keeps their current view position
 
   var elapsed = Date.now() - startTime;
   log.push("Done! " + created + " icons + showcase in " + elapsed + "ms");
@@ -1911,17 +2161,407 @@ async function _getInstanceWithLabel(componentSet, variantProps, labelText, pare
   var inst = _getInstance(componentSet, variantProps);
   if (!inst) return null;
   if (labelText) {
-    // Preload fonts from instance
+    // Batch font loads for all text nodes in parallel (deduped via _loadFont)
     var tns = inst.findAll(function(n) { return n.type === "TEXT"; });
-    for (var t = 0; t < tns.length; t++) {
-      if (tns[t].fontName && tns[t].fontName !== figma.mixed) {
-        try { await figma.loadFontAsync(tns[t].fontName); } catch(e) {}
+    await Promise.all(tns.map(function(tn) {
+      if (tn.fontName && tn.fontName !== figma.mixed) {
+        return _loadFont(tn.fontName.family, tn.fontName.style);
       }
-    }
+      return Promise.resolve();
+    }));
     setTextOverride(inst, "Label", labelText);
   }
-  if (parent) parent.appendChild(inst);
+  if (parent) {
+    parent.appendChild(inst);
+    // Explicitly set FIXED sizing so instances never auto-stretch to fill parent
+    try { inst.layoutSizingHorizontal = "FIXED"; inst.layoutSizingVertical = "FIXED"; } catch(e) {}
+  }
   return inst;
+}
+
+// --- Children: structured child nodes for compound components ---
+
+function _matchShowWhen(showWhen, combo) {
+  if (!showWhen) return true;
+  var parts = showWhen.split(",");
+  for (var i = 0; i < parts.length; i++) {
+    var kv = parts[i].trim().split("=");
+    if (kv.length !== 2 || combo[kv[0]] !== kv[1]) return false;
+  }
+  return true;
+}
+
+function _getChildOrder(childrenSpec, combo) {
+  var order = [];
+  for (var i = 0; i < childrenSpec.length; i++) {
+    if (!_matchShowWhen(childrenSpec[i].showWhen, combo)) continue;
+    order.push(childrenSpec[i].name || ("Child " + i));
+  }
+  return order;
+}
+
+async function _processChildren(childrenSpec, parent, combo) {
+  var validNames = {};
+  for (var ci = 0; ci < childrenSpec.length; ci++) {
+    var cs = childrenSpec[ci];
+    if (!_matchShowWhen(cs.showWhen, combo)) continue;
+
+    var type = cs.type || "text";
+    var name = cs.name || ("Child " + ci);
+    validNames[name] = true;
+
+    if (type === "text") {
+      var txt = null;
+      for (var _ti = 0; _ti < parent.children.length; _ti++) {
+        if (parent.children[_ti].name === name && parent.children[_ti].type === "TEXT") { txt = parent.children[_ti]; break; }
+      }
+      if (!txt) { txt = figma.createText(); txt.name = name; parent.appendChild(txt); }
+      var tsName = cs.textStyle || null;
+      var fontLoaded = false;
+      if (tsName) {
+        var ts = findTextStyle(tsName);
+        if (ts && ts.fontName) {
+          try { await figma.loadFontAsync(ts.fontName); fontLoaded = true; } catch(e) {}
+          try { await txt.setTextStyleIdAsync(ts.id); } catch(e) {}
+        }
+      }
+      if (!fontLoaded) {
+        var fb = await loadFontSafe("Inter", "Regular");
+        if (fb) txt.fontName = fb;
+        txt.fontSize = cs.fontSize || 14;
+      }
+      txt.characters = cs.textContent || "";
+      if (cs.textFill) setTextFill(txt, cs.textFill);
+      try { txt.layoutSizingHorizontal = cs.fillWidth ? "FILL" : "HUG"; } catch(e) {}
+      try { txt.layoutSizingVertical = "HUG"; } catch(e) {}
+    }
+
+    else if (type === "divider") {
+      var div = null;
+      for (var _di = 0; _di < parent.children.length; _di++) {
+        if (parent.children[_di].name === name && parent.children[_di].type === "FRAME") { div = parent.children[_di]; break; }
+      }
+      if (!div) { div = figma.createFrame(); div.name = name; parent.appendChild(div); }
+      div.layoutMode = "NONE";
+      div.resize(100, cs.height || 1);
+      try { div.layoutSizingHorizontal = "FILL"; } catch(e) {}
+      div.layoutSizingVertical = "FIXED";
+      if (cs.fill) setFill(div, cs.fill); else setFill(div, "border");
+    }
+
+    else if (type === "frame") {
+      var frm = null;
+      for (var _fi = 0; _fi < parent.children.length; _fi++) {
+        if (parent.children[_fi].name === name && parent.children[_fi].type === "FRAME") { frm = parent.children[_fi]; break; }
+      }
+      if (!frm) { frm = figma.createFrame(); frm.name = name; parent.appendChild(frm); }
+      frm.layoutMode = (cs.layout || "horizontal") === "horizontal" ? "HORIZONTAL" : "VERTICAL";
+      var pa = cs.primaryAlign || "start";
+      frm.primaryAxisAlignItems = pa === "start" ? "MIN" : pa === "end" ? "MAX" : pa === "space-between" ? "SPACE_BETWEEN" : pa === "center" ? "CENTER" : "MIN";
+      var ca = cs.counterAlign || "center";
+      frm.counterAxisAlignItems = ca === "start" ? "MIN" : ca === "end" ? "MAX" : "CENTER";
+      // Gap — "auto" = no variable binding (space-between auto), string token = variable binding, number = raw pixel
+      var gap = cs.gap !== undefined ? cs.gap : "xs";
+      if (gap === "auto") {
+        frm.itemSpacing = 0;
+      } else if (typeof gap === "string") {
+        frm.itemSpacing = getSpacingValue(gap);
+        bindFloat(frm, "itemSpacing", gap.indexOf("/") !== -1 ? gap : "spacing/" + gap, frm.itemSpacing);
+      } else { frm.itemSpacing = gap; if (gap === 0) bindFloat(frm, "itemSpacing", "spacing/none", 0); }
+      // Size
+      var frmW = cs.width || 100; var frmH = cs.height || 36;
+      frm.resize(frmW, frmH);
+      try { frm.layoutSizingHorizontal = cs.widthMode === "fixed" ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"; } catch(e) {}
+      try { frm.layoutSizingVertical = cs.heightMode === "fixed" ? "FIXED" : "HUG"; } catch(e) {}
+      // Padding — supports paddingX/paddingY (both sides) and per-side paddingTop/paddingBottom/paddingLeft/paddingRight
+      var px = cs.paddingX !== undefined ? cs.paddingX : "none"; var py = cs.paddingY !== undefined ? cs.paddingY : "none";
+      if (typeof px === "string") {
+        var pxv = getSpacingValue(px); frm.paddingLeft = pxv; frm.paddingRight = pxv;
+        var pxVarName = px.indexOf("/") !== -1 ? px : "spacing/" + px;
+        bindFloat(frm, "paddingLeft", pxVarName, pxv);
+        bindFloat(frm, "paddingRight", pxVarName, pxv);
+      } else { frm.paddingLeft = px; frm.paddingRight = px; if (px === 0) { bindFloat(frm, "paddingLeft", "spacing/none", 0); bindFloat(frm, "paddingRight", "spacing/none", 0); } }
+      if (typeof py === "string") {
+        var pyv = getSpacingValue(py); frm.paddingTop = pyv; frm.paddingBottom = pyv;
+        var pyVarName = py.indexOf("/") !== -1 ? py : "spacing/" + py;
+        bindFloat(frm, "paddingTop", pyVarName, pyv);
+        bindFloat(frm, "paddingBottom", pyVarName, pyv);
+      } else { frm.paddingTop = py; frm.paddingBottom = py; if (py === 0) { bindFloat(frm, "paddingTop", "spacing/none", 0); bindFloat(frm, "paddingBottom", "spacing/none", 0); } }
+      // Per-side padding overrides (after paddingX/paddingY)
+      if (cs.paddingTop !== undefined) {
+        if (typeof cs.paddingTop === "string") { var ptv = getSpacingValue(cs.paddingTop); frm.paddingTop = ptv; bindFloat(frm, "paddingTop", cs.paddingTop.indexOf("/") !== -1 ? cs.paddingTop : "spacing/" + cs.paddingTop, ptv); }
+        else { frm.paddingTop = cs.paddingTop; if (cs.paddingTop === 0) bindFloat(frm, "paddingTop", "spacing/none", 0); }
+      }
+      if (cs.paddingBottom !== undefined) {
+        if (typeof cs.paddingBottom === "string") { var pbv = getSpacingValue(cs.paddingBottom); frm.paddingBottom = pbv; bindFloat(frm, "paddingBottom", cs.paddingBottom.indexOf("/") !== -1 ? cs.paddingBottom : "spacing/" + cs.paddingBottom, pbv); }
+        else { frm.paddingBottom = cs.paddingBottom; if (cs.paddingBottom === 0) bindFloat(frm, "paddingBottom", "spacing/none", 0); }
+      }
+      if (cs.paddingLeft !== undefined) {
+        if (typeof cs.paddingLeft === "string") { var plv = getSpacingValue(cs.paddingLeft); frm.paddingLeft = plv; bindFloat(frm, "paddingLeft", cs.paddingLeft.indexOf("/") !== -1 ? cs.paddingLeft : "spacing/" + cs.paddingLeft, plv); }
+        else { frm.paddingLeft = cs.paddingLeft; if (cs.paddingLeft === 0) bindFloat(frm, "paddingLeft", "spacing/none", 0); }
+      }
+      if (cs.paddingRight !== undefined) {
+        if (typeof cs.paddingRight === "string") { var prv = getSpacingValue(cs.paddingRight); frm.paddingRight = prv; bindFloat(frm, "paddingRight", cs.paddingRight.indexOf("/") !== -1 ? cs.paddingRight : "spacing/" + cs.paddingRight, prv); }
+        else { frm.paddingRight = cs.paddingRight; if (cs.paddingRight === 0) bindFloat(frm, "paddingRight", "spacing/none", 0); }
+      }
+      // Radius
+      if (cs.radius) {
+        var rad = cs.radius;
+        if (typeof rad === "string") {
+          var rv = getRadiusValue(rad);
+          frm.topLeftRadius = rv; frm.topRightRadius = rv; frm.bottomLeftRadius = rv; frm.bottomRightRadius = rv;
+          var rVarName = rad.indexOf("/") !== -1 ? rad : "border radius/" + rad;
+          var rVar = findVar(rVarName);
+          if (rVar) { try { frm.setBoundVariable("topLeftRadius",rVar); frm.setBoundVariable("topRightRadius",rVar); frm.setBoundVariable("bottomLeftRadius",rVar); frm.setBoundVariable("bottomRightRadius",rVar); } catch(e){} }
+        } else {
+          frm.topLeftRadius = rad; frm.topRightRadius = rad; frm.bottomLeftRadius = rad; frm.bottomRightRadius = rad;
+          if (rad === 0) { var _rn0 = findVar("border radius/none"); if (_rn0) { try { frm.setBoundVariable("topLeftRadius",_rn0); frm.setBoundVariable("topRightRadius",_rn0); frm.setBoundVariable("bottomLeftRadius",_rn0); frm.setBoundVariable("bottomRightRadius",_rn0); } catch(e){} } }
+        }
+      } else {
+        frm.topLeftRadius = 0; frm.topRightRadius = 0; frm.bottomLeftRadius = 0; frm.bottomRightRadius = 0;
+        var _rnVar = findVar("border radius/none");
+        if (_rnVar) { try { frm.setBoundVariable("topLeftRadius",_rnVar); frm.setBoundVariable("topRightRadius",_rnVar); frm.setBoundVariable("bottomLeftRadius",_rnVar); frm.setBoundVariable("bottomRightRadius",_rnVar); } catch(e){} }
+      }
+      // Per-corner radius overrides (supports string tokens like "md" or numeric px)
+      var _perCornerKeys = [["radiusTopLeft","topLeftRadius"],["radiusTopRight","topRightRadius"],["radiusBottomLeft","bottomLeftRadius"],["radiusBottomRight","bottomRightRadius"]];
+      for (var _pci = 0; _pci < _perCornerKeys.length; _pci++) {
+        var _pcKey = _perCornerKeys[_pci][0], _pcProp = _perCornerKeys[_pci][1];
+        if (cs[_pcKey] !== undefined) {
+          var _pcVal = cs[_pcKey];
+          if (typeof _pcVal === "string") {
+            var _pcPx = getRadiusValue(_pcVal);
+            frm[_pcProp] = _pcPx;
+            var _pcVarName = _pcVal.indexOf("/") !== -1 ? _pcVal : "border radius/" + _pcVal;
+            var _pcVar = findVar(_pcVarName);
+            if (_pcVar) { try { frm.setBoundVariable(_pcProp, _pcVar); } catch(e){} }
+          } else {
+            frm[_pcProp] = _pcVal;
+          }
+        }
+      }
+      // Fill & Stroke
+      if (cs.fill) {
+        if (cs.fillOpacity !== undefined) setFillWithOpacity(frm, cs.fill, cs.fillOpacity);
+        else setFill(frm, cs.fill);
+      } else frm.fills = [];
+      if (cs.stroke) { setStroke(frm, cs.stroke); frm.strokeWeight = cs.strokeWeight || 1; frm.strokeAlign = "INSIDE"; if (cs.strokeSides) _applyStrokeSides(frm, cs.strokeSides, cs.strokeWeight || 1); }
+      else frm.strokes = [];
+      // Absolute positioning (child ignores parent auto-layout, uses x/y)
+      if (cs.position === "absolute") {
+        frm.layoutPositioning = "ABSOLUTE";
+        if (cs.x !== undefined) frm.x = cs.x;
+        if (cs.y !== undefined) frm.y = cs.y;
+      }
+      // Clips content
+      if (cs.clipsContent) frm.clipsContent = true;
+      // Effect style on child frame (e.g. "Ring/default", "Shadows/sm")
+      if (cs.effectStyleName) {
+        var _ceStyles = await figma.getLocalEffectStylesAsync();
+        var _ceFound = null;
+        for (var _cei = 0; _cei < _ceStyles.length; _cei++) {
+          if (_ceStyles[_cei].name === cs.effectStyleName) { _ceFound = _ceStyles[_cei]; break; }
+        }
+        if (_ceFound) { try { frm.setEffectStyleIdAsync(_ceFound.id); } catch(e) { frm.effects = _ceFound.effects; } }
+      } else if (cs.focusRing) {
+        await applyFocusRingEffect(frm, cs.focusRing);
+      } else frm.effects = [];
+      // Opacity
+      if (cs.opacity !== undefined) frm.opacity = cs.opacity;
+      // Nested children
+      if (cs.children && cs.children.length > 0) {
+        var nestedNames = await _processChildren(cs.children, frm, combo);
+        for (var nri = frm.children.length - 1; nri >= 0; nri--) {
+          if (!nestedNames[frm.children[nri].name]) frm.children[nri].remove();
+        }
+        var nestedOrder = _getChildOrder(cs.children, combo);
+        for (var noi = 0; noi < nestedOrder.length; noi++) {
+          for (var nci = 0; nci < frm.children.length; nci++) {
+            if (frm.children[nci].name === nestedOrder[noi]) { frm.appendChild(frm.children[nci]); break; }
+          }
+        }
+      }
+    }
+
+    else if (type === "arrow") {
+      // Creates a triangle arrow via SVG path — exact shape like Radix TooltipArrow.
+      // JSON: { "type": "arrow", "name": "Arrow", "direction": "down", "width": 12, "height": 6, "fill": "foreground" }
+      // Directions: "down" (default), "up", "left", "right"
+      var arW = cs.width || 12;
+      var arH = cs.height || 6;
+      var arDir = cs.direction || "down";
+      var svgPts = "";
+      if (arDir === "down") svgPts = "0,0 " + (arW/2) + "," + arH + " " + arW + ",0";
+      else if (arDir === "up") svgPts = "0," + arH + " " + (arW/2) + ",0 " + arW + "," + arH;
+      else if (arDir === "right") svgPts = "0,0 " + arW + "," + (arH/2) + " 0," + arH;
+      else if (arDir === "left") svgPts = arW + ",0 0," + (arH/2) + " " + arW + "," + arH;
+      var svgStr = '<svg width="' + arW + '" height="' + arH + '" xmlns="http://www.w3.org/2000/svg"><polygon points="' + svgPts + '" fill="black"/></svg>';
+      // Remove existing node with same name (any type)
+      for (var _ai = parent.children.length - 1; _ai >= 0; _ai--) {
+        if (parent.children[_ai].name === name) { parent.children[_ai].remove(); break; }
+      }
+      var svgFrame = figma.createNodeFromSvg(svgStr);
+      svgFrame.name = name;
+      // Flatten: createNodeFromSvg returns a FRAME wrapping vectors. Get the vector child.
+      var arrowVec = svgFrame.children.length > 0 ? svgFrame.children[0] : null;
+      if (arrowVec) {
+        parent.appendChild(arrowVec);
+        arrowVec.name = name;
+        arrowVec.resize(arW, arH);
+        if (cs.fill) {
+          var arFillVar = findVar(cs.fill);
+          if (arFillVar) { arrowVec.fills = [makeBoundPaint(arFillVar)]; }
+          else { setFill(arrowVec, cs.fill); }
+        }
+      }
+      svgFrame.remove();
+    }
+
+    else if (type === "icon") {
+      var iconSize = cs.iconSize || 20;
+      var iconExist = null;
+      for (var _ii = 0; _ii < parent.children.length; _ii++) {
+        if (parent.children[_ii].name === name) { iconExist = parent.children[_ii]; break; }
+      }
+      if (iconExist && iconExist.type === "INSTANCE") {
+        iconExist.resize(iconSize, iconSize);
+      } else {
+        if (iconExist) iconExist.remove();
+        var _resolvedIconName = cs.iconNameFromProp ? (combo[cs.iconNameFromProp] || cs.iconName || "Circle") : (cs.iconName || "Circle");
+        var iconComp = findIconComponent(_resolvedIconName);
+        if (iconComp) {
+          var iconInst = iconComp.createInstance();
+          iconInst.name = name; iconInst.resize(iconSize, iconSize);
+          var iconVecs = iconInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+          var iconFgVar = findVar(cs.iconFill || "foreground");
+          if (iconFgVar) {
+            for (var iv = 0; iv < iconVecs.length; iv++) {
+              if (iconVecs[iv].strokes && iconVecs[iv].strokes.length > 0) iconVecs[iv].strokes = [makeBoundPaint(iconFgVar)];
+            }
+          }
+          parent.appendChild(iconInst);
+        } else {
+          var icoP = figma.createFrame(); icoP.name = name; icoP.resize(iconSize, iconSize); icoP.fills = [];
+          parent.appendChild(icoP);
+        }
+      }
+    }
+
+    else if (type === "instance") {
+      // Insert an instance of an existing ComponentSet with specific variant props
+      var compSetName = cs.component; // e.g. "Button"
+      if (!compSetName) continue;
+      var existNode = null;
+      for (var _ei = 0; _ei < parent.children.length; _ei++) {
+        if (parent.children[_ei].name === name) { existNode = parent.children[_ei]; break; }
+      }
+      // Remove old node if not an instance
+      if (existNode && existNode.type !== "INSTANCE") { console.log("[instance] Removing old non-instance node '" + name + "' type=" + existNode.type); existNode.remove(); existNode = null; }
+      if (!existNode) {
+        var _compSet = findComponentSet(compSetName);
+        var _inst = null;
+        if (_compSet) {
+          var _instProps = cs.variants || {};
+          _inst = _getInstance(_compSet, _instProps);
+        } else {
+          // Fallback: try as standalone COMPONENT (e.g., icons from foundation)
+          var _standaloneComp = findComponent(compSetName);
+          if (_standaloneComp && _standaloneComp.type === "COMPONENT") {
+            _inst = _standaloneComp.createInstance();
+          }
+        }
+        if (_inst) {
+            _inst.name = name;
+            var _instTexts = _inst.findAll(function(n) { return n.type === "TEXT"; });
+            for (var _it = 0; _it < _instTexts.length; _it++) {
+              var _fn3 = _instTexts[_it].fontName;
+              if (_fn3 && _fn3 !== figma.mixed) { try { await figma.loadFontAsync(_fn3); } catch(e) {} }
+            }
+            if (cs.textOverrides) {
+              for (var _toKey in cs.textOverrides) {
+                var _toNode = _inst.findOne(function(n) { return n.type === "TEXT" && n.name === _toKey; });
+                if (_toNode) { try { _toNode.characters = cs.textOverrides[_toKey]; } catch(e) {} }
+              }
+            }
+            // iconFill: override all vector strokes/fills inside the instance to a different color variable
+            if (cs.iconFill) {
+              var _ifVar = findVar(cs.iconFill);
+              if (_ifVar) {
+                var _ifVecs = _inst.findAll(function(n) { return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR" || n.type === "BOOLEAN_OPERATION"; });
+                for (var _ifv = 0; _ifv < _ifVecs.length; _ifv++) {
+                  var _ifNode = _ifVecs[_ifv];
+                  if (_ifNode.strokes && _ifNode.strokes.length > 0) _ifNode.strokes = [makeBoundPaint(_ifVar)];
+                  if (_ifNode.fills && _ifNode.fills.length > 0) {
+                    var _ifHasFill = false;
+                    for (var _iff = 0; _iff < _ifNode.fills.length; _iff++) { if (_ifNode.fills[_iff].type === "SOLID" && _ifNode.fills[_iff].opacity !== 0) _ifHasFill = true; }
+                    if (_ifHasFill) _ifNode.fills = [makeBoundPaint(_ifVar)];
+                  }
+                }
+              }
+            }
+            parent.appendChild(_inst);
+            try { _inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            try { _inst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+        }
+      } else {
+        // Update existing instance — check if component needs swapping
+        var _needSwap = false;
+        if (compSetName && existNode.mainComponent) {
+          var _existCompName = existNode.mainComponent.parent && existNode.mainComponent.parent.type === "COMPONENT_SET" ? existNode.mainComponent.parent.name : existNode.mainComponent.name;
+          if (_existCompName !== compSetName) { _needSwap = true; }
+        }
+        if (_needSwap) {
+          // Remove old instance and recreate with correct component
+          existNode.remove();
+          var _swapCS = findComponentSet(compSetName);
+          var _swapInst = null;
+          if (_swapCS) { _swapInst = _getInstance(_swapCS, cs.variants || {}); }
+          else { var _swapComp = findComponent(compSetName); if (_swapComp && _swapComp.type === "COMPONENT") _swapInst = _swapComp.createInstance(); }
+          if (_swapInst) {
+            _swapInst.name = name;
+            if (cs.iconFill) {
+              var _sfVar = findVar(cs.iconFill);
+              if (_sfVar) {
+                var _sfVecs = _swapInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR" || n.type === "BOOLEAN_OPERATION"; });
+                for (var _sfv = 0; _sfv < _sfVecs.length; _sfv++) {
+                  if (_sfVecs[_sfv].strokes && _sfVecs[_sfv].strokes.length > 0) _sfVecs[_sfv].strokes = [makeBoundPaint(_sfVar)];
+                  if (_sfVecs[_sfv].fills && _sfVecs[_sfv].fills.length > 0) { var _sfHF = false; for (var _sff = 0; _sff < _sfVecs[_sfv].fills.length; _sff++) { if (_sfVecs[_sfv].fills[_sff].type === "SOLID" && _sfVecs[_sfv].fills[_sff].opacity !== 0) _sfHF = true; } if (_sfHF) _sfVecs[_sfv].fills = [makeBoundPaint(_sfVar)]; }
+                }
+              }
+            }
+            parent.appendChild(_swapInst);
+            try { _swapInst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            try { _swapInst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+          }
+        } else {
+          if (cs.variants) { try { existNode.setProperties(cs.variants); } catch(e) {} }
+          if (cs.textOverrides) {
+            for (var _toKey2 in cs.textOverrides) {
+              var _toNode2 = existNode.findOne(function(n) { return n.type === "TEXT" && n.name === _toKey2; });
+              if (_toNode2) {
+                var _fn4 = _toNode2.fontName;
+                if (_fn4 && _fn4 !== figma.mixed) { try { await figma.loadFontAsync(_fn4); } catch(e) {} }
+                try { _toNode2.characters = cs.textOverrides[_toKey2]; } catch(e) {}
+              }
+            }
+          }
+          // iconFill on existing instance
+          if (cs.iconFill) {
+            var _eifVar = findVar(cs.iconFill);
+            if (_eifVar) {
+              var _eifVecs = existNode.findAll(function(n) { return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR" || n.type === "BOOLEAN_OPERATION"; });
+              for (var _eifv = 0; _eifv < _eifVecs.length; _eifv++) {
+                if (_eifVecs[_eifv].strokes && _eifVecs[_eifv].strokes.length > 0) _eifVecs[_eifv].strokes = [makeBoundPaint(_eifVar)];
+                if (_eifVecs[_eifv].fills && _eifVecs[_eifv].fills.length > 0) { var _eHF = false; for (var _ehf = 0; _ehf < _eifVecs[_eifv].fills.length; _ehf++) { if (_eifVecs[_eifv].fills[_ehf].type === "SOLID" && _eifVecs[_eifv].fills[_ehf].opacity !== 0) _eHF = true; } if (_eHF) _eifVecs[_eifv].fills = [makeBoundPaint(_eifVar)]; }
+              }
+            }
+          }
+          try { existNode.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+          try { existNode.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+        }
+      }
+    }
+  }
+  return validNames;
 }
 
 // --- Main: Create ComponentSet + Showcase ---
@@ -1945,8 +2585,9 @@ async function doCreateComponents(spec) {
   if (!targetPage) targetPage = figma.currentPage;
   await figma.setCurrentPageAsync(targetPage);
 
-  var createdSets = 0, createdVariants = 0;
+  var createdSets = 0, createdVariants = 0, _anyUpsert = false;
   var _showcaseXOffset = 0; // horizontal alignment with 100px gap
+  var _subComponentSets = []; // multi-component: sub-component CSes to nest into parent showcase
 
   for (var ci = 0; ci < components.length; ci++) {
     var compSpec = components[ci];
@@ -1972,184 +2613,1015 @@ async function doCreateComponents(spec) {
       }
       combos = next;
     }
+    // --- 1.1. Apply variantRestrictions (filter invalid combos) ---
+    var restrictions = compSpec.variantRestrictions || null;
+    if (restrictions) {
+      var rKeys = Object.keys(restrictions); // e.g. ["Type=Previous", "Type=Next", "Type=Ellipsis"]
+      var filtered = [];
+      for (var fi = 0; fi < combos.length; fi++) {
+        var keep = true;
+        for (var ri = 0; ri < rKeys.length; ri++) {
+          var rCondParts = rKeys[ri].split(",");
+          var condMatch = true;
+          for (var rcp = 0; rcp < rCondParts.length; rcp++) {
+            var kv = rCondParts[rcp].trim().split("=");
+            if (combos[fi][kv[0]] !== kv[1]) { condMatch = false; break; }
+          }
+          if (condMatch) {
+            // This restriction applies — check all restricted properties
+            var rProps = restrictions[rKeys[ri]];
+            var rpKeys = Object.keys(rProps);
+            for (var rpi = 0; rpi < rpKeys.length; rpi++) {
+              var allowedVals = rProps[rpKeys[rpi]];
+              if (allowedVals.indexOf(combos[fi][rpKeys[rpi]]) < 0) { keep = false; break; }
+            }
+            if (!keep) break;
+          }
+        }
+        if (keep) filtered.push(combos[fi]);
+      }
+      log.push("  variantRestrictions: " + combos.length + " → " + filtered.length + " variants");
+      combos = filtered;
+    }
     log.push("  " + combos.length + " variants");
 
-    // --- 2. Create each Component variant ---
-    var varComps = [];
+    // --- 1.5. Check for existing ComponentSet + Showcase (upsert mode) ---
+    var existingCS = null;
+    var existingShowcase = null;
+    var _isUpdate = false;
+    var _savedShowcaseX = _showcaseXOffset;
+    var existingVarMap = {};
+    // Normalize variant name: sort "Prop=Val" pairs alphabetically so lookup is order-independent
+    function _normalizeVarName(n) { return n.split(", ").map(function(s){return s.trim();}).sort().join(", "); }
+    var _pageKids = targetPage.children.slice();
+    var _preRunStragglers = [];
+    log.push("  [scan] page='" + targetPage.name + "' total=" + _pageKids.length + " looking for CS='" + compName + "'");
+    for (var xi = 0; xi < _pageKids.length; xi++) {
+      var _kid = _pageKids[xi];
+      log.push("    [" + xi + "] type=" + _kid.type + " name='" + _kid.name.substring(0, 60) + "'");
+      if (_kid.type === "COMPONENT_SET" && _kid.name === compName) existingCS = _kid;
+      else if (_kid.type === "FRAME" && _kid.name === compName + " \u2014 Showcase") {
+        existingShowcase = _kid;
+        // Search inside showcase for nested CS (CS lives inside "Section — Component")
+        if (!existingCS) {
+          var _nestedCS = _kid.findAll(function(n) { return n.type === "COMPONENT_SET" && n.name === compName; });
+          if (_nestedCS.length > 0) existingCS = _nestedCS[0];
+        }
+      }
+      else if (_kid.type === "COMPONENT" && propNames.length > 0 && _kid.name.indexOf(propNames[0] + "=") >= 0) _preRunStragglers.push(_kid);
+    }
+    // Multi-component: sub-component CS may be nested inside a different showcase (parent's)
+    if (!existingCS && components.length > 1 && ci < components.length - 1) {
+      for (var _sxi = 0; _sxi < _pageKids.length; _sxi++) {
+        var _sxKid = _pageKids[_sxi];
+        if (_sxKid.type === "FRAME" && _sxKid.name.indexOf(" \u2014 Showcase") >= 0) {
+          var _sxFound = _sxKid.findAll(function(n) { return n.type === "COMPONENT_SET" && n.name === compName; });
+          if (_sxFound.length > 0) { existingCS = _sxFound[0]; log.push("  [scan] Found sub-component CS inside '" + _sxKid.name + "'"); break; }
+        }
+      }
+    }
+    log.push("  [scan] existingCS=" + (existingCS ? "FOUND id=" + existingCS.id : "null") + " existingShowcase=" + (existingShowcase ? "FOUND" : "null"));
+    // Remove any stray COMPONENT nodes from previous failed runs before starting
+    for (var _prs = 0; _prs < _preRunStragglers.length; _prs++) { _preRunStragglers[_prs].remove(); log.push("  Pre-run: removed stray " + _preRunStragglers[_prs].name.substring(0, 50)); }
+    if (existingCS) {
+      _isUpdate = true;
+      _savedShowcaseX = existingShowcase ? existingShowcase.x : _showcaseXOffset;
+      var _exVars = existingCS.children.slice();
+      for (var xv = 0; xv < _exVars.length; xv++) existingVarMap[_normalizeVarName(_exVars[xv].name)] = _exVars[xv];
+      log.push("  Found existing ComponentSet (" + _exVars.length + " variants) \u2014 upserting in place");
+    }
+
+    // --- 2. Create / upsert each Component variant ---
+    var _seenVars = {}; // track which existing variants were matched
+    var varComps = []; // new components only (or all when !_isUpdate)
+
+    // Find child by name (and optional Figma node type string)
+    function _findKid(parent, name, type) {
+      for (var _k = 0; _k < parent.children.length; _k++) {
+        if (parent.children[_k].name === name && (!type || parent.children[_k].type === type)) return parent.children[_k];
+      }
+      return null;
+    }
     for (var vi = 0; vi < combos.length; vi++) {
       var combo = combos[vi];
       var vname = [];
       for (var np = 0; np < propNames.length; np++) vname.push(propNames[np] + "=" + combo[propNames[np]]);
+      var vnameStr = vname.join(", ");
 
       var merged = mergeComponentStyles(base, combo, variantStyles, propNames);
-      var comp = figma.createComponent();
-      comp.name = vname.join(", ");
-
-      // Layout
-      comp.layoutMode = (merged.layout || "horizontal") === "horizontal" ? "HORIZONTAL" : "VERTICAL";
-      comp.primaryAxisAlignItems = "CENTER";
-      comp.counterAxisAlignItems = "CENTER";
-
-      // Gap — bind to spacing/* variable
-      var gapR = merged.gap !== undefined ? merged.gap : 8;
-      if (typeof gapR === "string") {
-        comp.itemSpacing = getSpacingValue(gapR);
-        var gapVarName = gapR.indexOf("/") !== -1 ? gapR : "spacing/" + gapR;
-        bindFloat(comp, "itemSpacing", gapVarName, comp.itemSpacing);
-      } else comp.itemSpacing = gapR;
-
-      // Size
-      comp.resize(merged.width || 120, merged.height || 36);
-      comp.layoutSizingHorizontal = merged.widthMode === "hug" ? "HUG" : "FIXED";
-      comp.layoutSizingVertical = "FIXED";
-
-      // Padding — bind to spacing/* variable (NOT border radius)
-      var pxR = merged.paddingX !== undefined ? merged.paddingX : "md";
-      var pyR = merged.paddingY !== undefined ? merged.paddingY : "xs";
-      if (typeof pxR === "string") {
-        var pxV = getSpacingValue(pxR);
-        var pxVarName = pxR.indexOf("/") !== -1 ? pxR : "spacing/" + pxR;
-        comp.paddingLeft = pxV; comp.paddingRight = pxV;
-        bindFloat(comp, "paddingLeft", pxVarName, pxV);
-        bindFloat(comp, "paddingRight", pxVarName, pxV);
-      } else { comp.paddingLeft = pxR; comp.paddingRight = pxR; }
-      if (typeof pyR === "string") {
-        var pyV = getSpacingValue(pyR);
-        var pyVarName = pyR.indexOf("/") !== -1 ? pyR : "spacing/" + pyR;
-        comp.paddingTop = pyV; comp.paddingBottom = pyV;
-        bindFloat(comp, "paddingTop", pyVarName, pyV);
-        bindFloat(comp, "paddingBottom", pyVarName, pyV);
-      } else { comp.paddingTop = pyR; comp.paddingBottom = pyR; }
-
-      // Radius — bind to border radius/* variable
-      var rad = merged.radius !== undefined ? merged.radius : 8;
-      if (typeof rad === "string") {
-        var rv = getRadiusValue(rad);
-        comp.topLeftRadius = rv; comp.topRightRadius = rv; comp.bottomLeftRadius = rv; comp.bottomRightRadius = rv;
-        var radVarName = rad.indexOf("/") !== -1 ? rad : "border radius/" + rad;
-        var rVar = findVar(radVarName);
-        if (rVar) { try { comp.setBoundVariable("topLeftRadius",rVar); comp.setBoundVariable("topRightRadius",rVar); comp.setBoundVariable("bottomLeftRadius",rVar); comp.setBoundVariable("bottomRightRadius",rVar); } catch(e){} }
-      } else { comp.topLeftRadius = rad; comp.topRightRadius = rad; comp.bottomLeftRadius = rad; comp.bottomRightRadius = rad; }
-
-      // Fill
-      if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(comp, merged.fill, merged.fillOpacity); else setFill(comp, merged.fill); }
-      else comp.fills = [];
-
-      // Stroke
-      if (merged.stroke) {
-        setStroke(comp, merged.stroke);
-        comp.strokeWeight = merged.strokeWeight || 1;
-        comp.strokeAlign = "INSIDE";
-        if (merged.strokeDash && Array.isArray(merged.strokeDash)) comp.dashPattern = merged.strokeDash;
+      var _mergedHash = JSON.stringify(merged);
+      // Detect addon decorations (textLeft/textRight = outer labels, prefix/suffix = inner text)
+      var _textLeft = merged.textLeft || null;
+      var _textRight = merged.textRight || null;
+      var _prefix = merged.prefix || null;
+      var _suffix = merged.suffix || null;
+      var _hasAddon = !!(_textLeft || _textRight);
+      var innerF; // inner styled frame (only when _hasAddon)
+      var _hasIndicator = !!(merged.indicator);
+      var indicatorF; // indicator frame (only when _hasIndicator — compound components like Checkbox/Switch/Radio)
+      var _isNewVariant = false;
+      var comp;
+      var _normVnameStr = _normalizeVarName(vnameStr);
+      if (_isUpdate && existingVarMap[_normVnameStr]) {
+        // Upsert: reuse variant node (preserves instances), but rebuild all children fresh
+        comp = existingVarMap[_normVnameStr];
+        _seenVars[_normVnameStr] = true;
+        for (var _urc = comp.children.length - 1; _urc >= 0; _urc--) comp.children[_urc].remove();
+        comp.opacity = 1; comp.fills = []; comp.strokes = []; comp.effects = [];
+      } else {
+        comp = figma.createComponent();
+        comp.name = vnameStr;
+        _isNewVariant = true;
       }
 
-      // Opacity
-      if (merged.opacity !== undefined) comp.opacity = merged.opacity;
+      if (_hasAddon) {
+        // Outer comp: transparent HUG wrapper, no padding/fill/stroke
+        comp.layoutMode = "HORIZONTAL";
+        comp.primaryAxisAlignItems = "MIN";
+        comp.counterAxisAlignItems = "CENTER";
+        comp.itemSpacing = 0;
+        bindFloat(comp, "itemSpacing", "spacing/none", 0);
+        comp.resize(merged.width || 240, merged.height || 36);
+        comp.layoutSizingHorizontal = "FIXED";
+        comp.layoutSizingVertical = "FIXED";
+        comp.fills = [];
+        comp.paddingLeft = 0; comp.paddingRight = 0; comp.paddingTop = 0; comp.paddingBottom = 0;
+        bindFloat(comp, "paddingLeft", "spacing/none", 0); bindFloat(comp, "paddingRight", "spacing/none", 0); bindFloat(comp, "paddingTop", "spacing/none", 0); bindFloat(comp, "paddingBottom", "spacing/none", 0);
+        // Inner input frame: find existing or create
+        innerF = _findKid(comp, "Input", "FRAME");
+        if (!innerF) { innerF = figma.createFrame(); innerF.name = "Input"; }
+        innerF.layoutMode = (merged.layout || "horizontal") === "horizontal" ? "HORIZONTAL" : "VERTICAL";
+        var _paI = merged.primaryAlign || "CENTER";
+        innerF.primaryAxisAlignItems = _paI === "start" || _paI === "MIN" ? "MIN" : _paI === "end" || _paI === "MAX" ? "MAX" : _paI === "space-between" || _paI === "SPACE_BETWEEN" ? "SPACE_BETWEEN" : "CENTER";
+        var _caI = merged.counterAlign || "CENTER";
+        innerF.counterAxisAlignItems = _caI === "start" || _caI === "MIN" ? "MIN" : _caI === "end" || _caI === "MAX" ? "MAX" : "CENTER";
+        var gapRI = merged.gap !== undefined ? merged.gap : "xs";
+        if (gapRI === "auto") {
+          innerF.itemSpacing = 0;
+        } else if (typeof gapRI === "string") {
+          innerF.itemSpacing = getSpacingValue(gapRI);
+          var gapVarNameI = gapRI.indexOf("/") !== -1 ? gapRI : "spacing/" + gapRI;
+          bindFloat(innerF, "itemSpacing", gapVarNameI, innerF.itemSpacing);
+        } else { innerF.itemSpacing = gapRI; if (gapRI === 0) bindFloat(innerF, "itemSpacing", "spacing/none", 0); }
+        innerF.resize(merged.width || 240, merged.height || 36);
+        var pxRI = merged.paddingX !== undefined ? merged.paddingX : "md";
+        var pyRI = merged.paddingY !== undefined ? merged.paddingY : "xs";
+        if (typeof pxRI === "string") {
+          var pxVI = getSpacingValue(pxRI); var pxVarNameI = pxRI.indexOf("/") !== -1 ? pxRI : "spacing/" + pxRI;
+          innerF.paddingLeft = pxVI; innerF.paddingRight = pxVI;
+          bindFloat(innerF, "paddingLeft", pxVarNameI, pxVI); bindFloat(innerF, "paddingRight", pxVarNameI, pxVI);
+        } else { innerF.paddingLeft = pxRI; innerF.paddingRight = pxRI; if (pxRI === 0) { bindFloat(innerF, "paddingLeft", "spacing/none", 0); bindFloat(innerF, "paddingRight", "spacing/none", 0); } }
+        if (typeof pyRI === "string") {
+          var pyVI = getSpacingValue(pyRI); var pyVarNameI = pyRI.indexOf("/") !== -1 ? pyRI : "spacing/" + pyRI;
+          innerF.paddingTop = pyVI; innerF.paddingBottom = pyVI;
+          bindFloat(innerF, "paddingTop", pyVarNameI, pyVI); bindFloat(innerF, "paddingBottom", pyVarNameI, pyVI);
+        } else { innerF.paddingTop = pyRI; innerF.paddingBottom = pyRI; if (pyRI === 0) { bindFloat(innerF, "paddingTop", "spacing/none", 0); bindFloat(innerF, "paddingBottom", "spacing/none", 0); } }
+        var radI = merged.radius !== undefined ? merged.radius : "lg";
+        var _radVal = typeof radI === "string" ? getRadiusValue(radI) : radI;
+        var rL = _textLeft ? 0 : _radVal; var rR = _textRight ? 0 : _radVal;
+        innerF.topLeftRadius = rL; innerF.bottomLeftRadius = rL;
+        innerF.topRightRadius = rR; innerF.bottomRightRadius = rR;
+        if (typeof radI === "string") {
+          var radVarNameI = radI.indexOf("/") !== -1 ? radI : "border radius/" + radI;
+          var rVarI = findVar(radVarNameI);
+          if (rVarI) { try { if (!_textLeft) { innerF.setBoundVariable("topLeftRadius",rVarI); innerF.setBoundVariable("bottomLeftRadius",rVarI); } if (!_textRight) { innerF.setBoundVariable("topRightRadius",rVarI); innerF.setBoundVariable("bottomRightRadius",rVarI); } } catch(e){} }
+        }
+        if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(innerF, merged.fill, merged.fillOpacity); else setFill(innerF, merged.fill); } else innerF.fills = [];
+        if (merged.stroke) { if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(innerF, merged.stroke, merged.strokeOpacity); else setStroke(innerF, merged.stroke); innerF.strokeWeight = merged.strokeWeight || 1; innerF.strokeAlign = "INSIDE"; if (merged.strokeDash && Array.isArray(merged.strokeDash)) innerF.dashPattern = merged.strokeDash; if (merged.strokeSides) _applyStrokeSides(innerF, merged.strokeSides, merged.strokeWeight || 1); }
+        // Remove shared-edge borders: border-l-0 when textLeft, border-r-0 when textRight
+        if (_textLeft) innerF.strokeLeftWeight = 0;
+        if (_textRight) innerF.strokeRightWeight = 0;
+        // Effect style or focus ring on addon inner frame
+        if (merged.effectStyleName) {
+          var _aeStyles = await figma.getLocalEffectStylesAsync();
+          var _aeFound = null;
+          for (var _aei = 0; _aei < _aeStyles.length; _aei++) {
+            if (_aeStyles[_aei].name === merged.effectStyleName) { _aeFound = _aeStyles[_aei]; break; }
+          }
+          if (_aeFound) { try { innerF.setEffectStyleIdAsync(_aeFound.id); } catch(e) { innerF.effects = _aeFound.effects; } }
+        } else if (merged.focusRing) {
+          await applyFocusRingEffect(innerF, merged.focusRing);
+        } else {
+          innerF.effects = [];
+        }
+        if (merged.opacity !== undefined) innerF.opacity = merged.opacity;
+      } else if (_hasIndicator) {
+        // Indicator pattern: comp = transparent HUG wrapper, indicator child = styled element
+        // Used for compound components like Checkbox, Switch, Radio
+        var _indSpec = merged.indicator;
+        comp.layoutMode = "HORIZONTAL";
+        comp.primaryAxisAlignItems = "MIN";
+        comp.counterAxisAlignItems = "CENTER";
+        var _indGap = merged.gap !== undefined ? merged.gap : "xs";
+        if (typeof _indGap === "string") {
+          comp.itemSpacing = getSpacingValue(_indGap);
+          var _indGapVarName = _indGap.indexOf("/") !== -1 ? _indGap : "spacing/" + _indGap;
+          bindFloat(comp, "itemSpacing", _indGapVarName, comp.itemSpacing);
+        } else { comp.itemSpacing = _indGap; if (_indGap === 0) bindFloat(comp, "itemSpacing", "spacing/none", 0); }
+        comp.resize(merged.width || 120, merged.height || 20);
+        comp.layoutSizingHorizontal = "HUG";
+        comp.layoutSizingVertical = "HUG";
+        comp.fills = [];
+        comp.strokes = [];
+        comp.paddingLeft = 0; comp.paddingRight = 0; comp.paddingTop = 0; comp.paddingBottom = 0;
+        bindFloat(comp, "paddingLeft", "spacing/none", 0); bindFloat(comp, "paddingRight", "spacing/none", 0); bindFloat(comp, "paddingTop", "spacing/none", 0); bindFloat(comp, "paddingBottom", "spacing/none", 0);
+        if (merged.opacity !== undefined) comp.opacity = merged.opacity;
+        // Create indicator frame
+        indicatorF = _findKid(comp, "Indicator", "FRAME");
+        if (!indicatorF) { indicatorF = figma.createFrame(); indicatorF.name = "Indicator"; }
+        indicatorF.layoutMode = "HORIZONTAL";
+        var _indAlign = merged.indicatorAlign || "center";
+        indicatorF.primaryAxisAlignItems = _indAlign === "min" || _indAlign === "start" ? "MIN" : _indAlign === "max" || _indAlign === "end" ? "MAX" : "CENTER";
+        indicatorF.counterAxisAlignItems = "CENTER";
+        indicatorF.itemSpacing = 0;
+        bindFloat(indicatorF, "itemSpacing", "spacing/none", 0);
+        var _indW = _indSpec.width || 16;
+        var _indH = _indSpec.height || 16;
+        indicatorF.resize(_indW, _indH);
+        indicatorF.layoutSizingHorizontal = "FIXED";
+        indicatorF.layoutSizingVertical = "FIXED";
+        var _indPx = _indSpec.paddingX !== undefined ? _indSpec.paddingX : "none"; var _indPy = _indSpec.paddingY !== undefined ? _indSpec.paddingY : "none";
+        if (typeof _indPx === "string") {
+          var _ipxv = getSpacingValue(_indPx); indicatorF.paddingLeft = _ipxv; indicatorF.paddingRight = _ipxv;
+          var _ipxVarName = _indPx.indexOf("/") !== -1 ? _indPx : "spacing/" + _indPx;
+          bindFloat(indicatorF, "paddingLeft", _ipxVarName, _ipxv); bindFloat(indicatorF, "paddingRight", _ipxVarName, _ipxv);
+        } else { indicatorF.paddingLeft = _indPx; indicatorF.paddingRight = _indPx; }
+        if (typeof _indPy === "string") {
+          var _ipyv = getSpacingValue(_indPy); indicatorF.paddingTop = _ipyv; indicatorF.paddingBottom = _ipyv;
+          var _ipyVarName = _indPy.indexOf("/") !== -1 ? _indPy : "spacing/" + _indPy;
+          bindFloat(indicatorF, "paddingTop", _ipyVarName, _ipyv); bindFloat(indicatorF, "paddingBottom", _ipyVarName, _ipyv);
+        } else { indicatorF.paddingTop = _indPy; indicatorF.paddingBottom = _indPy; }
+        // Radius
+        var _indRad = _indSpec.radius !== undefined ? _indSpec.radius : "2xs";
+        if (typeof _indRad === "string") {
+          var _irv = getRadiusValue(_indRad);
+          indicatorF.topLeftRadius = _irv; indicatorF.topRightRadius = _irv; indicatorF.bottomLeftRadius = _irv; indicatorF.bottomRightRadius = _irv;
+          var _irVarName = _indRad.indexOf("/") !== -1 ? _indRad : "border radius/" + _indRad;
+          var _irVar = findVar(_irVarName);
+          if (_irVar) { try { indicatorF.setBoundVariable("topLeftRadius",_irVar); indicatorF.setBoundVariable("topRightRadius",_irVar); indicatorF.setBoundVariable("bottomLeftRadius",_irVar); indicatorF.setBoundVariable("bottomRightRadius",_irVar); } catch(e){} }
+        } else { indicatorF.topLeftRadius = _indRad; indicatorF.topRightRadius = _indRad; indicatorF.bottomLeftRadius = _indRad; indicatorF.bottomRightRadius = _indRad; }
+        // Fill & Stroke from merged (comes from base + variantStyles)
+        if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(indicatorF, merged.fill, merged.fillOpacity); else setFill(indicatorF, merged.fill); } else indicatorF.fills = [];
+        if (merged.stroke) { if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(indicatorF, merged.stroke, merged.strokeOpacity); else setStroke(indicatorF, merged.stroke); indicatorF.strokeWeight = merged.strokeWeight || 1; indicatorF.strokeAlign = "INSIDE"; if (merged.strokeSides) _applyStrokeSides(indicatorF, merged.strokeSides, merged.strokeWeight || 1); } else indicatorF.strokes = [];
+        // Focus ring on indicator as DROP_SHADOW
+        if (merged.focusRing) {
+          await applyFocusRingEffect(indicatorF, merged.focusRing);
+        } else {
+          indicatorF.effects = [];
+        }
+        // Thumb child inside indicator (e.g. Switch sliding dot, Radio filled dot)
+        // showThumb: undefined → always show (Switch); false → hide (Radio unchecked); true → show (Radio checked)
+        if (_indSpec.thumb && merged.showThumb !== false) {
+          var _thumbSpec = _indSpec.thumb;
+          var _thumbF = _findKid(indicatorF, "Thumb", "FRAME");
+          if (!_thumbF) { _thumbF = figma.createFrame(); _thumbF.name = "Thumb"; }
+          _thumbF.resize(_thumbSpec.width || 16, _thumbSpec.height || 16);
+          _thumbF.layoutSizingHorizontal = "FIXED";
+          _thumbF.layoutSizingVertical = "FIXED";
+          var _thumbRad = _thumbSpec.radius !== undefined ? _thumbSpec.radius : "full";
+          if (typeof _thumbRad === "string") {
+            var _trv = getRadiusValue(_thumbRad);
+            _thumbF.topLeftRadius = _trv; _thumbF.topRightRadius = _trv; _thumbF.bottomLeftRadius = _trv; _thumbF.bottomRightRadius = _trv;
+            var _trVarName = _thumbRad.indexOf("/") !== -1 ? _thumbRad : "border radius/" + _thumbRad;
+            var _trVar = findVar(_trVarName);
+            if (_trVar) { try { _thumbF.setBoundVariable("topLeftRadius",_trVar); _thumbF.setBoundVariable("topRightRadius",_trVar); _thumbF.setBoundVariable("bottomLeftRadius",_trVar); _thumbF.setBoundVariable("bottomRightRadius",_trVar); } catch(e){} }
+          } else { _thumbF.topLeftRadius = _thumbRad; _thumbF.topRightRadius = _thumbRad; _thumbF.bottomLeftRadius = _thumbRad; _thumbF.bottomRightRadius = _thumbRad; }
+          // Force white fill first, then try variable binding
+          _thumbF.fills = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
+          if (_thumbSpec.fill) {
+            var _tvf = findVar(_thumbSpec.fill);
+            if (_tvf) _thumbF.fills = [makeBoundPaint(_tvf)];
+          }
+          log.push("  [THUMB] " + vnameStr + " → " + (_thumbSpec.width||16) + "x" + (_thumbSpec.height||16) + " fill=" + _thumbSpec.fill + " varOK=" + !!findVar(_thumbSpec.fill) + " fills=" + _thumbF.fills.length + " parent=" + (indicatorF ? indicatorF.name : "null") + " indChildren=" + indicatorF.children.length);
+          _thumbF.strokes = [];
+          _thumbF.paddingLeft = 0; _thumbF.paddingRight = 0; _thumbF.paddingTop = 0; _thumbF.paddingBottom = 0;
+          bindFloat(_thumbF, "paddingLeft", "spacing/none", 0); bindFloat(_thumbF, "paddingRight", "spacing/none", 0); bindFloat(_thumbF, "paddingTop", "spacing/none", 0); bindFloat(_thumbF, "paddingBottom", "spacing/none", 0);
+          if (_thumbF.parent !== indicatorF) indicatorF.appendChild(_thumbF);
+        } else if (_indSpec.thumb && merged.showThumb === false) {
+          // Remove thumb when hidden (e.g. Radio unchecked)
+          var _thumbRemove = _findKid(indicatorF, "Thumb", "FRAME");
+          if (_thumbRemove) _thumbRemove.remove();
+        }
+        if (indicatorF.parent !== comp) comp.appendChild(indicatorF);
+      } else {
+        // No addon — layout/gap/size/padding/radius/fill/stroke on comp directly
+        // Layout
+        comp.layoutMode = (merged.layout || "horizontal") === "horizontal" ? "HORIZONTAL" : "VERTICAL";
+        var _primaryAlign = merged.primaryAlign || "CENTER";
+        comp.primaryAxisAlignItems = _primaryAlign === "start" || _primaryAlign === "MIN" ? "MIN" : _primaryAlign === "end" || _primaryAlign === "MAX" ? "MAX" : _primaryAlign === "space-between" || _primaryAlign === "SPACE_BETWEEN" ? "SPACE_BETWEEN" : "CENTER";
+        var _counterAlign = merged.counterAlign || "CENTER";
+        comp.counterAxisAlignItems = _counterAlign === "start" || _counterAlign === "MIN" ? "MIN" : _counterAlign === "end" || _counterAlign === "MAX" ? "MAX" : "CENTER";
+        // Gap — bind to spacing/* variable
+        var gapR = merged.gap !== undefined ? merged.gap : "xs";
+        if (gapR === "auto") {
+          comp.itemSpacing = 0;
+        } else if (typeof gapR === "string") {
+          comp.itemSpacing = getSpacingValue(gapR);
+          var gapVarName = gapR.indexOf("/") !== -1 ? gapR : "spacing/" + gapR;
+          bindFloat(comp, "itemSpacing", gapVarName, comp.itemSpacing);
+        } else { comp.itemSpacing = gapR; if (gapR === 0) bindFloat(comp, "itemSpacing", "spacing/none", 0); }
+        // Size
+        comp.resize(merged.width || 120, merged.height || 36);
+        comp.layoutSizingHorizontal = merged.widthMode === "hug" ? "HUG" : "FIXED";
+        var _useHugV = merged.heightMode === "hug" || (merged.heightMode !== "fixed" && !!(merged.children && merged.children.length > 0));
+        comp.layoutSizingVertical = _useHugV ? "HUG" : "FIXED";
+        // Padding — bind to spacing/* variable (NOT border radius)
+        var pxR = merged.paddingX !== undefined ? merged.paddingX : "md";
+        var pyR = merged.paddingY !== undefined ? merged.paddingY : "xs";
+        if (typeof pxR === "string") {
+          var pxV = getSpacingValue(pxR);
+          var pxVarName = pxR.indexOf("/") !== -1 ? pxR : "spacing/" + pxR;
+          comp.paddingLeft = pxV; comp.paddingRight = pxV;
+          bindFloat(comp, "paddingLeft", pxVarName, pxV);
+          bindFloat(comp, "paddingRight", pxVarName, pxV);
+        } else { comp.paddingLeft = pxR; comp.paddingRight = pxR; if (pxR === 0) { bindFloat(comp, "paddingLeft", "spacing/none", 0); bindFloat(comp, "paddingRight", "spacing/none", 0); } }
+        if (typeof pyR === "string") {
+          var pyV = getSpacingValue(pyR);
+          var pyVarName = pyR.indexOf("/") !== -1 ? pyR : "spacing/" + pyR;
+          comp.paddingTop = pyV; comp.paddingBottom = pyV;
+          bindFloat(comp, "paddingTop", pyVarName, pyV);
+          bindFloat(comp, "paddingBottom", pyVarName, pyV);
+        } else { comp.paddingTop = pyR; comp.paddingBottom = pyR; if (pyR === 0) { bindFloat(comp, "paddingTop", "spacing/none", 0); bindFloat(comp, "paddingBottom", "spacing/none", 0); } }
+        // Per-side padding overrides (after paddingX/paddingY)
+        if (merged.paddingTop !== undefined) {
+          if (typeof merged.paddingTop === "string") { var _ptV = getSpacingValue(merged.paddingTop); comp.paddingTop = _ptV; bindFloat(comp, "paddingTop", merged.paddingTop.indexOf("/") !== -1 ? merged.paddingTop : "spacing/" + merged.paddingTop, _ptV); }
+          else { comp.paddingTop = merged.paddingTop; if (merged.paddingTop === 0) bindFloat(comp, "paddingTop", "spacing/none", 0); }
+        }
+        if (merged.paddingBottom !== undefined) {
+          if (typeof merged.paddingBottom === "string") { var _pbV = getSpacingValue(merged.paddingBottom); comp.paddingBottom = _pbV; bindFloat(comp, "paddingBottom", merged.paddingBottom.indexOf("/") !== -1 ? merged.paddingBottom : "spacing/" + merged.paddingBottom, _pbV); }
+          else { comp.paddingBottom = merged.paddingBottom; if (merged.paddingBottom === 0) bindFloat(comp, "paddingBottom", "spacing/none", 0); }
+        }
+        if (merged.paddingLeft !== undefined) {
+          if (typeof merged.paddingLeft === "string") { var _plV = getSpacingValue(merged.paddingLeft); comp.paddingLeft = _plV; bindFloat(comp, "paddingLeft", merged.paddingLeft.indexOf("/") !== -1 ? merged.paddingLeft : "spacing/" + merged.paddingLeft, _plV); }
+          else { comp.paddingLeft = merged.paddingLeft; if (merged.paddingLeft === 0) bindFloat(comp, "paddingLeft", "spacing/none", 0); }
+        }
+        if (merged.paddingRight !== undefined) {
+          if (typeof merged.paddingRight === "string") { var _prV = getSpacingValue(merged.paddingRight); comp.paddingRight = _prV; bindFloat(comp, "paddingRight", merged.paddingRight.indexOf("/") !== -1 ? merged.paddingRight : "spacing/" + merged.paddingRight, _prV); }
+          else { comp.paddingRight = merged.paddingRight; if (merged.paddingRight === 0) bindFloat(comp, "paddingRight", "spacing/none", 0); }
+        }
+        // Radius — bind to border radius/* variable
+        var rad = merged.radius !== undefined ? merged.radius : "lg";
+        if (typeof rad === "string") {
+          var rv = getRadiusValue(rad);
+          comp.topLeftRadius = rv; comp.topRightRadius = rv; comp.bottomLeftRadius = rv; comp.bottomRightRadius = rv;
+          var radVarName = rad.indexOf("/") !== -1 ? rad : "border radius/" + rad;
+          var rVar = findVar(radVarName);
+          if (rVar) { try { comp.setBoundVariable("topLeftRadius",rVar); comp.setBoundVariable("topRightRadius",rVar); comp.setBoundVariable("bottomLeftRadius",rVar); comp.setBoundVariable("bottomRightRadius",rVar); } catch(e){} }
+        } else { comp.topLeftRadius = rad; comp.topRightRadius = rad; comp.bottomLeftRadius = rad; comp.bottomRightRadius = rad; if (rad === 0) { var _rn0c = findVar("border radius/none"); if (_rn0c) { try { comp.setBoundVariable("topLeftRadius",_rn0c); comp.setBoundVariable("topRightRadius",_rn0c); comp.setBoundVariable("bottomLeftRadius",_rn0c); comp.setBoundVariable("bottomRightRadius",_rn0c); } catch(e){} } } }
+        // Per-corner radius overrides (supports string tokens like "md" or numeric px)
+        var _pcKeysComp = [["radiusTopLeft","topLeftRadius"],["radiusTopRight","topRightRadius"],["radiusBottomLeft","bottomLeftRadius"],["radiusBottomRight","bottomRightRadius"]];
+        for (var _pcj = 0; _pcj < _pcKeysComp.length; _pcj++) {
+          var _pcKeyC = _pcKeysComp[_pcj][0], _pcPropC = _pcKeysComp[_pcj][1];
+          if (merged[_pcKeyC] !== undefined) {
+            var _pcValC = merged[_pcKeyC];
+            if (typeof _pcValC === "string") {
+              var _pcPxC = getRadiusValue(_pcValC);
+              comp[_pcPropC] = _pcPxC;
+              var _pcVarNameC = _pcValC.indexOf("/") !== -1 ? _pcValC : "border radius/" + _pcValC;
+              var _pcVarC = findVar(_pcVarNameC);
+              if (_pcVarC) { try { comp.setBoundVariable(_pcPropC, _pcVarC); } catch(e){} }
+            } else {
+              comp[_pcPropC] = _pcValC;
+            }
+          }
+        }
+        // Fill
+        if (merged.imageUrl) {
+          try {
+            var _imgHash = await getImageHash(merged.imageUrl);
+            comp.fills = [{ type: "IMAGE", imageHash: _imgHash, scaleMode: "FILL" }];
+          } catch(e) { log.push("  [WARN] Image fetch failed: " + e.message); comp.fills = []; }
+        } else if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(comp, merged.fill, merged.fillOpacity); else setFill(comp, merged.fill); }
+        else comp.fills = [];
+        // Stroke
+        if (merged.stroke) {
+          if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(comp, merged.stroke, merged.strokeOpacity);
+          else setStroke(comp, merged.stroke);
+          comp.strokeWeight = merged.strokeWeight || 1;
+          comp.strokeAlign = "INSIDE";
+          if (merged.strokeDash && Array.isArray(merged.strokeDash)) comp.dashPattern = merged.strokeDash;
+          if (merged.strokeSides) _applyStrokeSides(comp, merged.strokeSides, merged.strokeWeight || 1);
+        }
+        // Effect style (e.g. "Shadows/sm" for web `shadow` class)
+        if (merged.effectStyleName) {
+          var _eStyles = await figma.getLocalEffectStylesAsync();
+          var _eFound = null;
+          for (var _ei = 0; _ei < _eStyles.length; _ei++) {
+            if (_eStyles[_ei].name === merged.effectStyleName) { _eFound = _eStyles[_ei]; break; }
+          }
+          if (_eFound) { try { comp.setEffectStyleIdAsync(_eFound.id); } catch(e) { comp.effects = _eFound.effects; } }
+        }
+        // Focus ring via effect style (Ring/default, Ring/error, etc.)
+        if (merged.focusRing) {
+          await applyFocusRingEffect(comp, merged.focusRing);
+        } else if (!merged.effectStyleName) {
+          comp.effects = [];
+        }
+        // Opacity
+        if (merged.opacity !== undefined) comp.opacity = merged.opacity;
+      }
+
+      // --- Ellipse mode: overlapping ellipses for spinner/arc components ---
+      if (merged.ellipses && Array.isArray(merged.ellipses)) {
+        var _eW = merged.width || 24;
+        var _eH = merged.height || 24;
+        for (var _eli = 0; _eli < merged.ellipses.length; _eli++) {
+          var _eSpec = merged.ellipses[_eli];
+          var _eName = _eSpec.name || ("Ellipse" + _eli);
+          var _ellipse = _findKid(comp, _eName, "ELLIPSE");
+          if (!_ellipse) { _ellipse = figma.createEllipse(); _ellipse.name = _eName; }
+          if (_ellipse.parent !== comp) comp.appendChild(_ellipse);
+          _ellipse.resize(_eW, _eH);
+          _ellipse.layoutPositioning = "ABSOLUTE";
+          _ellipse.x = 0; _ellipse.y = 0;
+          _ellipse.constraints = { horizontal: "SCALE", vertical: "SCALE" };
+          // Arc data (partial circle)
+          if (_eSpec.arcStart !== undefined && _eSpec.arcSweep !== undefined) {
+            var _startRad = (_eSpec.arcStart * Math.PI) / 180;
+            var _endRad = ((_eSpec.arcStart + _eSpec.arcSweep) * Math.PI) / 180;
+            _ellipse.arcData = { startingAngle: _startRad, endingAngle: _endRad, innerRadius: _eSpec.innerRadius || 0 };
+          } else if (_eSpec.innerRadius !== undefined) {
+            _ellipse.arcData = { startingAngle: 0, endingAngle: Math.PI * 2, innerRadius: _eSpec.innerRadius };
+          }
+          // Fill — with fallback solid gray when variable not found
+          if (_eSpec.fill) {
+            var _efVar = findVar(_eSpec.fill);
+            if (_efVar) {
+              _ellipse.fills = [makeBoundPaint(_efVar, _eSpec.fillOpacity)];
+            } else {
+              var _efOp = _eSpec.fillOpacity !== undefined ? _eSpec.fillOpacity : 1;
+              _ellipse.fills = [{ type: "SOLID", color: { r: 0.5, g: 0.5, b: 0.5 }, opacity: _efOp }];
+              log.push("  [WARN] Ellipse fill var not found: " + _eSpec.fill);
+            }
+          } else _ellipse.fills = [];
+          // Stroke
+          if (_eSpec.stroke) {
+            if (_eSpec.strokeOpacity !== undefined) setStrokeWithOpacity(_ellipse, _eSpec.stroke, _eSpec.strokeOpacity);
+            else setStroke(_ellipse, _eSpec.stroke);
+            _ellipse.strokeWeight = _eSpec.strokeWeight || 1;
+            _ellipse.strokeAlign = _eSpec.strokeAlign || "CENTER";
+          } else _ellipse.strokes = [];
+          // Opacity
+          if (_eSpec.opacity !== undefined) _ellipse.opacity = _eSpec.opacity;
+        }
+        // Cleanup: remove old ellipses not in current spec
+        var _validENames = {};
+        for (var _vei = 0; _vei < merged.ellipses.length; _vei++) _validENames[merged.ellipses[_vei].name || ("Ellipse" + _vei)] = true;
+        for (var _cei = comp.children.length - 1; _cei >= 0; _cei--) {
+          if (comp.children[_cei].type === "ELLIPSE" && !_validENames[comp.children[_cei].name]) comp.children[_cei].remove();
+        }
+        log.push("  [ELLIPSES] " + vnameStr + " → " + merged.ellipses.length + " ellipses, size=" + _eW + "x" + _eH);
+      }
+
+      // --- Children mode: structured child nodes for compound components ---
+      var _hasChildren = !!(merged.children && merged.children.length > 0) && !_hasAddon && !_hasIndicator;
+      if (_hasChildren) {
+        var _childValidNames = await _processChildren(merged.children, comp, combo);
+        for (var _rchild = comp.children.length - 1; _rchild >= 0; _rchild--) {
+          if (!_childValidNames[comp.children[_rchild].name]) comp.children[_rchild].remove();
+        }
+        var _childOrd = _getChildOrder(merged.children, combo);
+        for (var _coi2 = 0; _coi2 < _childOrd.length; _coi2++) {
+          for (var _cci2 = 0; _cci2 < comp.children.length; _cci2++) {
+            if (comp.children[_cci2].name === _childOrd[_coi2]) { comp.appendChild(comp.children[_cci2]); break; }
+          }
+        }
+      } else {
+      // Build addon wrapper structure — textLeft/textRight as outer label frames
+      var targetFrame = _hasAddon ? innerF : comp;
+      // For indicator pattern: icons go inside indicator, label goes in comp wrapper
+      var iconTarget = _hasIndicator ? indicatorF : targetFrame;
+      var labelTarget = _hasIndicator ? comp : targetFrame;
+      var _iconColor = merged.iconFill || merged.textFill || "foreground";
+      var _radVal2 = typeof merged.radius === "string" ? getRadiusValue(merged.radius) : (merged.radius || 8);
+      if (_hasAddon && _textLeft) {
+        var tlF = _findKid(comp, "TextLeft", "FRAME");
+        if (!tlF) { tlF = figma.createFrame(); tlF.name = "TextLeft"; comp.appendChild(tlF); }
+        tlF.layoutMode = "HORIZONTAL";
+        tlF.primaryAxisAlignItems = "CENTER"; tlF.counterAxisAlignItems = "CENTER";
+        tlF.resize(60, merged.height || 36);
+        tlF.paddingLeft = 12; tlF.paddingRight = 12;
+        setFill(tlF, "muted");
+        setStroke(tlF, merged.stroke || "border"); tlF.strokeWeight = 1; tlF.strokeAlign = "INSIDE";
+        tlF.strokeRightWeight = 0; // border-r-0: no right border at shared edge with innerF
+        tlF.topLeftRadius = _radVal2; tlF.bottomLeftRadius = _radVal2;
+        tlF.topRightRadius = 0; tlF.bottomRightRadius = 0;
+        tlF.layoutSizingHorizontal = "HUG"; tlF.layoutSizingVertical = "FILL";
+        var tlTxt = _findKid(tlF, "Text", "TEXT");
+        if (!tlTxt) { tlTxt = figma.createText(); tlTxt.name = "Text"; tlF.appendChild(tlTxt); }
+        var _tlTsN = merged.textStyle || null; var _tlFL = false;
+        if (_tlTsN) { var _tlTs = findTextStyle(_tlTsN); if (_tlTs && _tlTs.fontName) { try { await figma.loadFontAsync(_tlTs.fontName); _tlFL=true; } catch(e){} try { await tlTxt.setTextStyleIdAsync(_tlTs.id); } catch(e){} } }
+        if (!_tlFL) { var _tlFb = await loadFontSafe("Inter","Regular"); if (_tlFb) tlTxt.fontName = _tlFb; tlTxt.fontSize = 14; }
+        tlTxt.characters = _textLeft;
+        setTextFill(tlTxt, "muted-foreground");
+        try { tlTxt.textAutoResize = "TRUNCATE"; } catch(e){} try { tlTxt.maxLines = 1; } catch(e){} try { tlTxt.textTruncation = "ENDING"; } catch(e){}
+      }
+      if (_hasAddon) {
+        if (innerF.parent !== comp) comp.appendChild(innerF);
+        innerF.layoutSizingHorizontal = "FILL";
+        innerF.layoutSizingVertical = "FILL";
+      }
 
       // Icon Left — real instance from Icon Components
-      // Auto-detect from combo properties: IconLeft=true or Show Left Icon=true
+      // Auto-detect from combo properties: iconLeft=true or Show Left Icon=true
       var icoSize = merged.iconSize || 16;
       var _showIconLeft = merged.iconLeft || combo["IconLeft"] === "true" || combo["Show Left Icon"] === "true" || combo["Show left icon"] === "true";
       var _showIconRight = merged.iconRight || combo["IconRight"] === "true" || combo["Show Right Icon"] === "true" || combo["Show right icon"] === "true";
+      var _iconLeftName = merged.iconLeftName || "Search";
+      var _iconRightName = merged.iconRightName || "ArrowRight";
+      if (!_showIconLeft) {
+        // Remove stale icon if variant no longer shows it (e.g. Radio unchecked)
+        var _staleLeft = _findKid(iconTarget, "Icon Left");
+        if (_staleLeft) _staleLeft.remove();
+      }
       if (_showIconLeft) {
-        var leftIconComp = findIconComponent("ChevronLeft") || findIconComponent("Plus") || findIconComponent("Search");
-        if (leftIconComp) {
-          var leftInst = leftIconComp.createInstance();
-          leftInst.name = "Icon Left";
-          leftInst.resize(icoSize, icoSize);
-          // Bind icon stroke color to match button text color
-          var leftVecs = leftInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-          var icoFgVar = findVar(merged.textFill || "foreground");
-          if (icoFgVar) {
-            for (var lv = 0; lv < leftVecs.length; lv++) {
-              if (leftVecs[lv].strokes && leftVecs[lv].strokes.length > 0) leftVecs[lv].strokes = [makeBoundPaint(icoFgVar)];
-            }
-          }
-          comp.appendChild(leftInst);
+        var leftExist = _findKid(iconTarget, "Icon Left");
+        if (leftExist && leftExist.type === "INSTANCE") {
+          // Reuse existing instance — update size + strokes only
+          leftExist.resize(icoSize, icoSize);
+          var leftVecs = leftExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+          var icoFgVar = findVar(_iconColor);
+          if (icoFgVar) { for (var lv = 0; lv < leftVecs.length; lv++) { if (leftVecs[lv].strokes && leftVecs[lv].strokes.length > 0) leftVecs[lv].strokes = [makeBoundPaint(icoFgVar)]; } }
         } else {
-          // Fallback: placeholder frame if no icon components exist yet
-          var icoL = figma.createFrame(); icoL.name = "Icon Left"; icoL.resize(icoSize, icoSize); icoL.fills = [];
-          setStroke(icoL, merged.textFill || "foreground"); icoL.strokeWeight = 1.5;
-          icoL.topLeftRadius = 3; icoL.topRightRadius = 3; icoL.bottomLeftRadius = 3; icoL.bottomRightRadius = 3;
-          comp.appendChild(icoL);
+          if (leftExist) leftExist.remove(); // remove stale placeholder
+          var leftIconComp = findIconComponent(_iconLeftName) || findIconComponent("Search") || findIconComponent("ChevronLeft") || findIconComponent("Plus");
+          if (leftIconComp) {
+            var leftInst = leftIconComp.createInstance();
+            leftInst.name = "Icon Left"; leftInst.resize(icoSize, icoSize);
+            var leftVecs2 = leftInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+            var icoFgVar2 = findVar(_iconColor);
+            if (icoFgVar2) { for (var lv2 = 0; lv2 < leftVecs2.length; lv2++) { if (leftVecs2[lv2].strokes && leftVecs2[lv2].strokes.length > 0) leftVecs2[lv2].strokes = [makeBoundPaint(icoFgVar2)]; } }
+            iconTarget.appendChild(leftInst);
+          } else {
+            var icoL = figma.createFrame(); icoL.name = "Icon Left"; icoL.resize(icoSize, icoSize); icoL.fills = [];
+            setStroke(icoL, _iconColor); icoL.strokeWeight = 1.5;
+            icoL.topLeftRadius = 3; icoL.topRightRadius = 3; icoL.bottomLeftRadius = 3; icoL.bottomRightRadius = 3;
+            iconTarget.appendChild(icoL);
+          }
         }
+      }
+
+      // Prefix text (inside input, after left icon)
+      if (_prefix) {
+        var pfxN = _findKid(targetFrame, "Prefix", "TEXT");
+        if (!pfxN) { pfxN = figma.createText(); pfxN.name = "Prefix"; targetFrame.appendChild(pfxN); }
+        var _pfxTsN = merged.textStyle || null; var _pfxFL = false;
+        if (_pfxTsN) { var _pfxTs = findTextStyle(_pfxTsN); if (_pfxTs && _pfxTs.fontName) { try { await figma.loadFontAsync(_pfxTs.fontName); _pfxFL=true; } catch(e){} try { await pfxN.setTextStyleIdAsync(_pfxTs.id); } catch(e){} } }
+        if (!_pfxFL) { var _pfxFb = await loadFontSafe("Inter","Regular"); if (_pfxFb) pfxN.fontName = _pfxFb; pfxN.fontSize = 14; }
+        pfxN.characters = _prefix;
+        setTextFill(pfxN, "muted-foreground");
+        try { pfxN.textAutoResize = "TRUNCATE"; } catch(e){} try { pfxN.maxLines = 1; } catch(e){} try { pfxN.textTruncation = "ENDING"; } catch(e){}
       }
 
       // Label
       if (!merged.hideLabel) {
-        var lbl = figma.createText(); lbl.name = "Label";
+        var lbl = _findKid(labelTarget, "Label", "TEXT");
+        if (!lbl) { lbl = figma.createText(); lbl.name = "Label"; labelTarget.appendChild(lbl); }
         var tsN = merged.textStyle || null; var fL = false;
         if (tsN) { var ts = findTextStyle(tsN); if (ts && ts.fontName) { try { await figma.loadFontAsync(ts.fontName); fL=true; } catch(e){} try { await lbl.setTextStyleIdAsync(ts.id); } catch(e){} } }
         if (!fL) { var fb = await loadFontSafe("Inter","SemiBold"); if (fb) lbl.fontName = fb; lbl.fontSize = merged.fontSize || 14; }
         lbl.characters = merged.textContent || "Button";
         if (merged.textFill) setTextFill(lbl, merged.textFill);
-        comp.appendChild(lbl);
+        // labelFill: make text node fill remaining width + truncate (for Input-like components)
+        if (merged.labelFill) { try { lbl.textAutoResize = "TRUNCATE"; } catch(e){} try { lbl.maxLines = 1; } catch(e){} try { lbl.textTruncation = "ENDING"; } catch(e){} try { lbl.layoutSizingHorizontal = "FILL"; } catch(e){} }
+        else { try { lbl.layoutSizingHorizontal = "HUG"; } catch(e){} }
       }
 
-      // Icon Right — real instance from Icon Components
+      // Suffix text (inside input, after label)
+      if (_suffix) {
+        var sfxN = _findKid(targetFrame, "Suffix", "TEXT");
+        if (!sfxN) { sfxN = figma.createText(); sfxN.name = "Suffix"; targetFrame.appendChild(sfxN); }
+        var _sfxTsN = merged.textStyle || null; var _sfxFL = false;
+        if (_sfxTsN) { var _sfxTs = findTextStyle(_sfxTsN); if (_sfxTs && _sfxTs.fontName) { try { await figma.loadFontAsync(_sfxTs.fontName); _sfxFL=true; } catch(e){} try { await sfxN.setTextStyleIdAsync(_sfxTs.id); } catch(e){} } }
+        if (!_sfxFL) { var _sfxFb = await loadFontSafe("Inter","Regular"); if (_sfxFb) sfxN.fontName = _sfxFb; sfxN.fontSize = 14; }
+        sfxN.characters = _suffix;
+        setTextFill(sfxN, "muted-foreground");
+        try { sfxN.textAutoResize = "TRUNCATE"; } catch(e){} try { sfxN.maxLines = 1; } catch(e){} try { sfxN.textTruncation = "ENDING"; } catch(e){}
+      }
+
+      // Icon Right — reuse instance if exists, otherwise create
       if (_showIconRight) {
-        var rightIconComp = findIconComponent("ChevronRight") || findIconComponent("ArrowLeft") || findIconComponent("Search");
-        if (rightIconComp) {
-          var rightInst = rightIconComp.createInstance();
-          rightInst.name = "Icon Right";
-          rightInst.resize(icoSize, icoSize);
-          var rightVecs = rightInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-          var icoFgVar2 = findVar(merged.textFill || "foreground");
-          if (icoFgVar2) {
-            for (var rv2 = 0; rv2 < rightVecs.length; rv2++) {
-              if (rightVecs[rv2].strokes && rightVecs[rv2].strokes.length > 0) rightVecs[rv2].strokes = [makeBoundPaint(icoFgVar2)];
-            }
-          }
-          comp.appendChild(rightInst);
+        var rightExist = _findKid(iconTarget, "Icon Right");
+        if (rightExist && rightExist.type === "INSTANCE") {
+          rightExist.resize(icoSize, icoSize);
+          var rightVecs = rightExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+          var icoFgVar3 = findVar(_iconColor);
+          if (icoFgVar3) { for (var rv2 = 0; rv2 < rightVecs.length; rv2++) { if (rightVecs[rv2].strokes && rightVecs[rv2].strokes.length > 0) rightVecs[rv2].strokes = [makeBoundPaint(icoFgVar3)]; } }
         } else {
-          var icoR = figma.createFrame(); icoR.name = "Icon Right"; icoR.resize(icoSize, icoSize); icoR.fills = [];
-          setStroke(icoR, merged.textFill || "foreground"); icoR.strokeWeight = 1.5;
-          icoR.topLeftRadius = 3; icoR.topRightRadius = 3; icoR.bottomLeftRadius = 3; icoR.bottomRightRadius = 3;
-          comp.appendChild(icoR);
+          if (rightExist) rightExist.remove();
+          var rightIconComp = findIconComponent(_iconRightName) || findIconComponent("ArrowRight") || findIconComponent("ChevronRight") || findIconComponent("ArrowLeft");
+          if (rightIconComp) {
+            var rightInst = rightIconComp.createInstance();
+            rightInst.name = "Icon Right"; rightInst.resize(icoSize, icoSize);
+            var rightVecs2 = rightInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+            var icoFgVar4 = findVar(_iconColor);
+            if (icoFgVar4) { for (var rv3 = 0; rv3 < rightVecs2.length; rv3++) { if (rightVecs2[rv3].strokes && rightVecs2[rv3].strokes.length > 0) rightVecs2[rv3].strokes = [makeBoundPaint(icoFgVar4)]; } }
+            iconTarget.appendChild(rightInst);
+          } else {
+            var icoR = figma.createFrame(); icoR.name = "Icon Right"; icoR.resize(icoSize, icoSize); icoR.fills = [];
+            setStroke(icoR, _iconColor); icoR.strokeWeight = 1.5;
+            icoR.topLeftRadius = 3; icoR.topRightRadius = 3; icoR.bottomLeftRadius = 3; icoR.bottomRightRadius = 3;
+            iconTarget.appendChild(icoR);
+          }
         }
+      }
+
+      // TextRight addon label
+      if (_hasAddon && _textRight) {
+        var trF = _findKid(comp, "TextRight", "FRAME");
+        if (!trF) { trF = figma.createFrame(); trF.name = "TextRight"; comp.appendChild(trF); }
+        trF.layoutMode = "HORIZONTAL";
+        trF.primaryAxisAlignItems = "CENTER"; trF.counterAxisAlignItems = "CENTER";
+        trF.resize(60, merged.height || 36);
+        trF.paddingLeft = 12; trF.paddingRight = 12;
+        setFill(trF, "muted");
+        setStroke(trF, merged.stroke || "border"); trF.strokeWeight = 1; trF.strokeAlign = "INSIDE";
+        trF.strokeLeftWeight = 0; // border-l-0: no left border at shared edge with innerF
+        trF.topLeftRadius = 0; trF.bottomLeftRadius = 0;
+        trF.topRightRadius = _radVal2; trF.bottomRightRadius = _radVal2;
+        trF.layoutSizingHorizontal = "HUG"; trF.layoutSizingVertical = "FILL";
+        var trTxt = _findKid(trF, "Text", "TEXT");
+        if (!trTxt) { trTxt = figma.createText(); trTxt.name = "Text"; trF.appendChild(trTxt); }
+        var _trTsN = merged.textStyle || null; var _trFL = false;
+        if (_trTsN) { var _trTs = findTextStyle(_trTsN); if (_trTs && _trTs.fontName) { try { await figma.loadFontAsync(_trTs.fontName); _trFL=true; } catch(e){} try { await trTxt.setTextStyleIdAsync(_trTs.id); } catch(e){} } }
+        if (!_trFL) { var _trFb = await loadFontSafe("Inter","Regular"); if (_trFb) trTxt.fontName = _trFb; trTxt.fontSize = 14; }
+        trTxt.characters = _textRight;
+        setTextFill(trTxt, "muted-foreground");
+        try { trTxt.textAutoResize = "TRUNCATE"; } catch(e){} try { trTxt.maxLines = 1; } catch(e){} try { trTxt.textTruncation = "ENDING"; } catch(e){}
       }
 
       // Legacy: iconPlaceholder (for backward compat with old JSON specs)
       if (merged.iconPlaceholder && !merged.iconLeft && !merged.iconRight) {
-        var ico = figma.createFrame(); ico.name = "Icon"; ico.resize(icoSize, icoSize); ico.fills = [];
+        var ico = _findKid(targetFrame, "Icon", "FRAME");
+        if (!ico) { ico = figma.createFrame(); ico.name = "Icon"; targetFrame.appendChild(ico); }
+        ico.resize(icoSize, icoSize); ico.fills = [];
         setStroke(ico, merged.textFill || "foreground"); ico.strokeWeight = 1.5;
         ico.topLeftRadius = 3; ico.topRightRadius = 3; ico.bottomLeftRadius = 3; ico.bottomRightRadius = 3;
-        comp.appendChild(ico);
       }
 
-      comp.clipsContent = false;
-      varComps.push(comp);
+      // --- Cleanup: remove children no longer needed ---
+      if (_hasIndicator) {
+        // Indicator pattern: icons in indicatorF, label in comp
+        var _validInd = {};
+        if (_showIconLeft) _validInd["Icon Left"] = true;
+        if (_showIconRight) _validInd["Icon Right"] = true;
+        // Preserve Thumb child when showThumb !== false
+        if (merged.indicator && merged.indicator.thumb && merged.showThumb !== false) _validInd["Thumb"] = true;
+        for (var _ri2 = indicatorF.children.length - 1; _ri2 >= 0; _ri2--) {
+          if (!_validInd[indicatorF.children[_ri2].name]) indicatorF.children[_ri2].remove();
+        }
+        var _validCompInd = { "Indicator": true };
+        if (!merged.hideLabel) _validCompInd["Label"] = true;
+        for (var _rc2 = comp.children.length - 1; _rc2 >= 0; _rc2--) {
+          if (!_validCompInd[comp.children[_rc2].name]) comp.children[_rc2].remove();
+        }
+      } else {
+        // targetFrame (innerF for addon, comp otherwise)
+        var _validTF = {};
+        if (_showIconLeft) _validTF["Icon Left"] = true;
+        if (_prefix) _validTF["Prefix"] = true;
+        if (!merged.hideLabel) _validTF["Label"] = true;
+        if (_suffix) _validTF["Suffix"] = true;
+        if (_showIconRight) _validTF["Icon Right"] = true;
+        if (merged.iconPlaceholder && !merged.iconLeft && !merged.iconRight) _validTF["Icon"] = true;
+        // Preserve ellipses created by ellipse mode
+        if (merged.ellipses && Array.isArray(merged.ellipses)) {
+          for (var _vei2 = 0; _vei2 < merged.ellipses.length; _vei2++) _validTF[merged.ellipses[_vei2].name || ("Ellipse" + _vei2)] = true;
+        }
+        for (var _ri = targetFrame.children.length - 1; _ri >= 0; _ri--) {
+          if (!_validTF[targetFrame.children[_ri].name]) targetFrame.children[_ri].remove();
+        }
+        if (_hasAddon) {
+          var _validComp = { "Input": true };
+          if (_textLeft) _validComp["TextLeft"] = true;
+          if (_textRight) _validComp["TextRight"] = true;
+          for (var _rc = comp.children.length - 1; _rc >= 0; _rc--) {
+            if (!_validComp[comp.children[_rc].name]) comp.children[_rc].remove();
+          }
+        }
+      }
+      // --- Reorder children to match expected layout order ---
+      if (_hasIndicator) {
+        // Indicator first, then label
+        var _compOrdInd = ["Indicator"];
+        if (!merged.hideLabel) _compOrdInd.push("Label");
+        for (var _coi = 0; _coi < _compOrdInd.length; _coi++) {
+          for (var _cci = 0; _cci < comp.children.length; _cci++) {
+            if (comp.children[_cci].name === _compOrdInd[_coi]) { comp.appendChild(comp.children[_cci]); break; }
+          }
+        }
+      } else {
+        var _tfOrd = [];
+        if (_showIconLeft) _tfOrd.push("Icon Left");
+        if (_prefix) _tfOrd.push("Prefix");
+        if (!merged.hideLabel) _tfOrd.push("Label");
+        if (_suffix) _tfOrd.push("Suffix");
+        if (_showIconRight) _tfOrd.push("Icon Right");
+        for (var _tfo = 0; _tfo < _tfOrd.length; _tfo++) {
+          for (var _tfc = 0; _tfc < targetFrame.children.length; _tfc++) {
+            if (targetFrame.children[_tfc].name === _tfOrd[_tfo]) { targetFrame.appendChild(targetFrame.children[_tfc]); break; }
+          }
+        }
+        if (_hasAddon) {
+          var _compOrd = [];
+          if (_textLeft) _compOrd.push("TextLeft");
+          _compOrd.push("Input");
+          if (_textRight) _compOrd.push("TextRight");
+          for (var _co = 0; _co < _compOrd.length; _co++) {
+            for (var _cc = 0; _cc < comp.children.length; _cc++) {
+              if (comp.children[_cc].name === _compOrd[_co]) { comp.appendChild(comp.children[_cc]); break; }
+            }
+          }
+        }
+      }
+      } // end of else (!_hasChildren)
+
+      comp.clipsContent = !!merged.clipsContent;
+      comp.setPluginData("specHash", _mergedHash);
+      if (!_isUpdate || _isNewVariant) varComps.push(comp);
       createdVariants++;
     }
 
-    // --- 3. Combine into ComponentSet ---
-    if (varComps.length === 0) continue;
-    var cs = figma.combineAsVariants(varComps, targetPage);
-    cs.name = compName;
-    if (compSpec.description) cs.description = compSpec.description;
+    // --- 3. Combine into ComponentSet OR upsert existing ---
+    var cs;
+    var _managedIds = {};
+    if (_isUpdate) {
+      // Save position BEFORE removing variants (Figma auto-deletes CS when all children removed)
+      var _savedCSX = existingCS.x; var _savedCSY = existingCS.y;
+      // Remove variants no longer in spec
+      var _emKeys = Object.keys(existingVarMap);
+      var _removedCount = 0;
+      for (var ek2 = 0; ek2 < _emKeys.length; ek2++) {
+        if (!_seenVars[_emKeys[ek2]]) { try { existingVarMap[_emKeys[ek2]].remove(); } catch(e) { log.push("  WARN: variant remove failed (auto-deleted?): " + e.message); } _removedCount++; }
+      }
+      // Check if existingCS was auto-deleted by Figma (happens when all children removed)
+      var _csStillExists = false;
+      try { var _testX = existingCS.x; _csStillExists = true; } catch(e) { _csStillExists = false; }
+      if (varComps.length > 0) {
+        // New variants exist — rebuild ComponentSet with combineAsVariants to ensure correct layout
+        if (_csStillExists) {
+          // 1. Move all existing variants to page level temporarily
+          var _existingVars = existingCS.children.slice();
+          // Save original names BEFORE moving — Figma renames variants when removed from CS
+          var _origVarNames = {};
+          for (var _evi = 0; _evi < _existingVars.length; _evi++) { _origVarNames[_existingVars[_evi].id] = _existingVars[_evi].name; }
+          for (var _evi = 0; _evi < _existingVars.length; _evi++) { targetPage.appendChild(_existingVars[_evi]); _managedIds[_existingVars[_evi].id] = true; }
+          // Restore original names after moving (Figma may have renamed e.g. "Items=3" → "Navigation Menu/3")
+          for (var _evi = 0; _evi < _existingVars.length; _evi++) { _existingVars[_evi].name = _origVarNames[_existingVars[_evi].id]; }
+          try { existingCS.remove(); } catch(e) { log.push("  WARN: existingCS.remove failed: " + e.message); }
+          // 2. Combine all (existing + new) into a fresh ComponentSet
+          var _allVars = _existingVars.concat(varComps);
+        } else {
+          var _allVars = varComps;
+        }
+        for (var _nvi = 0; _nvi < varComps.length; _nvi++) _managedIds[varComps[_nvi].id] = true;
+        for (var _avl = 0; _avl < _allVars.length; _avl++) log.push("  [upsert-combine " + _avl + "] type=" + _allVars[_avl].type + " name='" + _allVars[_avl].name + "'");
+        cs = figma.combineAsVariants(_allVars, targetPage);
+        cs.x = _savedCSX; cs.y = _savedCSY;
+      } else {
+        cs = _csStillExists ? existingCS : null;
+        if (!cs) continue;
+      }
+      cs.name = compName;
+      if (compSpec.description) cs.description = compSpec.description;
+      cs.layoutMode = "NONE"; cs.fills = [];
+      _anyUpsert = true;
+      log.push("  Upserted: " + (combos.length - varComps.length) + " updated, " + varComps.length + " added, " + _removedCount + " removed (always rebuild)");
+    } else {
+      if (varComps.length === 0) continue;
+      for (var _nvi2 = 0; _nvi2 < varComps.length; _nvi2++) {
+        _managedIds[varComps[_nvi2].id] = true;
+        log.push("  [pre-combine " + _nvi2 + "] type=" + varComps[_nvi2].type + " name='" + varComps[_nvi2].name + "' children=" + varComps[_nvi2].children.length);
+      }
+      cs = figma.combineAsVariants(varComps, targetPage);
+      cs.name = compName;
+      if (compSpec.description) cs.description = compSpec.description;
+      cs.layoutMode = "NONE";
+      cs.fills = []; // transparent — showcase frame provides bg
+      createdSets++;
+      log.push("  ComponentSet: " + varComps.length + " in, " + cs.children.length + " in CS");
+    }
 
-    // ComponentSet styling — will be repositioned into grid by _buildShowcase
-    cs.layoutMode = "NONE";
-    cs.fills = []; // transparent — showcase frame provides bg
+    // --- Post-build diagnostics & fixes ---
+    // Diag 0: dump all variant names + detect rogue properties
+    var _expectedProps = {};
+    for (var _epi = 0; _epi < propNames.length; _epi++) _expectedProps[propNames[_epi]] = true;
+    for (var _dvi = 0; _dvi < cs.children.length; _dvi++) {
+      var _dvName = cs.children[_dvi].name;
+      log.push("  [variant " + _dvi + "] type=" + cs.children[_dvi].type + " name='" + _dvName + "'");
+      // Check for unexpected property keys in variant name
+      var _dvParts = _dvName.split(", ");
+      for (var _dvp = 0; _dvp < _dvParts.length; _dvp++) {
+        var _dvKV = _dvParts[_dvp].split("=");
+        if (_dvKV.length === 2 && !_expectedProps[_dvKV[0].trim()]) {
+          log.push("  ⚠ ROGUE PROPERTY '" + _dvKV[0].trim() + "' in variant name! Expected: " + propNames.join(", "));
+        }
+      }
+    }
+    // Diag 1: CS children count vs expected
+    log.push("  CS.children=" + cs.children.length + " CS.size=" + Math.round(cs.width) + "x" + Math.round(cs.height));
+    // Diag 2: find out-of-bounds children inside CS
+    var _oobCount = 0;
+    for (var _cbi = 0; _cbi < cs.children.length; _cbi++) {
+      var _cbc = cs.children[_cbi];
+      if (_cbc.x + _cbc.width > cs.width || _cbc.y + _cbc.height > cs.height || _cbc.x < 0 || _cbc.y < 0) {
+        _oobCount++;
+        log.push("  OOB child: " + _cbc.name.substring(0, 50) + " x=" + Math.round(_cbc.x) + " y=" + Math.round(_cbc.y) + " w=" + Math.round(_cbc.width) + " h=" + Math.round(_cbc.height));
+      }
+    }
+    // Fix 1: resize CS to encompass all out-of-bounds children
+    if (_oobCount > 0) {
+      var _maxCSR = 0, _maxCSB = 0;
+      for (var _cbi2 = 0; _cbi2 < cs.children.length; _cbi2++) {
+        var _cbc2 = cs.children[_cbi2];
+        if (_cbc2.x + _cbc2.width > _maxCSR) _maxCSR = _cbc2.x + _cbc2.width;
+        if (_cbc2.y + _cbc2.height > _maxCSB) _maxCSB = _cbc2.y + _cbc2.height;
+      }
+      cs.resize(Math.max(_maxCSR, cs.width), Math.max(_maxCSB, cs.height));
+      log.push("  Fix1: resized CS to " + Math.round(cs.width) + "x" + Math.round(cs.height));
+    }
+    // Diag 3: any COMPONENT nodes at page level?
+    var _pageComps = [];
+    var _postPage = targetPage.children.slice();
+    for (var _ppk = 0; _ppk < _postPage.length; _ppk++) {
+      if (_postPage[_ppk].type === "COMPONENT") _pageComps.push(_postPage[_ppk].name.substring(0, 40));
+    }
+    if (_pageComps.length > 0) log.push("  COMP at page level: " + _pageComps.join(" | "));
+    // Fix 2: move any page-level COMPONENT with matching name into the CS
+    for (var _ppk2 = 0; _ppk2 < _postPage.length; _ppk2++) {
+      if (_postPage[_ppk2].type === "COMPONENT" && propNames.length > 0 && _postPage[_ppk2].name.indexOf(propNames[0] + "=") >= 0) {
+        try { cs.appendChild(_postPage[_ppk2]); log.push("  Fix2: moved " + _postPage[_ppk2].name.substring(0, 40) + " into CS"); }
+        catch(e) { _postPage[_ppk2].remove(); log.push("  Fix2: removed " + _postPage[_ppk2].name.substring(0, 40)); }
+      }
+    }
 
-    createdSets++;
-    log.push("  ComponentSet: " + varComps.length + " variants");
+    // --- 4. Rebuild Showcase (skip if spec unchanged) ---
+    // Multi-component file: sub-components (all except last) skip showcase, store CS for nesting into parent
+    var _isSubComponent = components.length > 1 && ci < components.length - 1;
+    if (_isSubComponent) {
+      _layoutCSGrid(cs, properties, propNames);
+      _subComponentSets.push(cs);
+      log.push("  Sub-component — grid layout applied, skipping showcase, will nest into parent");
+      continue; // skip showcase + cleanup for sub-components, handled by parent
+    }
 
-    // --- 4. Build Showcase Page ---
-    log.push("  Building showcase...");
-    var showcase = await _buildShowcase(cs, compSpec, properties, propNames, log);
-    targetPage.appendChild(showcase);
+    var _showcaseSpecHash = components.length > 1 ? JSON.stringify(components) : JSON.stringify(compSpec);
+    var _skipShowcase = false;
+    // Safety: verify existingShowcase still exists (may have been deleted when CS was auto-removed)
+    if (existingShowcase) {
+      var _showcaseStillExists = false;
+      try { var _testSX = existingShowcase.x; _showcaseStillExists = true; } catch(e) { _showcaseStillExists = false; }
+      if (!_showcaseStillExists) { existingShowcase = null; log.push("  Showcase node was auto-deleted"); }
+    }
+    if (existingShowcase) {
+      if (existingShowcase.getPluginData("specHash") === _showcaseSpecHash) {
+        log.push("  Showcase unchanged \u2014 skipped");
+        _skipShowcase = true;
+      } else {
+        // In-place upsert: keep existing showcase, only update sections that changed
+        log.push("  Showcase changed \u2014 in-place upsert");
+        _skipShowcase = true;
+      }
+    }
+    if (!_skipShowcase) {
+      log.push("  Building showcase...");
+      var showcase = await _buildShowcase(cs, compSpec, properties, propNames, log);
+      showcase.setPluginData("specHash", _showcaseSpecHash);
+      targetPage.appendChild(showcase);
+      // Position: use saved x when updating, advance offset when creating new
+      showcase.x = _isUpdate ? _savedShowcaseX : _showcaseXOffset;
+      showcase.y = 0;
+      if (!_isUpdate) _showcaseXOffset += showcase.width + 100;
+    } else if (existingShowcase && cs.parent !== existingShowcase) {
+      // Showcase skipped but CS still at page level — move it into existing showcase's component section
+      var _compSecInExisting = null;
+      for (var _esi = 0; _esi < existingShowcase.children.length; _esi++) {
+        var _esName = existingShowcase.children[_esi].name;
+        if (_esName === "Section — Component" || _esName === "Component" || _esName.indexOf("Component") >= 0) {
+          _compSecInExisting = existingShowcase.children[_esi]; break;
+        }
+      }
+      if (_compSecInExisting) {
+        _compSecInExisting.appendChild(cs);
+        log.push("  Moved CS into existing showcase (component section)");
+      } else {
+        existingShowcase.appendChild(cs);
+        log.push("  Moved CS into existing showcase (root)");
+      }
+    }
 
-    // Position showcase horizontally, 100px gap between components
-    showcase.x = _showcaseXOffset; showcase.y = 0;
-    _showcaseXOffset += showcase.width + 100;
+    // --- 4.1. Nest sub-component CSes into parent showcase's "Section — Component" ---
+    if (_subComponentSets.length > 0) {
+      var _parentShowcase = existingShowcase;
+      if (!_skipShowcase && typeof showcase !== "undefined") _parentShowcase = showcase;
+      if (_parentShowcase) {
+        var _compSecForSubs = null;
+        for (var _sci = 0; _sci < _parentShowcase.children.length; _sci++) {
+          var _scName = _parentShowcase.children[_sci].name;
+          if (_scName === "Section — Component" || _scName === "Component" || _scName.indexOf("Component") >= 0) {
+            _compSecForSubs = _parentShowcase.children[_sci]; break;
+          }
+        }
+        // Reverse sub-components: JSON array is dependency order (leaves first),
+        // but canvas display order should match web Explore tab order (parent first, leaves last)
+        _subComponentSets.reverse();
+        for (var _scs = 0; _scs < _subComponentSets.length; _scs++) {
+          var _subCS = _subComponentSets[_scs];
+          if (_compSecForSubs) {
+            _compSecForSubs.appendChild(_subCS);
+            log.push("  Nested sub-component '" + _subCS.name + "' into parent showcase (component section)");
+          } else {
+            _parentShowcase.appendChild(_subCS);
+            log.push("  Nested sub-component '" + _subCS.name + "' into parent showcase (root)");
+          }
+        }
+        _subComponentSets = []; // reset after nesting
+      }
+    }
+
+    // --- 4.5. In-place upsert: Installation section in existing showcase ---
+    if (_skipShowcase && existingShowcase) {
+      var _scSecs2 = compSpec.showcase && compSpec.showcase.sections ? compSpec.showcase.sections : null;
+      var _showInstall2 = !_scSecs2 || _scSecs2.indexOf("installation") !== -1;
+      var _installData2 = compSpec.installation || null;
+      if (_showInstall2 && _installData2) {
+        // Find existing "Section — Installation" and its preceding separator
+        var _exInstallSec = null;
+        var _exInstallSep = null;
+        var _kids = existingShowcase.children.slice();
+        for (var _ii = 0; _ii < _kids.length; _ii++) {
+          if (_kids[_ii].name === "Section \u2014 Installation" || _kids[_ii].name === "Section — Installation") {
+            _exInstallSec = _kids[_ii];
+            // Check previous sibling for separator
+            if (_ii > 0 && (_kids[_ii - 1].name === "Separator" || _kids[_ii - 1].name === "Divider") && _kids[_ii - 1].height <= 2) {
+              _exInstallSep = _kids[_ii - 1];
+            }
+            break;
+          }
+        }
+        // Remove old section + separator
+        if (_exInstallSec) { _exInstallSec.remove(); log.push("  Removed old installation section"); }
+        if (_exInstallSep) _exInstallSep.remove();
+        // Build new installation section (appends at end — correct since it's always last)
+        await _buildInstallSec(existingShowcase, _installData2);
+        log.push("  Rebuilt installation section in-place");
+      }
+      // Update specHash so next run knows current state
+      existingShowcase.setPluginData("specHash", _showcaseSpecHash);
+    }
+
+    // --- Post-showcase cleanup: remove stray nodes at page level ---
+    // After showcase is built, CS should be inside showcase (via compSec.appendChild).
+    // Diagnostic: verify CS is inside showcase, not at page level
+    log.push("  [diag] cs.parent=" + (cs.parent ? cs.parent.name : "null") + " cs.parent.type=" + (cs.parent ? cs.parent.type : "n/a"));
+    // Build lookup of sub-component names for cleanup
+    var _subCSNames = {};
+    for (var _scni = 0; _scni < ci; _scni++) { if (components[_scni].name) _subCSNames[components[_scni].name] = true; }
+    // Resolve showcase ref for cleanup nesting
+    var _parentShowcaseForCleanup = existingShowcase;
+    if (!_skipShowcase && typeof showcase !== "undefined") _parentShowcaseForCleanup = showcase;
+    var _postShowcaseKids = targetPage.children.slice();
+    for (var _psk = 0; _psk < _postShowcaseKids.length; _psk++) {
+      var _psNode = _postShowcaseKids[_psk];
+      // Keep showcase frames
+      if (_psNode.type === "FRAME" && _psNode.name.indexOf(" \u2014 Showcase") >= 0) continue;
+      // Remove stray COMPONENT_SET with same name (duplicate) — also catch sub-component names
+      if (_psNode.type === "COMPONENT_SET" && (_psNode.name === compName || _subCSNames[_psNode.name])) {
+        // Don't remove sub-component CS — move into showcase instead
+        if (_psNode.name !== compName && _parentShowcaseForCleanup) {
+          var _cleanupCompSec = null;
+          for (var _ccsi = 0; _ccsi < _parentShowcaseForCleanup.children.length; _ccsi++) {
+            var _ccsName = _parentShowcaseForCleanup.children[_ccsi].name;
+            if (_ccsName === "Section \u2014 Component" || _ccsName === "Component" || _ccsName.indexOf("Component") >= 0) { _cleanupCompSec = _parentShowcaseForCleanup.children[_ccsi]; break; }
+          }
+          try {
+            if (_cleanupCompSec) _cleanupCompSec.appendChild(_psNode);
+            else _parentShowcaseForCleanup.appendChild(_psNode);
+            log.push("  Cleanup: moved stray sub-component '" + _psNode.name + "' into showcase");
+          } catch(e) { log.push("  Cleanup: WARN move sub-component failed: " + e.message); }
+        } else if (_psNode.id !== cs.id) {
+          log.push("  Cleanup: removed stray COMPONENT_SET '" + _psNode.name + "' id=" + _psNode.id + " (cs.id=" + cs.id + ")");
+          try { _psNode.remove(); } catch(e) { log.push("  Cleanup: WARN remove failed: " + e.message); }
+        }
+      }
+      // Remove stray COMPONENT nodes (orphan variants)
+      else if (_psNode.type === "COMPONENT" && propNames.length > 0 && _psNode.name.indexOf(propNames[0] + "=") >= 0) {
+        log.push("  Cleanup: removed stray COMPONENT '" + _psNode.name.substring(0, 50) + "'");
+        try { _psNode.remove(); } catch(e) { log.push("  Cleanup: WARN remove failed: " + e.message); }
+      }
+      // Remove stray INSTANCE nodes
+      else if (_psNode.type === "INSTANCE") {
+        log.push("  Cleanup: removed stray INSTANCE '" + _psNode.name.substring(0, 50) + "'");
+        try { _psNode.remove(); } catch(e) { log.push("  Cleanup: WARN remove failed: " + e.message); }
+      }
+    }
   }
 
-  figma.viewport.scrollAndZoomIntoView(targetPage.children);
+  // Never change viewport — user keeps their current view position
 
   var elapsed = Date.now() - startTime;
-  log.push("Done! " + createdSets + " set(s), " + createdVariants + " variants + showcase in " + elapsed + "ms");
-  return { success: true, message: createdSets + " component(s) + showcase created", elapsed: elapsed, log: log };
+  log.push("Done! " + createdSets + " created, " + createdVariants + " variants + showcase in " + elapsed + "ms");
+  return { success: true, message: createdSets + " new + upserted component(s) done", elapsed: elapsed, log: log };
 }
 
 // --- Showcase table helper ---
@@ -2197,6 +3669,7 @@ async function _makeTable(title, headers, rows, parent) {
   table.itemSpacing = 0;
   table.topLeftRadius = 12; table.topRightRadius = 12; table.bottomLeftRadius = 12; table.bottomRightRadius = 12;
   table.clipsContent = true;
+  setFill(table, "card");
   setStroke(table, "border"); table.strokeWeight = 1; table.strokeAlign = "INSIDE";
   sec.appendChild(table);
   try { table.layoutSizingHorizontal = "FILL"; table.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2207,6 +3680,184 @@ async function _makeTable(title, headers, rows, parent) {
   return sec;
 }
 
+// --- Installation section builder (shared by _buildShowcase and upsert) ---
+
+async function _buildInstallSec(parent, installData) {
+  _makeSep(parent);
+  var installSec = _makeFrame("Section — Installation", "v", 24, parent);
+  await _makeLabel("Installation", "SP/H3", "foreground", installSec);
+  var installCard = figma.createFrame(); installCard.name = "Install Card";
+  installCard.layoutMode = "VERTICAL"; installCard.itemSpacing = 0;
+  installCard.paddingTop = 0; installCard.paddingBottom = 0; installCard.paddingLeft = 0; installCard.paddingRight = 0;
+  installCard.topLeftRadius = 12; installCard.topRightRadius = 12; installCard.bottomLeftRadius = 12; installCard.bottomRightRadius = 12;
+  installCard.clipsContent = true;
+  installCard.fills = [];
+  setStroke(installCard, "border"); installCard.strokeWeight = 1; installCard.strokeAlign = "INSIDE";
+  installSec.appendChild(installCard);
+  try { installCard.layoutSizingHorizontal = "FILL"; installCard.layoutSizingVertical = "HUG"; } catch(e) {}
+  // Dependencies sub-section
+  if (installData.dependencies) {
+    var depHeader = figma.createFrame(); depHeader.name = "Dep Header";
+    depHeader.layoutMode = "HORIZONTAL"; depHeader.itemSpacing = 0;
+    depHeader.paddingTop = 12; depHeader.paddingBottom = 12; depHeader.paddingLeft = 16; depHeader.paddingRight = 16;
+    setFillWithOpacity(depHeader, "muted", 0.3);
+    installCard.appendChild(depHeader);
+    try { depHeader.layoutSizingHorizontal = "FILL"; depHeader.layoutSizingVertical = "HUG"; } catch(e) {}
+    await _makeLabel("Dependencies", "SP/Overline", "muted-foreground", depHeader);
+    var depSep = figma.createFrame(); depSep.name = "Separator";
+    depSep.layoutMode = "HORIZONTAL"; depSep.resize(100, 1);
+    setFill(depSep, "border");
+    installCard.appendChild(depSep);
+    try { depSep.layoutSizingHorizontal = "FILL"; } catch(e) {}
+    var depCode = figma.createFrame(); depCode.name = "Code Block";
+    depCode.layoutMode = "VERTICAL"; depCode.itemSpacing = 0;
+    depCode.paddingTop = 16; depCode.paddingBottom = 16; depCode.paddingLeft = 16; depCode.paddingRight = 16;
+    depCode.fills = [{ type: "SOLID", color: { r: 0.035, g: 0.035, b: 0.043 } }];
+    installCard.appendChild(depCode);
+    try { depCode.layoutSizingHorizontal = "FILL"; depCode.layoutSizingVertical = "HUG"; } catch(e) {}
+    var depText = await _makeLabel(installData.dependencies, "SP/Caption", null, depCode);
+    if (depText) depText.fills = [{ type: "SOLID", color: { r: 0.961, g: 0.961, b: 0.969 } }];
+  }
+  // Import sub-section
+  if (installData.import) {
+    var impHeader = figma.createFrame(); impHeader.name = "Import Header";
+    impHeader.layoutMode = "HORIZONTAL"; impHeader.itemSpacing = 0;
+    impHeader.paddingTop = 12; impHeader.paddingBottom = 12; impHeader.paddingLeft = 16; impHeader.paddingRight = 16;
+    setFillWithOpacity(impHeader, "muted", 0.3);
+    installCard.appendChild(impHeader);
+    try { impHeader.layoutSizingHorizontal = "FILL"; impHeader.layoutSizingVertical = "HUG"; } catch(e) {}
+    await _makeLabel("Import", "SP/Overline", "muted-foreground", impHeader);
+    var impSep = figma.createFrame(); impSep.name = "Separator";
+    impSep.layoutMode = "HORIZONTAL"; impSep.resize(100, 1);
+    setFill(impSep, "border");
+    installCard.appendChild(impSep);
+    try { impSep.layoutSizingHorizontal = "FILL"; } catch(e) {}
+    var impCode = figma.createFrame(); impCode.name = "Code Block";
+    impCode.layoutMode = "VERTICAL"; impCode.itemSpacing = 0;
+    impCode.paddingTop = 16; impCode.paddingBottom = 16; impCode.paddingLeft = 16; impCode.paddingRight = 16;
+    impCode.fills = [{ type: "SOLID", color: { r: 0.035, g: 0.035, b: 0.043 } }];
+    installCard.appendChild(impCode);
+    try { impCode.layoutSizingHorizontal = "FILL"; impCode.layoutSizingVertical = "HUG"; } catch(e) {}
+    var impText = await _makeLabel(installData.import, "SP/Caption", null, impCode);
+    if (impText) impText.fills = [{ type: "SOLID", color: { r: 0.961, g: 0.961, b: 0.969 } }];
+  }
+  return installSec;
+}
+
+// --- Grid layout for ComponentSet variants ---
+function _layoutCSGrid(cs, properties, propNames) {
+  function _parseName(name) {
+    var r = {}; var parts = name.split(", ");
+    for (var i = 0; i < parts.length; i++) { var kv = parts[i].split("="); if (kv.length === 2) r[kv[0].trim()] = kv[1].trim(); }
+    return r;
+  }
+  // Build value→index map for each property (declaration order)
+  var _propOrder = {};
+  for (var _pi = 0; _pi < propNames.length; _pi++) {
+    var _vals = properties[propNames[_pi]];
+    _propOrder[propNames[_pi]] = {};
+    for (var _vi = 0; _vi < _vals.length; _vi++) _propOrder[propNames[_pi]][_vals[_vi]] = _vi;
+  }
+  function _sortKey(comp) {
+    var v = _parseName(comp.name);
+    var k = "";
+    for (var pi = 0; pi < propNames.length; pi++) {
+      var pn = propNames[pi];
+      var idx = _propOrder[pn] && _propOrder[pn][v[pn]] !== undefined ? _propOrder[pn][v[pn]] : 99;
+      k += String(idx).padStart(3, "0");
+    }
+    return k;
+  }
+  // Sort + reorder
+  var _sorted = [];
+  for (var _si = 0; _si < cs.children.length; _si++) _sorted.push(cs.children[_si]);
+  _sorted.sort(function(a, b) { return _sortKey(a).localeCompare(_sortKey(b)); });
+  for (var _ri = 0; _ri < _sorted.length; _ri++) cs.appendChild(_sorted[_ri]);
+
+  // Grid: last property = columns, rest = row groups
+  var _lastProp = propNames[propNames.length - 1];
+  var _colCount = properties[_lastProp] ? properties[_lastProp].length : 1;
+  var _rowCount = Math.max(1, Math.ceil(_sorted.length / _colCount));
+  var _colGap = 40, _rowGap = 20, _groupGap = 56, _pad = 40;
+
+  cs.layoutMode = "NONE";
+  cs.fills = [];
+
+  // Column widths
+  var _colWidths = [];
+  for (var _ci = 0; _ci < _colCount; _ci++) {
+    var _maxW = 0;
+    for (var _rj = 0; _rj < _rowCount; _rj++) {
+      var _idx = _rj * _colCount + _ci;
+      if (_idx < _sorted.length) { var _w = _sorted[_idx].width; if (typeof _w === "number" && !isNaN(_w)) _maxW = Math.max(_maxW, _w); }
+    }
+    _colWidths.push(_maxW || 40);
+  }
+  // Row heights
+  var _rowHeights = [];
+  for (var _rk = 0; _rk < _rowCount; _rk++) {
+    var _maxH = 0;
+    for (var _cj = 0; _cj < _colCount; _cj++) {
+      var _idx2 = _rk * _colCount + _cj;
+      if (_idx2 < _sorted.length) { var _h = _sorted[_idx2].height; if (typeof _h === "number" && !isNaN(_h)) _maxH = Math.max(_maxH, _h); }
+    }
+    _rowHeights.push(_maxH || 20);
+  }
+  // Column X positions
+  var _colX = [_pad];
+  for (var _cx = 1; _cx < _colCount; _cx++) _colX.push(_colX[_cx - 1] + _colWidths[_cx - 1] + _colGap);
+  // Row Y positions with multi-level group breaks
+  // First property change → large gap (56), intermediate property change → medium gap (36), same group → small gap (20)
+  var _subGroupGap = 36;
+  var _rowY = [_pad];
+  for (var _ry = 1; _ry < _rowCount; _ry++) {
+    var _gap = _rowGap;
+    if (propNames.length > 1) {
+      var _prevRowIdx = (_ry - 1) * _colCount;
+      var _currRowIdx = _ry * _colCount;
+      if (_currRowIdx < _sorted.length && _prevRowIdx < _sorted.length) {
+        var _prevV = _parseName(_sorted[_prevRowIdx].name);
+        var _currV = _parseName(_sorted[_currRowIdx].name);
+        // Check all row properties (all except last which is columns) from outermost to innermost
+        for (var _gp = 0; _gp < propNames.length - 1; _gp++) {
+          if (_prevV[propNames[_gp]] !== _currV[propNames[_gp]]) {
+            _gap = _gp === 0 ? _groupGap : _subGroupGap;
+            break;
+          }
+        }
+      }
+    }
+    _rowY.push(_rowY[_ry - 1] + _rowHeights[_ry - 1] + _gap);
+  }
+  // Position each child
+  for (var _gi = 0; _gi < _sorted.length; _gi++) {
+    var _col = _gi % _colCount;
+    var _row = Math.floor(_gi / _colCount);
+    var _xVal = (_col < _colX.length) ? _colX[_col] : _pad;
+    var _yVal = (_row < _rowY.length) ? _rowY[_row] : _pad;
+    try {
+      _sorted[_gi].x = (typeof _xVal === "number" && !isNaN(_xVal)) ? _xVal : _pad;
+      _sorted[_gi].y = (typeof _yVal === "number" && !isNaN(_yVal)) ? _yVal : _pad;
+    } catch (e) {
+      try { _sorted[_gi].x = _pad; _sorted[_gi].y = _pad + _gi * 50; } catch (e2) {}
+    }
+  }
+  // Resize CS to fit
+  var _totalW = _colX[_colCount - 1] + _colWidths[_colCount - 1] + _pad;
+  var _totalH = _rowY[_rowCount - 1] + _rowHeights[_rowCount - 1] + _pad;
+  if (isNaN(_totalW) || _totalW < 100) _totalW = 800;
+  if (isNaN(_totalH) || _totalH < 100) _totalH = 400;
+  cs.resize(_totalW, _totalH);
+  // Dashed border
+  setStroke(cs, "foreground");
+  cs.strokeWeight = 1;
+  cs.strokeAlign = "INSIDE";
+  cs.dashPattern = [10, 5];
+  cs.topLeftRadius = 16; cs.topRightRadius = 16; cs.bottomLeftRadius = 16; cs.bottomRightRadius = 16;
+
+  return _totalW;
+}
+
 // --- Showcase builder ---
 
 async function _buildShowcase(cs, compSpec, properties, propNames, log) {
@@ -2214,9 +3865,13 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   var desc = compSpec.description || "";
   var category = compSpec.category || "Components";
 
+  // Section visibility — whitelist via showcase.sections (default: all)
+  var _scSections = compSpec.showcase && compSpec.showcase.sections ? compSpec.showcase.sections : null;
+  function _showSec(key) { return !_scSections || _scSections.indexOf(key) !== -1; }
+
   // Main frame — 1440w, dark bg
   var main = figma.createFrame();
-  main.name = compName + " — Showcase";
+  main.name = compName + " \u2014 Showcase";
   main.layoutMode = "VERTICAL";
   main.resize(1440, 100);
   main.layoutSizingHorizontal = "FIXED";
@@ -2225,6 +3880,26 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   main.itemSpacing = 64;
   setFill(main, "background");
   main.clipsContent = false;
+
+  // Apply dark mode to showcase so semantic variables resolve to dark theme values
+  try {
+    var _allCols = await figma.variables.getLocalVariableCollectionsAsync();
+    var _darkApplied = false;
+    for (var _ci = 0; _ci < _allCols.length; _ci++) {
+      var _col = _allCols[_ci];
+      for (var _mi = 0; _mi < _col.modes.length; _mi++) {
+        if (_col.modes[_mi].name.toLowerCase() === "dark") {
+          main.setExplicitVariableModeForCollection(_col.id, _col.modes[_mi].modeId);
+          log.push("  Dark mode set: " + _col.name + " → " + _col.modes[_mi].name);
+          _darkApplied = true;
+          break;
+        }
+      }
+    }
+    if (!_darkApplied) log.push("  WARN: No Dark mode found in any collection");
+  } catch(e) {
+    log.push("  WARN: Failed to set dark mode: " + e.message);
+  }
 
   // ====== 1. HEADER ======
   var header = _makeFrame("Header", "v", 8, main);
@@ -2237,8 +3912,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
 
   // ====== SHARED HELPERS (hoisted) ======
   var CARD_W = 400;
-  var firstProp = propNames[0]; // e.g. "Variant"
-  var firstVals = properties[firstProp]; // e.g. ["Default", "Secondary", ...]
+  var firstProp = propNames[0] || "Variant"; // e.g. "Variant"
+  var firstVals = properties[firstProp] || []; // e.g. ["Default", "Secondary", ...]
   var sizes = properties["Size"] || ["default"];
   var states = properties["State"] || [];
 
@@ -2299,115 +3974,14 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   // ====== SECTION: COMPONENT (gốc) ======
   var compSec = _makeFrame("Section — Component", "v", 24, main);
   await _makeLabel("Component", "SP/H3", "foreground", compSec);
-  var _descLabel = await _makeLabel("The source ComponentSet with all " + cs.children.length + " variants. Grouped: Variant → Size → Icons → State.", "SP/Body", "muted-foreground", compSec);
+  var _gridDesc = propNames.length > 1
+    ? "Columns: " + propNames[propNames.length - 1] + " (" + properties[propNames[propNames.length - 1]].join(", ") + "). Rows grouped by: " + propNames.slice(0, -1).join(" → ") + "."
+    : "All " + propNames[0] + " values.";
+  var _descLabel = await _makeLabel(cs.children.length + " variants. " + _gridDesc, "SP/Body", "muted-foreground", compSec);
   try { _descLabel.layoutSizingHorizontal = "FILL"; } catch (e) {}
 
-  // --- Generic sort: all properties in declaration order ---
-  function _parseName(name) {
-    var r = {}; var parts = name.split(", ");
-    for (var i = 0; i < parts.length; i++) { var kv = parts[i].split("="); if (kv.length === 2) r[kv[0].trim()] = kv[1].trim(); }
-    return r;
-  }
-
-  // Build value→index map for each property (declaration order)
-  var _propOrder = {};
-  for (var _pi = 0; _pi < propNames.length; _pi++) {
-    var _vals = properties[propNames[_pi]];
-    _propOrder[propNames[_pi]] = {};
-    for (var _vi = 0; _vi < _vals.length; _vi++) _propOrder[propNames[_pi]][_vals[_vi]] = _vi;
-  }
-
-  function _sortKey(comp) {
-    var v = _parseName(comp.name);
-    var k = "";
-    for (var pi = 0; pi < propNames.length; pi++) {
-      var pn = propNames[pi];
-      var idx = _propOrder[pn] && _propOrder[pn][v[pn]] !== undefined ? _propOrder[pn][v[pn]] : 99;
-      k += String(idx).padStart(3, "0");
-    }
-    return k;
-  }
-
-  // Sort + reorder
-  var _sorted = [];
-  for (var _si = 0; _si < cs.children.length; _si++) _sorted.push(cs.children[_si]);
-  _sorted.sort(function(a, b) { return _sortKey(a).localeCompare(_sortKey(b)); });
-  for (var _ri = 0; _ri < _sorted.length; _ri++) cs.appendChild(_sorted[_ri]);
-
-  // --- Grid: first property (Variant) = columns (horizontal), rest = rows (vertical) ---
-  // e.g. 7 Variants across, then Size×State×Icon combos stacked below
-  var _colCount = properties[propNames[0]] ? properties[propNames[0]].length : 1;
-  var _rowCount = Math.max(1, Math.ceil(_sorted.length / _colCount));
-  var _colGap = 68, _rowGap = 40, _pad = 40;
-
-  // Disable auto-layout for manual positioning
-  cs.layoutMode = "NONE";
-  cs.fills = [];
-
-  // Calculate column widths (max width per column across all rows)
-  var _colWidths = [];
-  for (var _ci = 0; _ci < _colCount; _ci++) {
-    var _maxW = 0;
-    for (var _rj = 0; _rj < _rowCount; _rj++) {
-      var _idx = _rj * _colCount + _ci;
-      if (_idx < _sorted.length) {
-        var _w = _sorted[_idx].width;
-        if (typeof _w === "number" && !isNaN(_w)) _maxW = Math.max(_maxW, _w);
-      }
-    }
-    _colWidths.push(_maxW || 40); // fallback 40px min
-  }
-
-  // Calculate row heights (max height per row across all columns)
-  var _rowHeights = [];
-  for (var _rk = 0; _rk < _rowCount; _rk++) {
-    var _maxH = 0;
-    for (var _cj = 0; _cj < _colCount; _cj++) {
-      var _idx2 = _rk * _colCount + _cj;
-      if (_idx2 < _sorted.length) {
-        var _h = _sorted[_idx2].height;
-        if (typeof _h === "number" && !isNaN(_h)) _maxH = Math.max(_maxH, _h);
-      }
-    }
-    _rowHeights.push(_maxH || 20); // fallback 20px min
-  }
-
-  // Column X positions
-  var _colX = [_pad];
-  for (var _cx = 1; _cx < _colCount; _cx++) _colX.push(_colX[_cx - 1] + _colWidths[_cx - 1] + _colGap);
-
-  // Row Y positions
-  var _rowY = [_pad];
-  for (var _ry = 1; _ry < _rowCount; _ry++) _rowY.push(_rowY[_ry - 1] + _rowHeights[_ry - 1] + _rowGap);
-
-  // Position each child in the grid — with validation
-  for (var _gi = 0; _gi < _sorted.length; _gi++) {
-    var _col = _gi % _colCount;
-    var _row = Math.floor(_gi / _colCount);
-    var _xVal = (_col < _colX.length) ? _colX[_col] : _pad;
-    var _yVal = (_row < _rowY.length) ? _rowY[_row] : _pad;
-    try {
-      _sorted[_gi].x = (typeof _xVal === "number" && !isNaN(_xVal)) ? _xVal : _pad;
-      _sorted[_gi].y = (typeof _yVal === "number" && !isNaN(_yVal)) ? _yVal : _pad;
-    } catch (e) {
-      // Fallback: stack vertically if positioning fails
-      try { _sorted[_gi].x = _pad; _sorted[_gi].y = _pad + _gi * 50; } catch (e2) {}
-    }
-  }
-
-  // Resize ComponentSet to fit grid
-  var _totalW = _colX[_colCount - 1] + _colWidths[_colCount - 1] + _pad;
-  var _totalH = _rowY[_rowCount - 1] + _rowHeights[_rowCount - 1] + _pad;
-  if (isNaN(_totalW) || _totalW < 100) _totalW = 800;
-  if (isNaN(_totalH) || _totalH < 100) _totalH = 400;
-  cs.resize(_totalW, _totalH);
-
-  // Dashed border with foreground color + 16px radius
-  setStroke(cs, "foreground");
-  cs.strokeWeight = 1;
-  cs.strokeAlign = "INSIDE";
-  cs.dashPattern = [10, 5];
-  cs.topLeftRadius = 16; cs.topRightRadius = 16; cs.bottomLeftRadius = 16; cs.bottomRightRadius = 16;
+  // Sort + grid layout via shared helper
+  var _totalW = _layoutCSGrid(cs, properties, propNames);
 
   // Move the actual ComponentSet INTO the showcase
   compSec.appendChild(cs);
@@ -2419,9 +3993,20 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     main.paddingRight = 80; main.paddingLeft = 80;
   }
 
-  _makeSep(main);
+  // Helper: build props from a flat object {PropName: "value", ...}
+  // (hoisted outside explore block so examples can use it too)
+  function _buildProps(overrides) {
+    var p = {};
+    for (var pi = 0; pi < propNames.length; pi++) {
+      var pn = propNames[pi];
+      p[pn] = overrides[pn] || properties[pn][0]; // default = first value
+    }
+    return p;
+  }
 
   // ====== 3. EXPLORE BEHAVIOR ======
+  if (_showSec("explore")) {
+  _makeSep(main);
   var exploreSec = _makeFrame("Section — Explore Behavior", "v", 24, main);
   await _makeLabel("Explore Behavior", "SP/H3", "foreground", exploreSec);
 
@@ -2430,6 +4015,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   exploreCard.layoutMode = "VERTICAL"; exploreCard.itemSpacing = 0;
   exploreCard.topLeftRadius = 12; exploreCard.topRightRadius = 12; exploreCard.bottomLeftRadius = 12; exploreCard.bottomRightRadius = 12;
   exploreCard.clipsContent = true;
+  exploreCard.fills = [];
   setStroke(exploreCard, "border"); exploreCard.strokeWeight = 1; exploreCard.strokeAlign = "INSIDE";
   exploreSec.appendChild(exploreCard);
   try { exploreCard.layoutSizingHorizontal = "FILL"; exploreCard.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2471,6 +4057,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       epPill.topLeftRadius = 6; epPill.topRightRadius = 6; epPill.bottomLeftRadius = 6; epPill.bottomRightRadius = 6;
       if (epv === 0) {
         setFill(epPill, "primary");
+        setStroke(epPill, "primary"); epPill.strokeWeight = 1; epPill.strokeAlign = "INSIDE";
         await _makeLabel(epVals[epv], "SP/Caption", "primary-foreground", epPill);
       } else {
         setFill(epPill, "card");
@@ -2481,23 +4068,22 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       epPill.layoutSizingHorizontal = "HUG"; epPill.layoutSizingVertical = "HUG";
     }
   }
+  } // end _showSec("explore")
 
-  _makeSep(main);
+  // ====== 3.5. INSTALLATION ======
+  if (_showSec("installation")) {
+  var installData = compSpec.installation || null;
+  if (installData) {
+    await _buildInstallSec(main, installData);
+  }
+  } // end _showSec("installation")
 
   // ====== 4. EXAMPLES ======
+  if (_showSec("examples")) {
+  _makeSep(main);
   var exSec = _makeFrame("Section — Examples", "v", 32, main);
   await _makeLabel("Examples", "SP/H3", "foreground", exSec);
   await _makeLabel("Real-world usage patterns.", "SP/Body", "muted-foreground", exSec);
-
-  // Helper: build props from a flat object {PropName: "value", ...}
-  function _buildProps(overrides) {
-    var p = {};
-    for (var pi = 0; pi < propNames.length; pi++) {
-      var pn = propNames[pi];
-      p[pn] = overrides[pn] || properties[pn][0]; // default = first value
-    }
-    return p;
-  }
 
   // Check if spec has custom examples
   var customExamples = compSpec.examples || null;
@@ -2513,14 +4099,30 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
         exPrev.itemSpacing = 12;
         exPrev.counterAxisAlignItems = "CENTER";
         if (exDef.layout === "vertical") { exPrev.counterAxisAlignItems = "MIN"; }
-        // Create instances for each item in the example
+        // Create instances in parallel (font loads batched), then append in order
         var exItems = exDef.items || [];
-        for (var eii = 0; eii < exItems.length; eii++) {
-          var exItem = exItems[eii];
-          var exProps = _buildProps(exItem.props || {});
-          var exInst = await _getInstanceWithLabel(cs, exProps, exItem.label || null, exPrev);
-          if (exInst && exItem.fill) {
-            try { exInst.layoutSizingHorizontal = "FILL"; } catch (e) {}
+        var _exTasks = exItems.map(function(exItem) {
+          return (async function() {
+            var exInst = _getInstance(cs, _buildProps(exItem.props || {}));
+            if (!exInst) return { inst: null, fill: exItem.fill };
+            if (exItem.label) {
+              var _tns = exInst.findAll(function(n) { return n.type === "TEXT"; });
+              await Promise.all(_tns.map(function(tn) {
+                if (tn.fontName && tn.fontName !== figma.mixed) return _loadFont(tn.fontName.family, tn.fontName.style);
+                return Promise.resolve();
+              }));
+              setTextOverride(exInst, "Label", exItem.label);
+            }
+            return { inst: exInst, fill: exItem.fill };
+          })();
+        });
+        var _exResults = await Promise.all(_exTasks);
+        for (var eii = 0; eii < _exResults.length; eii++) {
+          var _er = _exResults[eii];
+          if (_er.inst) {
+            exPrev.appendChild(_er.inst);
+            if (_er.fill) { try { _er.inst.layoutSizingHorizontal = "FILL"; } catch(e) {} }
+            else { try { _er.inst.layoutSizingHorizontal = "FIXED"; _er.inst.layoutSizingVertical = "FIXED"; } catch(e) {} }
           }
         }
       }
@@ -2538,7 +4140,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     }
 
     // Example 1: "All [FirstProp]" — one instance per first-prop value
-    var _allVarPrev = await _makeExCard("All " + firstProp + "s", "Each " + firstProp.toLowerCase() + " variant side by side.", _nextRow());
+    var _allVarPrev = await _makeExCard("All " + firstProp + "s", "Each " + (firstProp || "").toLowerCase() + " variant side by side.", _nextRow());
     _allVarPrev.layoutMode = "HORIZONTAL"; _allVarPrev.itemSpacing = 12; _allVarPrev.counterAxisAlignItems = "CENTER";
     _allVarPrev.layoutWrap = "WRAP"; _allVarPrev.counterAxisSpacing = 12;
     for (var av = 0; av < firstVals.length; av++) {
@@ -2604,8 +4206,10 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       }
     }
   }
+  } // end _showSec("examples")
 
   // ====== 5. PROPS TABLE ======
+  if (_showSec("props")) {
   _makeSep(main);
   var propsData = compSpec.props || null;
   if (propsData && propsData.length > 0) {
@@ -2616,13 +4220,62 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     for (var api = 0; api < propNames.length; api++) {
       var apn = propNames[api];
       var apv = properties[apn];
-      autoProps.push([apn.toLowerCase(), '"' + apv.join('" | "') + '"', '"' + apv[0] + '"', apn + " variant"]);
+      autoProps.push([(apn || "").toLowerCase(), '"' + apv.join('" | "') + '"', '"' + apv[0] + '"', apn + " variant"]);
     }
     autoProps.push(["className", "string", '""', "Additional CSS classes"]);
     await _makeTable("Props", ["Prop", "Type", "Default", "Description"], autoProps, main);
   }
+  } // end _showSec("props")
+
+  // ====== 5.5. DESIGN TOKENS TABLE ======
+  if (_showSec("designTokens")) {
+  var designTokensData = compSpec.designTokens || null;
+  if (designTokensData && designTokensData.length > 0) {
+    _makeSep(main);
+    await _makeTable("Design Tokens", ["Token", "Value", "Description"], designTokensData, main);
+  }
+  } // end _showSec("designTokens")
+
+  // ====== 5.6. BEST PRACTICES ======
+  if (_showSec("bestPractices")) {
+  var bestPracticesData = compSpec.bestPractices || null;
+  if (bestPracticesData && bestPracticesData.length > 0) {
+    _makeSep(main);
+    var bpSec = _makeFrame("Section — Best Practices", "v", 24, main);
+    await _makeLabel("Best Practices", "SP/H3", "foreground", bpSec);
+    for (var bpi = 0; bpi < bestPracticesData.length; bpi++) {
+      var bp = bestPracticesData[bpi];
+      var bpRow = _makeFrame("Practice " + bpi, "v", 8, bpSec);
+      if (bp.title) await _makeLabel(bp.title, "SP/Body Semibold", "foreground", bpRow);
+      var bpCards = _makeFrame("Do Dont", "h", 16, bpRow);
+      // Do card
+      var doCard = figma.createFrame(); doCard.name = "Do";
+      doCard.layoutMode = "VERTICAL"; doCard.itemSpacing = 8;
+      doCard.paddingTop = 16; doCard.paddingBottom = 16; doCard.paddingLeft = 16; doCard.paddingRight = 16;
+      doCard.topLeftRadius = 12; doCard.topRightRadius = 12; doCard.bottomLeftRadius = 12; doCard.bottomRightRadius = 12;
+      setFill(doCard, "card");
+      setStroke(doCard, "success"); doCard.strokeWeight = 1; doCard.strokeAlign = "INSIDE";
+      bpCards.appendChild(doCard);
+      try { doCard.layoutSizingHorizontal = "FILL"; doCard.layoutSizingVertical = "HUG"; } catch(e) {}
+      await _makeLabel("DO", "SP/Overline", "success", doCard);
+      await _makeLabel(bp.do || bp["do"], "SP/Caption", "foreground", doCard);
+      // Don't card
+      var dontCard = figma.createFrame(); dontCard.name = "Dont";
+      dontCard.layoutMode = "VERTICAL"; dontCard.itemSpacing = 8;
+      dontCard.paddingTop = 16; dontCard.paddingBottom = 16; dontCard.paddingLeft = 16; dontCard.paddingRight = 16;
+      dontCard.topLeftRadius = 12; dontCard.topRightRadius = 12; dontCard.bottomLeftRadius = 12; dontCard.bottomRightRadius = 12;
+      setFill(dontCard, "card");
+      setStroke(dontCard, "destructive"); dontCard.strokeWeight = 1; dontCard.strokeAlign = "INSIDE";
+      bpCards.appendChild(dontCard);
+      try { dontCard.layoutSizingHorizontal = "FILL"; dontCard.layoutSizingVertical = "HUG"; } catch(e) {}
+      await _makeLabel("DON'T", "SP/Overline", "destructive", dontCard);
+      await _makeLabel(bp.dont || bp["dont"], "SP/Caption", "foreground", dontCard);
+    }
+  }
+  } // end _showSec("bestPractices")
 
   // ====== 6. FIGMA MAPPING TABLE ======
+  if (_showSec("figmaMapping")) {
   _makeSep(main);
   var figmaMappingData = compSpec.figmaMapping || null;
   if (figmaMappingData && figmaMappingData.length > 0) {
@@ -2634,13 +4287,15 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       var fmn = propNames[fmi];
       var fmv = properties[fmn];
       for (var fmvi = 0; fmvi < fmv.length; fmvi++) {
-        autoMapping.push([fmn, fmv[fmvi], fmn.toLowerCase(), '"' + fmv[fmvi].toLowerCase() + '"']);
+        autoMapping.push([fmn, fmv[fmvi], (fmn || "").toLowerCase(), '"' + (fmv[fmvi] || "").toLowerCase() + '"']);
       }
     }
     await _makeTable("Figma Mapping", ["Figma Property", "Figma Value", "Code Prop", "Code Value"], autoMapping, main);
   }
+  } // end _showSec("figmaMapping")
 
   // ====== 7. ACCESSIBILITY ======
+  if (_showSec("accessibility")) {
   _makeSep(main);
   var a11ySec = _makeFrame("Section — Accessibility", "v", 24, main);
   await _makeLabel("Accessibility", "SP/H3", "foreground", a11ySec);
@@ -2653,6 +4308,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       kbCard.layoutMode = "VERTICAL"; kbCard.itemSpacing = 12;
       kbCard.paddingTop = 16; kbCard.paddingBottom = 16; kbCard.paddingLeft = 16; kbCard.paddingRight = 16;
       kbCard.topLeftRadius = 12; kbCard.topRightRadius = 12; kbCard.bottomLeftRadius = 12; kbCard.bottomRightRadius = 12;
+      setFill(kbCard, "card");
       setStroke(kbCard, "border"); kbCard.strokeWeight = 1; kbCard.strokeAlign = "INSIDE";
       a11ySec.appendChild(kbCard);
       try { kbCard.layoutSizingHorizontal = "FILL"; kbCard.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2669,6 +4325,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       notesCard.layoutMode = "VERTICAL"; notesCard.itemSpacing = 8;
       notesCard.paddingTop = 16; notesCard.paddingBottom = 16; notesCard.paddingLeft = 16; notesCard.paddingRight = 16;
       notesCard.topLeftRadius = 12; notesCard.topRightRadius = 12; notesCard.bottomLeftRadius = 12; notesCard.bottomRightRadius = 12;
+      setFill(notesCard, "card");
       setStroke(notesCard, "border"); notesCard.strokeWeight = 1; notesCard.strokeAlign = "INSIDE";
       a11ySec.appendChild(notesCard);
       try { notesCard.layoutSizingHorizontal = "FILL"; notesCard.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2683,6 +4340,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     a11yPlaceholder.layoutMode = "VERTICAL"; a11yPlaceholder.itemSpacing = 8;
     a11yPlaceholder.paddingTop = 16; a11yPlaceholder.paddingBottom = 16; a11yPlaceholder.paddingLeft = 16; a11yPlaceholder.paddingRight = 16;
     a11yPlaceholder.topLeftRadius = 12; a11yPlaceholder.topRightRadius = 12; a11yPlaceholder.bottomLeftRadius = 12; a11yPlaceholder.bottomRightRadius = 12;
+    setFill(a11yPlaceholder, "card");
     setStroke(a11yPlaceholder, "border"); a11yPlaceholder.strokeWeight = 1; a11yPlaceholder.strokeAlign = "INSIDE";
     a11ySec.appendChild(a11yPlaceholder);
     try { a11yPlaceholder.layoutSizingHorizontal = "FILL"; a11yPlaceholder.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2690,8 +4348,10 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     await _makeLabel("Tab — Focus the component", "SP/Caption", "muted-foreground", a11yPlaceholder);
     await _makeLabel("Enter / Space — Activate", "SP/Caption", "muted-foreground", a11yPlaceholder);
   }
+  } // end _showSec("accessibility")
 
   // ====== 8. RELATED COMPONENTS ======
+  if (_showSec("related")) {
   _makeSep(main);
   var relatedData = compSpec.related || null;
   if (relatedData && relatedData.length > 0) {
@@ -2701,6 +4361,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     relCard.layoutMode = "VERTICAL"; relCard.itemSpacing = 0;
     relCard.topLeftRadius = 12; relCard.topRightRadius = 12; relCard.bottomLeftRadius = 12; relCard.bottomRightRadius = 12;
     relCard.clipsContent = true;
+    setFill(relCard, "card");
     setStroke(relCard, "border"); relCard.strokeWeight = 1; relCard.strokeAlign = "INSIDE";
     relSec.appendChild(relCard);
     try { relCard.layoutSizingHorizontal = "FILL"; relCard.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -2721,8 +4382,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       }
     }
   }
+  } // end _showSec("related")
 
-  log.push("  Showcase built: all sections");
+  log.push("  Showcase built: " + (_scSections ? _scSections.join(", ") : "all sections"));
   return main;
 }
 
@@ -2944,6 +4606,17 @@ async function doExportEffectStyles() {
 figma.showUI(__html__, { width: 520, height: 680 });
 
 figma.ui.onmessage = async function(msg) {
+  // ─── Image data response from UI ───
+  if (msg.type === "image-data") {
+    var req = _pendingImageRequests[msg.id];
+    if (req) {
+      delete _pendingImageRequests[msg.id];
+      if (msg.error) req.reject(new Error(msg.error));
+      else req.resolve(new Uint8Array(msg.bytes));
+    }
+    return;
+  }
+
   var source = msg.source || "generate";
 
   if (msg.type === "generate") {
@@ -2951,6 +4624,13 @@ figma.ui.onmessage = async function(msg) {
     if (!spec) {
       figma.ui.postMessage({ type: "status", text: "Error: No spec provided", source: source });
       return;
+    }
+
+    // Load pre-fetched image data from UI
+    if (spec._imageData) {
+      var imgKeys = Object.keys(spec._imageData);
+      for (var ik = 0; ik < imgKeys.length; ik++) _prefetchedImages[imgKeys[ik]] = spec._imageData[imgKeys[ik]];
+      delete spec._imageData;
     }
 
     // Route based on spec.type

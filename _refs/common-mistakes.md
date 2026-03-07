@@ -2,7 +2,7 @@
 
 > File tham chiếu dùng chung cho TẤT CẢ products trong `tn/`.
 > Trước khi bắt đầu bất kỳ task nào, ĐỌC file này.
-> Cập nhật: 2026-03-04
+> Cập nhật: 2026-03-07 | 88 lessons
 
 ---
 
@@ -10,8 +10,21 @@
 
 - [A. Figma Plugin](#a-figma-plugin) (#1-#8)
 - [B. JSON Spec Files](#b-json-spec-files) (#9-#13)
-- [C. Component Docs — Web App](#c-component-docs--web-app) (#14-#22)
-- [D. Design Token & Styling](#d-design-token--styling) (#23-#28)
+- [C. Component Docs — Web App](#c-component-docs--web-app) (#14-#22, #58-#59, #62-#63)
+- [D. Design Token & Styling](#d-design-token--styling) (#23-#28, #34-#35)
+- [D2. Plugin & JSON Spec — Input Components](#d2-plugin--json-spec--input-components) (#36-#38)
+- [D3. Plugin — Upsert & Rendering](#d3-plugin--upsert--rendering) (#39-#41, #68)
+- [D4. Plugin — Instance Sizing & Performance](#d4-plugin--instance-sizing--performance) (#42-#44)
+- [D5. Plugin — Variable Binding](#d5-plugin--variable-binding) (#45, #56)
+- [D6. Plugin — Image & clipsContent](#d6-plugin--image--clipscontent) (#49-#51)
+- [D7. Plugin — Ellipse Rendering](#d7-plugin--ellipse-rendering) (#52-#54)
+- [D8. Plugin — Variable Scopes](#d8-plugin--variable-scopes) (#55)
+- [D9. Plugin — Variant Restrictions](#d9-plugin--variant-restrictions) (#69)
+- [D10. Component Docs — Property Visibility](#d10-component-docs--property-visibility) (#70-#74)
+- [D11. Plugin — Instance & Layout in Children Frames](#d11-plugin--instance--layout-in-children-frames) (#75-#80)
+- [D12. Plugin — Icon Instance in Children](#d12-plugin--icon-instance-in-children) (#81-#83)
+- [D13. Plugin — Zero Value Variable Binding](#d13-plugin--zero-value-variable-binding) (#87)
+- [D14. Component Layout — Full-Width Divider Pattern](#d14-component-layout--full-width-divider-pattern) (#88)
 - [E. Workflow & Process](#e-workflow--process) (#29-#33)
 
 ---
@@ -421,6 +434,623 @@ Nếu tìm thấy → thêm ít nhất 1 property có nghĩa (không phải dumm
 
 ---
 
+### #34: Hardcoded color scale names trong className — dùng semantic tokens
+
+**Sai**: Dùng color scale cụ thể thay vì semantic tokens.
+
+```tsx
+// SAI — scale names hard-link vào color palette, không rebrandable
+<div className="bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400" />
+<Star className="text-amber-500" />
+<div className="bg-violet-600/[0.03] blur-[200px]" />  // ambient orb
+
+// ĐÚNG — semantic tokens, work cho bất kỳ brand color nào
+<div className="bg-primary/10 dark:bg-primary/20 text-primary" />
+<Star className="text-warning" />
+<div className="bg-primary/[0.03] blur-[200px]" />  // ambient orb
+```
+
+**Mapping phổ biến**:
+| Scale name | Semantic token |
+|-----------|---------------|
+| `text-violet-600 dark:text-violet-400` | `text-primary` |
+| `bg-violet-500/10 dark:bg-violet-500/20` | `bg-primary/10 dark:bg-primary/20` |
+| `text-amber-500` / `text-amber-600` | `text-warning` |
+| `bg-amber-*/10` | `bg-warning-subtle` |
+| `text-emerald-600` | `text-success` |
+| `text-red-600` | `text-destructive` |
+
+**Ngoại lệ hợp lệ**: Data visualization category colors khi KHÔNG có semantic token tương ứng (e.g., `text-cyan-600` cho category "fashion", `text-rose-600` cho "sports"). Recharts chart components dùng hex cho `stroke`/`fill` props. `indigo-*` orbs trong glassmorphism decoration để tạo color variety.
+
+**Grep để audit**: `grep -rn 'className.*\(text\|bg\|border\)-\(violet\|amber\|zinc\)-[0-9]' src/ --exclude-dir="components/ui" --exclude-dir="components/charts"`
+
+---
+
+### #35: `typo-*` prefix trong product pages — phải dùng `sp-*`
+
+**Vấn đề**: `typo-*` là CSS class system nội bộ của SprouX (`components/ui/` internals). Khi fork SprouX vào product, `typo-*` classes tồn tại bên trong `src/components/ui/` — điều này ĐÚNG và không cần sửa. Nhưng nếu dùng `typo-*` trong product pages/layouts/components thì SAI.
+
+```tsx
+// SAI — typo-* không phải product typography tokens
+<span className="typo-paragraph-sm-bold">S</span>
+<span className="typo-paragraph-reg-semibold">ShopPulse</span>
+
+// ĐÚNG — dùng sp-* (product prefix cho ShopPulse)
+<span className="sp-body font-semibold">S</span>
+<span className="sp-body-semibold">ShopPulse</span>
+```
+
+**Rule**: `typo-*` chỉ xuất hiện trong `src/components/ui/`. Product pages (`src/pages/`), layouts (`src/components/layout/`), custom components → luôn dùng `sp-*`.
+
+**Grep để detect**: `grep -rn "typo-" src/ --include="*.tsx" --exclude-dir="components/ui"`
+
+---
+
+### #36: Plugin `gap` PHẢI là string để bind spacing variable token
+
+**Sai**: `"gap": 8` (number) → plugin hardcode pixel, không bind variable token.
+
+**Đúng**: `"gap": "xs"` (string) → plugin gọi `bindFloat(comp, "itemSpacing", "spacing/xs", ...)`.
+
+**Rule**: MỌI spacing value trong `base` / `variantStyles` JSON spec phải là **string token name** (e.g., `"xs"`, `"sm"`, `"md"`), KHÔNG phải number. Chỉ dùng number khi không có token tương ứng.
+
+---
+
+### #37: Plugin Input-type component — cần `primaryAlign` và `labelFill`
+
+**Vấn đề**: Plugin mặc định hardcode `primaryAxisAlignItems = "CENTER"` → Input component trông như Button (text canh giữa).
+
+**Fix đã áp dụng** trong `plugins/Generate SaaS Template/code.js`:
+```js
+// primaryAlign: "start" → MIN (text left-aligned)
+var _primaryAlign = merged.primaryAlign || "CENTER";
+comp.primaryAxisAlignItems = _primaryAlign === "start" ? "MIN" : ...
+
+// labelFill: true → text label FILL width (chiếm hết không gian còn lại)
+if (merged.labelFill) { lbl.layoutSizingHorizontal = "FILL"; }
+```
+
+**Rule**: Tất cả input-type components (Input, Textarea, Select trigger...) trong JSON spec PHẢI có:
+```json
+"base": {
+  "primaryAlign": "start",
+  "labelFill": true,
+  ...
+}
+```
+
+---
+
+### #38: Web Explore Behavior — Value property cho input-type form components
+
+**Quy tắc**: Tất cả component dạng nhập liệu phải có "Value" control trong Explore Behavior:
+- **Input, Textarea**: `options: ["placeholder","filled","empty"]`
+- **Select, Combobox**: `options: ["placeholder","filled"]`
+- **InputOTP**: `options: ["empty","partial","filled"]`
+
+**Bug quan trọng — `key` reset trick**: Khi chuyển từ `filled` về `empty`/`placeholder`, React không reset DOM input value vì component vẫn mount. Fix bắt buộc: thêm `key={val}` để force remount.
+
+```tsx
+// ✅ ĐÚNG — key buộc remount khi val thay đổi
+<Input key={val} placeholder={placeholderProp} {...valueProp} />
+<Textarea key={val} placeholder={taPlaceholder} {...taValueProp} />
+
+// ❌ SAI — DOM giữ nguyên filled text dù val đổi về "empty"
+<Input placeholder={placeholderProp} {...valueProp} />
+```
+
+**Select controlled pattern**:
+```tsx
+const [selectVal, setSelectVal] = useState<string | undefined>(undefined)
+const handleValMode = (mode: string) => { setValMode(mode); setSelectVal(mode === "filled" ? "a" : undefined) }
+// value={undefined} = uncontrolled (placeholder), value="a" = filled
+<Select value={selectVal} onValueChange={setSelectVal}>
+```
+
+---
+
+## D3. Plugin — Upsert & Rendering
+
+### #39: Plugin upsert mode — ComponentSet tìm theo tên, update in-place
+
+**Cơ chế**: Plugin tự detect xem `ComponentSet` với cùng tên đã tồn tại trên page chưa:
+- **Tìm thấy** → upsert in-place: variant khớp tên → clear children + restyle; variant mới → `appendChild`; variant xóa → `.remove()`. Showcase cũ bị xóa → tạo lại đúng vị trí cũ.
+- **Không tìm thấy** → tạo mới bình thường.
+
+**Lợi ích**: Instance trên các page khác KHÔNG bị phá vì ComponentSet vẫn giữ nguyên ID.
+
+**Showcase naming convention** (quan trọng cho detection):
+```
+ComponentSet name: "Input"              (type: COMPONENT_SET)
+Showcase frame name: "Input — Showcase" (type: FRAME)
+```
+
+**Rule**: Showcase frame luôn có suffix ` — Showcase` (em dash). Plugin detect showcase qua `name.indexOf(" — Showcase") >= 0`.
+
+---
+
+### #40: Plugin labelFill + text truncation — 3 props bắt buộc dùng cùng nhau
+
+**Vấn đề**: `labelFill: true` cho `layoutSizingHorizontal = "FILL"` nhưng text vẫn wrap xuống dòng khi content quá dài (xảy ra với Input filled value như `"name@example.com"`).
+
+**Fix bắt buộc** — 3 props phải set cùng lúc khi `labelFill: true`:
+```js
+lbl.layoutSizingHorizontal = "FILL";
+lbl.textAutoResize = "TRUNCATE";   // prevent wrap, resize to container
+lbl.maxLines = 1;                  // hard limit 1 line
+lbl.textTruncation = "ENDING";    // show … at end (API v1.0+)
+```
+
+**Rule**: Mọi input-type component với `labelFill: true` → plugin PHẢI set cả 4 properties trên text label node.
+
+---
+
+### #41: JSON spec examples — KHÔNG dùng `"fill": true` cho input-type components
+
+**Sai**: `{ "props": {...}, "label": "Default", "fill": true }` → instance stretch full width của showcase container (~1200px) → trông như full-width form field, không giống web DS.
+
+**Đúng**: Bỏ `"fill": true` → instance render đúng fixed width từ `base.width` (240px Default, 280px LG, v.v.).
+
+**Rule**: `"fill": true` chỉ dùng cho component cần stretch full-width theo thiết kế (e.g., full-width form, card content area). Input, Select, Combobox, Textarea — **không dùng** `"fill": true` trong examples.
+
+---
+
+### #68: Upsert — Figma tự rename variant khi move ra khỏi ComponentSet
+
+**Sai**: Upsert path move existing variants từ CS ra page level bằng `targetPage.appendChild(variant)` → rồi gọi `combineAsVariants()`. Figma tự đổi tên variant từ `Property=Value` thành `CSName/Value` (VD: `Items=3` → `Navigation Menu/3`). `combineAsVariants()` nhận mixed naming format → tạo rogue properties ("Property 1", "Property 2") thay vì property đúng.
+
+**Đúng**: Save original variant names TRƯỚC khi move, restore SAU khi move:
+```js
+// Save names BEFORE moving
+var _origNames = {};
+for (var i = 0; i < vars.length; i++) _origNames[vars[i].id] = vars[i].name;
+for (var i = 0; i < vars.length; i++) targetPage.appendChild(vars[i]);
+// Restore names AFTER moving (Figma renamed them)
+for (var i = 0; i < vars.length; i++) vars[i].name = _origNames[vars[i].id];
+```
+
+**Rule**: Bất cứ khi nào move variant ra khỏi ComponentSet → PHẢI save/restore tên. Đây là behavior cố hữu của Figma API, không thể tắt.
+
+---
+
+## D4. Plugin — Instance Sizing & Performance
+
+### #42: Instance sizing trong showcase — bắt buộc set FIXED sau appendChild
+
+**Vấn đề**: Khi `_makeExCard` / `_makeFrame` tạo container với `layoutSizingHorizontal = "FILL"`, Figma tự động set children thành FILL khi append → instances stretch toàn bộ card width (~1200px) thay vì giữ `base.width`.
+
+**Fix bắt buộc** trong `_getInstanceWithLabel` sau `parent.appendChild(inst)`:
+```js
+parent.appendChild(inst);
+try { inst.layoutSizingHorizontal = "FIXED"; inst.layoutSizingVertical = "FIXED"; } catch(e) {}
+```
+
+Và trong vòng lặp custom examples:
+```js
+if (_er.fill) { inst.layoutSizingHorizontal = "FILL"; }
+else { inst.layoutSizingHorizontal = "FIXED"; inst.layoutSizingVertical = "FIXED"; }
+```
+
+**Rule**: Sau `parent.appendChild(inst)`, LUÔN set lại `layoutSizingHorizontal = "FIXED"` trừ khi `fill: true` được chỉ định rõ ràng trong JSON spec example.
+
+---
+
+### #43: JSON spec `base.width` phải match web CSS max-width
+
+**Sai**: `"base": { "width": 240 }` → Figma hiển thị 240px nhưng web DS dùng `max-w-xs` (320px) → showcase không representative.
+
+**Đúng**: Đo CSS width thực tế trên web → set `base.width` tương ứng.
+
+| Component | Web CSS | Figma `base.width` |
+|-----------|---------|-------------------|
+| Input | `max-w-xs` = 320px | 320 |
+| Select | `max-w-xs` = 320px | 320 |
+| Textarea | `max-w-xs` = 320px | 320 |
+
+**Rule**: Trước khi tạo/update JSON spec cho form input components, verify `max-w-*` class trong web DS → set `base.width` khớp chính xác.
+
+---
+
+### #44: Plugin performance — 5 caching + parallelization patterns bắt buộc
+
+**Vấn đề**: Không có cache → plugin chạy chậm do:
+1. `loadFontAsync` gọi 600+ lần cho cùng font (mỗi variant × mỗi text node)
+2. `buildVariantMap` rebuild 24+ lần cho cùng ComponentSet (5,760 iterations mỗi lần)
+3. `findIconComponent` scan toàn bộ page tree cho mỗi icon lookup
+4. Font preloading sequential (85 awaits tuần tự)
+5. Example instance creation sequential
+
+**5 patterns đã implement trong `code.js`**:
+
+```js
+// 1. Font dedup cache
+var _loadedFontsSet = {};
+async function _loadFont(family, style) {
+  var key = family + "|" + style;
+  if (_loadedFontsSet[key]) return;
+  try { await figma.loadFontAsync({ family, style }); _loadedFontsSet[key] = true; } catch(e) {}
+}
+
+// 2. Variant map cache (keyed by componentSet.id)
+var _variantMapCache = {};
+function buildVariantMap(componentSet) {
+  if (_variantMapCache[componentSet.id]) return _variantMapCache[componentSet.id];
+  // ... build map ...
+  _variantMapCache[componentSet.id] = map;
+  return map;
+}
+
+// 3. Icon component cache
+var _iconCache = {};
+function findIconComponent(iconName) {
+  if (_iconCache[iconName] !== undefined) return _iconCache[iconName];
+  // ... find ...
+  _iconCache[iconName] = found || null;
+  return _iconCache[iconName];
+}
+
+// 4. Parallel font preload
+await Promise.all(fonts.map(function(f) { return loadFontSafe(f[0], f[1]); }));
+
+// 5. Parallel example instance creation
+var tasks = exItems.map(function(exItem) { return (async function() { ... })(); });
+var results = await Promise.all(tasks);
+```
+
+**Rule**: Reset ALL caches trong `loadCaches()` khi bắt đầu mỗi plugin run (`_loadedFontsSet = {}; _variantMapCache = {}; _iconCache = {};`).
+
+---
+
+## D5. Plugin — Variable Binding
+
+### #45: `setBoundVariableForPaint()` drops paint.opacity — phải set SAU khi bind
+
+**Sai**: Set `opacity` trên paint object TRƯỚC khi gọi `setBoundVariableForPaint()`:
+```js
+var paint = { type: "SOLID", color: { r: 0, g: 0, b: 0 } };
+paint.opacity = 0.2;  // ← bị drop!
+return figma.variables.setBoundVariableForPaint(paint, "color", variable);
+```
+→ Kết quả: opacity = 1.0 (100%), fill hiển thị solid thay vì 20%.
+
+**Đúng**: Set `opacity` SAU khi `setBoundVariableForPaint()` trả về:
+```js
+var paint = figma.variables.setBoundVariableForPaint(
+  { type: "SOLID", color: { r: 0, g: 0, b: 0 } },
+  "color",
+  variable
+);
+paint.opacity = 0.2;  // ← giữ được!
+return paint;
+```
+
+**Ảnh hưởng**: Tất cả nơi dùng `setFillWithOpacity()`:
+- Explore Behavior: preview (`muted/0.2`), controls (`muted/0.1`)
+- Tables: header rows (`muted/0.5`), separators (`border/0.5`)
+- Example cards: headers (`muted/0.5`)
+- Related components: separators (`border/0.5`)
+
+**Rule**: Trong `makeBoundPaint()`, LUÔN gọi `setBoundVariableForPaint()` trước → set `paint.opacity` trên kết quả trả về.
+
+---
+
+### #46: `setExplicitVariableModeForCollection()` nhận collectionId string, không phải object
+
+**Sai**: Truyền VariableCollection object:
+```js
+main.setExplicitVariableModeForCollection(_semCol, _darkMode.modeId);
+```
+→ Silent fail trong try/catch → showcase render ở Light mode (default).
+
+**Đúng**: Truyền collection `.id`:
+```js
+main.setExplicitVariableModeForCollection(_semCol.id, _darkMode.modeId);
+```
+
+**Rule**: Figma Plugin API `setExplicitVariableModeForCollection(collectionId: string, modeId: string)` — luôn dùng `.id` cho cả collection và mode.
+
+---
+
+### #47: JSON properties phải match 100% web ExploreBehavior controls
+
+**Sai**: Checkbox JSON có `State: ["Default","Hover","Focus","Error","Disabled"]` — 5 values.
+Web CheckboxDocs chỉ có 4: `["default","hover","focus","disabled"]` — KHÔNG có "error".
+
+**Đúng**: Mở `design-system/index.tsx`, tìm `{Component}Docs()` function, đọc `<ExploreBehavior controls={[...]}>`
+→ copy chính xác options vào `properties`.
+
+**Rule**: TRƯỚC khi viết/update bất kỳ component JSON nào, ĐỌC web source code để verify controls. Không thêm state/variant mà web không có.
+
+---
+
+### #48: Compound components cần indicator pattern, không phải hideLabel
+
+**Sai**: Checkbox JSON dùng `hideLabel: true` + `width: 16, height: 16` → tạo ra khung 16x16 không có label.
+Web ExploreBehavior hiện checkbox + label text cạnh nhau.
+
+**Đúng**: Dùng `base.indicator: { width: 16, height: 16, radius: "sm" }` → plugin tạo:
+- Comp frame = transparent HUG wrapper (gap = "xs")
+- Indicator child = 16x16 frame với fill/stroke/radius
+- Icons vào indicator, Label vào comp sau indicator
+- `iconFill` cho màu icon trong indicator (khác `textFill` cho label)
+- `opacity` trên comp (ảnh hưởng toàn bộ row cho disabled)
+
+**Rule**: Checkbox/Switch/Radio LUÔN dùng `indicator` pattern. Không bao giờ `hideLabel: true` cho compound components.
+
+---
+
+## D6. Plugin — Image & clipsContent
+
+### #49: Image URL trong plugin PHẢI là direct URL — không redirect
+
+**Sai**: `"imageUrl": "https://github.com/shadcn.png"` → URL redirect tới `avatars.githubusercontent.com` → Figma plugin sandbox block cross-domain redirect → `Failed to fetch`.
+
+**Đúng**: Dùng URL trực tiếp: `"imageUrl": "https://avatars.githubusercontent.com/u/124599?v=4"`.
+
+**Rule**: Tất cả `imageUrl` trong component JSON spec PHẢI dùng URL cuối cùng (final destination), không qua redirect. Test bằng `curl -I <url>` — nếu thấy `302`/`301` → tìm URL trực tiếp.
+
+**Manifest**: Domain phải có trong `manifest.json` → `networkAccess.allowedDomains` (với `https://` prefix).
+
+---
+
+### #50: `clipsContent` phải set trong JSON spec — plugin không hardcode
+
+**Sai**: Tạo Avatar component có `radius: "full"` + `imageUrl` → ảnh tràn ra ngoài hình tròn vì `clipsContent = false` (default).
+
+**Đúng**: Thêm `"clipsContent": true` vào `base` → plugin đọc `!!merged.clipsContent` → clip content theo frame shape.
+
+**Rule**: Components có rounded shape + content fill (Avatar, rounded card with image) PHẢI có `"clipsContent": true` trong `base`.
+
+---
+
+### #51: Plugin image pre-fetch — UI fetch trước, embed vào spec, plugin apply
+
+**Flow**:
+1. UI `collectImageUrls(spec)` → tìm recursive tất cả `imageUrl` fields trong JSON spec
+2. UI `prefetchImages(spec)` → fetch all URLs → embed byte arrays vào `spec._imageData`
+3. Plugin nhận spec → extract `_imageData` vào `_prefetchedImages` cache
+4. Plugin `getImageHash(url)` → tìm bytes từ `_prefetchedImages` → `figma.createImage()` → set IMAGE fill
+
+**Lưu ý**: Pre-fetch PHẢI có ở CẢ Foundation tab VÀ Generate UI tab trong `ui.html`. Foundation tab dùng cho component JSON files.
+
+---
+
+## D7. Plugin — Ellipse Rendering
+
+### #52: `layoutPositioning = "ABSOLUTE"` yêu cầu appendChild TRƯỚC
+
+**Sai**: Tạo ellipse → set `layoutPositioning = "ABSOLUTE"` → rồi mới `comp.appendChild(ellipse)`.
+→ Error: `in set_layoutPositioning: Can only set layoutPositioning = ABSOLUTE if the parent node has layoutMode !== NONE`
+
+**Đúng**: `comp.appendChild(ellipse)` TRƯỚC → rồi mới set `ellipse.layoutPositioning = "ABSOLUTE"`.
+
+**Rule**: Bất kỳ node nào cần `layoutPositioning = "ABSOLUTE"` phải được append vào parent (có `layoutMode !== NONE`) TRƯỚC khi set property này.
+
+---
+
+### #53: Cleanup whitelist phải include ellipse names — nếu không ellipses bị xóa
+
+**Sai**: Plugin cleanup loop xóa tất cả children không nằm trong `_validTF` whitelist. Với `hideLabel: true` và không có icons → whitelist rỗng → ellipses vừa tạo bị xóa → variant rỗng.
+
+**Đúng**: Thêm block kiểm tra `merged.ellipses` vào cleanup section:
+```js
+if (merged.ellipses && Array.isArray(merged.ellipses)) {
+  for (var _vei2 = 0; _vei2 < merged.ellipses.length; _vei2++)
+    _validTF[merged.ellipses[_vei2].name || ("Ellipse" + _vei2)] = true;
+}
+```
+
+**Rule**: Khi thêm child type mới (ellipse, line, polygon...) vào plugin, PHẢI thêm vào `_validTF` whitelist trong cleanup section. Nếu không → cleanup xóa chúng ngay sau khi tạo.
+
+---
+
+### #54: Element opacity vs fillOpacity — phải dùng element opacity cho match React CSS
+
+**Sai**: Spinner JSON dùng `fillOpacity: 0.25` trên paint object → Figma paint-level opacity khác visual so với React CSS `opacity-25` (element-level).
+
+**Đúng**: Dùng `opacity: 0.25` → plugin set `ellipse.opacity = 0.25` (element-level opacity) → match chính xác React CSS `opacity-25`.
+
+**Mapping**:
+| React CSS | Figma JSON | Plugin code |
+|-----------|-----------|-------------|
+| `opacity-25` | `"opacity": 0.25` | `ellipse.opacity = 0.25` |
+| `opacity-75` | `"opacity": 0.75` | `ellipse.opacity = 0.75` |
+
+**Rule**: Khi convert React CSS opacity classes sang Figma → luôn dùng element-level `opacity`, KHÔNG dùng paint-level `fillOpacity`. Hai loại cho visual khác nhau.
+
+---
+
+## D8. Plugin — Variable Scopes
+
+### #55: Variable scope phải match cách sử dụng trong component JSON
+
+**Sai**: Variable `border` có scope `["STROKE_COLOR"]` → component JSON dùng `fill: "border"` → plugin gọi `setBoundVariableForPaint()` nhưng Figma không hiện binding vì scope không cho phép fill.
+
+**Đúng**: Variable `border` có scope `["STROKE_COLOR", "FRAME_FILL", "SHAPE_FILL"]` → cho phép dùng cả làm stroke lẫn fill.
+
+**Affected variables đã fix**:
+| Variable | Old scope | New scope | Lý do |
+|----------|-----------|-----------|-------|
+| `border` | `STROKE_COLOR` | `STROKE_COLOR, FRAME_FILL, SHAPE_FILL` | `bg-border` dùng trong Separator, Switch |
+| `outline` | `STROKE_COLOR` | `STROKE_COLOR, FRAME_FILL, SHAPE_FILL` | `fill: "outline"` trong Button Outline |
+| `outline-hover` | `STROKE_COLOR` | `STROKE_COLOR, FRAME_FILL, SHAPE_FILL` | `fill: "outline-hover"` trong Button Outline Hover |
+
+**Rule**: Khi tạo component JSON với `fill: "tokenName"`, PHẢI verify variable đó có scope `FRAME_FILL` hoặc `ALL_FILLS`. Nếu chỉ có `STROKE_COLOR` → Figma không bind được vào fill → component xuất hiện raw color thay vì variable.
+
+### #56: paddingX/paddingY/gap PHẢI dùng string token — KHÔNG raw number (trừ 0)
+
+**Sai**: `"paddingX": 4, "paddingY": 4` → plugin set pixel value nhưng KHÔNG bind `spacing/*` variable → Figma hiện raw 4px thay vì token.
+
+**Đúng**: `"paddingX": "3xs", "paddingY": "3xs"` → plugin gọi `bindFloat()` gắn `spacing/3xs` variable.
+
+**Spacing token map**:
+| Token | Pixels |
+|-------|--------|
+| `"3xs"` | 4 |
+| `"2xs"` | 6 |
+| `"xs"` | 8 |
+| `"sm"` | 12 |
+| `"md"` | 16 |
+| `"lg"` | 20 |
+| `"xl"` | 24 |
+| `"2xl"` | 32 |
+| `"3xl"` | 40 |
+
+**Exceptions**: Raw number `1` cho special cases không có token (e.g. Switch indicator `p-[1px]`). Number `0` giờ được plugin auto-bind `spacing/none` (safety net #87), nhưng string `"none"` vẫn preferred.
+
+**Plugin code** (line ~2724): `if (typeof pxR === "string")` → bind variable. `else` → set pixel + auto-bind `spacing/none` nếu value = 0. Áp dụng cho cả base padding VÀ children frame padding/gap.
+
+---
+
+### #57: Border radius PHẢI dùng string token — KHÔNG raw number
+
+**Sai**: `"radius": 9999` hoặc `"radius": 16` → plugin set pixel value nhưng KHÔNG bind `border radius/*` variable → Figma hiện raw px, không gắn token.
+
+**Đúng**: `"radius": "full"` hoặc `"radius": "lg"` → plugin gọi `bindFloat()` gắn `border radius/full` variable lên cả 4 corner.
+
+**Border radius token map**:
+| Token | Pixels |
+|-------|--------|
+| `"3xs"` | 2 |
+| `"2xs"` | 4 |
+| `"xs"` | 6 |
+| `"sm"` | 8 |
+| `"md"` | 10 |
+| `"lg"` | 12 |
+| `"xl"` | 16 |
+| `"2xl"` | 20 |
+| `"3xl"` | 24 |
+| `"full"` | 9999 |
+
+---
+
+### #58: Group+Item tab — item state PHẢI sync vào group preview
+
+**Sai**: Tab 2 (Item) có State/Type controls riêng, nhưng item trong Tab 1 (Group) hardcode giá trị — khi đổi state ở Tab 2, item trong Tab 1 không update.
+
+**Đúng**: Tab 2 item state vars PHẢI được áp dụng vào MỘT item tương ứng trong Tab 1 group. VD: Dropdown Tab 2 đổi `ddItemState="hover"` → item đầu tiên trong Dropdown group Tab 1 cũng hiển thị hover.
+
+**Rule**:
+- Tab 1 controls = chỉ group-level settings (Show Icons, Compact, Viewport...)
+- Tab 2 controls = item-level settings (Type, State, toggles)
+- KHÔNG duplicate item-level controls ở Tab 1
+- Single source of truth cho item state ở Tab 2
+
+**Ngoại lệ — Calendar/DatePicker**: Day Cell state ở Tab 2 KHÔNG sync vào Tab 1. Thay vào đó, dùng `CalendarDayButton` override `DayButton` component của react-day-picker qua `components` prop. Day Cell instance được đưa vào Calendar dưới dạng component override, tương tác bình thường (click, hover, selected...). DatePicker Tab 1 dùng component gốc `<DatePicker />` / `<DateRangePicker />`.
+
+### #59: Breadcrumb Item Tab 2 — chỉ show 1 item duy nhất
+
+**Sai**: Breadcrumb Item preview trong Tab 2 show "Home" + separator + controlled item → 2 items trên canvas.
+
+**Đúng**: Tab 2 chỉ show 1 item duy nhất. Wrap trong `BreadcrumbList` để inherit `text-muted-foreground`, nhưng không thêm item khác.
+
+**Lưu ý**: Type "current" vẫn có State control nhưng chỉ hiện pill "default" (không có hover). Khi switch từ "link" sang "current" → auto reset state về "default".
+
+### #60: tailwind-merge KHÔNG override custom spacing tokens
+
+**Sai**: `cn("p-sm", "p-0")` → output `p-sm p-0` — CẢ HAI đều apply, tailwind-merge không nhận `p-sm` là padding conflict với `p-0`.
+
+**Đúng**: Dùng Tailwind standard value thay vì custom token khi component cần cho phép override. VD: PopoverContent base dùng `p-3` (12px) thay vì `p-sm` → `cn("p-3", "p-0")` = `p-0` override đúng.
+
+**Áp dụng cho**: Mọi base component có default padding mà consumer có thể override qua className — Popover, Dialog, Sheet, Drawer, Card, etc.
+
+### #61: React named imports — KHÔNG dùng `React.` namespace khi chưa import
+
+**Sai**: `import { useState } from "react"` rồi dùng `React.useMemo(...)`, `React.ReactNode` → runtime crash (React is not defined).
+
+**Đúng**: Import đầy đủ named exports: `import { useState, useMemo, type ReactNode } from "react"` rồi dùng trực tiếp `useMemo(...)`, `ReactNode`.
+
+---
+
+### #62: Context-dependent sub-items cần Mock component cho Group+Item tab
+
+**Sai**: Dùng real `InputOTPSlot` trong Tab 1/Tab 2 → fail vì cần `OTPInputContext` từ parent `InputOTP`. Hoặc dùng real `InputOTP` trong Tab 1 nhưng không thể sync individual slot state.
+
+**Đúng**: Tạo shared mock component (`OTPSlotMock`) replicate exact CSS styles của real component. Dùng mock cho CẢ Tab 1 group (array of mocks) VÀ Tab 2 item (single mock). Synced slot trong Tab 1 dùng Tab 2's state.
+
+**Rule**: Khi sub-item phụ thuộc parent context (React Context, internal state) → tạo mock visual component dùng chung 2 tab. Mock PHẢI match 100% CSS của real component.
+
+---
+
+### #63: Group sub-items có Position property khi border/radius phụ thuộc vị trí
+
+---
+
+### #64: Sub-component JSON gộp chung file với parent khi cùng 1 Docs page
+
+**Sai**: Tạo `otp-slot.json` riêng rồi `input-otp.json` riêng → 2 file cho 1 mục menu sidebar.
+
+**Đúng**: Gộp vào `input-otp.json` với `"components": [OTP Slot, Input OTP]`. Item ở index 0 (plugin tạo trước).
+
+**Rule**: Khi sub-component thuộc cùng 1 `*Docs()` page → gộp chung 1 file JSON. Chỉ tách file riêng khi sub-component dùng cho NHIỀU parent khác nhau (VD: `day-cell.json` dùng cho Calendar + DatePicker).
+
+---
+
+**Sai**: Render OTP Slot trong Tab 2 với `rounded-md border` full → không match thực tế (slot ở giữa không có left border, không rounded).
+
+**Đúng**: Thêm **Position** property (`first | middle | last`) — mỗi vị trí có border/radius khác nhau. Position cũng xác định synced index trong Tab 1 group.
+
+**Rule**: Khi sub-item styling thay đổi theo vị trí trong group (first/middle/last) → PHẢI có Position property trong Tab 2 controls.
+
+### #65: heightMode "fixed" bị override khi có children
+
+**Sai**: Plugin code `var _useHugV = merged.heightMode === "hug" || (!!(merged.children && merged.children.length > 0))` → component có children luôn bị HUG height, bỏ qua `heightMode: "fixed"`.
+
+**Đúng**: `var _useHugV = merged.heightMode === "hug" || (merged.heightMode !== "fixed" && !!(merged.children && merged.children.length > 0))` → chỉ HUG khi KHÔNG explicitly set "fixed".
+
+**Rule**: Khi component cần fixed size nhưng có children (VD: OTP Slot 48x48 với Digit/Caret children) → PHẢI set `"heightMode": "fixed"` trong JSON. Plugin phải respect explicit "fixed" override.
+
+### #66: Component JSON PHẢI verify từng CSS property trên web trước khi viết
+
+**Sai**: Viết JSON spec dựa trên "cảm giác" hoặc đoán — VD: OTP Slot không có border (borderless frame), Group có outer border + separator frames.
+
+**Đúng**: Đọc kỹ TỪNG dòng CSS trong `src/components/ui/*.tsx` + `OTPSlotMock` trong design system page. Map 1:1:
+- Web `border-y border-r border-border-strong` → `"stroke": "border-strong", "strokeSides": "top,right,bottom"`
+- Web `first:border-l` → Position=First `"strokeSides": "all"`
+- Web `flex items-center` (no border) → Group wrapper KHÔNG có stroke/radius
+- Web `ring-[3px] ring-ring` → `"focusRing": "ring"`
+- Web `size-3xl` → `"width": 48, "height": 48, "widthMode": "fixed", "heightMode": "fixed"`
+
+**Rule**: LUÔN mở file React component + design system page, đọc từng className, rồi convert sang JSON. KHÔNG bao giờ đoán. Mỗi CSS property phải có mapping tương ứng trong JSON.
+
+---
+
+### #67: Effect styles trên Figma phải match web React 100%
+
+**Sai**: Tạo component Figma nhưng quên gắn effect style (focus ring, shadow) → component trông flat, thiếu depth và interactive feedback so với web.
+
+**Đúng**: Kiểm tra MỌI effect CSS trên web component và map sang Figma effect tương ứng:
+- Web `ring-[3px] ring-ring` (focus state) → `"focusRing": "ring"` (DROP_SHADOW, blur=0, spread=3)
+- Web `ring-[3px] ring-ring/50` → `"focusRing": "ring"` + `"focusRingSpread": 2` (nếu spread khác 3)
+- Web `shadow-sm` / `shadow-md` / `shadow-lg` → `"effectStyleName": "Shadows/sm"` (hoặc md, lg)
+- Web `animate-caret-blink` → hiện tại không map sang Figma (animation không hỗ trợ), nhưng caret node vẫn phải tồn tại với đúng size/color
+
+**Checklist khi tạo component JSON**:
+1. Mở React component file → tìm TẤT CẢ `ring-*`, `shadow-*`, `outline-*` classes
+2. Mở design system page → check interactive states (hover, focus, active, disabled)
+3. Map từng effect vào JSON property tương ứng
+4. Verify sau khi generate: so sánh Figma output với web component side-by-side
+
+**Rule**: Component Figma THIẾU effect style = component SAI. Effect styles (focus ring, shadows, elevation) là phần KHÔNG THỂ THIẾU của visual fidelity.
+
+---
+
+## D9. Plugin — Variant Restrictions
+
+### #69: variantRestrictions — KHÔNG hide property controls, restrict values thay thế
+
+**Sai**: Web DS page ẩn hoàn toàn property control khi variant không cần nó (VD: ẩn State khi Type=Ellipsis, ẩn Active khi Type=Previous). Plugin tạo cross product đầy đủ → Figma có variants không cần thiết.
+
+**Đúng**: Figma ComponentSet rule — TẤT CẢ variants PHẢI có TẤT CẢ properties với ≥1 value. Properties KHÔNG BAO GIỜ bị ẩn — chỉ restrict values:
+- **JSON**: Thêm `"variantRestrictions": { "Type=Ellipsis": { "State": ["Default"], "Active": ["False"] } }` → plugin filter cross product
+- **Web DS pill buttons**: Show restricted option list — `(type === "ellipsis" ? ["default"] : allStates).map(...)`
+- **Web DS Switch/toggle**: Show but `disabled` — `<Switch disabled={type !== "page"} />`
+- **Reset on change**: `if (type === "ellipsis") setState("default")` khi Type thay đổi
+
+**Rule**: Khi 1 property value restrict values của property khác → dùng `variantRestrictions` trong JSON + restrict (KHÔNG hide) controls trên web DS. Áp dụng cho: Pagination Item, Breadcrumb Item, và bất kỳ component nào có conditional property validity.
+
+---
+
 ## E. Workflow & Process
 
 ### #29: Luôn `pnpm build` / `tsc --noEmit` sau mỗi thay đổi
@@ -480,3 +1110,424 @@ Nếu tìm thấy → thêm ít nhất 1 property có nghĩa (không phải dumm
 - `tn/_pipeline/process.md` (nếu thay đổi workflow)
 
 **Rule**: KHÔNG chờ user yêu cầu. Tự động update ngay khi thay đổi hoàn thành.
+
+---
+
+### #34: iconFill fallback — icon đổi màu theo textFill
+
+**Sai**: Omit `iconFill` trong component JSON base → plugin resolve `merged.iconFill || merged.textFill || "foreground"`. Khi `Value=Filled` đổi `textFill` thành `"foreground"`, icon cũng đổi theo.
+
+**Đúng**: Luôn set `"iconFill": "muted-foreground"` trong base cho form components (Input, Select, Combobox, Textarea) nơi icon luôn giữ màu muted bất kể input value.
+
+**Rule**: Nếu icon color cố định trên web (`text-muted-foreground`) → PHẢI explicit set `iconFill` trong JSON, không dựa vào fallback.
+
+---
+
+### #35: gap "xs" cho form components có icon/prefix/suffix
+
+**Sai**: Set `"gap": 0` cho Input/Select vì web dùng absolute positioning cho icon. Kết quả: icon và label dính nhau trên Figma.
+
+**Đúng**: Figma dùng autolayout (không absolute) → cần `"gap": "xs"` (8px). Tính: 12px(paddingX) + 16px(icon) + 8px(gap) = 36px = web `pl-9`.
+
+**Rule**: Form components có icon decoration → `"gap": "xs"`. Chỉ dùng `"gap": 0` cho components thực sự KHÔNG có spacing giữa children.
+
+---
+
+### #70: Filter values không applicable — breadcrumb pattern (KHÔNG ẩn cả property)
+
+**Sai 1**: Hiện tất cả values khi không applicable → user bấm "Right" khi Type=Checkbox nhưng không thấy thay đổi gì.
+**Sai 2**: Ẩn cả property control (Alignment) khi Type=Checkbox → variant thiếu property, không match Figma.
+
+**Đúng**: Property control LUÔN hiện, nhưng **filter values** không applicable. Reset về default khi switch. VD:
+- Cell Row: Type=Checkbox → Alignment chỉ show ["Left"] (hide "Right"), Weight chỉ show ["Regular"] (hide "Medium")
+- Cell Header: Type=Checkbox → Alignment chỉ show ["Left"] (hide "Right")
+- Breadcrumb Item: Type=Current → State chỉ show ["Default"] (hide "Hover")
+
+**Code pattern**: `{(type === "checkbox" ? ["left"] : ["left", "right"]).map(s => ...)}`
+
+**Rule**: Theo **breadcrumb pattern** — property control LUÔN visible, nhưng khi value A của property X làm một số values của property Y không có tác dụng visual → filter bỏ values đó. Reset Y về default khi switch sang A. Figma JSON PHẢI dùng `variantRestrictions` để loại bỏ combos không hợp lệ tương ứng (xem #69) — KHÔNG tạo cross-product đầy đủ.
+
+---
+
+### #71: CSS contextual property — border last-child cần property riêng
+
+**Sai**: Table Row trên Figma luôn có border-bottom nhưng trên web `[&_tr:last-child]:border-0` tự động ẩn border ở hàng cuối. Figma không có CSS `:last-child` → thiếu cách toggle.
+
+**Đúng**: Thêm property `Border [Yes, No]` cho Table Row. `Border=No` set `strokeWidth: 0`. Table parent set `Border=No` cho row cuối.
+
+**Rule**: Khi CSS parent dùng `:last-child`, `:first-child`, `:nth-child` để thay đổi style con → component con PHẢI có property tương ứng trên Figma để toggle behavior đó. Scan web CSS cho `[&_*:last-child]`, `[&_*:first-child]` patterns.
+
+---
+
+### #72: Sub-component variant width phải match web CSS width behavior
+
+**Sai**: Cell Row `base.width: 140` → ALL variants (kể cả Type=Checkbox) đều 140px. Trên web, checkbox cell dùng `w-px` (minimum width ~28px) nhưng Figma cell vẫn 140px → chiếm quá nhiều không gian trong Table Row.
+
+**Đúng**: Variant nào có web CSS khác biệt về width (`w-px`, `w-auto`, `w-fit`, `max-w-*`) → override `"widthMode": "hug"` hoặc `"width"` cụ thể trong `variantStyles`. VD:
+```json
+"Type=Checkbox": { "widthMode": "hug", "paddingLeft": "sm", "paddingRight": 0, ... }
+```
+
+**Rule**: Khi viết JSON spec cho sub-component, PHẢI check web CSS width của TỪNG variant. Nếu một variant dùng `w-px`/`w-fit`/`w-auto` → set `"widthMode": "hug"`. Nếu dùng explicit width (VD `w-[200px]`) → set `"width": 200`. Không để base width áp dụng cho tất cả variants khi web có width khác biệt.
+
+---
+
+### #73: ComponentSet canvas order phải match web Explore tab order
+
+**Sai**: JSON `"components"` array xếp theo dependency order (item trước parent) → trên Figma canvas: Cell Row ở trên, Table ở dưới. Nhưng trên web, Explore Behavior tabs xếp: Table | Table Header | Table Row | Cell Header | Cell Row (parent trước, leaf sau).
+
+**Đúng**: Thứ tự ComponentSet trên Figma canvas (trên → dưới) PHẢI tương ứng với thứ tự tab Explore Behavior trên web (trái → phải). JSON `"components"` array vẫn giữ dependency order để plugin tạo đúng thứ tự, nhưng sau khi tạo xong plugin phải sắp xếp lại vị trí trên canvas theo web tab order.
+
+**Rule**: Figma canvas layout = web Explore tab order. Khi review component trên Figma, verify thứ tự trên → dưới khớp với thứ tự tab trái → phải trên web DS page. Nếu sai → sắp xếp lại.
+
+---
+
+### #74: Icon trong component — dùng direct icon, KHÔNG dùng instance hoặc frame wrapper
+
+**Sai 1**: Dùng Button instance `Icon=Icon Only` cho trigger cần icon ChevronsUpDown → Figma hiển thị icon mặc định "Plus". Plugin không có `iconOverrides` trên instance.
+
+**Sai 2**: Dùng `"type": "frame"` wrapper (32×32) chứa icon → `createFrame()` mặc định có white fill (#FFFFFF), tạo hình vuông trắng che icon.
+
+**Đúng**: Đặt icon trực tiếp làm child của parent frame — KHÔNG wrapper:
+```json
+{
+  "name": "ChevronsUpDown",
+  "type": "icon",
+  "iconName": "ChevronsUpDown",
+  "iconSize": 16,
+  "iconFill": "ghost-foreground"
+}
+```
+VD tham chiếu: Accordion dùng direct icon (`"type": "icon"`, `"iconName": "ChevronDown"`) trong Trigger frame — proven pattern.
+
+**Rule**: Khi component cần icon decorative (chevron, toggle icon) → dùng `"type": "icon"` trực tiếp trong parent frame. KHÔNG wrap trong frame riêng (white fill issue) và KHÔNG dùng instance khi cần icon khác default. Review step 3 (Visual Diff) PHẢI verify: (1) icon name khớp web, (2) không có wrapper frame thừa.
+
+---
+
+## D11. Plugin — Instance & Layout in Children Frames
+
+### #75: space-between gap — 3 chế độ: "auto" vs token vs number
+
+Gap trong JSON có 3 chế độ hoàn toàn khác nhau:
+
+**1. `"gap": "auto"`** — Figma Auto spacing, KHÔNG bind variable, KHÔNG hiển thị 0px.
+Dùng cho space-between khi TẤT CẢ children đều HUG (không có child nào FILL width). Figma tự phân phối khoảng cách đẩy items ra 2 mép.
+```json
+{ "primaryAlign": "space-between", "gap": "auto" }
+```
+VD: Card Footer (2 HUG buttons), Progress Label Row (2 HUG texts).
+
+**2. `"gap": "xs"` (hoặc token string khác)** — actual spacing, bind `spacing/*` variable.
+Dùng cho space-between khi CÓ child FILL width. Child FILL tự đẩy child khác ra mép, gap là khoảng cách thực giữa các items.
+```json
+{ "primaryAlign": "space-between", "gap": "xs", "children": [
+  { "name": "Title", "fillWidth": true },
+  { "name": "Icon", "type": "icon" }
+]}
+```
+VD: Collapsible Header (FILL text + HUG icon, 8px gap), Accordion Trigger, Select/Combobox base (`labelFill:true` + icon).
+
+**3. `"gap": "none"`** — explicit 0px, bind `spacing/none` variable.
+Dùng khi gap thực sự là 0px (KHÔNG phải auto). Hiển thị trên Figma là `spacing/none = 0`.
+
+**Lưu ý**: `"auto"` và `"none"` (0px) là 2 giá trị hoàn toàn khác nhau. Auto = Figma tự tính, None = 0px cố định với variable token.
+
+### #77: Zero spacing/padding PHẢI dùng "none" token — KHÔNG dùng number 0
+
+**Sai**: `"gap": 0`, `"paddingBottom": 0` → plugin set pixel value 0 NHƯNG KHÔNG bind variable → Figma hiển thị "0px" manual thay vì token `spacing/none`.
+
+**Đúng**: Dùng `"paddingBottom": "none"` → plugin gọi `getSpacingValue("none")` = 0 + `bindFloat(node, field, "spacing/none", 0)` → Figma hiển thị token variable.
+
+**Quy tắc**: Tất cả `paddingX`, `paddingY`, `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight` có giá trị 0 NÊN dùng string `"none"`. Với `gap`: dùng `"auto"` cho space-between auto, dùng `"none"` cho explicit 0px. Plugin giờ có safety net: number `0` tự động bind `spacing/none` (xem #87), nhưng `"none"` string vẫn là best practice vì rõ ràng hơn.
+
+### #76: Instance trong child frame — thêm widthMode: "hug" khi cần wrap content
+
+**Sai**: Button instance trong footer KHÔNG có `widthMode` → plugin default `layoutSizingHorizontal = "FIXED"` (120px base width). Button bị fixed width thay vì co theo nội dung text.
+
+**Đúng**: Thêm `"widthMode": "hug"` cho instance cần wrap content:
+```json
+{
+  "type": "instance",
+  "component": "Button",
+  "variants": { "Variant": "Ghost", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+  "textOverrides": { "Label": "Cancel" },
+  "widthMode": "hug"
+}
+```
+Plugin code (line 2469): `cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"`.
+
+**Rule**: Instance sizing — 3 modes:
+- Omit (default) → FIXED (giữ component base width)
+- `"fillWidth": true` → FILL (fill parent container)
+- `"widthMode": "hug"` → HUG (wrap content — dùng cho Button trong footer, nav items)
+
+Review step 3 (Visual Diff) PHẢI verify: instance width behavior match web React (HUG = `w-fit`/`w-auto`, FILL = `w-full`, FIXED = explicit width).
+
+### #78: labelFill truncation — thứ tự Figma API: TRUNCATE trước, FILL sau
+
+**Sai**: Set `layoutSizingHorizontal = "FILL"` trước → `textAutoResize = "TRUNCATE"` sau → Figma API reset `layoutSizingHorizontal` về `"FIXED"` → text node không fill container → wrap 2 dòng.
+
+```javascript
+// ❌ SAI — TRUNCATE reset FILL về FIXED
+lbl.layoutSizingHorizontal = "FILL";
+lbl.textAutoResize = "TRUNCATE";
+lbl.maxLines = 1;
+lbl.textTruncation = "ENDING";
+```
+
+**Đúng**: Set truncation properties TRƯỚC, `layoutSizingHorizontal = "FILL"` CUỐI CÙNG. Figma API: `TRUNCATE` → sets sizing to FIXED. `FILL` sau đó → KHÔNG reset `textAutoResize` (chỉ reset khi trước đó là `WIDTH_AND_HEIGHT`).
+
+```javascript
+// ✅ ĐÚNG — FILL cuối cùng giữ nguyên TRUNCATE
+lbl.textAutoResize = "TRUNCATE";
+lbl.maxLines = 1;
+lbl.textTruncation = "ENDING";
+lbl.layoutSizingHorizontal = "FILL";
+```
+
+**Ảnh hưởng**: Mọi component có `labelFill: true` (Input, Select, Combobox, Textarea, DatePicker...). Cũng áp dụng cho addon text nodes (prefix, suffix, textLeft, textRight) nếu cần truncate + fill.
+
+**Quy tắc Figma API**: `textAutoResize` và `layoutSizing*` tương tác 2 chiều. `TRUNCATE` reset sizing về FIXED. `FILL` chỉ reset `textAutoResize` khi nó đang là `WIDTH_AND_HEIGHT`. Luôn set `textAutoResize` TRƯỚC `layoutSizing*`.
+
+### #79: Children frame default counterAlign = "center" — text bị align giữa
+
+**Sai**: Children frame (type `"frame"`) KHÔNG set `counterAlign` → plugin default `counterAxisAlignItems = "CENTER"` → text nodes bên trong align paragraph giữa thay vì trái.
+
+```json
+{
+  "name": "Info",
+  "type": "frame",
+  "layout": "vertical",
+  "gap": "3xs"
+}
+```
+
+**Đúng**: LUÔN set `"counterAlign": "start"` cho children frame chứa text nodes cần align left:
+
+```json
+{
+  "name": "Info",
+  "type": "frame",
+  "layout": "vertical",
+  "primaryAlign": "start",
+  "counterAlign": "start",
+  "gap": "3xs"
+}
+```
+
+**Giải thích**: Plugin code (line ~2262): `frm.counterAxisAlignItems = ca === "start" ? "MIN" : ca === "end" ? "MAX" : "CENTER"`. Default `"center"` → text HUG nodes bị center trong frame FILL width. Cross-axis alignment ≠ text paragraph alignment, nhưng visual effect giống nhau khi text node HUG width nhỏ hơn frame.
+
+### #80: Overlay component không có visual diff → bỏ properties, tạo 1 variant
+
+**Sai**: Tạo properties cho overlay component (HoverCard, Popover...) dựa trên web Explore controls (Side, Align) → tạo 12 variants trông HOÀN TOÀN GIỐNG NHAU trên Figma.
+
+```json
+"properties": {
+  "Side": ["Bottom", "Top", "Left", "Right"],
+  "Align": ["Center", "Start", "End"]
+}
+```
+
+**Đúng**: Khi web Explore controls chỉ thay đổi runtime behavior (vị trí hiển thị, animation direction) mà KHÔNG thay đổi visual của component → `"properties": {}` → 1 variant duy nhất.
+
+```json
+"properties": {}
+```
+
+**Quy tắc**: Figma ComponentSet variant = visual state khác nhau. Properties mà không tạo visual diff trên Figma (Side, Align, Offset, Delay...) → bỏ khỏi properties, chỉ document trong props/figmaMapping. Áp dụng cho: HoverCard (no arrow), Popover (no arrow), components chỉ khác runtime behavior.
+
+---
+
+## D12. Plugin — Icon Instance in Children
+
+### #81: Lucide icon rename — LUÔN check foundation-icons.json trước khi dùng tên icon
+
+**Sai**: Dùng tên icon cũ trong component JSON vì nhớ từ React code hoặc Lucide docs cũ.
+
+```json
+{ "component": "Icon / AlertCircle" }
+{ "component": "Icon / CheckCircle2" }
+{ "component": "Icon / AlertTriangle" }
+```
+
+**Đúng**: Mở `figma-specs/foundation-icons.json`, search tên icon → dùng tên chính xác từ đó.
+
+```json
+{ "component": "Icon / CircleAlert" }
+{ "component": "Icon / CircleCheck" }
+{ "component": "Icon / TriangleAlert" }
+```
+
+**Quy tắc**: Lucide liên tục rename icons giữa các version (AlertCircle→CircleAlert, CheckCircle2→CircleCheck, AlertTriangle→TriangleAlert, v.v.). Foundation icons JSON dùng tên version mới nhất. **KHÔNG tin vào trí nhớ** — LUÔN verify tên icon trong `foundation-icons.json` trước khi dùng trong component JSON. Nếu icon không tồn tại trong foundation → plugin `findComponent()` trả null → icon không hiện.
+
+### #82: Children instance icon thiếu iconFill → icon kế thừa màu mặc định, không khớp variant
+
+**Sai**: Tạo icon instance trong `children` array mà không set `iconFill`. Icon kế thừa `foreground` từ master component, không đổi theo variant (Error=đỏ, Success=xanh...).
+
+```json
+"Type=Error": {
+  "fill": "destructive-subtle",
+  "children": [
+    { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "width": 16, "height": 16 }
+  ]
+}
+```
+
+**Đúng**: Set `iconFill` trên mỗi icon instance để override màu vector theo variant.
+
+```json
+"Type=Error": {
+  "fill": "destructive-subtle",
+  "children": [
+    { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16 }
+  ]
+}
+```
+
+**Quy tắc**: Icon instances trong `children` array KHÔNG tự động kế thừa `textFill` hay bất kỳ color nào từ parent variant. Plugin `_processChildren` cần `iconFill` để override vector strokes/fills trên instance con. **Mỗi variant có icon** → PHẢI set `iconFill` tương ứng. Check React component CSS: `[&>svg]:text-{variant}` → map sang `iconFill: "{variant}"`. Áp dụng cho: Alert, AlertDialog, Toast, Banner, hoặc bất kỳ component nào có icon instance thay đổi màu theo variant.
+
+### #83: Plugin findComponentSet() chỉ tìm COMPONENT_SET — icon là standalone COMPONENT
+
+**Sai**: Chỉ dùng `findComponentSet()` trong `_processChildren` instance path. Khi `component: "Icon / Info"` → trả null vì icons là COMPONENT, không phải COMPONENT_SET → icon không render.
+
+**Đúng**: Thêm fallback `findComponent()` khi `findComponentSet()` trả null:
+
+```javascript
+var _compSet = findComponentSet(compSetName);
+if (_compSet) {
+  _inst = _getInstance(_compSet, _instProps);
+} else {
+  var _standaloneComp = findComponent(compSetName);
+  if (_standaloneComp && _standaloneComp.type === "COMPONENT") {
+    _inst = _standaloneComp.createInstance();
+  }
+}
+```
+
+**Quy tắc**: Foundation icons được tạo bằng `figma.createComponent()` → mỗi icon là 1 standalone COMPONENT (không có variants). `findComponentSet()` chỉ tìm COMPONENT_SET (multi-variant). Plugin `_processChildren` instance path PHẢI có fallback qua `findComponent()` cho standalone components. Đã fix trong code.js — lesson này nhắc KHÔNG xóa fallback nếu refactor.
+
+---
+
+## D10. Plugin — Layout & Positioning
+
+### #84: Web `absolute` element → gộp vào parent row trong Figma JSON
+
+**Sai**: Tạo wrapper frame riêng cho absolute-positioned element (VD: Dialog close button):
+```json
+{
+  "name": "Close",
+  "type": "frame",
+  "layout": "horizontal",
+  "primaryAlign": "end",
+  "fillWidth": true,
+  "showWhen": "Show Close=Yes",
+  "children": [{ "name": "Close Icon", "type": "frame", "width": 16, "height": 16 }]
+}
+```
+→ Wrapper chiếm 1 row trong vertical auto-layout → đẩy content xuống → padding không đều.
+
+**Đúng**: Gộp element vào parent row đã tồn tại (VD: Header):
+```json
+{
+  "name": "Header",
+  "type": "frame",
+  "layout": "horizontal",
+  "counterAlign": "start",
+  "fillWidth": true,
+  "children": [
+    { "name": "Text Group", "type": "frame", "layout": "vertical", "fillWidth": true, "children": [...] },
+    { "name": "Close Icon", "type": "instance", "component": "Icon / X", "width": 16, "height": 16, "iconFill": "muted-foreground", "showWhen": "Show Close=Yes" }
+  ]
+}
+```
+→ Close icon nằm inline cùng Header → không chiếm row riêng → padding đều. Icon X render đúng hình dạng (không phải filled rectangle).
+
+**Quy tắc**: Plugin KHÔNG hỗ trợ `layoutPositioning: "ABSOLUTE"` cho regular children (chỉ ellipses). Khi web dùng `absolute right-* top-*` → Figma JSON PHẢI gộp element vào row gần nhất (horizontal layout). Close icon PHẢI dùng `"type": "instance", "component": "Icon / X"` với `iconFill: "muted-foreground"` — KHÔNG dùng `"type": "frame"` filled rectangle (render hình vuông thay vì icon X). Áp dụng cho: Dialog close, Sheet close, Toast close — bất kỳ floating button nào.
+
+---
+
+### #85: Label-input gap phải dùng `space-y-2xs` (4px), KHÔNG dùng `space-y-xs`
+
+**Sai**: Dùng `space-y-xs` (6px) cho khoảng cách giữa Label và Input/Textarea/Select:
+```tsx
+<div className="space-y-xs">
+  <Label>Name</Label>
+  <Input placeholder="Your name" />
+</div>
+```
+
+**Đúng**: Dùng `space-y-2xs` (4px) — tighter coupling giữa label và field:
+```tsx
+<div className="space-y-2xs">
+  <Label>Name</Label>
+  <Input placeholder="Your name" />
+</div>
+```
+
+**Scope**: Tất cả label+input/textarea/select field patterns — bao gồm FormItem component (`form.tsx`), design system page demos, code snippets, và mọi form trong app pages.
+
+### #86: Explore Behavior preview PHẢI interactive — KHÔNG dùng `pointer-events-none`
+
+**Sai**: Dùng `pointer-events-none` trên explore behavior preview canvas → user không thể hover/click để thấy trạng thái:
+```tsx
+<div className="pointer-events-none">
+  <Button>Click me</Button>
+</div>
+```
+
+**Đúng**: Explore preview canvas để interactive — user hover/click trực tiếp trên component:
+```tsx
+<div>
+  <Button>Click me</Button>
+</div>
+```
+
+**Lưu ý**: `pointer-events-none` chỉ hợp lệ trong: (1) disabled state simulation trên controls, (2) design token table text, (3) example sections cần giữ overlay mở (VD: `<Tooltip open>`). KHÔNG dùng trong explore behavior preview area.
+
+---
+
+## D13. Plugin — Zero Value Variable Binding
+
+### #87: Plugin auto-bind `spacing/none` và `border radius/none` cho number 0 — safety net
+
+**Trước đây**: Plugin KHÔNG bind variable khi gap/padding/radius là number `0` → Figma hiện raw "0px" thay vì token.
+
+**Sau fix**: Plugin tự động bind variable cho MỌI giá trị number `0`:
+- `gap: 0` → bind `spacing/none`
+- `paddingX: 0`, `paddingY: 0`, `paddingTop: 0`... → bind `spacing/none`
+- `radius: 0` → bind `border radius/none`
+- Children frame không set radius → default 0 → bind `border radius/none`
+
+**4 code paths đã fix**: children frame (`_processChildren`), main comp (no addon/indicator), addon innerF, indicator.
+
+**RADIUS_FALLBACKS**: Thêm `"none": 0` → `getRadiusValue("none")` trả 0 đúng cách.
+
+**Vẫn nên dùng string `"none"`**: Đây là safety net cho edge cases. JSON spec VẪN NÊN dùng `"none"` string (best practice #77) vì string path rõ ràng hơn và bind variable ở cả getSpacingValue + bindFloat.
+
+---
+
+## D14. Component Layout — Full-Width Divider Pattern
+
+### #88: Dialog full-width divider — base paddingX "none", per-child paddingX riêng
+
+**Sai**: Base component có `paddingX: "md"` → TẤT CẢ children bị constraint trong padding → border của scrollable body không thể span full width.
+
+```json
+"base": { "paddingX": "md", "children": [
+  { "name": "Body Scrollable", "stroke": "border", "strokeSides": "top,bottom" }
+]}
+```
+→ Border Body Scrollable bị indent 16px mỗi bên.
+
+**Đúng**: Base dùng `paddingX: "none"` (0), mỗi child có `paddingX: "md"` riêng. Child cần full-width border KHÔNG set paddingX → border span toàn bộ width.
+
+```json
+"base": { "paddingX": "none", "children": [
+  { "name": "Header", "paddingX": "md", ... },
+  { "name": "Body Scrollable", "stroke": "border", "strokeSides": "top,bottom", "paddingX": "md", ... },
+  { "name": "Footer", "paddingX": "md", ... }
+]}
+```
+→ Body Scrollable border spans full dialog width, content vẫn có padding.
+
+**Áp dụng cho**: Dialog (scrollable variant), Sheet (scrollable), Drawer (scrollable) — bất kỳ component nào cần child border span full width trong vertical auto-layout.

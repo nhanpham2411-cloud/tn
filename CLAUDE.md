@@ -17,7 +17,7 @@ tn/
 │       ├── saas-app/       ← React app (Phase 5)
 │       └── figma-specs/    ← JSON specs for Figma plugin (Phase 7)
 ├── plugins/                ← Figma plugin: Generate SaaS Template
-└── common-mistakes.md      ← 33 lessons, read before every session
+└── common-mistakes.md      ← 48 lessons, read before every session
 ```
 
 ## Pipeline (11 phases)
@@ -53,10 +53,11 @@ tn/
 ## Critical Rules
 1. **SprouX Independence**: Each product forks SprouX — NEVER modify the source SprouX repo
 2. **Typography**: Use product prefix (`sp-*`) — `text-*` gets stripped by tailwind-merge
-3. **Tokens only**: No hardcoded hex/rgb in className — use semantic tokens
+3. **Tokens only**: No hardcoded hex/rgb **or color scale names** (violet-*, amber-*, zinc-*) in className — use semantic tokens (`text-primary`, `text-warning`, `bg-primary/10`)
 4. **DS components only**: `<Button>` not `<button>`, `<Input>` not `<input>`
 5. **Management pages**: Must have loading skeleton, offline banner, bulk select, empty state, save guard
 6. **Read `common-mistakes.md`** before touching React app code
+7. **Component docs**: ALWAYS read `_refs/component-docs-pattern.md` before adjusting any component in the design system page
 
 ## Skills (slash commands)
 | Command | Role |
@@ -73,10 +74,24 @@ tn/
 ## References
 All general reference files are in `_refs/`:
 - `_refs/process.md` — full 11-phase pipeline detail
-- `_refs/common-mistakes.md` — 33 recurring mistakes to avoid
+- `_refs/common-mistakes.md` — 45 recurring mistakes to avoid
 - `_refs/component-docs-pattern.md` — 10-section standard for Figma component docs
+- `_refs/plugin-json-pattern.md` — 6-type pattern doc for Figma plugin JSON specs
 
 Product-specific (per product in `products/{NNN}/`):
 - `STATUS.md` — current phase & progress
 - `art-direction.md` — visual specs (colors, typography, effects)
 - `design-system.md` — DS token docs
+
+## Compact Instructions
+
+When compacting context, prioritize keeping:
+- Code changes made in this session (file paths + what changed)
+- Errors encountered and how they were fixed
+- Current task state (what's done, what's pending)
+- Key decisions made
+
+Drop from context:
+- Full file reads that haven't been edited
+- Verbose command output (keep only errors/key results)
+- Repeated tool call results for the same file

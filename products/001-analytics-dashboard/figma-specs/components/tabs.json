@@ -1,0 +1,392 @@
+{
+  "components": [
+    {
+      "name": "Tabs Item",
+      "description": "Individual tab trigger item for use inside Tabs. Supports default and pill shape variants, with default/hover/active/disabled states. Compose multiple items via instance swap inside the Tabs parent container.",
+      "category": "Navigation",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-tabs",
+        "import": "import {\n  TabsTrigger,\n} from \"@/components/ui/tabs\""
+      },
+
+      "properties": {
+        "Variant": ["Default", "Pill"],
+        "State": ["Default", "Hover", "Active", "Disabled"],
+        "Icon": ["No", "Yes"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "xs",
+        "paddingX": "sm",
+        "paddingY": "3xs",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "radius": "md",
+        "iconSize": 16,
+        "textStyle": "SP/Body Medium",
+        "textContent": "Account",
+        "textFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "Variant=Pill": { "radius": "full" },
+
+        "State=Hover": {
+          "textFill": "foreground"
+        },
+        "State=Active": {
+          "fill": "background",
+          "textFill": "foreground",
+          "effectStyleName": "Shadows/sm"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        },
+
+        "Icon=Yes": {
+          "iconLeft": true,
+          "iconLeftName": "User"
+        },
+
+        "Variant=Pill,State=Hover": {
+          "radius": "full",
+          "textFill": "foreground"
+        },
+        "Variant=Pill,State=Active": {
+          "radius": "full",
+          "fill": "background",
+          "textFill": "foreground",
+          "effectStyleName": "Shadows/sm"
+        },
+        "Variant=Pill,State=Disabled": {
+          "radius": "full",
+          "opacity": 0.5
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Default States",
+          "description": "Default, hover, active, and disabled states with rounded-md shape.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "State": "Default", "Icon": "No" } },
+            { "label": "Hover", "props": { "Variant": "Default", "State": "Hover", "Icon": "No" } },
+            { "label": "Active", "props": { "Variant": "Default", "State": "Active", "Icon": "No" } },
+            { "label": "Disabled", "props": { "Variant": "Default", "State": "Disabled", "Icon": "No" } }
+          ]
+        },
+        {
+          "name": "Pill States",
+          "description": "Pill variant with rounded-full shape across all states.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Pill", "State": "Default", "Icon": "No" } },
+            { "label": "Hover", "props": { "Variant": "Pill", "State": "Hover", "Icon": "No" } },
+            { "label": "Active", "props": { "Variant": "Pill", "State": "Active", "Icon": "No" } },
+            { "label": "Disabled", "props": { "Variant": "Pill", "State": "Disabled", "Icon": "No" } }
+          ]
+        },
+        {
+          "name": "With Icons",
+          "description": "Icon alongside label for richer tab triggers.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default + Icon", "props": { "Variant": "Default", "State": "Default", "Icon": "Yes" } },
+            { "label": "Hover + Icon", "props": { "Variant": "Default", "State": "Hover", "Icon": "Yes" } },
+            { "label": "Active + Icon", "props": { "Variant": "Default", "State": "Active", "Icon": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "string", "default": "--", "description": "Unique identifier matching a TabsContent value (required)" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Prevents the tab from being selected" },
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "Label text and optional icon" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes — use flex-1 to stretch, gap-xs for icon spacing" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-muted-foreground", "value": "zinc-500", "description": "Default (inactive) text and icon color" },
+        { "token": "--color-foreground", "value": "zinc-950 / zinc-50", "description": "Hover and active state text and icon color" },
+        { "token": "--color-foreground", "value": "zinc-950 / zinc-50", "description": "Hover state text color (text brightens only, no bg)" },
+        { "token": "--color-background", "value": "white / zinc-950", "description": "Active state background fill" },
+        { "token": "Shadows/sm", "value": "layered shadow", "description": "Active state shadow effect style" },
+        { "token": "--radius-md", "value": "6px", "description": "Default variant border radius" },
+        { "token": "rounded-full", "value": "9999px", "description": "Pill variant border radius" },
+        { "token": "--spacing-sm", "value": "12px", "description": "Horizontal padding (px-sm)" },
+        { "token": "--spacing-3xs", "value": "4px", "description": "Vertical padding (py-3xs)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Keep tab labels to 1-3 words. Use an icon alongside for extra clarity.", "dont": "Use long sentence labels — they break layout and reduce scannability." },
+        { "do": "Set exactly one item to State=Active to indicate the current section.", "dont": "Set multiple items to Active or leave all as Default." },
+        { "do": "Use Disabled state for tabs that are locked (e.g. paid-only features).", "dont": "Hide unavailable tabs entirely — showing them disabled communicates what's available on upgrade." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Variant=Default", "value": "rounded-md trigger", "code": "TabsTrigger", "codeValue": "Inherits from TabsList variant=\"default\"" },
+        { "figma": "Variant=Pill", "value": "rounded-full trigger", "code": "TabsTrigger", "codeValue": "Inherits from TabsList variant=\"pill\"" },
+        { "figma": "State=Default", "value": "No fill, muted-foreground text", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "text-foreground (no bg change)", "code": "hover:", "codeValue": "data-[state=inactive]:hover:text-foreground" },
+        { "figma": "State=Active", "value": "bg-background, text-foreground, Shadows/sm", "code": "data-[state=active]", "codeValue": "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow" },
+        { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "disabled={true}" },
+        { "figma": "Icon=Yes", "value": "Icon + label, gap-xs", "code": "className", "codeValue": "className=\"gap-xs\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Arrow Left / Right", "action": "Navigate between tabs" },
+          { "key": "Enter / Space", "action": "Activate the focused tab" },
+          { "key": "Home / End", "action": "Jump to first / last tab" }
+        ],
+        "notes": [
+          "Each trigger has role='tab' with aria-selected and aria-controls.",
+          "Disabled triggers have aria-disabled='true' and are skipped by arrow key navigation.",
+          "Always provide visible text label — icon-only triggers need aria-label."
+        ]
+      },
+
+      "related": [
+        { "name": "Tabs", "desc": "Parent container that composes multiple Tabs Items into a tab list." },
+        { "name": "Menu Item", "desc": "Similar pill item pattern but for top-level navigation between pages." },
+        { "name": "Toggle", "desc": "For binary on/off actions — don't use Tabs Item for toggle behavior." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Tabs",
+      "description": "Tab list container that composes Tabs Item instances via instance swap. Supports default (rounded-lg) and pill (rounded-full) variants. Set variant once on the container — all child items inherit the shape.",
+      "category": "Navigation",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-tabs",
+        "import": "import {\n  Tabs,\n  TabsList,\n  TabsTrigger,\n  TabsContent,\n} from \"@/components/ui/tabs\""
+      },
+
+      "properties": {
+        "Variant": ["Default", "Pill"],
+        "Items": ["2", "3", "4"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "3xs",
+        "paddingY": "3xs",
+        "widthMode": "hug",
+        "heightMode": "fixed",
+        "height": 36,
+        "fill": "muted",
+        "radius": "lg",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Item 1",
+            "type": "instance",
+            "component": "Tabs Item",
+            "variants": { "Variant": "Default", "State": "Active", "Icon": "No" },
+            "textOverrides": { "Label": "Account" }
+          },
+          {
+            "name": "Item 2",
+            "type": "instance",
+            "component": "Tabs Item",
+            "variants": { "Variant": "Default", "State": "Default", "Icon": "No" },
+            "textOverrides": { "Label": "Notifications" }
+          },
+          {
+            "name": "Item 3",
+            "type": "instance",
+            "component": "Tabs Item",
+            "variants": { "Variant": "Default", "State": "Default", "Icon": "No" },
+            "textOverrides": { "Label": "Billing" },
+            "showWhen": "Items=3"
+          },
+          {
+            "name": "Item 3",
+            "type": "instance",
+            "component": "Tabs Item",
+            "variants": { "Variant": "Default", "State": "Default", "Icon": "No" },
+            "textOverrides": { "Label": "Billing" },
+            "showWhen": "Items=4"
+          },
+          {
+            "name": "Item 4",
+            "type": "instance",
+            "component": "Tabs Item",
+            "variants": { "Variant": "Default", "State": "Default", "Icon": "No" },
+            "textOverrides": { "Label": "Settings" },
+            "showWhen": "Items=4"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Variant=Pill": { "radius": "full" },
+        "Variant=Pill,Items=2": {
+          "radius": "full",
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Active", "Icon": "No" },
+              "textOverrides": { "Label": "Account" }
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Notifications" }
+            }
+          ]
+        },
+        "Variant=Pill,Items=3": {
+          "radius": "full",
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Active", "Icon": "No" },
+              "textOverrides": { "Label": "Account" }
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Notifications" }
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Billing" }
+            }
+          ]
+        },
+        "Variant=Pill,Items=4": {
+          "radius": "full",
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Active", "Icon": "No" },
+              "textOverrides": { "Label": "Account" }
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Notifications" }
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Billing" }
+            },
+            {
+              "name": "Item 4",
+              "type": "instance",
+              "component": "Tabs Item",
+              "variants": { "Variant": "Pill", "State": "Default", "Icon": "No" },
+              "textOverrides": { "Label": "Settings" }
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Variants",
+          "description": "Default (rounded-lg container, rounded-md items) and Pill (rounded-full container and items).",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default 3 Items", "props": { "Variant": "Default", "Items": "3" } },
+            { "label": "Pill 3 Items", "props": { "Variant": "Pill", "Items": "3" } }
+          ]
+        },
+        {
+          "name": "Item Count",
+          "description": "2, 3, or 4 items — swap instances to change labels, icons, and states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "2 Items", "props": { "Variant": "Default", "Items": "2" } },
+            { "label": "3 Items", "props": { "Variant": "Default", "Items": "3" } },
+            { "label": "4 Items", "props": { "Variant": "Default", "Items": "4" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "defaultValue", "type": "string", "default": "--", "description": "Initially active tab value (uncontrolled)" },
+        { "name": "value", "type": "string", "default": "--", "description": "Controlled active tab value" },
+        { "name": "onValueChange", "type": "(value: string) => void", "default": "--", "description": "Callback fired when the active tab changes" },
+        { "name": "variant", "type": "\"default\" | \"pill\"", "default": "\"default\"", "description": "Shape of the list and all child triggers — set on TabsList" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes — use w-full on TabsList to stretch to container" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "TabsList background (bg-muted)" },
+        { "token": "--radius-lg", "value": "8px", "description": "Container border radius — default variant" },
+        { "token": "rounded-full", "value": "9999px", "description": "Container border radius — pill variant" },
+        { "token": "--spacing-3xs", "value": "4px", "description": "Container padding (p-3xs)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Tabs to switch between related content that shares the same data scope and URL.", "dont": "Use Tabs for page-level navigation — use sidebar or navigation links." },
+        { "do": "Keep 2-4 items. Swap Tabs Item instances to set each item's label, icon, and state.", "dont": "Add more than 6 items — tabs overflow and lose scannability." },
+        { "do": "Set exactly one item to State=Active to indicate the current section.", "dont": "Set multiple items to Active or leave all as Default." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Variant=Default", "value": "rounded-lg container", "code": "TabsList", "codeValue": "variant=\"default\"" },
+        { "figma": "Variant=Pill", "value": "rounded-full container", "code": "TabsList", "codeValue": "variant=\"pill\"" },
+        { "figma": "Items=2", "value": "2 tab items", "code": "TabsList", "codeValue": "2 TabsTrigger children" },
+        { "figma": "Items=3", "value": "3 tab items", "code": "TabsList", "codeValue": "3 TabsTrigger children" },
+        { "figma": "Items=4", "value": "4 tab items", "code": "TabsList", "codeValue": "4 TabsTrigger children" },
+        { "figma": "Instance swap", "value": "Change item label/icon/state", "code": "Props on each child", "codeValue": "Set value, disabled, className per TabsTrigger" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus into and out of the tab list" },
+          { "key": "Arrow Left / Right", "action": "Navigate between tabs (horizontal)" },
+          { "key": "Enter / Space", "action": "Activate the focused tab" },
+          { "key": "Home / End", "action": "Jump to the first / last tab" }
+        ],
+        "notes": [
+          "Radix sets role='tablist' on TabsList, role='tab' on each trigger, role='tabpanel' on each content.",
+          "Variant is set once on TabsList and propagates to all TabsTrigger children via React context.",
+          "Inactive TabsContent panels are hidden from DOM by default — set forceMount to keep mounted."
+        ]
+      },
+
+      "related": [
+        { "name": "Tabs Item", "desc": "Sub-component — the individual tab triggers inside this container." },
+        { "name": "Accordion", "desc": "Stacked expandable sections. Use when sections may be open simultaneously." },
+        { "name": "NavigationMenu", "desc": "Page-level navigation with dropdown support. Use for top-level routing." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

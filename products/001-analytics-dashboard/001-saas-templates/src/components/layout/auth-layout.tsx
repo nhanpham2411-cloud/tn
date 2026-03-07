@@ -29,7 +29,7 @@ function AuthIllustration() {
   return (
     <div className="relative w-full max-w-[440px]" style={{ aspectRatio: "11/9" }}>
       {/* Ambient glow layers */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full bg-violet-500/[0.12] blur-[80px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full bg-primary/[0.12] blur-[80px]" />
       <div className="absolute bottom-1/4 right-0 w-[200px] h-[160px] rounded-full bg-indigo-400/[0.08] blur-[60px]" />
 
       <svg viewBox="0 0 480 400" fill="none" className="relative w-full h-full drop-shadow-2xl">
@@ -309,7 +309,7 @@ export function AuthLayout() {
       <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-between bg-[#0c0a1a] p-2xl relative overflow-hidden">
         {/* Gradient background */}
         <div className="absolute inset-0">
-          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-violet-600/[0.08] blur-[100px]" />
+          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
           <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-indigo-500/[0.06] blur-[80px]" />
           <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-purple-500/[0.04] blur-[60px]" />
         </div>
@@ -367,7 +367,7 @@ export function AuthLayout() {
       {/* Right — form area */}
       <div className="flex flex-1 items-center justify-center bg-background p-lg sm:p-xl relative overflow-hidden">
         {/* Subtle violet ambient glow — connects visually to left panel */}
-        <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-violet-500/[0.03] blur-[100px] dark:bg-violet-500/[0.04]" />
+        <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-primary/[0.03] blur-[100px] dark:bg-primary/[0.04]" />
         <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-indigo-500/[0.02] blur-[80px] dark:bg-indigo-500/[0.03]" />
         <PageTransition className="w-full flex items-center justify-center">
           <Outlet />

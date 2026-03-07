@@ -1,0 +1,198 @@
+{
+  "components": [
+    {
+      "name": "Input",
+      "description": "Single-line text input field with border, focus ring, error, and disabled states. Supports inner icon decorations (iconLeft/iconRight), inner text (prefix/suffix), and outer addon labels (textLeft/textRight). Default height 36px (h-9), width 320px (max-w-xs).",
+      "category": "Form",
+      "installation": {
+        "import": "import { Input } from \"@/components/ui/input\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Error", "Disabled"],
+        "Value": ["Placeholder", "Filled", "Empty"],
+        "Left": ["None", "Icon", "Prefix", "TextLeft"],
+        "Right": ["None", "Icon", "Suffix", "TextRight"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "xs",
+        "paddingX": "sm",
+        "paddingY": "none",
+        "width": 320,
+        "height": 36,
+        "heightMode": "fixed",
+        "radius": "lg",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "input",
+        "textContent": "Placeholder text",
+        "textStyle": "SP/Body",
+        "textFill": "muted-foreground",
+        "iconFill": "muted-foreground",
+        "labelFill": true
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "stroke": "border-strong"
+        },
+        "State=Focus": {
+          "effectStyleName": "Ring/default",
+          "stroke": "border-strong"
+        },
+        "State=Error": {
+          "stroke": "destructive-border"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        },
+        "Value=Filled": {
+          "textContent": "name@example.com",
+          "textFill": "foreground"
+        },
+        "Value=Empty": {
+          "textContent": " ",
+          "textFill": "foreground"
+        },
+        "Left=Icon": {
+          "iconLeft": true,
+          "iconLeftName": "Search"
+        },
+        "Left=Prefix": {
+          "prefix": "$"
+        },
+        "Left=TextLeft": {
+          "textLeft": "https://"
+        },
+        "Right=Icon": {
+          "iconRight": true,
+          "iconRightName": "ArrowRight"
+        },
+        "Right=Suffix": {
+          "suffix": "kg"
+        },
+        "Right=TextRight": {
+          "textRight": ".com"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover, focus (ring), error (red border), and disabled (50% opacity).",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder", "Left": "None", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Placeholder, filled, and empty states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" } },
+            { "label": "Empty", "props": { "State": "Default", "Value": "Empty", "Left": "None", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Left Decorations",
+          "description": "Icon, prefix text, and outer addon on the left side.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Icon Left", "props": { "State": "Default", "Value": "Placeholder", "Left": "Icon", "Right": "None" } },
+            { "label": "Prefix", "props": { "State": "Default", "Value": "Placeholder", "Left": "Prefix", "Right": "None" } },
+            { "label": "Text Left", "props": { "State": "Default", "Value": "Placeholder", "Left": "TextLeft", "Right": "None" } }
+          ]
+        },
+        {
+          "name": "Right Decorations",
+          "description": "Icon, suffix text, and outer addon on the right side.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Icon Right", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "Icon" } },
+            { "label": "Suffix", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "Suffix" } },
+            { "label": "Text Right", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "TextRight" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "type", "type": "string", "default": "\"text\"", "description": "HTML input type (text, email, password, etc.)" },
+        { "name": "placeholder", "type": "string", "default": "--", "description": "Placeholder text" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the input -- opacity-50 + cursor-not-allowed" },
+        { "name": "aria-invalid", "type": "boolean", "default": "false", "description": "Show error border styling (destructive-border)" },
+        { "name": "iconLeft", "type": "ReactNode", "default": "--", "description": "Icon rendered inside the input on the left" },
+        { "name": "iconRight", "type": "ReactNode", "default": "--", "description": "Icon rendered inside the input on the right" },
+        { "name": "prefix", "type": "string", "default": "--", "description": "Short text rendered inside the input before the value (e.g. '$')" },
+        { "name": "suffix", "type": "string", "default": "--", "description": "Short text rendered inside the input after the value (e.g. 'kg')" },
+        { "name": "textLeft", "type": "string", "default": "--", "description": "Outer addon label attached to the left of the input" },
+        { "name": "textRight", "type": "string", "default": "--", "description": "Outer addon label attached to the right of the input" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes applied to the input element" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-input", "value": "transparent / transparent", "description": "Input background (bg-input)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Default border color (border-border)" },
+        { "token": "--color-border-strong", "value": "zinc-300 / zinc-600", "description": "Hover and focus border (border-border-strong)" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring color (ring-ring, 3px spread)" },
+        { "token": "--color-ring-error", "value": "red-500/30", "description": "Error focus ring (ring-ring-error)" },
+        { "token": "--color-destructive-border", "value": "red-500 / red-400", "description": "Error state border (border-destructive-border)" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text and icon color" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Input text color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always pair with <Label> using htmlFor for accessibility -- placeholder text disappears on input.", "dont": "Use placeholder text as the only label -- it fails WCAG 2.1 SC 3.3.2." },
+        { "do": "Use iconLeft/iconRight for icons and prefix/suffix for short text inside. Use textLeft/textRight for longer outside labels.", "dont": "Mix inner and outer decorations on the same side -- e.g. textLeft + iconLeft together creates visual clutter." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "border-border, bg-input", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border-strong", "code": "--", "codeValue": "Auto via hover:border-border-strong" },
+        { "figma": "State=Focus", "value": "Ring/default effect + border-strong", "code": "--", "codeValue": "Auto via focus-visible" },
+        { "figma": "State=Error", "value": "border-destructive-border", "code": "aria-invalid", "codeValue": "true" },
+        { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "true" },
+        { "figma": "Value=Placeholder", "value": "Placeholder text in muted-foreground", "code": "placeholder", "codeValue": "\"Placeholder text\"" },
+        { "figma": "Value=Filled", "value": "Actual value in foreground", "code": "value", "codeValue": "\"name@example.com\"" },
+        { "figma": "Value=Empty", "value": "Empty input, no text visible", "code": "--", "codeValue": "No value or placeholder" },
+        { "figma": "Left=Icon", "value": "Search icon at left-3", "code": "iconLeft", "codeValue": "<Search />" },
+        { "figma": "Left=Prefix", "value": "$ text inside left", "code": "prefix", "codeValue": "\"$\"" },
+        { "figma": "Left=TextLeft", "value": "https:// addon outside left", "code": "textLeft", "codeValue": "\"https://\"" },
+        { "figma": "Right=Icon", "value": "ArrowRight icon at right-3", "code": "iconRight", "codeValue": "<ArrowRight />" },
+        { "figma": "Right=Suffix", "value": "kg text inside right", "code": "suffix", "codeValue": "\"kg\"" },
+        { "figma": "Right=TextRight", "value": ".com addon outside right", "code": "textRight", "codeValue": "\".com\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the input" },
+          { "key": "Esc", "action": "Clear focus (blur)" }
+        ],
+        "notes": [
+          "Always pair with <Label> for accessibility -- use htmlFor to link label to input id.",
+          "Use aria-invalid for error states -- screen readers announce 'invalid entry'.",
+          "Icons are marked pointer-events-none so they don't interfere with input focus."
+        ]
+      },
+
+      "related": [
+        { "name": "Textarea", "desc": "Use Textarea for multi-line text entry. Prefer Input when the response fits on one line." },
+        { "name": "Select", "desc": "Use Select when the user must choose from a fixed list. Input is better for free-form text." },
+        { "name": "SearchBox", "desc": "Pill-shaped search variant with built-in Search icon and optional shortcut badge." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

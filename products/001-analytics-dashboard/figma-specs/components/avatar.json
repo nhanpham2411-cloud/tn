@@ -1,0 +1,114 @@
+{
+  "components": [
+    {
+      "name": "Avatar",
+      "description": "A circular image element for representing users, with automatic fallback to initials when the image is unavailable. Built on @radix-ui/react-avatar.",
+      "category": "Data Display",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-avatar",
+        "import": "import { Avatar, AvatarImage, AvatarFallback } from \"@/components/ui/avatar\""
+      },
+
+      "properties": {
+        "Type": ["Image", "Text"],
+        "Size": ["SM", "Default", "LG"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 40,
+        "height": 40,
+        "radius": "full",
+        "stroke": "border",
+        "clipsContent": true,
+        "textStyle": "SP/Body Semibold",
+        "textContent": "CN",
+        "textFill": "muted-foreground",
+        "fill": "muted"
+      },
+
+      "variantStyles": {
+        "Type=Image": { "imageUrl": "https://avatars.githubusercontent.com/u/124599?v=4", "hideLabel": true },
+        "Type=Text": {},
+
+        "Size=SM": { "width": 32, "height": 32 },
+        "Size=Default": {},
+        "Size=LG": { "width": 56, "height": 56 }
+      },
+
+      "examples": [
+        {
+          "name": "Types",
+          "description": "Image avatar with photo and text avatar with initials fallback.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Image", "props": { "Type": "Image", "Size": "Default" } },
+            { "label": "Text", "props": { "Type": "Text", "Size": "Default" } }
+          ]
+        },
+        {
+          "name": "Sizes",
+          "description": "Small (32px), Default (40px), and Large (56px) avatar sizes.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "SM", "props": { "Type": "Text", "Size": "SM" } },
+            { "label": "Default", "props": { "Type": "Text", "Size": "Default" } },
+            { "label": "LG", "props": { "Type": "Text", "Size": "LG" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "className", "type": "string", "default": "—", "description": "Override styles — use Tailwind size-* to control diameter (default size-10 = 40px)" },
+        { "name": "src", "type": "string", "default": "—", "description": "Image source URL (on AvatarImage)" },
+        { "name": "alt", "type": "string", "default": "—", "description": "Descriptive alt text for screen readers (on AvatarImage)" },
+        { "name": "delayMs", "type": "number", "default": "600", "description": "Milliseconds before showing fallback (on AvatarFallback)" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Fallback background color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Fallback initials text color" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "1px circle border on Avatar root" },
+        { "token": "--background", "value": "white / zinc-950", "description": "Ring color used in Avatar Group (border-background)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always provide AvatarFallback alongside AvatarImage — broken images leave empty circles without it.", "dont": "Omit AvatarFallback when using AvatarImage, even if the image URL is reliable." },
+        { "do": "Use 1-2 uppercase initials in AvatarFallback that meaningfully represent the user.", "dont": "Use a full name or long string in AvatarFallback — it overflows the circle." },
+        { "do": "Set delayMs={0} on AvatarFallback when you know the image will not load (e.g., no src provided).", "dont": "Leave the default 600ms delay when intentionally showing fallback — it causes a visible flash." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Size=SM", "value": "32x32", "code": "className", "codeValue": "size-8" },
+        { "figma": "Size=Default", "value": "40x40", "code": "className", "codeValue": "size-10 (default)" },
+        { "figma": "Size=LG", "value": "56x56", "code": "className", "codeValue": "size-14" },
+        { "figma": "Type=Image", "value": "Image fill", "code": "AvatarImage", "codeValue": "src + alt props" },
+        { "figma": "Type=Text", "value": "Initials on muted bg", "code": "AvatarFallback", "codeValue": "children (1-2 chars)" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Avatar is non-interactive — wrap in a button if a click action is needed" }
+        ],
+        "notes": [
+          "AvatarImage requires a descriptive alt attribute",
+          "When AvatarFallback is the only content, it is visible text and does not need extra aria attributes",
+          "For Avatar Group with a +N overflow item, add aria-label to that avatar (e.g., aria-label=\"5 more members\")"
+        ]
+      },
+
+      "related": [
+        { "name": "Badge", "desc": "Pair with Avatar in list rows to display user role or plan tier." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

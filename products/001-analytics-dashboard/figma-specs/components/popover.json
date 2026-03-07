@@ -1,0 +1,268 @@
+{
+  "components": [
+    {
+      "name": "Popover Slot",
+      "description": "Swappable content slot for Popover body. Swap this instance to customize the popover content.",
+      "category": "Overlay",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Grid Fields",
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Field Width",
+                "type": "frame",
+                "layout": "vertical",
+                "counterAlign": "start",
+                "gap": "3xs",
+                "fillWidth": true,
+                "children": [
+                  {
+                    "name": "Label",
+                    "type": "instance",
+                    "component": "Label",
+                    "variants": { "Required": "No", "State": "Default" },
+                    "textOverrides": { "Label": "Width" }
+                  },
+                  {
+                    "name": "Input",
+                    "type": "instance",
+                    "component": "Input",
+                    "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                    "textOverrides": { "Label": "100%" },
+                    "fillWidth": true
+                  }
+                ]
+              },
+              {
+                "name": "Field Height",
+                "type": "frame",
+                "layout": "vertical",
+                "counterAlign": "start",
+                "gap": "3xs",
+                "fillWidth": true,
+                "children": [
+                  {
+                    "name": "Label",
+                    "type": "instance",
+                    "component": "Label",
+                    "variants": { "Required": "No", "State": "Default" },
+                    "textOverrides": { "Label": "Height" }
+                  },
+                  {
+                    "name": "Input",
+                    "type": "instance",
+                    "component": "Input",
+                    "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                    "textOverrides": { "Label": "auto" },
+                    "fillWidth": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "This is the content area of the popover. You can swap this slot to display custom content such as forms, settings, or info.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Popover",
+      "description": "Floating content panel anchored to a trigger element. Use for rich tooltips, settings popovers, or inline editing.",
+      "category": "Overlay",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-popover",
+        "import": "import {\n  Popover, PopoverTrigger, PopoverContent, PopoverAnchor\n} from \"@/components/ui/popover\""
+      },
+
+      "properties": {
+        "Show Description": ["Yes", "No"],
+        "Show Footer": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 288,
+        "fill": "card",
+        "stroke": "border",
+        "radius": "md",
+        "effectStyleName": "Shadows/md",
+        "paddingX": "sm",
+        "paddingY": "sm",
+        "gap": "xs",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "2xs",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "Dimensions",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "Description",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "Set the dimensions for the layer.",
+                "textFill": "muted-foreground",
+                "fillWidth": true,
+                "showWhen": "Show Description=Yes"
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Popover Slot",
+                "variants": { "Content": "Form" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "end",
+            "counterAlign": "center",
+            "gap": "xs",
+            "showWhen": "Show Footer=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" }
+              },
+              {
+                "name": "Apply",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Apply" }
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Show Description=Yes": {},
+        "Show Description=No": {},
+        "Show Footer=Yes": {},
+        "Show Footer=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Content Variants",
+          "description": "Popover with different content combinations.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Full", "props": { "Show Description": "Yes", "Show Footer": "Yes" } },
+            { "label": "No Footer", "props": { "Show Description": "Yes", "Show Footer": "No" } },
+            { "label": "No Description", "props": { "Show Description": "No", "Show Footer": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "—", "description": "Controlled open state" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "—", "description": "Callback when open changes" },
+        { "name": "defaultOpen", "type": "boolean", "default": "false", "description": "Initial open state (uncontrolled)" },
+        { "name": "align", "type": "\"start\" | \"center\" | \"end\"", "default": "\"center\"", "description": "Alignment relative to trigger" },
+        { "name": "sideOffset", "type": "number", "default": "4", "description": "Distance from trigger in pixels" },
+        { "name": "side", "type": "\"top\" | \"right\" | \"bottom\" | \"left\"", "default": "\"bottom\"", "description": "Preferred side relative to trigger" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Content background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Content border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Title text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description text color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Popover for contextual settings or inline editing anchored to a trigger.", "dont": "Use Popover for complex forms — use Dialog instead." },
+        { "do": "Keep popover content concise — 2-4 fields max.", "dont": "Put scrollable lists in a Popover — use Command or DropdownMenu." },
+        { "do": "Set sideOffset to avoid the popover touching the trigger.", "dont": "Nest popovers inside other popovers — flatten the interaction." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Content", "value": "bg-card, border, shadow-md", "code": "PopoverContent", "codeValue": "w-72 rounded-md border bg-card p-3 shadow-md" },
+        { "figma": "Title", "value": "SP/Body Semibold", "code": "—", "codeValue": "text-sm font-semibold text-foreground" },
+        { "figma": "Description", "value": "SP/Body", "code": "—", "codeValue": "typo-paragraph-sm text-muted-foreground" },
+        { "figma": "Animation", "value": "Zoom + Fade", "code": "data-[state]", "codeValue": "zoom-in-95 fade-in-0" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus within the popover" },
+          { "key": "Escape", "action": "Close the popover and return focus to trigger" },
+          { "key": "Enter / Space", "action": "Open the popover from trigger" }
+        ],
+        "notes": [
+          "Focus moves into popover on open",
+          "Clicking outside closes the popover",
+          "Focus returns to trigger on close"
+        ]
+      },
+
+      "related": [
+        { "name": "Tooltip", "desc": "Hover-only label — use Popover when content needs interaction." },
+        { "name": "DropdownMenu", "desc": "Action list anchored to trigger — use for menus, not forms." },
+        { "name": "HoverCard", "desc": "Preview content on hover — non-interactive." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

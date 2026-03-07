@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# BredarStudio Templates
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Premium SaaS UI templates built with [SprouX Design System](https://sprou-x.vercel.app/).
 
-Currently, two official plugins are available:
+## Pipeline
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Full A-to-Z process: [_pipeline/process.md](_pipeline/process.md)
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+Research → Spec → Build App → Review → Figma Gen → Polish → Package → Publish → Post-launch
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Products
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| # | Product | Phase | Status | React App | Marketplace |
+|---|---------|-------|--------|-----------|-------------|
+| 001 | Analytics Dashboard (ShopPulse) | 7 — Figma Gen | 🔄 In Progress | [sproux-saas-templates](https://github.com/thanhnhan-evol/sproux-saas-templates) | — |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Quick Start
+
+Use the Claude Code skill:
+
+```
+/bredar-templates new {product-name}    # Start new product
+/bredar-templates research {product}     # Run market research
+/bredar-templates spec {product}         # Write product spec
+/bredar-templates build {product}        # Build React app
+/bredar-templates review {product}       # Review & iterate
+/bredar-templates quality {product}      # Run quality checklist
+/bredar-templates listing {product}      # Prepare marketplace listing
+/bredar-templates status                 # Show all products status
+/bredar-templates list                   # List all products
+```
+
+## Tech Stack
+
+- **Design System**: SprouX (47 components, 1000+ tokens)
+- **React Apps**: React 19, TypeScript 5.9, Tailwind v4, Vite 7
+- **Charts**: Recharts
+- **Figma Plugin**: Generate SaaS Template (auto-generate from JSON specs)
+
+## Shared References
+
+| File | Purpose |
+|------|---------|
+| [common-mistakes.md](common-mistakes.md) | Training reference — 33 lessons to avoid repeated mistakes |
+| [_pipeline/process.md](_pipeline/process.md) | Full A-to-Z production process |
+| [_pipeline/templates/quality-checklist.md](_pipeline/templates/quality-checklist.md) | Quality checklist template |
+
+Per-product references:
+| File | Purpose |
+|------|---------|
+| `component-docs-pattern.md` | 10-section pattern for component documentation |
+| `STATUS.md` | Current phase & deliverables tracker |
+
+## Directory Structure
+
+```
+BredarStudio_Templates/
+├── _pipeline/              ← Process + templates
+│   ├── process.md
+│   ├── competitor-analysis/
+│   └── templates/
+├── common-mistakes.md      ← Shared training reference (mistakes & fixes)
+├── plugins/                ← Figma plugins
+│   └── Generate SaaS Template/
+├── products/               ← One folder per product
+│   └── 001-analytics-dashboard/
+│       ├── component-docs-pattern.md  ← Component docs standard
+│       ├── figma-specs/               ← JSON specs for Figma plugin
+│       └── STATUS.md
+└── README.md
 ```

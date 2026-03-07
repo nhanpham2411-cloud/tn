@@ -47,7 +47,7 @@ import { toast } from "sonner"
 
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none p-xl h-full ${className}`}>
+    <Card className={`h-full ${className}`}>
       {children}
     </Card>
   )
@@ -96,7 +96,7 @@ const plans = [
 const usage = [
   { label: "Storage", used: 32.4, total: 100, unit: "GB", icon: HardDrive, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
   { label: "API Calls", used: 847000, total: 1000000, unit: "calls", icon: BarChart3, color: "text-success", bg: "bg-success-subtle" },
-  { label: "Team Members", used: 12, total: 50, unit: "seats", icon: Users, color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-500/10 dark:bg-violet-500/20" },
+  { label: "Team Members", used: 12, total: 50, unit: "seats", icon: Users, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
   { label: "Projects", used: 8, total: -1, unit: "projects", icon: Zap, color: "text-warning", bg: "bg-warning-subtle" },
 ]
 
@@ -265,7 +265,7 @@ export default function BillingPage() {
                   <p className="sp-caption text-muted-foreground mt-3xs truncate">You are on the {currentPlan?.name} plan · Next billing on Mar 1, 2026</p>
                 </div>
                 <div className="flex items-center gap-sm shrink-0">
-                  <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-violet-500/10 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 sp-caption font-medium">
+                  <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-primary/10 dark:bg-primary/20 text-primary sp-caption font-medium">
                     <Zap className="size-[10px]" /> {currentPlan?.name}
                   </span>
                   <Button

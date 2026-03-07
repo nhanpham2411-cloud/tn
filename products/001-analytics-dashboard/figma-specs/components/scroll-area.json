@@ -1,0 +1,140 @@
+{
+  "components": [
+    {
+      "name": "Scroll Area",
+      "description": "Custom scrollable container with a styled 6px-wide scrollbar thumb replacing native browser scrollbars. Vertical (default) or horizontal orientation. Container must have a fixed height to enable scrolling.",
+      "category": "Layout",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-scroll-area",
+        "import": "import { ScrollArea, ScrollBar } from \"@/components/ui/scroll-area\""
+      },
+
+      "properties": {
+        "Orientation": ["Vertical", "Horizontal"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "min",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "3xs",
+        "width": 6,
+        "height": 176,
+        "widthMode": "fixed",
+        "heightMode": "fixed",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Thumb-V",
+            "type": "frame",
+            "layout": "vertical",
+            "width": 4,
+            "height": 64,
+            "widthMode": "fixed",
+            "heightMode": "fixed",
+            "radius": "full",
+            "fill": "foreground",
+            "fillOpacity": 0.15,
+            "showWhen": "Orientation=Vertical"
+          },
+          {
+            "name": "Thumb-H",
+            "type": "frame",
+            "layout": "horizontal",
+            "width": 80,
+            "height": 4,
+            "widthMode": "fixed",
+            "heightMode": "fixed",
+            "radius": "full",
+            "fill": "foreground",
+            "fillOpacity": 0.15,
+            "showWhen": "Orientation=Horizontal"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Orientation=Horizontal": {
+          "layout": "horizontal",
+          "paddingX": "3xs",
+          "paddingY": "none",
+          "width": 288,
+          "height": 6
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Type",
+          "description": "Scrollbar visibility modes — hover (default), always visible, auto on overflow, scroll while scrolling. These are runtime behaviors controlled by the type prop in code.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Hover", "props": { "Orientation": "Vertical" } },
+            { "label": "Always", "props": { "Orientation": "Vertical" } },
+            { "label": "Auto", "props": { "Orientation": "Vertical" } },
+            { "label": "Scroll", "props": { "Orientation": "Vertical" } }
+          ]
+        },
+        {
+          "name": "Usage",
+          "description": "Vertical list scrolling and horizontal tag/card overflow.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Horizontal Scroll", "props": { "Orientation": "Horizontal" } },
+            { "label": "Vertical List", "props": { "Orientation": "Vertical" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "type", "type": "\"auto\" | \"always\" | \"scroll\" | \"hover\"", "default": "\"hover\"", "description": "Scrollbar visibility — hover shows on hover, always keeps visible, scroll shows while scrolling, auto shows when overflowing" },
+        { "name": "className", "type": "string", "default": "--", "description": "Container classes — always include a height constraint (h-48, h-[300px]...) or ScrollArea will not scroll" },
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "Scrollable content" },
+        { "name": "orientation (ScrollBar)", "type": "\"vertical\" | \"horizontal\"", "default": "\"vertical\"", "description": "Axis of the scrollbar. Add a second ScrollBar for horizontal scrolling." }
+      ],
+
+      "designTokens": [
+        { "token": "bg-black/15", "value": "rgba(0,0,0,0.15)", "description": "Scrollbar thumb color — light mode" },
+        { "token": "bg-white/35", "value": "rgba(255,255,255,0.35)", "description": "Scrollbar thumb color — dark mode" },
+        { "token": "w-1.5 / h-1.5", "value": "6px", "description": "Scrollbar track width (vertical) / height (horizontal)" },
+        { "token": "rounded-full", "value": "9999px", "description": "Thumb border radius" }
+      ],
+
+      "bestPractices": [
+        { "do": "Always set an explicit height on the ScrollArea container (h-48, h-[300px], or max-h-*). Without a height constraint the container expands to fit content and never scrolls.", "dont": "Skip the height class and wonder why the scrollbar never appears — ScrollArea requires the parent to be constrained." },
+        { "do": "Add <ScrollBar orientation='horizontal' /> as a child of ScrollArea when content overflows horizontally.", "dont": "Rely on browser native horizontal scrollbar — it won't appear inside a ScrollArea without an explicit horizontal ScrollBar child." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Orientation=Vertical", "value": "6px wide, vertical thumb 4×64", "code": "ScrollBar orientation", "codeValue": "\"vertical\" (default)" },
+        { "figma": "Orientation=Horizontal", "value": "6px tall, horizontal thumb 80×4", "code": "ScrollBar orientation", "codeValue": "\"horizontal\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Arrow Up / Down", "action": "Scroll vertically when the scroll area is focused" },
+          { "key": "Arrow Left / Right", "action": "Scroll horizontally (horizontal ScrollArea)" },
+          { "key": "Page Up / Down", "action": "Scroll by a full page height" },
+          { "key": "Home / End", "action": "Jump to top or bottom of scrollable content" }
+        ],
+        "notes": [
+          "ScrollArea uses overflow-hidden on the root — content remains accessible to screen readers via the Viewport region.",
+          "The custom scrollbar is visually positioned but does not interfere with keyboard navigation of inner content.",
+          "Focusable elements inside ScrollArea (buttons, links, inputs) remain tab-navigable in DOM order."
+        ]
+      },
+
+      "related": [
+        { "name": "Card", "desc": "For bordered content containers — wrap a ScrollArea inside CardContent for a scrollable card body." },
+        { "name": "Table", "desc": "Wrap a Table in a horizontal ScrollArea to handle wide data on small viewports." },
+        { "name": "Separator", "desc": "Use inside a vertical ScrollArea to divide list items cleanly." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

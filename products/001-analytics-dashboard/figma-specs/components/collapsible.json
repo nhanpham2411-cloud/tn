@@ -1,0 +1,177 @@
+{
+  "components": [
+    {
+      "name": "Collapsible",
+      "description": "A single toggle section that shows or hides content, triggered by any custom element wrapped in CollapsibleTrigger. Built on @radix-ui/react-collapsible.",
+      "category": "Data Display",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-collapsible",
+        "import": "import { Collapsible, CollapsibleTrigger, CollapsibleContent } from \"@/components/ui/collapsible\""
+      },
+
+      "properties": {
+        "State": ["Default", "Disabled"],
+        "Type": ["Closed", "Open"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "min",
+        "counterAlign": "stretch",
+        "gap": "xs",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "space-between",
+            "counterAlign": "center",
+            "gap": "xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "Toggle section",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "ChevronsUpDown",
+                "type": "icon",
+                "iconName": "ChevronsUpDown",
+                "iconSize": 16,
+                "iconFill": "ghost-foreground"
+              }
+            ]
+          },
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "min",
+            "counterAlign": "stretch",
+            "gap": "xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "showWhen": "Type=Open",
+            "children": [
+              {
+                "name": "Content Item",
+                "type": "frame",
+                "layout": "horizontal",
+                "primaryAlign": "min",
+                "counterAlign": "center",
+                "paddingX": "md",
+                "paddingY": "xs",
+                "widthMode": "fill",
+                "heightMode": "hug",
+                "radius": "md",
+                "stroke": "border",
+                "children": [
+                  {
+                    "name": "Text",
+                    "type": "text",
+                    "textStyle": "SP/Body",
+                    "textContent": "Expanded content here",
+                    "textFill": "foreground",
+                    "fillWidth": true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Disabled": {
+          "opacity": 0.5
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Open / Closed",
+          "description": "Closed shows only the header with trigger; open reveals the content section below.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Closed", "props": { "State": "Default", "Type": "Closed" } },
+            { "label": "Open", "props": { "State": "Default", "Type": "Open" } }
+          ]
+        },
+        {
+          "name": "Disabled",
+          "description": "disabled prevents the trigger from toggling. The content remains in its current state and cannot be changed.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Disabled (closed)", "props": { "State": "Disabled", "Type": "Closed" } },
+            { "label": "Disabled (open)", "props": { "State": "Disabled", "Type": "Open" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "open", "type": "boolean", "default": "--", "description": "Controlled open state — pair with onOpenChange" },
+        { "name": "defaultOpen", "type": "boolean", "default": "false", "description": "Uncontrolled: start expanded on mount" },
+        { "name": "onOpenChange", "type": "(open: boolean) => void", "default": "--", "description": "Fires when open state changes" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Prevent trigger from toggling the open state" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes on the root element" }
+      ],
+
+      "designTokens": [
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Content area border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Trigger label and content text" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Secondary/helper text" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus-visible ring on trigger" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Collapsible for optional secondary details that don't need to be visible on load.", "dont": "Hide primary or critical content inside a Collapsible — users may never find it." },
+        { "do": "Use CollapsibleTrigger asChild to attach toggle behavior to a Button or icon — gives full style control.", "dont": "Rely on the bare CollapsibleTrigger without asChild for styled UIs — it renders a plain unstyled button." },
+        { "do": "Use Accordion when you have 2 or more related collapsible sections with a consistent visual structure.", "dont": "Stack multiple independent Collapsibles as a substitute for Accordion — it loses keyboard navigation and ARIA structure." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "No visual effects", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true" },
+        { "figma": "Type=Open", "value": "Content visible", "code": "open / defaultOpen", "codeValue": "true" },
+        { "figma": "Type=Closed", "value": "Content hidden", "code": "open / defaultOpen", "codeValue": "false (default)" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the CollapsibleTrigger" },
+          { "key": "Enter / Space", "action": "Toggle the section open or closed" }
+        ],
+        "notes": [
+          "CollapsibleTrigger renders a <button> by default and has aria-expanded reflecting the current open state, and aria-controls pointing to the content panel.",
+          "When using asChild, the trigger behavior (aria-expanded, aria-controls, role) is merged onto the child element — ensure the child is a focusable element (button, a) for keyboard accessibility.",
+          "CollapsibleContent is hidden from the accessibility tree when closed (display:none equivalent) — hidden content is not reachable by screen readers or keyboard until opened.",
+          "If the trigger is an icon-only button, add aria-label to describe the action (e.g., aria-label=\"Toggle changelog\")."
+        ]
+      },
+
+      "related": [
+        { "name": "Accordion", "desc": "Stacked list of collapsible sections with built-in keyboard navigation — use instead of multiple Collapsibles." },
+        { "name": "Card", "desc": "Always-visible content container — use when content should never be hidden behind an interaction." },
+        { "name": "Sheet", "desc": "Slide-in panel for larger hidden content — use when the content is too large for an inline collapse." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

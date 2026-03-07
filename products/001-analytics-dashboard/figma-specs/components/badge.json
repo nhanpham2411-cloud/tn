@@ -1,0 +1,193 @@
+{
+  "components": [
+    {
+      "name": "Badge",
+      "description": "A compact inline label for categorizing content, indicating status, or displaying notification counts. Three shapes: Badge (pill text), BadgeRound (circular count), BadgeDot (status dot). Supports 8 color variants and 2 visual levels (solid/subtle).",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { Badge, BadgeRound, BadgeDot } from \"@/components/ui/badge\""
+      },
+
+      "properties": {
+        "Variant": ["Default", "Secondary", "Outline", "Ghost", "Destructive", "Emphasis", "Success", "Warning"],
+        "Type": ["Badge", "Round", "Dot"],
+        "Level": ["Primary", "Secondary"],
+        "Size": ["SM", "Default", "LG"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "3xs",
+        "paddingX": "xs",
+        "paddingY": "none",
+        "width": 60,
+        "height": 24,
+        "widthMode": "hug",
+        "radius": "full",
+        "fill": "primary",
+        "textStyle": "SP/Label",
+        "textContent": "Badge",
+        "textFill": "primary-foreground"
+      },
+
+      "variantStyles": {
+        "Variant=Default": {},
+        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground" },
+        "Variant=Outline": { "fill": "background", "stroke": "border", "textFill": "foreground" },
+        "Variant=Ghost": { "fill": "background", "textFill": "foreground" },
+        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground" },
+        "Variant=Emphasis": { "fill": "emphasis", "textFill": "emphasis-foreground" },
+        "Variant=Success": { "fill": "success", "textFill": "success-foreground" },
+        "Variant=Warning": { "fill": "warning", "textFill": "warning-foreground" },
+
+        "Type=Badge": {},
+        "Type=Round": { "widthMode": "fixed", "width": 24, "paddingX": "none", "gap": "none", "textContent": "3" },
+        "Type=Dot": { "widthMode": "fixed", "width": 8, "height": 8, "paddingX": "none", "gap": "none", "hideLabel": true },
+
+        "Level=Primary": {},
+        "Level=Secondary": { "textStyle": "SP/Caption" },
+
+        "Size=SM": { "height": 20, "paddingX": "2xs" },
+        "Size=Default": {},
+        "Size=LG": { "height": 28, "paddingX": "sm", "gap": "2xs", "paddingY": "3xs", "textStyle": "SP/Body Medium" },
+
+        "Variant=Default,Level=Secondary": { "fill": "primary-subtle", "textFill": "primary-subtle-foreground" },
+        "Variant=Secondary,Level=Secondary": {},
+        "Variant=Outline,Level=Secondary": { "textFill": "ghost-foreground" },
+        "Variant=Ghost,Level=Secondary": { "textFill": "ghost-foreground" },
+        "Variant=Destructive,Level=Secondary": { "fill": "destructive-subtle", "textFill": "destructive-subtle-foreground" },
+        "Variant=Emphasis,Level=Secondary": { "fill": "emphasis-subtle", "textFill": "emphasis-subtle-foreground" },
+        "Variant=Success,Level=Secondary": { "fill": "success-subtle", "textFill": "success-subtle-foreground" },
+        "Variant=Warning,Level=Secondary": { "fill": "warning-subtle", "textFill": "warning-subtle-foreground" },
+
+        "Level=Secondary,Size=LG": { "textStyle": "SP/Body" },
+
+        "Type=Round,Size=SM": { "width": 20, "height": 20 },
+        "Type=Round,Size=LG": { "width": 28, "height": 28 },
+        "Type=Dot,Size=SM": { "width": 4, "height": 4 },
+        "Type=Dot,Size=LG": { "width": 12, "height": 12 }
+      },
+
+      "examples": [
+        {
+          "name": "All Variants",
+          "description": "Eight color variants at primary level.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Secondary", "props": { "Variant": "Secondary", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Outline", "props": { "Variant": "Outline", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Ghost", "props": { "Variant": "Ghost", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Destructive", "props": { "Variant": "Destructive", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Emphasis", "props": { "Variant": "Emphasis", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Success", "props": { "Variant": "Success", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "Warning", "props": { "Variant": "Warning", "Type": "Badge", "Level": "Primary", "Size": "Default" } }
+          ]
+        },
+        {
+          "name": "Secondary Level",
+          "description": "Subtle muted backgrounds for dense UIs.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "Type": "Badge", "Level": "Secondary", "Size": "Default" } },
+            { "label": "Success", "props": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "Default" } },
+            { "label": "Warning", "props": { "Variant": "Warning", "Type": "Badge", "Level": "Secondary", "Size": "Default" } },
+            { "label": "Destructive", "props": { "Variant": "Destructive", "Type": "Badge", "Level": "Secondary", "Size": "Default" } }
+          ]
+        },
+        {
+          "name": "Sizes",
+          "description": "Small (20px), Default (24px), Large (28px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "SM", "props": { "Variant": "Default", "Type": "Badge", "Level": "Primary", "Size": "SM" } },
+            { "label": "Default", "props": { "Variant": "Default", "Type": "Badge", "Level": "Primary", "Size": "Default" } },
+            { "label": "LG", "props": { "Variant": "Default", "Type": "Badge", "Level": "Primary", "Size": "LG" } }
+          ]
+        },
+        {
+          "name": "Badge Round",
+          "description": "Circular badge for notification counts.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Variant": "Default", "Type": "Round", "Level": "Primary", "Size": "Default" } },
+            { "label": "Destructive", "props": { "Variant": "Destructive", "Type": "Round", "Level": "Primary", "Size": "Default" } },
+            { "label": "Success LG", "props": { "Variant": "Success", "Type": "Round", "Level": "Primary", "Size": "LG" } }
+          ]
+        },
+        {
+          "name": "Badge Dot",
+          "description": "Status dot indicator (4-12px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Success", "props": { "Variant": "Success", "Type": "Dot", "Level": "Primary", "Size": "Default" } },
+            { "label": "Warning", "props": { "Variant": "Warning", "Type": "Dot", "Level": "Primary", "Size": "Default" } },
+            { "label": "Destructive", "props": { "Variant": "Destructive", "Type": "Dot", "Level": "Primary", "Size": "Default" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "variant", "type": "\"default\" | \"secondary\" | \"outline\" | \"ghost\" | \"destructive\" | \"emphasis\" | \"success\" | \"warning\"", "default": "\"default\"", "description": "Color variant" },
+        { "name": "level", "type": "\"primary\" | \"secondary\"", "default": "\"primary\"", "description": "Visual weight — primary=solid fill, secondary=subtle muted background (Badge only)" },
+        { "name": "size", "type": "\"sm\" | \"default\" | \"lg\"", "default": "\"default\"", "description": "Badge height: sm=20px, default=24px, lg=28px" },
+        { "name": "className", "type": "string", "default": "—", "description": "Additional CSS classes merged via cn()" }
+      ],
+
+      "designTokens": [
+        { "token": "--primary", "value": "violet-600", "description": "Default / BadgeRound / BadgeDot fill" },
+        { "token": "--primary-subtle", "value": "violet-100 / violet-900", "description": "level=secondary default background" },
+        { "token": "--success", "value": "green-500", "description": "Success variant fill" },
+        { "token": "--success-subtle", "value": "green-100 / green-900", "description": "level=secondary success background" },
+        { "token": "--warning", "value": "amber-500", "description": "Warning variant fill" },
+        { "token": "--warning-subtle", "value": "amber-100 / amber-900", "description": "level=secondary warning background" },
+        { "token": "--destructive", "value": "red-500", "description": "Destructive variant fill" },
+        { "token": "--destructive-subtle", "value": "red-100 / red-900", "description": "level=secondary destructive background" },
+        { "token": "--emphasis", "value": "purple-600", "description": "Emphasis variant fill" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Outline variant border" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use semantic variants (success, warning, destructive) to match the status meaning.", "dont": "Apply a random color variant for visual variety — colors carry semantic weight." },
+        { "do": "Keep badge text to 1-2 words maximum for legibility at small sizes.", "dont": "Put long phrases or full sentences inside a Badge — use Alert or Toast instead." },
+        { "do": "Use BadgeDot for inline presence/status indicators alongside a user name or avatar.", "dont": "Use Badge where an interactive element is needed — use Button or a clickable tag instead." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Badge", "value": "Pill text label", "code": "Badge", "codeValue": "<Badge>text</Badge>" },
+        { "figma": "Type=Round", "value": "Circular count", "code": "BadgeRound", "codeValue": "<BadgeRound>3</BadgeRound>" },
+        { "figma": "Type=Dot", "value": "Status dot (no text)", "code": "BadgeDot", "codeValue": "<BadgeDot variant=\"success\" />" },
+        { "figma": "Variant=Default..Warning", "value": "8 color fills", "code": "variant", "codeValue": "\"default\" ... \"warning\"" },
+        { "figma": "Level=Primary", "value": "Solid fill", "code": "level", "codeValue": "\"primary\" (default)" },
+        { "figma": "Level=Secondary", "value": "Subtle muted bg", "code": "level", "codeValue": "\"secondary\" (Badge only)" },
+        { "figma": "Size=SM (20px)", "value": "h-lg px-2xs", "code": "size", "codeValue": "\"sm\"" },
+        { "figma": "Size=Default (24px)", "value": "h-xl px-xs", "code": "size", "codeValue": "\"default\"" },
+        { "figma": "Size=LG (28px)", "value": "h-[28px] px-sm", "code": "size", "codeValue": "\"lg\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Badge, BadgeRound, and BadgeDot are non-interactive and not keyboard-focusable" }
+        ],
+        "notes": [
+          "Badge and BadgeRound are purely presentational <span> elements — add aria-label to the parent if the badge conveys essential meaning not available in surrounding text.",
+          "BadgeDot automatically includes role=\"status\" and aria-label=\"status indicator\" — override aria-label when the dot represents a specific state (e.g., aria-label=\"Online\").",
+          "Avoid relying on color alone to convey meaning: pair variant color with a visible text label or icon for users with color vision deficiency.",
+          "When embedding a BadgeRound count inside an icon button, add aria-label to the button that includes the count (e.g., aria-label=\"Notifications, 3 unread\")."
+        ]
+      },
+
+      "related": [
+        { "name": "Button", "desc": "Use when the badge-like element needs to be interactive or clickable." },
+        { "name": "Avatar", "desc": "Combine with BadgeDot to show user presence status overlaid on an avatar." },
+        { "name": "Alert", "desc": "For prominent status messages that require more space than a badge." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "components": [
+    {
+      "name": "Select",
+      "description": "Dropdown trigger for choosing one option from a predefined list. Shows the SelectTrigger face (text + ChevronDown icon). Height 36px, width 320px. Same border/focus/error states as Input.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-select",
+        "import": "import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from \"@/components/ui/select\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Error", "Disabled"],
+        "Value": ["Placeholder", "Filled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "space-between",
+        "counterAlign": "center",
+        "gap": "xs",
+        "width": 320,
+        "height": 36,
+        "heightMode": "fixed",
+        "radius": "lg",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "input",
+        "paddingX": "sm",
+        "paddingY": "none",
+        "textContent": "Select option",
+        "textStyle": "SP/Body",
+        "textFill": "muted-foreground",
+        "labelFill": true,
+        "iconRight": true,
+        "iconRightName": "ChevronDown",
+        "iconFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "stroke": "border-strong"
+        },
+        "State=Focus": {
+          "effectStyleName": "Ring/default",
+          "stroke": "border-strong"
+        },
+        "State=Error": {
+          "stroke": "destructive-border"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        },
+        "Value=Filled": {
+          "textContent": "Option A",
+          "textFill": "foreground"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover, focus (ring), error (red border), and disabled.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder" } },
+            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Placeholder (muted) and filled (foreground) states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "string", "default": "—", "description": "Controlled selected value" },
+        { "name": "defaultValue", "type": "string", "default": "—", "description": "Initial value for uncontrolled usage" },
+        { "name": "onValueChange", "type": "(value: string) => void", "default": "—", "description": "Callback when selection changes" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the select — opacity-50 + cursor-not-allowed" },
+        { "name": "aria-invalid", "type": "boolean", "default": "false", "description": "Show error border styling on trigger" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-input", "value": "transparent / transparent", "description": "Trigger background (bg-input)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Trigger border" },
+        { "token": "--color-border-strong", "value": "zinc-300 / zinc-600", "description": "Hover border" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring (3px spread)" },
+        { "token": "--color-card", "value": "white / zinc-900", "description": "Dropdown content background (bg-card)" },
+        { "token": "--color-accent", "value": "zinc-100 / zinc-800", "description": "Highlighted item background (bg-accent)" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder and chevron icon color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use a descriptive placeholder to hint at the expected selection (e.g. 'Select country').", "dont": "Leave the trigger blank — users won't know what the field is for." },
+        { "do": "Group related items with SelectGroup and SelectLabel when the list exceeds 8 items.", "dont": "Put more than 15 items in a flat list without grouping — use Combobox with search instead." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "border-border, bg-input, chevron right", "code": "—", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border-strong", "code": "—", "codeValue": "Auto via hover:border-border-strong" },
+        { "figma": "State=Focus", "value": "Ring/default effect + border-strong", "code": "—", "codeValue": "Auto via focus-visible" },
+        { "figma": "State=Error", "value": "border-destructive-border", "code": "aria-invalid", "codeValue": "true" },
+        { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "true" },
+        { "figma": "Value=Placeholder", "value": "Placeholder text in muted-foreground", "code": "placeholder", "codeValue": "\"Select option\"" },
+        { "figma": "Value=Filled", "value": "Selected value in foreground", "code": "value", "codeValue": "\"Option A\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the trigger" },
+          { "key": "Enter / Space", "action": "Open the dropdown" },
+          { "key": "Arrow Up / Down", "action": "Navigate options" },
+          { "key": "Enter", "action": "Select highlighted option" },
+          { "key": "Escape", "action": "Close the dropdown" }
+        ],
+        "notes": [
+          "Built on Radix Select with full WAI-ARIA compliance.",
+          "Always pair with <Label> using htmlFor for accessibility.",
+          "Placeholder text is announced as the current value when nothing is selected."
+        ]
+      },
+
+      "related": [
+        { "name": "Combobox", "desc": "Select with built-in search filtering. Use Combobox when the list is long or users may type their own value." },
+        { "name": "Radio", "desc": "Visible radio buttons for small option sets. Use Radio when all options should be visible without opening a dropdown." },
+        { "name": "Input", "desc": "Free-form text field. Use Input when the user types their own value rather than picking from a list." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

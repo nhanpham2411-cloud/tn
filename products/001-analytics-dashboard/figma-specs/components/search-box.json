@@ -1,0 +1,189 @@
+{
+  "components": [
+    {
+      "name": "Search Box",
+      "description": "Pill-shaped search input with Search icon (left) and optional ⌘K shortcut badge (right). Clear button (X) appears when filled. Matches the header search bar pattern. Single size (36px), rounded-full.",
+      "category": "Form",
+      "installation": {
+        "import": "import { SearchBox } from \"@/components/ui/search-box\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Value": ["Placeholder", "Filled"],
+        "Shortcut": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "min",
+        "counterAlign": "center",
+        "gap": "xs",
+        "paddingX": "sm",
+        "paddingY": "none",
+        "width": 320,
+        "height": 36,
+        "heightMode": "fixed",
+        "radius": "full",
+        "fill": "muted",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "strokeOpacity": 0.5,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "SearchIcon",
+            "type": "icon",
+            "iconName": "Search",
+            "iconSize": 16,
+            "iconFill": "muted-foreground"
+          },
+          {
+            "name": "Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "Search products...",
+            "textFill": "muted-foreground",
+            "textFillOpacity": 0.7,
+            "fillWidth": true,
+            "textAutoResize": "TRUNCATE",
+            "maxLines": 1
+          },
+          {
+            "name": "Badge",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "center",
+            "counterAlign": "center",
+            "height": 20,
+            "widthMode": "hug",
+            "heightMode": "fixed",
+            "paddingX": "2xs",
+            "paddingY": "none",
+            "radius": "sm",
+            "fill": "foreground",
+            "fillOpacity": 0.05,
+            "stroke": "border",
+            "strokeWidth": 1,
+            "strokeOpacity": 0.4,
+            "showWhen": "Shortcut=Yes,Value=Placeholder",
+            "children": [
+              {
+                "name": "Key",
+                "type": "text",
+                "textStyle": "SP/Caption",
+                "textContent": "⌘K",
+                "textFill": "muted-foreground",
+                "textFillOpacity": 0.7
+              }
+            ]
+          },
+          {
+            "name": "ClearIcon",
+            "type": "icon",
+            "iconName": "X",
+            "iconSize": 14,
+            "iconFill": "muted-foreground",
+            "showWhen": "Value=Filled"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "strokeOpacity": 0.8
+        },
+        "State=Focus": {
+          "focusRing": "ring",
+          "stroke": "border-strong"
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        },
+        "Value=Filled": {}
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover (stronger border), focus (ring), and disabled (50% opacity).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder", "Shortcut": "No" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder", "Shortcut": "No" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder", "Shortcut": "No" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder", "Shortcut": "No" } }
+          ]
+        },
+        {
+          "name": "Value & Shortcut",
+          "description": "Placeholder with ⌘K badge, filled with X clear button.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "With Shortcut", "props": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" } },
+            { "label": "No Shortcut", "props": { "State": "Default", "Value": "Placeholder", "Shortcut": "No" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled", "Shortcut": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "value", "type": "string", "default": "\"\"", "description": "Controlled search value" },
+        { "name": "onChange", "type": "(value: string) => void", "default": "--", "description": "Callback when value changes — receives the string directly" },
+        { "name": "onClear", "type": "() => void", "default": "--", "description": "Callback when clear button is clicked or Escape pressed" },
+        { "name": "shortcut", "type": "boolean", "default": "false", "description": "Show ⌘K keyboard shortcut badge when input is empty" },
+        { "name": "placeholder", "type": "string", "default": "\"Search...\"", "description": "Placeholder text" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the input" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes on the wrapper" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted", "value": "zinc-100 / white 4%", "description": "Input background" },
+        { "token": "--border (50%)", "value": "zinc-200/50", "description": "Default border" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" },
+        { "token": "--muted-foreground", "value": "zinc-500", "description": "Search icon & placeholder color" },
+        { "token": "--foreground", "value": "zinc-900", "description": "Input text & clear icon hover" },
+        { "token": "--foreground/5", "value": "zinc-900 5%", "description": "⌘K badge background" },
+        { "token": "rounded-full", "value": "9999px", "description": "Pill shape border radius" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use SearchBox for filtering and search in management pages — products, orders, invoices, users.", "dont": "Use SearchBox for search with autocomplete dropdown — use Combobox or Command instead." },
+        { "do": "Always add aria-label for accessibility since SearchBox has no visible label.", "dont": "Rely on placeholder text as the only accessible label." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "border-border/50", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border/80", "code": "hover:", "codeValue": "hover:border-border/80" },
+        { "figma": "State=Focus", "value": "ring-[3px] ring-ring, border-strong", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true" },
+        { "figma": "Value=Placeholder", "value": "Placeholder text, muted-foreground", "code": "placeholder", "codeValue": "\"Search...\"" },
+        { "figma": "Value=Filled", "value": "Text foreground, X clear icon visible", "code": "value", "codeValue": "Non-empty string" },
+        { "figma": "Shortcut=Yes", "value": "⌘K badge when placeholder", "code": "shortcut", "codeValue": "true" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the search input" },
+          { "key": "Escape", "action": "Clear search value when focused" },
+          { "key": "Type", "action": "Filter results as you type" }
+        ],
+        "notes": [
+          "Uses type='search' for semantic search input.",
+          "Clear button has aria-label='Clear search'.",
+          "Native browser search cancel button is hidden in favor of custom X icon."
+        ]
+      },
+
+      "related": [
+        { "name": "Input", "desc": "General-purpose text field. SearchBox is a specialized pill-shaped search variant." },
+        { "name": "Combobox", "desc": "Use Combobox when search results should appear in a dropdown list." },
+        { "name": "Command", "desc": "Use Command for global search with keyboard-driven navigation." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

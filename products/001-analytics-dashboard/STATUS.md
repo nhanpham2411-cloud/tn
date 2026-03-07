@@ -199,12 +199,75 @@
 - Pattern documented: `component-docs-pattern.md` (10-section standard)
 - Training reference: `../../common-mistakes.md` (33 lessons)
 
-### 7c. Plugin Showcase Rewrite (✅ Done — 2026-03-03)
-- 8-section showcase matching web 100%: Header → Component gốc → Explore Behavior → Examples → Props → Figma Mapping → Accessibility → Related
-- Variable binding fixes: gap/padding → `spacing/*`, radius → `border radius/*`
+### 7c. Plugin Showcase Rewrite (✅ Done — 2026-03-05)
+- Figma showcase generates **3 sections only**: Header → Component grid → Installation
+- All other sections (Explore, Examples, Props, Tokens, Best Practices, Figma Mapping, Accessibility, Related) are **web-only** — not rendered in Figma
+- Variable binding fixes: gap/padding → `spacing/*` (string tokens), radius → `border radius/*`
 - Icon auto-detect from combo (`IconLeft=true`)
 - Grid: first property horizontal (columns), rest vertical (rows)
+- `_buildProps` hoisted out of explore block to fix scope error
 
-### 7d. Component Generation (⏳ Next)
-- Generate all component specs JSON (Button done, remaining ~15 components)
-- Generate flow JSON specs (20 flows, ~100 frames)
+### 7d. Component Generation (🔄 In Progress)
+
+**Có JSON**: 18/41 components
+**Cần tạo**: 25 components
+
+#### Generation Order (dependency-based)
+
+**Tier 0 — Leaf components (no dependencies)**
+
+| # | Component | JSON | Notes |
+|---|-----------|------|-------|
+| 1 | Button | done | Base dep for many others |
+| 2 | Badge | done | Used in Table, Card |
+| 3 | Avatar | done | Used in Table, Card, HoverCard |
+| 4 | Label | done | |
+| 5 | Spinner | done | Ellipse pattern |
+| 6 | Checkbox | done | Indicator pattern. Used in Table |
+| 7 | Switch | done | Indicator pattern |
+| 8 | Toggle | done | |
+| 9 | Radio | done | Indicator pattern |
+| 10 | Separator | done | Simple |
+| 11 | Skeleton | done | Children pattern (4 shape compositions) |
+| 12 | Progress | done | Children pattern (indicator per value) |
+| 13 | Slider | done | Three-segment layout (filled + thumb + empty) |
+| 14 | Input | done | Addon pattern (iconLeft/iconRight) |
+| 15 | Textarea | done | Same state pattern as Input |
+| 16 | Select | done | Trigger face (text + chevron) |
+| 17 | InputOTP | done | Children pattern (9 groups for Length x Value) |
+| 18 | Tabs | done | Variant context (Default/Pill), compound showWhen |
+| 19 | Accordion | TODO | |
+| 20 | Breadcrumb | TODO | |
+| 21 | ScrollArea | TODO | |
+| 22 | Tooltip | TODO | Children pattern |
+| 23 | NavigationMenu | TODO | |
+
+**Tier 1 — Depends on Tier 0 (Button, Badge, Avatar, Checkbox...)**
+
+| # | Component | JSON | Instance deps |
+|---|-----------|------|---------------|
+| 24 | SearchBox | TODO | Input |
+| 25 | Alert | TODO | Button (close) |
+| 26 | Pagination | TODO | Button |
+| 27 | Collapsible | TODO | Button (trigger) |
+| 28 | Command | TODO | Input, Badge |
+| 29 | Card | TODO | Button, Badge, Avatar |
+| 30 | Dropdown | TODO | Checkbox |
+| 31 | ContextMenu | TODO | Checkbox |
+| 32 | Popover | TODO | Button |
+| 33 | Table | TODO | Checkbox, Badge, Avatar, Button |
+
+**Tier 2 — Depends on Tier 0 + Tier 1**
+
+| # | Component | JSON | Instance deps |
+|---|-----------|------|---------------|
+| 34 | Dialog | TODO | Button |
+| 35 | Sheet | TODO | Button |
+| 36 | Drawer | TODO | Button |
+| 37 | Alert Dialog | done | Button |
+| 38 | HoverCard | TODO | Avatar, Button |
+| 39 | Combobox | TODO | Command, Badge |
+| 40 | Calendar | TODO | Day Cell (sub-component) |
+| 41 | DatePicker | TODO | Calendar, Button |
+
+**Rule**: Always generate Tier 0 first, then Tier 1, then Tier 2. Within same tier, order doesn't matter.

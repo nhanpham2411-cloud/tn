@@ -1,0 +1,141 @@
+{
+  "components": [
+    {
+      "name": "Textarea",
+      "description": "Multi-line text input for longer content like comments, descriptions, or notes. Min height 76px, border with focus ring and error states. Same visual language as Input but taller.",
+      "category": "Form",
+      "installation": {
+        "import": "import { Textarea } from \"@/components/ui/textarea\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Focus", "Error", "Disabled"],
+        "Value": ["Placeholder", "Filled", "Empty"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "none",
+        "width": 320,
+        "height": 76,
+        "heightMode": "fixed",
+        "radius": "lg",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "input",
+        "textContent": "Type your message...",
+        "textStyle": "SP/Body",
+        "textFill": "muted-foreground",
+        "labelFill": true,
+        "paddingX": "xs",
+        "paddingY": "xs"
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "stroke": "border-strong"
+        },
+        "State=Focus": {
+          "effectStyleName": "Ring/default",
+          "stroke": "border-strong"
+        },
+        "State=Error": {
+          "stroke": "destructive-border"
+        },
+        "State=Disabled": {
+          "opacity": 0.3
+        },
+        "Value=Filled": {
+          "textContent": "This is some filled content typed by the user.",
+          "textFill": "foreground"
+        },
+        "Value=Empty": {
+          "textContent": " ",
+          "textFill": "foreground"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "Default, hover, focus (ring), error (red border), and disabled.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder" } },
+            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Placeholder (muted), filled (foreground), and empty states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled" } },
+            { "label": "Empty", "props": { "State": "Default", "Value": "Empty" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "placeholder", "type": "string", "default": "—", "description": "Placeholder text" },
+        { "name": "rows", "type": "number", "default": "3", "description": "Number of visible text rows" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the textarea — opacity-30 + cursor-not-allowed" },
+        { "name": "aria-invalid", "type": "boolean", "default": "false", "description": "Show error border styling (destructive-border)" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-input", "value": "transparent / transparent", "description": "Textarea background (bg-input)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Default border color" },
+        { "token": "--color-border-strong", "value": "zinc-300 / zinc-600", "description": "Hover and focus border" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring (3px spread)" },
+        { "token": "--color-ring-error", "value": "red-500/30", "description": "Error focus ring" },
+        { "token": "--color-destructive-border", "value": "red-500 / red-400", "description": "Error state border" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Set a visible minimum height with the rows prop to signal how much content is expected.", "dont": "Use Textarea for single-line input — use Input instead." },
+        { "do": "Provide a character count or max-length hint so users know the constraint before submitting.", "dont": "Allow unlimited text without any feedback — users lose context of acceptable length." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "border-border, bg-input", "code": "—", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border-strong", "code": "—", "codeValue": "Auto via hover:border-border-strong" },
+        { "figma": "State=Focus", "value": "Ring/default effect + border-strong", "code": "—", "codeValue": "Auto via focus-visible" },
+        { "figma": "State=Error", "value": "border-destructive-border", "code": "aria-invalid", "codeValue": "true" },
+        { "figma": "State=Disabled", "value": "opacity-30", "code": "disabled", "codeValue": "true" },
+        { "figma": "Value=Placeholder", "value": "Placeholder text in muted-foreground", "code": "placeholder", "codeValue": "\"Type your message...\"" },
+        { "figma": "Value=Filled", "value": "User text in foreground", "code": "value", "codeValue": "\"...\"" },
+        { "figma": "Value=Empty", "value": "Empty textarea", "code": "—", "codeValue": "No value or placeholder" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the textarea" },
+          { "key": "Shift+Tab", "action": "Move focus away" }
+        ],
+        "notes": [
+          "Always pair with <Label> using htmlFor for accessibility.",
+          "Use aria-invalid for error states — screen readers announce 'invalid entry'.",
+          "Use aria-describedby to associate error messages or helper text."
+        ]
+      },
+
+      "related": [
+        { "name": "Input", "desc": "Single-line text field for short responses. Use Input when the answer fits on one line." },
+        { "name": "Select", "desc": "Dropdown for choosing from a fixed list. Use Select when the user picks an option rather than writing free text." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

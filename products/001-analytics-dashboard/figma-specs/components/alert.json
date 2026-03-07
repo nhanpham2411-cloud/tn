@@ -1,0 +1,484 @@
+{
+  "components": [
+    {
+      "name": "Alert",
+      "description": "Inline feedback message for neutral, error, success, warning, and emphasis states. Non-interactive and static — use AlertDialog for confirmations. Container: rounded-lg, border 1px, py-sm px-md. Icon (16px instance) + Title (SP/Body Semibold) + Description (SP/Body).",
+      "category": "Feedback",
+      "installation": {
+        "dependencies": "",
+        "import": "import {\n  Alert,\n  AlertTitle,\n  AlertDescription,\n} from \"@/components/ui/alert\""
+      },
+
+      "properties": {
+        "Type": ["Neutral", "Error", "Success", "Warning", "Emphasis"],
+        "Show Icon": ["True", "False"],
+        "Show Title": ["True", "False"],
+        "Show Description": ["True", "False"],
+        "In Card": ["True", "False"]
+      },
+
+      "variantRestrictions": {
+        "Show Title=False": { "Show Description": ["True"] },
+        "Show Description=False": { "Show Title": ["True"] }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "sm",
+        "width": 420,
+        "heightMode": "hug",
+        "radius": "lg",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "fill": "card",
+        "paddingX": "md",
+        "paddingY": "sm",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Icon",
+            "type": "instance",
+            "component": "Icon / Info",
+            "iconFill": "foreground",
+            "width": 16,
+            "height": 16,
+            "widthMode": "fixed",
+            "heightMode": "fixed"
+          },
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "start",
+            "counterAlign": "start",
+            "gap": "none",
+            "paddingX": "none",
+            "paddingY": "none",
+            "heightMode": "hug",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "Heads up",
+                "textFill": "foreground"
+              },
+              {
+                "name": "Description",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "Your settings will be applied on next login.",
+                "textFill": "ghost-foreground"
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Error": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Success": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Emphasis": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+
+        "Show Icon=False": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+            ]}
+          ]
+        },
+        "Show Title=False": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+            ]}
+          ]
+        },
+        "Show Description=False": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Show Icon=False,Show Title=False": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+            ]}
+          ]
+        },
+        "Show Icon=False,Show Description=False": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" }
+            ]}
+          ]
+        },
+
+        "Type=Error,Show Icon=False": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Title=False": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Description=False": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Icon=False,Show Title=False": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Icon=False,Show Description=False": {
+          "fill": "destructive-subtle",
+          "stroke": "destructive-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" }
+            ]}
+          ]
+        },
+
+        "Type=Success,Show Icon=False": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Title=False": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Description=False": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Icon=False,Show Title=False": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Icon=False,Show Description=False": {
+          "fill": "success-subtle",
+          "stroke": "success-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" }
+            ]}
+          ]
+        },
+
+        "Type=Warning,Show Icon=False": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Title=False": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Description=False": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Icon=False,Show Title=False": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Icon=False,Show Description=False": {
+          "fill": "warning-subtle",
+          "stroke": "warning-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" }
+            ]}
+          ]
+        },
+
+        "Type=Emphasis,Show Icon=False": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Emphasis,Show Title=False": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Emphasis,Show Description=False": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Emphasis,Show Icon=False,Show Title=False": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+        "Type=Emphasis,Show Icon=False,Show Description=False": {
+          "fill": "emphasis-subtle",
+          "stroke": "emphasis-border",
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" }
+            ]}
+          ]
+        },
+
+        "In Card=True": {
+          "stroke": "transparent",
+          "paddingX": "sm",
+          "paddingY": "xs"
+        },
+        "Type=Neutral,In Card=True": {
+          "fill": "card-subtle",
+          "stroke": "transparent",
+          "paddingX": "sm",
+          "paddingY": "xs"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "All Variants",
+          "description": "Five semantic variants covering neutral, error, success, warning, and emphasis. Match variant to message severity.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Neutral", "props": { "Type": "Neutral", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "False" } },
+            { "label": "Error", "props": { "Type": "Error", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "False" } },
+            { "label": "Success", "props": { "Type": "Success", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "False" } },
+            { "label": "Warning", "props": { "Type": "Warning", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "False" } },
+            { "label": "Emphasis", "props": { "Type": "Emphasis", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "False" } }
+          ]
+        },
+        {
+          "name": "Without Icon",
+          "description": "Title and description only — use when icon adds no meaningful context or in dense layouts.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Neutral", "props": { "Type": "Neutral", "Show Icon": "False", "Show Title": "True", "Show Description": "True", "In Card": "False" } },
+            { "label": "Error", "props": { "Type": "Error", "Show Icon": "False", "Show Title": "True", "Show Description": "True", "In Card": "False" } }
+          ]
+        },
+        {
+          "name": "Description Only",
+          "description": "Skip title for short, self-explanatory messages. Useful for compact inline banners.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Warning", "props": { "Type": "Warning", "Show Icon": "True", "Show Title": "False", "Show Description": "True", "In Card": "False" } }
+          ]
+        },
+        {
+          "name": "In Card",
+          "description": "Border removed, padding tightened, neutral bg switches to card-subtle.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Neutral", "props": { "Type": "Neutral", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "True" } },
+            { "label": "Warning", "props": { "Type": "Warning", "Show Icon": "True", "Show Title": "True", "Show Description": "True", "In Card": "True" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "variant", "type": "\"default\" | \"destructive\" | \"success\" | \"warning\" | \"emphasis\"", "default": "\"default\"", "description": "Semantic color variant — match to message severity" },
+        { "name": "inCard", "type": "boolean", "default": "false", "description": "Removes border, tightens padding (py-xs px-sm), neutral bg switches to card-subtle" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-card", "value": "white / zinc-900", "description": "Neutral background (bg-card)" },
+        { "token": "--color-card-subtle", "value": "zinc-50 / zinc-800", "description": "Neutral In Card background (bg-card-subtle)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Neutral border (border-border)" },
+        { "token": "--color-destructive-subtle", "value": "red-50 / red-950/20", "description": "Error background" },
+        { "token": "--color-destructive-border", "value": "red-200 / red-800", "description": "Error border" },
+        { "token": "--color-success-subtle", "value": "green-50 / green-950/20", "description": "Success background" },
+        { "token": "--color-success-border", "value": "green-200 / green-800", "description": "Success border" },
+        { "token": "--color-warning-subtle", "value": "amber-50 / amber-950/20", "description": "Warning background" },
+        { "token": "--color-warning-border", "value": "amber-200 / amber-800", "description": "Warning border" },
+        { "token": "--color-emphasis-subtle", "value": "violet-50 / violet-950/20", "description": "Emphasis background" },
+        { "token": "--color-emphasis-border", "value": "violet-200 / violet-800", "description": "Emphasis border" },
+        { "token": "--spacing-sm", "value": "12px", "description": "Vertical padding (py-sm) and icon-to-content gap (gap-sm)" },
+        { "token": "--spacing-md", "value": "16px", "description": "Horizontal padding (px-md)" },
+        { "token": "--spacing-xs", "value": "8px", "description": "In Card vertical padding (py-xs)" },
+        { "token": "--radius-lg", "value": "8px", "description": "Border radius (rounded-lg)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Match the variant to message severity: destructive for errors, warning for cautions, success for confirmations, emphasis for highlights, default for neutral info.", "dont": "Use the default variant for urgent messages — users learn color semantics and will miss critical alerts styled as neutral." },
+        { "do": "Include the matching semantic icon (CircleAlert for destructive, CircleCheck for success, TriangleAlert for warning, Info for default/emphasis).", "dont": "Mix icons across variants — a warning icon on an emphasis alert breaks the learned visual language." },
+        { "do": "Use inCard={true} when Alert sits inside a Card — it removes the outer border and tightens padding to match the card's internal spacing.", "dont": "Apply custom padding or border overrides via className to compensate for card context — inCard handles this correctly." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Neutral", "value": "bg-card, border-border, text-foreground", "code": "variant", "codeValue": "\"default\"" },
+        { "figma": "Type=Error", "value": "bg-destructive-subtle, border-destructive-border", "code": "variant", "codeValue": "\"destructive\"" },
+        { "figma": "Type=Success", "value": "bg-success-subtle, border-success-border", "code": "variant", "codeValue": "\"success\"" },
+        { "figma": "Type=Warning", "value": "bg-warning-subtle, border-warning-border", "code": "variant", "codeValue": "\"warning\"" },
+        { "figma": "Type=Emphasis", "value": "bg-emphasis-subtle, border-emphasis-border", "code": "variant", "codeValue": "\"emphasis\"" },
+        { "figma": "Show Icon=True", "value": "16px icon instance (Info/CircleAlert/CircleCheck/TriangleAlert)", "code": "children (SVG)", "codeValue": "<Info /> / <CircleAlert /> etc." },
+        { "figma": "Show Icon=False", "value": "Content only, no icon", "code": "—", "codeValue": "Omit SVG child" },
+        { "figma": "Show Title=True", "value": "AlertTitle visible", "code": "children", "codeValue": "<AlertTitle>...</AlertTitle>" },
+        { "figma": "Show Title=False", "value": "No title text", "code": "—", "codeValue": "Omit AlertTitle child" },
+        { "figma": "Show Description=True", "value": "AlertDescription visible", "code": "children", "codeValue": "<AlertDescription>...</AlertDescription>" },
+        { "figma": "Show Description=False", "value": "No description text", "code": "—", "codeValue": "Omit AlertDescription child" },
+        { "figma": "In Card=True", "value": "border-transparent, py-xs px-sm, neutral bg-card-subtle", "code": "inCard", "codeValue": "true" },
+        { "figma": "In Card=False", "value": "Standard border + padding", "code": "inCard", "codeValue": "false (default)" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Alert is static — not keyboard interactive" }
+        ],
+        "notes": [
+          "Uses role=\"alert\" — screen readers announce content immediately on mount.",
+          "Destructive alerts should include an action link or next-step guidance in AlertDescription.",
+          "Do not put interactive elements (buttons, links) directly inside Alert — use AlertDialog or a Banner pattern instead.",
+          "When dynamically injecting alerts, ensure the element is in the DOM with role=\"alert\" before updating content to guarantee announcement."
+        ]
+      },
+
+      "related": [
+        { "name": "Alert Dialog", "desc": "Blocking modal confirmation for irreversible actions. Use when the user must explicitly confirm before proceeding." },
+        { "name": "Badge", "desc": "Inline status indicator. Use Badge for short labels in tables or lists, Alert for paragraph-length feedback." },
+        { "name": "Sonner / Toast", "desc": "Auto-dismissing toast notification. Use Sonner for transient feedback after actions, Alert for persistent inline messages." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

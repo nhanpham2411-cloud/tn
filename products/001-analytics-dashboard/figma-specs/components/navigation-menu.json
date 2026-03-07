@@ -1,0 +1,316 @@
+{
+  "components": [
+    {
+      "name": "Nav Menu Item",
+      "description": "Individual pill-shaped navigation item for use inside Navigation Menu. Supports link (plain text) and trigger (text + chevron) types, with default/active/hover states. Compose multiple items via instance swap inside the Navigation Menu parent container.",
+      "category": "Navigation",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-navigation-menu",
+        "import": "import {\n  NavigationMenuItem,\n  NavigationMenuTrigger,\n  NavigationMenuLink,\n  navigationMenuTriggerStyle,\n} from \"@/components/ui/navigation-menu\""
+      },
+
+      "properties": {
+        "Type": ["Link", "Trigger"],
+        "State": ["Default", "Active", "Hover"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "3xs",
+        "paddingX": "lg",
+        "paddingY": "xs",
+        "radius": "full",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "iconSize": 12,
+        "textStyle": "SP/Label",
+        "textContent": "Dashboard",
+        "textFill": "muted-foreground"
+      },
+
+      "variantStyles": {
+        "State=Default": {},
+        "State=Active": {
+          "fill": "foreground",
+          "textFill": "background",
+          "effectStyleName": "Shadows/sm"
+        },
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 0.4,
+          "textFill": "foreground"
+        },
+
+        "Type=Trigger": {
+          "iconRight": true,
+          "iconRightName": "ChevronDown"
+        },
+        "Type=Trigger,State=Active": {
+          "fill": "foreground",
+          "textFill": "background",
+          "effectStyleName": "Shadows/sm",
+          "iconRight": true,
+          "iconRightName": "ChevronDown"
+        },
+        "Type=Trigger,State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 0.4,
+          "textFill": "foreground",
+          "iconRight": true,
+          "iconRightName": "ChevronDown"
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Link States",
+          "description": "Default, active (current page), and hover states for navigation link items.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Link", "State": "Default" } },
+            { "label": "Active", "props": { "Type": "Link", "State": "Active" } },
+            { "label": "Hover", "props": { "Type": "Link", "State": "Hover" } }
+          ]
+        },
+        {
+          "name": "Trigger States",
+          "description": "Trigger items include a ChevronDown icon and open a dropdown content panel on hover.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Trigger", "State": "Default" } },
+            { "label": "Open", "props": { "Type": "Trigger", "State": "Active" } },
+            { "label": "Hover", "props": { "Type": "Trigger", "State": "Hover" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "Label text for the nav item" },
+        { "name": "href (Link)", "type": "string", "default": "--", "description": "Navigation URL for link items" },
+        { "name": "asChild (Link)", "type": "boolean", "default": "false", "description": "Merge props onto child element — use with router Link components" },
+        { "name": "data-active (Link)", "type": "boolean", "default": "--", "description": "Marks the link as the current active route" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes — combine with navigationMenuTriggerStyle() for link items" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500", "description": "Default text color for nav items" },
+        { "token": "--foreground", "value": "zinc-950 / zinc-50", "description": "Active item background + hover text color" },
+        { "token": "--background", "value": "white / zinc-950", "description": "Active item text color (inverted)" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover state background (40% opacity)" },
+        { "token": "Shadows/sm", "value": "0 1px 2px rgba(0,0,0,0.05)", "description": "Active state shadow (shadow-sm)" },
+        { "token": "rounded-full", "value": "9999px", "description": "Pill shape border radius" },
+        { "token": "--spacing-lg", "value": "20px", "description": "Horizontal padding (px-lg)" },
+        { "token": "--spacing-xs", "value": "8px", "description": "Vertical padding (py-xs)" },
+        { "token": "--spacing-3xs", "value": "4px", "description": "Gap between label and chevron icon (ml-1)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Type=Link for leaf navigation items that go directly to a page. Use Type=Trigger only when the item opens a dropdown content panel.", "dont": "Use Type=Trigger for items without dropdown content — the ChevronDown icon implies expandable content." },
+        { "do": "Set State=Active on the item matching the current route. Only one item should be Active at a time.", "dont": "Set multiple items to Active — it confuses users about their current location." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Link", "value": "Text only, no chevron", "code": "NavigationMenuLink", "codeValue": "className={navigationMenuTriggerStyle()}" },
+        { "figma": "Type=Trigger", "value": "Text + ChevronDown icon", "code": "NavigationMenuTrigger", "codeValue": "ChevronDown appended automatically" },
+        { "figma": "State=Default", "value": "No fill, muted-foreground text", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Active", "value": "bg-foreground text-background shadow-sm", "code": "data-active / data-[state=open]", "codeValue": "Active route or open trigger" },
+        { "figma": "State=Hover", "value": "bg-muted/40 text-foreground", "code": "hover:", "codeValue": "hover:bg-muted/40 hover:text-foreground" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the next item" },
+          { "key": "Enter / Space", "action": "Activate link or open trigger dropdown" },
+          { "key": "Escape", "action": "Close open dropdown and return focus to trigger" }
+        ],
+        "notes": [
+          "Trigger items have aria-expanded='true/false' indicating dropdown state.",
+          "Link items with data-active get aria-current='page' for screen readers.",
+          "Always provide visible text label — avoid icon-only nav items."
+        ]
+      },
+
+      "related": [
+        { "name": "Navigation Menu", "desc": "Parent container that composes multiple Nav Menu Items into a pill tab bar." },
+        { "name": "Tabs", "desc": "For in-page section switching — use when content changes without URL navigation." },
+        { "name": "Button", "desc": "For actions — don't use Nav Menu Item for non-navigation actions." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Navigation Menu",
+      "description": "Pill tab bar container for top-level site navigation. Composes Nav Menu Item instances via instance swap — swap items to set label, type (Link/Trigger), and state (Default/Active/Hover). Wraps items in a rounded-full muted container matching the AppHeader pattern.",
+      "category": "Navigation",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-navigation-menu",
+        "import": "import {\n  NavigationMenu,\n  NavigationMenuList,\n  NavigationMenuItem,\n  NavigationMenuContent,\n  NavigationMenuTrigger,\n  NavigationMenuLink,\n  NavigationMenuViewport,\n  navigationMenuTriggerStyle,\n} from \"@/components/ui/navigation-menu\""
+      },
+
+      "properties": {
+        "Items": ["3", "4", "5", "6"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "3xs",
+        "paddingX": "2xs",
+        "paddingY": "2xs",
+        "radius": "full",
+        "widthMode": "hug",
+        "heightMode": "hug",
+        "fill": "muted",
+        "fillOpacity": 0.5,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Item 1",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Active" },
+            "textOverrides": { "Label": "Dashboard" }
+          },
+          {
+            "name": "Item 2",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Analytics" }
+          },
+          {
+            "name": "Item 3",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Reports" }
+          },
+          {
+            "name": "Item 4",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Settings" },
+            "showWhen": "Items=4"
+          },
+          {
+            "name": "Item 4",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Settings" },
+            "showWhen": "Items=5"
+          },
+          {
+            "name": "Item 5",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Help" },
+            "showWhen": "Items=5"
+          },
+          {
+            "name": "Item 4",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Settings" },
+            "showWhen": "Items=6"
+          },
+          {
+            "name": "Item 5",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Help" },
+            "showWhen": "Items=6"
+          },
+          {
+            "name": "Item 6",
+            "type": "instance",
+            "component": "Nav Menu Item",
+            "variants": { "Type": "Link", "State": "Default" },
+            "textOverrides": { "Label": "Support" },
+            "showWhen": "Items=6"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Items=3": {},
+        "Items=4": {},
+        "Items=5": {},
+        "Items=6": {}
+      },
+
+      "examples": [
+        {
+          "name": "Pill Nav Bar",
+          "description": "Standard 4-item pill navigation bar with one active item. Swap any instance to change label, type, or state.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "3 Items", "props": { "Items": "3" } },
+            { "label": "4 Items", "props": { "Items": "4" } },
+            { "label": "5 Items", "props": { "Items": "5" } },
+            { "label": "6 Items", "props": { "Items": "6" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "viewport", "type": "boolean", "default": "true", "description": "Render a shared NavigationMenuViewport — set false to render dropdown inline below the trigger" },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes on the root element" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Container background (pill bar)" },
+        { "token": "rounded-full", "value": "9999px", "description": "Pill shape container radius" },
+        { "token": "--spacing-2xs", "value": "6px", "description": "Container padding (px-2xs py-2xs)" },
+        { "token": "--spacing-3xs", "value": "4px", "description": "Gap between items" }
+      ],
+
+      "bestPractices": [
+        { "do": "Keep 3-5 items in the navigation menu. Use instance swap to set each item's label, type, and state.", "dont": "Add more than 6 items — horizontal space gets cramped. Move overflow items into a Trigger dropdown." },
+        { "do": "Set exactly one item to State=Active to indicate the current page.", "dont": "Set multiple items to Active or leave all as Default — users need a clear location indicator." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Items=3", "value": "3 nav items", "code": "NavigationMenuList", "codeValue": "3 NavigationMenuItem children" },
+        { "figma": "Items=4", "value": "4 nav items", "code": "NavigationMenuList", "codeValue": "4 NavigationMenuItem children" },
+        { "figma": "Items=5", "value": "5 nav items", "code": "NavigationMenuList", "codeValue": "5 NavigationMenuItem children" },
+        { "figma": "Items=6", "value": "6 nav items", "code": "NavigationMenuList", "codeValue": "6 NavigationMenuItem children" },
+        { "figma": "Instance swap", "value": "Change item label/type/state", "code": "Props on each child", "codeValue": "Set href, data-active, className per item" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus between navigation items" },
+          { "key": "Arrow Left / Right", "action": "Move focus between items within the list" },
+          { "key": "Enter / Space", "action": "Activate the focused link or open trigger dropdown" },
+          { "key": "Escape", "action": "Close any open dropdown panel" }
+        ],
+        "notes": [
+          "Root element renders a <nav> with role='navigation' — acts as a page-level landmark.",
+          "Add aria-label to NavigationMenu when multiple navs exist on the same page.",
+          "NavigationMenuViewport animates between content panels smoothly — one shared container per menu."
+        ]
+      },
+
+      "related": [
+        { "name": "Nav Menu Item", "desc": "Sub-component — the individual pill items inside this container." },
+        { "name": "Tabs", "desc": "For in-page section switching without URL changes." },
+        { "name": "Breadcrumb", "desc": "Shows hierarchical location — complement navigation menu with breadcrumbs." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

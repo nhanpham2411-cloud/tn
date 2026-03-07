@@ -1,0 +1,841 @@
+{
+  "components": [
+    {
+      "name": "Cell Row",
+      "description": "Single data cell for table rows. Maps to <TableCell> with p-md align-middle. Type=Text renders text content; Type=Checkbox renders a selection checkbox with compact padding. Alignment controls horizontal text position. Weight controls font weight for emphasis (Medium for primary column like Invoice).",
+      "category": "Data Display",
+
+      "properties": {
+        "Type": ["Text", "Checkbox"],
+        "Alignment": ["Left", "Right"],
+        "Weight": ["Regular", "Medium"]
+      },
+
+      "variantRestrictions": {
+        "Type=Checkbox": {
+          "Alignment": ["Left"],
+          "Weight": ["Regular"]
+        }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "md",
+        "paddingY": "md",
+        "width": 140,
+        "heightMode": "hug",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          { "type": "text", "name": "Label", "textContent": "INV001", "textFill": "foreground", "textStyle": "SP/Body", "fillWidth": true }
+        ]
+      },
+
+      "variantStyles": {
+        "Weight=Medium": {
+          "children": [
+            { "type": "text", "name": "Label", "textContent": "INV001", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true }
+          ]
+        },
+        "Alignment=Right": {
+          "children": [
+            { "type": "text", "name": "Label", "textContent": "$250.00", "textFill": "foreground", "textStyle": "SP/Body", "textAlign": "RIGHT", "fillWidth": true }
+          ]
+        },
+        "Alignment=Right,Weight=Medium": {
+          "children": [
+            { "type": "text", "name": "Label", "textContent": "$250.00", "textFill": "foreground", "textStyle": "SP/Body Medium", "textAlign": "RIGHT", "fillWidth": true }
+          ]
+        },
+        "Type=Checkbox": {
+          "widthMode": "hug",
+          "paddingLeft": "sm",
+          "paddingRight": "none",
+          "children": [
+            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default" }, "textOverrides": { "Label": "" } }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Type",
+          "description": "Text cell for data content and Checkbox cell for row selection.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Text", "props": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" } },
+            { "label": "Checkbox", "props": { "Type": "Checkbox", "Alignment": "Left", "Weight": "Regular" } }
+          ]
+        },
+        {
+          "name": "Weight",
+          "description": "Regular weight for secondary columns, Medium weight for primary column emphasis.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Regular", "props": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" } },
+            { "label": "Medium", "props": { "Type": "Text", "Alignment": "Left", "Weight": "Medium" } }
+          ]
+        },
+        {
+          "name": "Alignment",
+          "description": "Left-aligned for text content, Right-aligned for numeric values (amounts, totals).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Left", "props": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" } },
+            { "label": "Right", "props": { "Type": "Text", "Alignment": "Right", "Weight": "Regular" } }
+          ]
+        }
+      ],
+
+      "related": [
+        { "name": "Table Row", "desc": "Parent row composing Cell Row instances for data display." },
+        { "name": "Cell Header", "desc": "Header cell counterpart — used inside Table Header." },
+        { "name": "Checkbox", "desc": "Instanced inside Type=Checkbox cells for row selection." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component"]
+      }
+    },
+
+    {
+      "name": "Cell Header",
+      "description": "Single header cell for table headers. Maps to <TableHead> with h-3xl px-md text-muted-foreground font-medium. Type=Text renders column heading; Type=Checkbox renders a select-all checkbox with compact padding. Alignment controls horizontal text position.",
+      "category": "Data Display",
+
+      "properties": {
+        "Type": ["Text", "Checkbox"],
+        "Alignment": ["Left", "Right"]
+      },
+
+      "variantRestrictions": {
+        "Type=Checkbox": {
+          "Alignment": ["Left"]
+        }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "md",
+        "paddingY": "none",
+        "width": 140,
+        "height": 40,
+        "heightMode": "fixed",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          { "type": "text", "name": "Label", "textContent": "Invoice", "textFill": "muted-foreground", "textStyle": "SP/Body Medium", "fillWidth": true }
+        ]
+      },
+
+      "variantStyles": {
+        "Alignment=Right": {
+          "children": [
+            { "type": "text", "name": "Label", "textContent": "Amount", "textFill": "muted-foreground", "textStyle": "SP/Body Medium", "textAlign": "RIGHT", "fillWidth": true }
+          ]
+        },
+        "Type=Checkbox": {
+          "widthMode": "hug",
+          "paddingLeft": "sm",
+          "paddingRight": "none",
+          "children": [
+            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default" }, "textOverrides": { "Label": "" } }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Type",
+          "description": "Text cell for column headings and Checkbox cell for select-all.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Text", "props": { "Type": "Text", "Alignment": "Left" } },
+            { "label": "Checkbox", "props": { "Type": "Checkbox", "Alignment": "Left" } }
+          ]
+        },
+        {
+          "name": "Alignment",
+          "description": "Left-aligned for text columns, Right-aligned for numeric columns.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Left", "props": { "Type": "Text", "Alignment": "Left" } },
+            { "label": "Right", "props": { "Type": "Text", "Alignment": "Right" } }
+          ]
+        }
+      ],
+
+      "related": [
+        { "name": "Table Header", "desc": "Parent header row composing Cell Header instances." },
+        { "name": "Cell Row", "desc": "Data cell counterpart — used inside Table Row." },
+        { "name": "Checkbox", "desc": "Instanced inside Type=Checkbox cells for select-all." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component"]
+      }
+    },
+
+    {
+      "name": "Table Row",
+      "description": "Single data row composing Cell Row instances. State controls row highlighting (hover=muted/50, selected=muted). Striped adds alternating tint (muted/30). Checkbox prepends a selection checkbox cell. Stack instances vertically below a Table Header to compose full tables.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n} from \"@/components/ui/table\""
+      },
+
+      "properties": {
+        "Checkbox": ["No", "Yes"],
+        "Striped": ["Off", "On"],
+        "State": ["Default", "Hover", "Selected"],
+        "Border": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 560,
+        "heightMode": "hug",
+        "radius": "none",
+        "strokeSides": "bottom",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Cell 1",
+            "type": "instance",
+            "component": "Cell Row",
+            "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Medium" },
+            "textOverrides": { "Label": "INV001" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 2",
+            "type": "instance",
+            "component": "Cell Row",
+            "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+            "textOverrides": { "Label": "Paid" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 3",
+            "type": "instance",
+            "component": "Cell Row",
+            "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+            "textOverrides": { "Label": "Credit Card" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 4",
+            "type": "instance",
+            "component": "Cell Row",
+            "variants": { "Type": "Text", "Alignment": "Right", "Weight": "Regular" },
+            "textOverrides": { "Label": "$250.00" },
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Checkbox=Yes": {
+          "children": [
+            {
+              "name": "Checkbox Cell",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Checkbox", "Alignment": "Left", "Weight": "Regular" }
+            },
+            {
+              "name": "Cell 1",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Medium" },
+              "textOverrides": { "Label": "INV001" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 2",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+              "textOverrides": { "Label": "Paid" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 3",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+              "textOverrides": { "Label": "Credit Card" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 4",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Right", "Weight": "Regular" },
+              "textOverrides": { "Label": "$250.00" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Checkbox=Yes,State=Selected": {
+          "fill": "muted",
+          "fillOpacity": 1,
+          "children": [
+            {
+              "name": "Checkbox Cell",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Checkbox", "Alignment": "Left", "Weight": "Regular" }
+            },
+            {
+              "name": "Cell 1",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Medium" },
+              "textOverrides": { "Label": "INV001" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 2",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+              "textOverrides": { "Label": "Paid" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 3",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Left", "Weight": "Regular" },
+              "textOverrides": { "Label": "Credit Card" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 4",
+              "type": "instance",
+              "component": "Cell Row",
+              "variants": { "Type": "Text", "Alignment": "Right", "Weight": "Regular" },
+              "textOverrides": { "Label": "$250.00" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Striped=On": {
+          "fill": "muted",
+          "fillOpacity": 0.3
+        },
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 0.5
+        },
+        "State=Selected": {
+          "fill": "muted",
+          "fillOpacity": 1
+        },
+        "Border=No": {
+          "strokeWidth": 0
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Row States",
+          "description": "Default (no fill), hover (muted/50), and selected (muted) backgrounds.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" } },
+            { "label": "Hover", "props": { "Checkbox": "No", "Striped": "Off", "State": "Hover", "Border": "Yes" } },
+            { "label": "Selected", "props": { "Checkbox": "No", "Striped": "Off", "State": "Selected", "Border": "Yes" } }
+          ]
+        },
+        {
+          "name": "Checkbox",
+          "description": "Data row with and without selection checkbox.",
+          "layout": "vertical",
+          "items": [
+            { "label": "No Checkbox", "props": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" } },
+            { "label": "With Checkbox", "props": { "Checkbox": "Yes", "Striped": "Off", "State": "Default", "Border": "Yes" } },
+            { "label": "Selected", "props": { "Checkbox": "Yes", "Striped": "Off", "State": "Selected", "Border": "Yes" } }
+          ]
+        },
+        {
+          "name": "Border",
+          "description": "Border=Yes for regular rows with bottom separator, Border=No for last row in table body (no bottom border).",
+          "layout": "vertical",
+          "items": [
+            { "label": "With Border", "props": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" } },
+            { "label": "No Border (last row)", "props": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "No" } }
+          ]
+        },
+        {
+          "name": "Striped",
+          "description": "Alternating row tint (muted/30) for improved readability in dense tables.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Normal", "props": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" } },
+            { "label": "Striped", "props": { "Checkbox": "No", "Striped": "On", "State": "Default", "Border": "Yes" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "Table", "type": "component", "default": "--", "description": "Wraps <table> in overflow-auto div for horizontal scroll on narrow viewports" },
+        { "name": "TableHeader", "type": "component", "default": "--", "description": "Wraps <thead>, adds border-b to child rows" },
+        { "name": "TableBody", "type": "component", "default": "--", "description": "Wraps <tbody>, removes border from last row" },
+        { "name": "TableFooter", "type": "component", "default": "--", "description": "Wraps <tfoot> with border-t and bg-muted/50 for summary rows" },
+        { "name": "TableRow", "type": "component", "default": "--", "description": "Wraps <tr> with hover:bg-muted/50 and data-[state=selected]:bg-muted" },
+        { "name": "TableHead", "type": "component", "default": "--", "description": "Wraps <th> with scope='col', h-3xl px-md, text-muted-foreground font-medium" },
+        { "name": "TableCell", "type": "component", "default": "--", "description": "Wraps <td> with p-md align-middle" },
+        { "name": "TableCaption", "type": "component", "default": "--", "description": "Wraps <caption> with mt-md text-sm text-muted-foreground, renders below table" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "TableRow bottom border, TableFooter top border" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Row hover (50%), selected (100%), striped (30%), footer background (50%)" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "TableHead text color, TableCaption text color" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "TableCell text color" },
+        { "token": "--spacing-md", "value": "16px", "description": "Cell padding (p-md on TableCell, px-md on TableHead)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use semantic Table sub-components for all multi-column data — screen readers announce column headers to each cell.", "dont": "Use div/grid layouts to simulate a table — they lose the row/column relationship for assistive technology." },
+        { "do": "Apply data-state='selected' on TableRow to highlight selected rows — the selected style is built in.", "dont": "Use a custom background color class for selection — it bypasses the design token and breaks dark mode." },
+        { "do": "Use table-fixed with explicit column widths when column content varies — prevents layout shift on data update.", "dont": "Let all columns auto-size — variable-length content causes columns to jump width between pages." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Checkbox=No", "value": "Text-only data row with Cell Row instances", "code": "TableCell", "codeValue": "<TableCell>INV001</TableCell>" },
+        { "figma": "Checkbox=Yes", "value": "Checkbox cell + text cells", "code": "TableCell", "codeValue": "<TableCell className=\"w-px\"><Checkbox /></TableCell>" },
+        { "figma": "State=Default", "value": "No background fill", "code": "--", "codeValue": "Default TableRow" },
+        { "figma": "State=Hover", "value": "bg-muted/50", "code": "--", "codeValue": "Built-in via hover:bg-muted/50" },
+        { "figma": "State=Selected", "value": "bg-muted", "code": "data-state", "codeValue": "\"selected\" on TableRow" },
+        { "figma": "Striped=On", "value": "bg-muted/30", "code": "className", "codeValue": "\"even:bg-muted/30\" on each TableRow" },
+        { "figma": "Border=Yes", "value": "border-b border-border", "code": "--", "codeValue": "Default TableRow border" },
+        { "figma": "Border=No", "value": "No bottom border", "code": "CSS", "codeValue": "TableBody [&_tr:last-child]:border-0" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus through interactive elements inside cells (buttons, links, inputs)" },
+          { "key": "Enter / Space", "action": "Activate focused interactive element within a cell" }
+        ],
+        "notes": [
+          "TableHead automatically adds scope='col' — screen readers announce which column each header belongs to.",
+          "For row headers (first column identifying each row), add scope='row' to those TableCell elements manually.",
+          "TableCaption is announced as the table's accessible name — prefer it over an external heading.",
+          "For sortable columns, add aria-sort='ascending' | 'descending' | 'none' to the TableHead element."
+        ]
+      },
+
+      "related": [
+        { "name": "Cell Row", "desc": "Sub-component — individual data cells instanced inside Table Row." },
+        { "name": "Table Header", "desc": "Header row placed above Table Row instances inside the Table parent." },
+        { "name": "Pagination", "desc": "Pair with Table for paginated data — renders below the table container." },
+        { "name": "Checkbox", "desc": "Use inside TableCell for row selection — the component handles alignment automatically." },
+        { "name": "Badge", "desc": "Use inside TableCell for status columns — variant='success/warning/destructive' with level='secondary'." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Table Header",
+      "description": "Header row composing Cell Header instances for column headings. Renders with muted-foreground text, font-medium weight, and fixed 40px height via Cell Header sub-components. Checkbox property adds a select-all checkbox as the first column. Use as the first instance inside a Table parent.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n} from \"@/components/ui/table\""
+      },
+
+      "properties": {
+        "Checkbox": ["No", "Yes"],
+        "State": ["Default", "Hover"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 560,
+        "heightMode": "hug",
+        "radius": "none",
+        "strokeSides": "bottom",
+        "stroke": "border",
+        "strokeWidth": 1,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Cell 1",
+            "type": "instance",
+            "component": "Cell Header",
+            "variants": { "Type": "Text", "Alignment": "Left" },
+            "textOverrides": { "Label": "Invoice" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 2",
+            "type": "instance",
+            "component": "Cell Header",
+            "variants": { "Type": "Text", "Alignment": "Left" },
+            "textOverrides": { "Label": "Status" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 3",
+            "type": "instance",
+            "component": "Cell Header",
+            "variants": { "Type": "Text", "Alignment": "Left" },
+            "textOverrides": { "Label": "Method" },
+            "fillWidth": true
+          },
+          {
+            "name": "Cell 4",
+            "type": "instance",
+            "component": "Cell Header",
+            "variants": { "Type": "Text", "Alignment": "Right" },
+            "textOverrides": { "Label": "Amount" },
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 0.5
+        },
+        "Checkbox=Yes": {
+          "children": [
+            {
+              "name": "Checkbox Cell",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Checkbox", "Alignment": "Left" }
+            },
+            {
+              "name": "Cell 1",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Invoice" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 2",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Status" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 3",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Method" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 4",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Right" },
+              "textOverrides": { "Label": "Amount" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Checkbox=Yes,State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 0.5,
+          "children": [
+            {
+              "name": "Checkbox Cell",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Checkbox", "Alignment": "Left" }
+            },
+            {
+              "name": "Cell 1",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Invoice" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 2",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Status" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 3",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Left" },
+              "textOverrides": { "Label": "Method" },
+              "fillWidth": true
+            },
+            {
+              "name": "Cell 4",
+              "type": "instance",
+              "component": "Cell Header",
+              "variants": { "Type": "Text", "Alignment": "Right" },
+              "textOverrides": { "Label": "Amount" },
+              "fillWidth": true
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Header Variants",
+          "description": "Default header row and header with select-all checkbox.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Checkbox": "No", "State": "Default" } },
+            { "label": "With Checkbox", "props": { "Checkbox": "Yes", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Header States",
+          "description": "Default (no fill) and hover (muted/50) states.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Checkbox": "No", "State": "Default" } },
+            { "label": "Hover", "props": { "Checkbox": "No", "State": "Hover" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "TableHead", "type": "component", "default": "--", "description": "Wraps <th> with scope='col', h-3xl px-md, text-muted-foreground font-medium" },
+        { "name": "TableHeader", "type": "component", "default": "--", "description": "Wraps <thead>, adds border-b to the header row" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Bottom border separating header from body rows" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Hover state background (muted/50)" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Header text color" },
+        { "token": "--spacing-md", "value": "16px", "description": "Cell horizontal padding (px-md via Cell Header)" },
+        { "token": "--spacing-3xl", "value": "40px", "description": "Fixed header cell height (h-3xl via Cell Header)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use one Table Header instance at the top of each Table — it provides column context for all data rows below.", "dont": "Stack multiple Table Header instances — one header row per table." },
+        { "do": "Enable Checkbox=Yes when the table supports row selection — pairs with Checkbox inside Table Row cells.", "dont": "Add a checkbox column manually via extra frames — use the built-in Checkbox property." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Checkbox=No", "value": "Text-only header with Cell Header instances", "code": "TableHead", "codeValue": "<TableHead>Invoice</TableHead>" },
+        { "figma": "Checkbox=Yes", "value": "Checkbox cell + text cells", "code": "TableHead", "codeValue": "<TableHead className=\"w-px\"><Checkbox /></TableHead>" },
+        { "figma": "State=Default", "value": "No background fill", "code": "--", "codeValue": "Default TableRow in TableHeader" },
+        { "figma": "State=Hover", "value": "bg-muted/50", "code": "--", "codeValue": "Built-in via hover:bg-muted/50 on TableRow" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to checkbox (when present) or skip to body" },
+          { "key": "Space", "action": "Toggle select-all checkbox" }
+        ],
+        "notes": [
+          "TableHead adds scope='col' automatically — screen readers announce column headers.",
+          "Select-all checkbox should toggle all row checkboxes — use indeterminate state for partial selection."
+        ]
+      },
+
+      "related": [
+        { "name": "Cell Header", "desc": "Sub-component — individual header cells instanced inside Table Header." },
+        { "name": "Table", "desc": "Parent container — place Table Header as the first child instance." },
+        { "name": "Table Row", "desc": "Data rows placed below Table Header inside the Table parent." },
+        { "name": "Checkbox", "desc": "Used inside Cell Header Type=Checkbox for select-all functionality." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Table",
+      "description": "Full data table composing Table Header and Table Row instances via instance swap. Header at top, data rows below with multi-column data via Cell sub-components. Striped property toggles alternating row tint for improved readability in dense tables.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n} from \"@/components/ui/table\""
+      },
+
+      "properties": {
+        "Striped": ["Off", "On"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "none",
+        "width": 560,
+        "heightMode": "hug",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "instance",
+            "component": "Table Header",
+            "variants": { "Checkbox": "No", "State": "Default" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 1",
+            "type": "instance",
+            "component": "Table Row",
+            "variants": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 2",
+            "type": "instance",
+            "component": "Table Row",
+            "variants": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 3",
+            "type": "instance",
+            "component": "Table Row",
+            "variants": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "No" },
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Striped=On": {
+          "children": [
+            {
+              "name": "Header",
+              "type": "instance",
+              "component": "Table Header",
+              "variants": { "Checkbox": "No", "State": "Default" },
+              "fillWidth": true
+            },
+            {
+              "name": "Row 1",
+              "type": "instance",
+              "component": "Table Row",
+              "variants": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "Yes" },
+              "fillWidth": true
+            },
+            {
+              "name": "Row 2",
+              "type": "instance",
+              "component": "Table Row",
+              "variants": { "Checkbox": "No", "Striped": "On", "State": "Default", "Border": "Yes" },
+              "fillWidth": true
+            },
+            {
+              "name": "Row 3",
+              "type": "instance",
+              "component": "Table Row",
+              "variants": { "Checkbox": "No", "Striped": "Off", "State": "Default", "Border": "No" },
+              "fillWidth": true
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Default",
+          "description": "Standard table with header and 3 data rows — no striping.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Striped": "Off" } }
+          ]
+        },
+        {
+          "name": "Striped",
+          "description": "Alternating row tint (muted/30) for improved readability in dense tables.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Striped", "props": { "Striped": "On" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "Table", "type": "component", "default": "--", "description": "Wraps <table> in overflow-auto div for horizontal scroll on narrow viewports" },
+        { "name": "TableHeader", "type": "component", "default": "--", "description": "Wraps <thead>, adds border-b to child rows" },
+        { "name": "TableBody", "type": "component", "default": "--", "description": "Wraps <tbody>, removes border from last row" },
+        { "name": "TableFooter", "type": "component", "default": "--", "description": "Wraps <tfoot> with border-t and bg-muted/50 for summary rows" },
+        { "name": "TableCaption", "type": "component", "default": "--", "description": "Wraps <caption> with mt-md text-sm text-muted-foreground, renders below table" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Row bottom border from Table Row child instances" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Striped row tint (30%), hover (50%), selected (100%) via Table Row" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Header text color via Table Header > Cell Header" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Data cell text color via Table Row > Cell Row" }
+      ],
+
+      "bestPractices": [
+        { "do": "Swap Table Row instances to change row state, striped, or checkbox — the parent handles layout only.", "dont": "Add extra frames or dividers between rows — Table Row already has border-b built in." },
+        { "do": "Use Striped=On for tables with 5+ rows — alternating tint improves row tracking.", "dont": "Combine Striped with custom row backgrounds — they compete visually." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Striped=Off", "value": "No alternating fill", "code": "TableRow", "codeValue": "Default TableRow — no extra className" },
+        { "figma": "Striped=On", "value": "Even rows bg-muted/30", "code": "className", "codeValue": "\"even:bg-muted/30\" on each TableRow" },
+        { "figma": "Instance swap", "value": "Change row state/striped/checkbox", "code": "Props on each child", "codeValue": "Set data-state, className per TableRow" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus through interactive elements inside cells" },
+          { "key": "Enter / Space", "action": "Activate focused interactive element within a cell" }
+        ],
+        "notes": [
+          "Compose with TableHeader > TableRow > TableHead for accessible column headers.",
+          "TableCaption provides the table's accessible name — place inside Table component.",
+          "For sortable columns, add aria-sort to TableHead elements."
+        ]
+      },
+
+      "related": [
+        { "name": "Table Header", "desc": "Sub-component — header row with Cell Header instances, placed as first child." },
+        { "name": "Table Row", "desc": "Sub-component — data rows with Cell Row instances, composed below the header." },
+        { "name": "Cell Row", "desc": "Leaf sub-component — individual data cells within Table Row." },
+        { "name": "Cell Header", "desc": "Leaf sub-component — individual header cells within Table Header." },
+        { "name": "Pagination", "desc": "Pair below the table for paginated data navigation." },
+        { "name": "Checkbox", "desc": "Instanced inside Cell Row/Cell Header for row and select-all selection." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

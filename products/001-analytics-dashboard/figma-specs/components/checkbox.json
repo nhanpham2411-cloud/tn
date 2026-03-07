@@ -1,0 +1,134 @@
+{
+  "components": [
+    {
+      "name": "Checkbox",
+      "description": "A control that allows the user to toggle between checked and not checked. Supports three values: unchecked, checked, and indeterminate for partial-selection patterns.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-checkbox",
+        "import": "import { Checkbox } from \"@/components/ui/checkbox\""
+      },
+
+      "properties": {
+        "Value": ["Unchecked", "Checked", "Indeterminate"],
+        "State": ["Default", "Hover", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "xs",
+        "indicator": {
+          "width": 16,
+          "height": 16,
+          "radius": "sm"
+        },
+        "fill": "input",
+        "stroke": "border-strong",
+        "textStyle": "SP/Body",
+        "textContent": "Accept terms",
+        "textFill": "foreground",
+        "iconSize": 14,
+        "iconFill": "primary-foreground"
+      },
+
+      "variantStyles": {
+        "Value=Unchecked": {},
+        "Value=Checked": { "fill": "primary", "stroke": "primary", "iconLeft": true, "iconLeftName": "Check" },
+        "Value=Indeterminate": { "fill": "primary", "stroke": "primary", "iconLeft": true, "iconLeftName": "Minus" },
+
+        "State=Default": {},
+        "State=Hover": { "stroke": "primary", "strokeOpacity": 0.6 },
+        "State=Focus": { "focusRing": "ring" },
+        "State=Disabled": { "opacity": 0.5 },
+
+        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary" },
+        "Value=Indeterminate,State=Hover": { "fill": "primary", "stroke": "primary" },
+        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
+        "Value=Indeterminate,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
+        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 },
+        "Value=Indeterminate,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Default States",
+          "description": "All three value states: unchecked, checked, and indeterminate.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Unchecked", "props": { "Value": "Unchecked", "State": "Default" } },
+            { "label": "Checked", "props": { "Value": "Checked", "State": "Default" } },
+            { "label": "Indeterminate", "props": { "Value": "Indeterminate", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Interactive States",
+          "description": "Hover, focus, and disabled states applied to a checked checkbox.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Hover", "props": { "Value": "Unchecked", "State": "Hover" } },
+            { "label": "Focus", "props": { "Value": "Checked", "State": "Focus" } },
+            { "label": "Disabled", "props": { "Value": "Checked", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "checked", "type": "boolean | \"indeterminate\"", "default": "false", "description": "Controlled checked state" },
+        { "name": "onCheckedChange", "type": "(checked: boolean | 'indeterminate') => void", "default": "—", "description": "Callback when checked changes" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the checkbox" },
+        { "name": "aria-invalid", "type": "boolean", "default": "false", "description": "Show error ring styling" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--primary", "value": "violet-600", "description": "Checked background and indeterminate background" },
+        { "token": "--primary-foreground", "value": "white", "description": "Check and minus icon color" },
+        { "token": "--border-strong", "value": "zinc-400", "description": "Unchecked border" },
+        { "token": "--input", "value": "transparent", "description": "Unchecked background" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" },
+        { "token": "--ring-error", "value": "red-500/30", "description": "Error focus ring" },
+        { "token": "--destructive", "value": "red-600", "description": "Error checked background" },
+        { "token": "--destructive-border", "value": "red-500", "description": "Error state border" }
+      ],
+
+      "bestPractices": [
+        { "do": "Wrap Checkbox with a <Label htmlFor> so the full text is clickable and screen readers announce it correctly.", "dont": "Render a standalone checkbox without any visible label — it passes no context to assistive technology." },
+        { "do": "Set checked='indeterminate' on a parent checkbox when only some children are selected.", "dont": "Leave the parent checkbox unchecked when some children are checked — it misrepresents the current selection." },
+        { "do": "Use Checkbox when the user can pick multiple independent options from a list.", "dont": "Use Checkbox for binary on/off application settings — prefer Switch which better communicates immediate effect." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Indicator", "value": "16×16 rounded-sm", "code": "Checkbox Root", "codeValue": "size-md rounded-sm border border-border-strong bg-input" },
+        { "figma": "Value=Unchecked", "value": "bg-input, border-strong", "code": "unchecked", "codeValue": "No icon" },
+        { "figma": "Value=Checked", "value": "bg-primary, border-primary, Check icon", "code": "checked={true}", "codeValue": "data-[state=checked]:bg-primary" },
+        { "figma": "Value=Indeterminate", "value": "bg-primary, border-primary, Minus icon", "code": "checked=\"indeterminate\"", "codeValue": "data-[state=indeterminate]:bg-primary" },
+        { "figma": "State=Hover", "value": "border-primary/60", "code": "hover:", "codeValue": "hover:border-primary/60" },
+        { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the checkbox" },
+          { "key": "Space", "action": "Toggle checked / unchecked" }
+        ],
+        "notes": [
+          "Uses aria-checked for screen readers; indeterminate maps to aria-checked='mixed'",
+          "Indeterminate state must be set programmatically — there is no native HTML equivalent",
+          "Always provide a visible label or aria-label so the purpose is announced"
+        ]
+      },
+
+      "related": [
+        { "name": "Switch", "desc": "Toggle for immediate on/off settings — takes effect without form submit." },
+        { "name": "Radio Group", "desc": "Single selection within a group — only one option can be active at a time." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

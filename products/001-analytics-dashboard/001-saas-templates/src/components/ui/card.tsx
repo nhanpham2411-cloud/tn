@@ -8,13 +8,27 @@ import { cn } from "@/lib/utils"
  * Figma: [SprouX - DS] Foundation & Component
  *
  * Content container with Header, Title, Description, Content, Footer sub-components.
+ *
+ * default  — p-md (16px) flat container, no size prop needed
+ * size="md" — p-xl (24px) flat container, no sub-components needed
+ * size="lg" — p-2xl (32px) flat container, no sub-components needed
  */
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+type CardSize = "md" | "lg"
+
+function Card({
+  className,
+  size,
+  ...props
+}: React.ComponentProps<"div"> & { size?: CardSize }) {
   return (
     <div
       data-slot="card"
+      data-size={size}
       className={cn(
-        "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
+        "rounded-2xl border border-border/60 bg-card text-card-foreground dark:border-border-subtle",
+        !size && "p-md",
+        size === "md" && "p-xl",
+        size === "lg" && "p-2xl",
         className
       )}
       {...props}
@@ -36,7 +50,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("typo-heading-4 text-foreground", className)}
+      className={cn("sp-h4 text-foreground", className)}
       {...props}
     />
   )

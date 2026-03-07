@@ -1,0 +1,319 @@
+{
+  "components": [
+    {
+      "name": "Card Slot",
+      "description": "Swappable content slot for Card body. Swap this instance to customize the card content.",
+      "category": "Layout",
+
+      "properties": {
+        "Content": ["Form", "Text"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "md",
+        "fillWidth": true,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Field Name",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Name" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "Nhan Duarte" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Field Framework",
+            "type": "frame",
+            "layout": "vertical",
+            "counterAlign": "start",
+            "gap": "3xs",
+            "fillWidth": true,
+            "showWhen": "Content=Form",
+            "children": [
+              {
+                "name": "Label",
+                "type": "instance",
+                "component": "Label",
+                "variants": { "Required": "No", "State": "Default" },
+                "textOverrides": { "Label": "Framework" }
+              },
+              {
+                "name": "Input",
+                "type": "instance",
+                "component": "Input",
+                "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" },
+                "textOverrides": { "Label": "React + Tailwind" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Body Text",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "Card content area. Place any element here — text, charts, lists, or forms.",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "showWhen": "Content=Text"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Content=Form": {},
+        "Content=Text": {}
+      },
+
+      "showcase": {
+        "sections": []
+      }
+    },
+    {
+      "name": "Card",
+      "description": "A surface container for grouping related content — title, body, and actions — into a visually distinct section. Composed of sub-components (CardHeader, CardTitle, CardDescription, CardContent, CardFooter) for structured layouts, or use size for a flat container with built-in padding.",
+      "category": "Layout",
+      "installation": {
+        "dependencies": "",
+        "import": "import {\n  Card,\n  CardHeader,\n  CardTitle,\n  CardDescription,\n  CardContent,\n  CardFooter,\n} from \"@/components/ui/card\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Size": ["Default", "Medium", "Large"],
+        "Show Header": ["Yes", "No"],
+        "Show Description": ["Yes", "No"],
+        "Show Footer": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "min",
+        "counterAlign": "min",
+        "gap": "sm",
+        "paddingX": "md",
+        "paddingY": "md",
+        "width": 320,
+        "heightMode": "hug",
+        "fill": "card",
+        "stroke": "border",
+        "radius": "2xl",
+        "effectStyleName": "Shadows/sm",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Header",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "min",
+            "counterAlign": "stretch",
+            "gap": "2xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "showWhen": "Show Header=Yes",
+            "children": [
+              {
+                "name": "Title",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "Card Title",
+                "textFill": "foreground",
+                "fillWidth": true
+              },
+              {
+                "name": "Description",
+                "type": "text",
+                "textStyle": "SP/Body",
+                "textContent": "Supporting description for this card.",
+                "textFill": "muted-foreground",
+                "fillWidth": true,
+                "showWhen": "Show Description=Yes"
+              }
+            ]
+          },
+          {
+            "name": "Body",
+            "type": "frame",
+            "layout": "vertical",
+            "fillWidth": true,
+            "children": [
+              {
+                "name": "Slot",
+                "type": "instance",
+                "component": "Card Slot",
+                "variants": { "Content": "Text" },
+                "fillWidth": true
+              }
+            ]
+          },
+          {
+            "name": "Footer",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "space-between",
+            "counterAlign": "center",
+            "gap": "auto",
+            "paddingTop": "xs",
+            "paddingBottom": "none",
+            "paddingLeft": "none",
+            "paddingRight": "none",
+            "widthMode": "fill",
+            "heightMode": "hug",
+            "showWhen": "Show Footer=Yes",
+            "children": [
+              {
+                "name": "Cancel",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Ghost", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Cancel" },
+                "widthMode": "hug"
+              },
+              {
+                "name": "Save",
+                "type": "instance",
+                "component": "Button",
+                "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
+                "textOverrides": { "Label": "Save" },
+                "widthMode": "hug"
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "effectStyleName": "Shadows/md"
+        },
+        "Size=Medium": {
+          "paddingX": "xl",
+          "paddingY": "xl"
+        },
+        "Size=Large": {
+          "paddingX": "2xl",
+          "paddingY": "2xl"
+        },
+        "Show Description=Yes": {},
+        "Show Description=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Default",
+          "description": "Basic card with header, content, and footer. Use for any general-purpose grouped content.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Full card", "props": { "State": "Default", "Size": "Default", "Show Header": "Yes", "Show Description": "Yes", "Show Footer": "Yes" } },
+            { "label": "No description", "props": { "State": "Default", "Size": "Default", "Show Header": "Yes", "Show Description": "No", "Show Footer": "Yes" } },
+            { "label": "No footer", "props": { "State": "Default", "Size": "Default", "Show Header": "Yes", "Show Description": "Yes", "Show Footer": "No" } },
+            { "label": "Content only", "props": { "State": "Default", "Size": "Default", "Show Header": "No", "Show Description": "No", "Show Footer": "No" } }
+          ]
+        },
+        {
+          "name": "Hover",
+          "description": "Hover state elevates the card shadow from shadow-sm to shadow-md for depth.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Size": "Default", "Show Header": "Yes", "Show Footer": "Yes" } },
+            { "label": "Hover", "props": { "State": "Hover", "Size": "Default", "Show Header": "Yes", "Show Footer": "Yes" } }
+          ]
+        },
+        {
+          "name": "Sizes",
+          "description": "Default uses p-md (16px). Medium uses p-xl (24px) for dashboard cards. Large uses p-2xl (32px) for feature cards.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Size": "Default", "Show Header": "No", "Show Footer": "No" } },
+            { "label": "Medium", "props": { "State": "Default", "Size": "Medium", "Show Header": "No", "Show Footer": "No" } },
+            { "label": "Large", "props": { "State": "Default", "Size": "Large", "Show Header": "No", "Show Footer": "No" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "size", "type": "\"md\" | \"lg\"", "default": "--", "description": "Flat container padding: no prop = p-md (16px), md = p-xl (24px), lg = p-2xl (32px). Use when placing content directly without sub-components." },
+        { "name": "className", "type": "string", "default": "--", "description": "Additional CSS classes on the outer container" },
+        { "name": "children", "type": "ReactNode", "default": "--", "description": "CardHeader / CardContent / CardFooter, or direct content when size is set" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / zinc-900", "description": "Card background (bg-card)" },
+        { "token": "--card-foreground", "value": "zinc-950 / zinc-50", "description": "Card text color (text-card-foreground)" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Card border (border-border)" },
+        { "token": "--radius-2xl", "value": "16px", "description": "Card border-radius (rounded-2xl)" },
+        { "token": "--shadow-sm", "value": "0 1px 2px rgba(...)", "description": "Default card shadow" },
+        { "token": "--shadow-md", "value": "0 4px 8px rgba(...)", "description": "Hover card shadow" },
+        { "token": "--spacing-md", "value": "16px", "description": "Default padding (p-md)" },
+        { "token": "--spacing-xl", "value": "24px", "description": "Flat container padding — size=\"md\" (p-xl)" },
+        { "token": "--spacing-2xl", "value": "32px", "description": "Flat container padding — size=\"lg\" (p-2xl)" },
+        { "token": "--spacing-2xs", "value": "4px", "description": "Gap between Title and Description (gap-2xs)" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use size=\"md\" when placing custom content directly inside Card without sub-components — matches the p-xl (24px) padding used across all dashboard and settings pages.", "dont": "Add p-xl via className to override padding — use the size prop instead so padding is a first-class documented prop." },
+        { "do": "Use CardHeader for title + description, CardContent for the main body, CardFooter for actions. This keeps padding and structure consistent across all cards.", "dont": "Put all content inside a single child div without sub-components when not using size — you lose the consistent padding contract." },
+        { "do": "Keep each card focused on one topic or entity (a project, a user, a metric). Cards work best when they answer a single question.", "dont": "Nest cards inside other cards — flatten the hierarchy and use other layout containers (sections, groups) instead." },
+        { "do": "When CardHeader is absent, apply pt-md to CardContent to restore top spacing.", "dont": "Rely on CardContent's default pt-0 when there is no CardHeader — content will sit flush against the card's top border." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "shadow-sm", "code": "--", "codeValue": "Default shadow" },
+        { "figma": "State=Hover", "value": "shadow-md", "code": "--", "codeValue": "Auto via hover:shadow-md" },
+        { "figma": "Size=Default", "value": "p-md (16px)", "code": "--", "codeValue": "No size prop" },
+        { "figma": "Size=Medium", "value": "p-xl (24px)", "code": "size", "codeValue": "\"md\"" },
+        { "figma": "Size=Large", "value": "p-2xl (32px)", "code": "size", "codeValue": "\"lg\"" },
+        { "figma": "Show Header=Yes", "value": "Header visible", "code": "--", "codeValue": "Render CardHeader" },
+        { "figma": "Show Header=No", "value": "Header hidden", "code": "--", "codeValue": "Omit CardHeader" },
+        { "figma": "Show Footer=Yes", "value": "Footer visible", "code": "--", "codeValue": "Render CardFooter" },
+        { "figma": "Show Footer=No", "value": "Footer hidden", "code": "--", "codeValue": "Omit CardFooter" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to interactive elements inside the card (buttons, inputs, links)" },
+          { "key": "Enter / Space", "action": "Activate the focused interactive element within the card" }
+        ],
+        "notes": [
+          "Card is a layout container (div) — not inherently interactive or focusable itself.",
+          "CardTitle renders as a div — if a semantic heading is needed, pass a heading element via asChild or override the rendered element.",
+          "Add aria-label to Card when multiple cards share similar titles on the same page.",
+          "When a card represents a clickable entity, wrap it in an anchor or button rather than adding onClick to the Card div."
+        ]
+      },
+
+      "related": [
+        { "name": "Accordion", "desc": "Collapsible content sections — use when card content can be hidden to reduce cognitive load." },
+        { "name": "Dialog", "desc": "Modal overlay for focused content — use when a card action needs a dedicated full-screen treatment." },
+        { "name": "Table", "desc": "Structured row/column data display — use instead of a grid of Cards when content is tabular." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "components": [
+    {
+      "name": "Switch",
+      "description": "A toggle switch for boolean on/off settings that take effect immediately. Visually distinct from Checkbox — communicates an instant action rather than a deferred selection.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-switch",
+        "import": "import { Switch } from \"@/components/ui/switch\""
+      },
+
+      "properties": {
+        "Value": ["Off", "On"],
+        "State": ["Default", "Hover", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "xs",
+        "indicator": {
+          "width": 33,
+          "height": 18,
+          "radius": "xl",
+          "paddingX": 1,
+          "paddingY": 1,
+          "thumb": {
+            "width": 16,
+            "height": 16,
+            "radius": "full",
+            "fill": "background"
+          }
+        },
+        "fill": "border",
+        "indicatorAlign": "min",
+        "textStyle": "SP/Body",
+        "textContent": "Airplane Mode",
+        "textFill": "foreground"
+      },
+
+      "variantStyles": {
+        "Value=Off": { "fill": "border", "indicatorAlign": "min" },
+        "Value=On": { "fill": "primary", "indicatorAlign": "max" },
+
+        "State=Default": {},
+        "State=Hover": { "opacity": 0.9 },
+        "State=Focus": { "focusRing": "ring" },
+        "State=Disabled": { "opacity": 0.5 },
+
+        "Value=On,State=Hover": { "fill": "primary", "indicatorAlign": "max", "opacity": 0.9 },
+        "Value=On,State=Focus": { "fill": "primary", "indicatorAlign": "max", "focusRing": "ring" },
+        "Value=On,State=Disabled": { "fill": "primary", "indicatorAlign": "max", "opacity": 0.5 }
+      },
+
+      "examples": [
+        {
+          "name": "Default States",
+          "description": "Off and on states side by side.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Off", "props": { "Value": "Off", "State": "Default" } },
+            { "label": "On", "props": { "Value": "On", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Interactive States",
+          "description": "Hover, focus, and disabled states applied to the on state.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Hover", "props": { "Value": "On", "State": "Hover" } },
+            { "label": "Focus", "props": { "Value": "On", "State": "Focus" } },
+            { "label": "Disabled", "props": { "Value": "On", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "checked", "type": "boolean", "default": "false", "description": "Controlled toggle state" },
+        { "name": "defaultChecked", "type": "boolean", "default": "false", "description": "Uncontrolled initial state" },
+        { "name": "onCheckedChange", "type": "(checked: boolean) => void", "default": "—", "description": "Callback when toggled" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the switch" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--primary", "value": "violet-600", "description": "On state track background" },
+        { "token": "--border", "value": "zinc-200", "description": "Off state track background" },
+        { "token": "--background", "value": "white", "description": "Thumb color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Switch for settings that apply instantly — dark mode, notifications, feature flags.", "dont": "Use Switch for choices requiring an explicit save or form submit — use Checkbox instead." },
+        { "do": "Pair Switch with a Label on the same row using justify-between for clear visual association.", "dont": "Use Switch without a label or with only an icon — the on/off state won't be clear to all users." },
+        { "do": "Write the label to describe the setting in its active state — e.g. 'Receive notifications'.", "dont": "Repeat On/Off in the label — the switch thumb position already communicates the current state." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Track", "value": "33x18 rounded-xl p-px", "code": "Switch Root", "codeValue": "h-[18px] w-[33px] rounded-xl p-px" },
+        { "figma": "Thumb", "value": "16x16 rounded-full bg-background", "code": "SwitchThumb", "codeValue": "size-md rounded-full bg-background" },
+        { "figma": "Value=Off", "value": "bg-border, thumb left", "code": "data-[state=unchecked]", "codeValue": "data-[state=unchecked]:bg-border translate-x-0" },
+        { "figma": "Value=On", "value": "bg-primary, thumb right", "code": "data-[state=checked]", "codeValue": "data-[state=checked]:bg-primary translate-x-[15px]" },
+        { "figma": "State=Hover", "value": "opacity 90%", "code": "hover:", "codeValue": "hover:opacity-90" },
+        { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the switch" },
+          { "key": "Space", "action": "Toggle on / off" }
+        ],
+        "notes": [
+          "Uses role='switch' with aria-checked — screen readers announce 'on' or 'off'",
+          "Always provide a visible label or aria-label to describe what the switch controls",
+          "Consider adding aria-describedby for switches with non-obvious effects"
+        ]
+      },
+
+      "related": [
+        { "name": "Checkbox", "desc": "For selections submitted as part of a form — the change has no immediate effect." },
+        { "name": "Toggle", "desc": "Button-style on/off control for toolbar and formatting contexts." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}
