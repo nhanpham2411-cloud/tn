@@ -2,7 +2,7 @@
 
 > File tham chiếu dùng chung cho TẤT CẢ products trong `tn/`.
 > Trước khi bắt đầu bất kỳ task nào, ĐỌC file này.
-> Cập nhật: 2026-03-07 | 88 lessons
+> Cập nhật: 2026-03-08 | 91 lessons
 
 ---
 
@@ -25,6 +25,7 @@
 - [D12. Plugin — Icon Instance in Children](#d12-plugin--icon-instance-in-children) (#81-#83)
 - [D13. Plugin — Zero Value Variable Binding](#d13-plugin--zero-value-variable-binding) (#87)
 - [D14. Component Layout — Full-Width Divider Pattern](#d14-component-layout--full-width-divider-pattern) (#88)
+- [D15. Foundation Docs — Web ↔ JSON Sync](#d15-foundation-docs--web--json-sync) (#89-#91)
 - [E. Workflow & Process](#e-workflow--process) (#29-#33)
 
 ---
@@ -1531,3 +1532,26 @@ if (_compSet) {
 → Body Scrollable border spans full dialog width, content vẫn có padding.
 
 **Áp dụng cho**: Dialog (scrollable variant), Sheet (scrollable), Drawer (scrollable) — bất kỳ component nào cần child border span full width trong vertical auto-layout.
+
+## D15. Foundation Docs — Web ↔ JSON Sync
+
+### #89: Foundation token không tồn tại trong CSS — PHẢI grep trước khi thêm vào JSON
+
+**Sai**: Thêm `destructive-hover` vào `colors.json` mà không verify trong `index.css` → JSON có token Figma plugin không resolve được.
+
+**Đúng**: Trước khi thêm bất kỳ token nào vào foundation doc JSON, PHẢI chạy `grep "token-name" index.css` để confirm nó tồn tại. Source of truth = `index.css` CSS custom properties.
+
+### #90: Foundation doc JSON thiếu section/items so với web — PHẢI đếm và match chính xác
+
+**Sai**: `colors.json` Sidebar section có 6 items, web có 10. `colors.json` thiếu hoàn toàn Chart section (web có 6 items). → Figma docs page thiếu tokens.
+
+**Đúng**: Khi update foundation docs, đếm items trong TỪNG section trên web, so sánh với JSON. Count phải khớp 100%. Workflow:
+1. Update web `*Docs()` trước (source of truth for visual)
+2. Update JSON để match web chính xác (same sections, same items, same order)
+3. Verify: `grep -c "variable" colors.json` vs đếm items trên web
+
+### #91: Foundation doc `tw` values bị viết tắt — PHẢI dùng full Tailwind class name
+
+**Sai**: `"tw": "text-destructive-subtle-fg"`, `"tw": "text-brand-subtle-fg"` → không khớp web, gây confusion khi devs reference.
+
+**Đúng**: `"tw": "text-destructive-subtle-foreground"`, `"tw": "text-brand-subtle-foreground"` — copy full class name từ web, KHÔNG tự rút gọn. Áp dụng cho tất cả `tw` fields: `bg-*`, `text-*`, `border-*`, `ring-*`.

@@ -1,0 +1,25 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Border Radius",
+  "description": "Border radius tokens from Figma. Maps to Tailwind rounded-* utilities.",
+  "sections": [
+    {
+      "title": "Scale",
+      "sectionType": "radius-grid",
+      "columns": 5,
+      "items": [
+        { "name": "none", "value": 0, "tw": "rounded-none" },
+        { "name": "xs", "value": 2, "tw": "rounded-xs" },
+        { "name": "sm", "value": 4, "tw": "rounded-sm" },
+        { "name": "md", "value": 6, "tw": "rounded-md" },
+        { "name": "lg", "value": 8, "tw": "rounded-lg" },
+        { "name": "10", "value": 10, "tw": "rounded-10" },
+        { "name": "xl", "value": 12, "tw": "rounded-xl" },
+        { "name": "2xl", "value": 16, "tw": "rounded-2xl" },
+        { "name": "3xl", "value": 24, "tw": "rounded-3xl" },
+        { "name": "full", "value": 9999, "tw": "rounded-full" }
+      ]
+    }
+  ]
+}

@@ -185,7 +185,7 @@
 - CSS synced: +spacing 5xl/6xl, secondary-hover→zinc-300, muted→zinc-100
 
 ### 7b. Design System Page (✅ Done — 2026-03-04)
-- 7 Foundation pages: Colors, Typography, Spacing, Border Radius, Shadows, Icons (1900+), Illustrations
+- 🧱 Foundation page: Colors, Typography, Tokens (spacing, border radius, shadows) merged into 1 page. 🔣 Icons page separate (1900+)
 - 38 component docs, each with 10 sections: Header, Explore Behavior, Installation, Examples, Props, Design Tokens, Best Practices, Figma Mapping, Accessibility, Related
 - ExploreBehavior: button pills pattern, State control on all interactive components
   - Selects render vertical, Toggles render horizontal (flex-wrap)

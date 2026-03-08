@@ -1,0 +1,74 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Typography",
+  "description": "Three font families optimized for readability: Plus Jakarta Sans for headings, Inter for body, JetBrains Mono for code & data.",
+  "sections": [
+    {
+      "title": "Font Families",
+      "sectionType": "font-family",
+      "columns": 3,
+      "items": [
+        { "name": "Plus Jakarta Sans", "usage": "Headings & Titles", "class": "font-heading" },
+        { "name": "Inter", "usage": "Body & UI Text", "class": "font-body" },
+        { "name": "JetBrains Mono", "usage": "Code, Data & KPIs", "class": "font-mono" }
+      ]
+    },
+    {
+      "title": "Headings",
+      "sectionType": "type-scale",
+      "items": [
+        { "name": "H1", "textStyle": "SP/H1", "spec": "Plus Jakarta Sans / ExtraBold / 36px / 40px / -0.02em", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "H2", "textStyle": "SP/H2", "spec": "Plus Jakarta Sans / Bold / 24px / 32px / -0.01em", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "H3", "textStyle": "SP/H3", "spec": "Plus Jakarta Sans / Bold / 20px / 28px / -0.01em", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "H4", "textStyle": "SP/H4", "spec": "Plus Jakarta Sans / SemiBold / 16px / 24px", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "H5", "textStyle": "SP/H5", "spec": "Plus Jakarta Sans / SemiBold / 14px / 20px / 0.01em", "sample": "The quick brown fox jumps over the lazy dog" }
+      ]
+    },
+    {
+      "title": "Body Text",
+      "sectionType": "type-scale",
+      "items": [
+        { "name": "Body LG", "textStyle": "SP/Body LG", "spec": "Inter / Regular / 16px / 24px", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "Body", "textStyle": "SP/Body", "spec": "Inter / Regular / 14px / 20px", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "Body Medium", "textStyle": "SP/Body Medium", "spec": "Inter / Medium / 14px / 20px", "sample": "The quick brown fox jumps over the lazy dog" },
+        { "name": "Body Semibold", "textStyle": "SP/Body Semibold", "spec": "Inter / SemiBold / 14px / 20px", "sample": "The quick brown fox jumps over the lazy dog" }
+      ]
+    },
+    {
+      "title": "Labels & Captions",
+      "sectionType": "type-scale",
+      "items": [
+        { "name": "Label", "textStyle": "SP/Label", "spec": "Inter / Medium / 12px / 16px / 0.02em", "sample": "Form label text" },
+        { "name": "Label Uppercase", "textStyle": "SP/Label Uppercase", "spec": "Inter / SemiBold / 11px / 16px / 0.05em / UPPER", "sample": "SECTION HEADER" },
+        { "name": "Caption", "textStyle": "SP/Caption", "spec": "Inter / Regular / 12px / 16px / 0.01em", "sample": "Helper text and descriptions" },
+        { "name": "Overline", "textStyle": "SP/Overline", "spec": "Inter / SemiBold / 10px / 12px / 0.08em / UPPER", "sample": "CATEGORY LABEL" }
+      ]
+    },
+    {
+      "title": "Data & KPI",
+      "sectionType": "type-scale",
+      "items": [
+        { "name": "KPI Hero", "textStyle": "SP/KPI Hero", "spec": "JetBrains Mono / SemiBold / 48px / 48px / -0.02em", "sample": "$1,234,567" },
+        { "name": "KPI LG", "textStyle": "SP/KPI LG", "spec": "JetBrains Mono / SemiBold / 32px / 36px / -0.01em", "sample": "$123,456" },
+        { "name": "KPI MD", "textStyle": "SP/KPI MD", "spec": "JetBrains Mono / Medium / 24px / 28px / -0.01em", "sample": "$12,345" },
+        { "name": "KPI SM", "textStyle": "SP/KPI SM", "spec": "JetBrains Mono / Medium / 20px / 24px", "sample": "$1,234" },
+        { "name": "Data", "textStyle": "SP/Data", "spec": "JetBrains Mono / Regular / 14px / 20px", "sample": "const x = await fetchData()" },
+        { "name": "Data SM", "textStyle": "SP/Data SM", "spec": "JetBrains Mono / Regular / 12px / 16px / 0.01em", "sample": "0x1a2b3c4d" },
+        { "name": "Order ID", "textStyle": "SP/Order ID", "spec": "JetBrains Mono / Medium / 13px / 20px / 0.02em", "sample": "#ORD-2024-0001" }
+      ]
+    },
+    {
+      "title": "Font Weights",
+      "sectionType": "font-weight",
+      "columns": 4,
+      "items": [
+        { "name": "Regular (400)", "weight": 400, "fontFamily": "Inter", "class": "font-normal" },
+        { "name": "Medium (500)", "weight": 500, "fontFamily": "Inter", "class": "font-medium" },
+        { "name": "SemiBold (600)", "weight": 600, "fontFamily": "Plus Jakarta Sans", "class": "font-semibold" },
+        { "name": "Bold (700)", "weight": 700, "fontFamily": "Plus Jakarta Sans", "class": "font-bold" },
+        { "name": "ExtraBold (800)", "weight": 800, "fontFamily": "Plus Jakarta Sans", "class": "font-extrabold" }
+      ]
+    }
+  ]
+}

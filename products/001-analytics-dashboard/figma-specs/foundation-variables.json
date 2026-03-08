@@ -138,6 +138,8 @@
 
         {"name": "surface-raised", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "#ffffff0f"}},
         {"name": "surface-inset", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "#ffffff0a"}},
+        {"name": "code", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "$raw colors/zinc/900"}},
+        {"name": "code-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/800", "Dark": "$raw colors/zinc/200"}},
 
         {"name": "destructive", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/red/600", "Dark": "$raw colors/red/500"}},
         {"name": "destructive-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},

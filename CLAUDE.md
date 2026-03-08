@@ -17,7 +17,7 @@ tn/
 │       ├── saas-app/       ← React app (Phase 5)
 │       └── figma-specs/    ← JSON specs for Figma plugin (Phase 7)
 ├── plugins/                ← Figma plugin: Generate SaaS Template
-└── common-mistakes.md      ← 48 lessons, read before every session
+└── common-mistakes.md      ← 91 lessons, read before every session
 ```
 
 ## Pipeline (11 phases)
@@ -74,9 +74,9 @@ tn/
 ## References
 All general reference files are in `_refs/`:
 - `_refs/process.md` — full 11-phase pipeline detail
-- `_refs/common-mistakes.md` — 45 recurring mistakes to avoid
+- `_refs/common-mistakes.md` — 91 recurring mistakes to avoid
 - `_refs/component-docs-pattern.md` — 10-section standard for Figma component docs
-- `_refs/plugin-json-pattern.md` — 6-type pattern doc for Figma plugin JSON specs
+- `_refs/plugin-json-pattern.md` — 7-type pattern doc for Figma plugin JSON specs (variables, text styles, effects, icons, components, showcase, foundation docs)
 
 Product-specific (per product in `products/{NNN}/`):
 - `STATUS.md` — current phase & progress

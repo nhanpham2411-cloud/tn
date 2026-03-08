@@ -1,0 +1,233 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Colors",
+  "description": "Semantic color tokens from the design system. All colors adapt to light/dark mode automatically via Figma variable modes.",
+  "sections": [
+    {
+      "title": "Base Colors",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Background", "variable": "background", "tw": "bg-background" },
+        { "name": "Foreground", "variable": "foreground", "tw": "text-foreground" },
+        { "name": "Foreground Subtle", "variable": "foreground-subtle", "tw": "text-foreground-subtle" }
+      ]
+    },
+    {
+      "title": "Card & Popover",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Card", "variable": "card", "tw": "bg-card" },
+        { "name": "Card Foreground", "variable": "card-foreground", "tw": "text-card-foreground" },
+        { "name": "Card Subtle", "variable": "card-subtle", "tw": "bg-card-subtle" },
+        { "name": "Card Subtle FG", "variable": "card-subtle-foreground", "tw": "text-card-subtle-foreground" },
+        { "name": "Popover", "variable": "popover", "tw": "bg-popover" },
+        { "name": "Popover Foreground", "variable": "popover-foreground", "tw": "text-popover-foreground" }
+      ]
+    },
+    {
+      "title": "Primary",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Primary", "variable": "primary", "tw": "bg-primary" },
+        { "name": "Primary Foreground", "variable": "primary-foreground", "tw": "text-primary-foreground" },
+        { "name": "Primary Hover", "variable": "primary-hover", "tw": "bg-primary-hover" },
+        { "name": "Primary 10%", "variable": "primary-10", "tw": "bg-primary/10" },
+        { "name": "Primary 20%", "variable": "primary-20", "tw": "bg-primary/20" },
+        { "name": "Primary Subtle", "variable": "primary-subtle", "tw": "bg-primary-subtle" },
+        { "name": "Primary Subtle FG", "variable": "primary-subtle-foreground", "tw": "text-primary-subtle-foreground" }
+      ]
+    },
+    {
+      "title": "Secondary & Accent",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Secondary", "variable": "secondary", "tw": "bg-secondary" },
+        { "name": "Secondary Foreground", "variable": "secondary-foreground", "tw": "text-secondary-foreground" },
+        { "name": "Secondary Hover", "variable": "secondary-hover", "tw": "bg-secondary-hover" },
+        { "name": "Accent", "variable": "accent", "tw": "bg-accent" },
+        { "name": "Accent Foreground", "variable": "accent-foreground", "tw": "text-accent-foreground" },
+        { "name": "Accent Selected", "variable": "accent-selected", "tw": "bg-accent-selected" },
+        { "name": "Muted", "variable": "muted", "tw": "bg-muted" },
+        { "name": "Muted Foreground", "variable": "muted-foreground", "tw": "text-muted-foreground" }
+      ]
+    },
+    {
+      "title": "Border & Ring",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Border", "variable": "border", "tw": "border-border" },
+        { "name": "Border Subtle", "variable": "border-subtle", "tw": "border-border-subtle" },
+        { "name": "Border Strong", "variable": "border-strong", "tw": "border-border-strong" },
+        { "name": "Border Card", "variable": "border-card", "tw": "border-border-card" },
+        { "name": "Ring", "variable": "ring", "tw": "ring-ring" },
+        { "name": "Ring Error", "variable": "ring-error", "tw": "ring-ring-error" },
+        { "name": "Ring Brand", "variable": "ring-brand", "tw": "ring-ring-brand" },
+        { "name": "Ring Success", "variable": "ring-success", "tw": "ring-ring-success" },
+        { "name": "Ring Warning", "variable": "ring-warning", "tw": "ring-ring-warning" },
+        { "name": "Ring Emphasis", "variable": "ring-emphasis", "tw": "ring-ring-emphasis" }
+      ]
+    },
+    {
+      "title": "Input & Form",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Input", "variable": "input", "tw": "bg-input" },
+        { "name": "Input Readonly", "variable": "input-readonly", "tw": "bg-input-readonly" }
+      ]
+    },
+    {
+      "title": "Ghost & Outline",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Ghost", "variable": "ghost", "tw": "bg-ghost" },
+        { "name": "Ghost Foreground", "variable": "ghost-foreground", "tw": "text-ghost-foreground" },
+        { "name": "Ghost Hover", "variable": "ghost-hover", "tw": "bg-ghost-hover" },
+        { "name": "Outline", "variable": "outline", "tw": "bg-outline" },
+        { "name": "Outline Hover", "variable": "outline-hover", "tw": "bg-outline-hover" }
+      ]
+    },
+    {
+      "title": "Surface & Code",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Surface Raised", "variable": "surface-raised", "tw": "bg-surface-raised" },
+        { "name": "Surface Inset", "variable": "surface-inset", "tw": "bg-surface-inset" },
+        { "name": "Backdrop", "variable": "backdrop", "tw": "bg-backdrop" },
+        { "name": "Code", "variable": "code", "tw": "bg-code" },
+        { "name": "Code Foreground", "variable": "code-foreground", "tw": "text-code-foreground" }
+      ]
+    },
+    {
+      "title": "Destructive",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Destructive", "variable": "destructive", "tw": "bg-destructive" },
+        { "name": "Destructive FG", "variable": "destructive-foreground", "tw": "text-destructive-foreground" },
+        { "name": "Destructive Subtle", "variable": "destructive-subtle", "tw": "bg-destructive-subtle" },
+        { "name": "Destructive Subtle FG", "variable": "destructive-subtle-foreground", "tw": "text-destructive-subtle-foreground" },
+        { "name": "Destructive Border", "variable": "destructive-border", "tw": "border-destructive-border" }
+      ]
+    },
+    {
+      "title": "Success",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Success", "variable": "success", "tw": "bg-success" },
+        { "name": "Success Foreground", "variable": "success-foreground", "tw": "text-success-foreground" },
+        { "name": "Success Subtle", "variable": "success-subtle", "tw": "bg-success-subtle" },
+        { "name": "Success Subtle FG", "variable": "success-subtle-foreground", "tw": "text-success-subtle-foreground" },
+        { "name": "Success Border", "variable": "success-border", "tw": "border-success-border" }
+      ]
+    },
+    {
+      "title": "Warning",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Warning", "variable": "warning", "tw": "bg-warning" },
+        { "name": "Warning Foreground", "variable": "warning-foreground", "tw": "text-warning-foreground" },
+        { "name": "Warning Subtle", "variable": "warning-subtle", "tw": "bg-warning-subtle" },
+        { "name": "Warning Subtle FG", "variable": "warning-subtle-foreground", "tw": "text-warning-subtle-foreground" },
+        { "name": "Warning Border", "variable": "warning-border", "tw": "border-warning-border" }
+      ]
+    },
+    {
+      "title": "Emphasis",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Emphasis", "variable": "emphasis", "tw": "bg-emphasis" },
+        { "name": "Emphasis Foreground", "variable": "emphasis-foreground", "tw": "text-emphasis-foreground" },
+        { "name": "Emphasis Subtle", "variable": "emphasis-subtle", "tw": "bg-emphasis-subtle" },
+        { "name": "Emphasis Subtle FG", "variable": "emphasis-subtle-foreground", "tw": "text-emphasis-subtle-foreground" },
+        { "name": "Emphasis Border", "variable": "emphasis-border", "tw": "border-emphasis-border" }
+      ]
+    },
+    {
+      "title": "Brand",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Brand", "variable": "brand", "tw": "bg-brand" },
+        { "name": "Brand Foreground", "variable": "brand-foreground", "tw": "text-brand-foreground" },
+        { "name": "Brand Hover", "variable": "brand-hover", "tw": "bg-brand-hover" },
+        { "name": "Brand Subtle", "variable": "brand-subtle", "tw": "bg-brand-subtle" },
+        { "name": "Brand Subtle FG", "variable": "brand-subtle-foreground", "tw": "text-brand-subtle-foreground" },
+        { "name": "Brand Subtle FG Hover", "variable": "brand-subtle-foreground-hover", "tw": "text-brand-subtle-foreground-hover" },
+        { "name": "Brand Border", "variable": "brand-border", "tw": "border-brand-border" }
+      ]
+    },
+    {
+      "title": "Glass",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Glass Bg", "variable": "glass-bg", "tw": "bg-glass-bg" },
+        { "name": "Glass Bg Hover", "variable": "glass-bg-hover", "tw": "bg-glass-bg-hover" },
+        { "name": "Glass Border", "variable": "glass-border", "tw": "border-glass-border" },
+        { "name": "Glass Border Hover", "variable": "glass-border-hover", "tw": "border-glass-border-hover" }
+      ]
+    },
+    {
+      "title": "Chart",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Chart 1", "variable": "chart-1", "tw": "bg-chart-1" },
+        { "name": "Chart 2", "variable": "chart-2", "tw": "bg-chart-2" },
+        { "name": "Chart 3", "variable": "chart-3", "tw": "bg-chart-3" },
+        { "name": "Chart 4", "variable": "chart-4", "tw": "bg-chart-4" },
+        { "name": "Chart 5", "variable": "chart-5", "tw": "bg-chart-5" },
+        { "name": "Chart 6", "variable": "chart-6", "tw": "bg-chart-6" }
+      ]
+    },
+    {
+      "title": "Sidebar",
+      "sectionType": "color-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Sidebar Background", "variable": "sidebar-background", "tw": "bg-sidebar-background" },
+        { "name": "Sidebar Foreground", "variable": "sidebar-foreground", "tw": "text-sidebar-foreground" },
+        { "name": "Sidebar Primary", "variable": "sidebar-primary", "tw": "bg-sidebar-primary" },
+        { "name": "Sidebar Primary FG", "variable": "sidebar-primary-foreground", "tw": "text-sidebar-primary-fg" },
+        { "name": "Sidebar Accent", "variable": "sidebar-accent", "tw": "bg-sidebar-accent" },
+        { "name": "Sidebar Accent FG", "variable": "sidebar-accent-foreground", "tw": "text-sidebar-accent-foreground" },
+        { "name": "Sidebar Accent Hover", "variable": "sidebar-accent-hover", "tw": "bg-sidebar-accent-hover" },
+        { "name": "Sidebar Muted", "variable": "sidebar-muted", "tw": "text-sidebar-muted" },
+        { "name": "Sidebar Border", "variable": "sidebar-border", "tw": "border-sidebar-border" },
+        { "name": "Sidebar Ring", "variable": "sidebar-ring", "tw": "ring-sidebar-ring" }
+      ]
+    },
+    {
+      "title": "Color Palettes",
+      "sectionType": "palette",
+      "palettes": [
+        { "name": "Violet", "shades": { "50": "#f5f3ff", "100": "#ede9fe", "200": "#ddd6fe", "300": "#c4b5fd", "400": "#a78bfa", "500": "#8b5cf6", "600": "#7c3aed", "700": "#6d28d9", "800": "#5b21b6", "900": "#4c1d95", "950": "#2e1065" } },
+        { "name": "Zinc", "shades": { "50": "#fafafa", "100": "#f4f4f5", "200": "#e4e4e7", "300": "#d4d4d8", "400": "#a1a1aa", "500": "#71717a", "600": "#52525b", "700": "#3f3f46", "800": "#27272a", "900": "#18181b", "950": "#09090b" } },
+        { "name": "Red", "shades": { "50": "#fef2f2", "100": "#ffe2e2", "200": "#fecaca", "300": "#fca5a5", "400": "#f87171", "500": "#ef4444", "600": "#dc2626", "700": "#b91c1c", "800": "#991b1b", "900": "#7f1d1d", "950": "#450a0a" } },
+        { "name": "Green", "shades": { "50": "#f0fdf4", "100": "#dcfce7", "200": "#bbf7d0", "300": "#86efac", "400": "#4ade80", "500": "#22c55e", "600": "#16a34a", "700": "#15803d", "800": "#166534", "900": "#14532d", "950": "#052e16" } },
+        { "name": "Amber", "shades": { "50": "#fffbeb", "100": "#fef3c7", "200": "#fde68a", "300": "#fcd34d", "400": "#fbbf24", "500": "#f59e0b", "600": "#d97706", "700": "#b45309", "800": "#92400e", "900": "#78350f", "950": "#451a03" } },
+        { "name": "Blue", "shades": { "50": "#eff6ff", "100": "#dbeafe", "200": "#bfdbfe", "300": "#93c5fd", "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb", "700": "#1d4ed8", "800": "#1e40af", "900": "#1e3a8a", "950": "#172554" } },
+        { "name": "Teal", "shades": { "50": "#f0fdfa", "100": "#ccfbf1", "200": "#99f6e4", "300": "#5eead4", "400": "#2dd4bf", "500": "#14b8a6", "600": "#0d9488", "700": "#0f766e", "800": "#115e59", "900": "#134e4a", "950": "#042f2e" } },
+        { "name": "Indigo", "shades": { "50": "#eef2ff", "100": "#e0e7ff", "200": "#c7d2fe", "300": "#a5b4fc", "400": "#818cf8", "500": "#6366f1", "600": "#4f46e5", "700": "#4338ca", "800": "#3730a3", "900": "#312e81", "950": "#1e1b4b" } },
+        { "name": "Rose", "shades": { "50": "#fff1f2", "100": "#ffe4e6", "200": "#fecdd3", "300": "#fda4af", "400": "#fb7185", "500": "#f43f5e", "600": "#e11d48", "700": "#be123c", "800": "#9f1239", "900": "#881337", "950": "#4c0519" } },
+        { "name": "Emerald", "shades": { "50": "#ecfdf5", "100": "#d1fae5", "200": "#a7f3d0", "300": "#6ee7b7", "400": "#34d399", "500": "#10b981", "600": "#059669", "700": "#047857", "800": "#065f46", "900": "#064e3b", "950": "#022c22" } },
+        { "name": "Orange", "shades": { "50": "#fff7ed", "100": "#ffedd5", "200": "#fed7aa", "300": "#fdba74", "400": "#fb923c", "500": "#f97316", "600": "#ea580c", "700": "#c2410c", "800": "#9a3412", "900": "#7c2d12", "950": "#431407" } },
+        { "name": "Purple", "shades": { "50": "#faf5ff", "100": "#f3e8ff", "200": "#e9d5ff", "300": "#d8b4fe", "400": "#c084fc", "500": "#a855f7", "600": "#9333ea", "700": "#7e22ce", "800": "#6b21a8", "900": "#581c87", "950": "#3b0764" } },
+        { "name": "Cyan", "shades": { "50": "#ecfeff", "100": "#cffafe", "200": "#a5f3fc", "300": "#67e8f9", "400": "#22d3ee", "500": "#06b6d4", "600": "#0891b2", "700": "#0e7490", "800": "#155e75", "900": "#164e63", "950": "#083344" } },
+        { "name": "Pink", "shades": { "50": "#fdf2f8", "100": "#fce7f3", "200": "#fbcfe8", "300": "#f9a8d4", "400": "#f472b6", "500": "#ec4899", "600": "#db2777", "700": "#be185d", "800": "#9d174d", "900": "#831843", "950": "#500724" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Illustrations",
+  "description": "Placeholder patterns and decorative elements used for empty states, onboarding, and feature highlights.",
+  "sections": [
+    {
+      "title": "Empty States",
+      "sectionType": "illustration-grid",
+      "columns": 3,
+      "items": [
+        { "name": "No Data", "icon": "BarChart3", "desc": "Used when charts or tables have no data to display." },
+        { "name": "No Results", "icon": "Search", "desc": "Used when a search or filter returns no matches." },
+        { "name": "No Items", "icon": "Package", "desc": "Used when a list or collection is empty." }
+      ]
+    },
+    {
+      "title": "Decorative Patterns",
+      "sectionType": "pattern-grid",
+      "columns": 2,
+      "items": [
+        { "name": "Gradient Background", "desc": "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" },
+        { "name": "Radial Glow", "desc": "radial-gradient with primary color" }
+      ]
+    },
+    {
+      "title": "Guidelines",
+      "sectionType": "guidelines",
+      "items": [
+        "Use Lucide icons at larger sizes (32-48px) with muted backgrounds for empty states",
+        "Gradient patterns should use primary color at low opacity (5-10%)",
+        "Keep illustrations minimal and functional — avoid decorative clutter",
+        "All illustrations must work in both light and dark mode"
+      ]
+    }
+  ]
+}

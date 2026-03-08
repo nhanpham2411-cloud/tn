@@ -74,6 +74,7 @@ A Figma ComponentSet is a **flat matrix** of all property combinations. Each **F
 4. [Icons (Foundation)](#4-icons-foundation)
 5. [Components (ComponentSet + Variants)](#5-components-componentset--variants)
 6. [Showcase (Auto-generated from Component)](#6-showcase-auto-generated-from-component)
+7. [Foundation Docs (Visual Documentation)](#7-foundation-docs-visual-documentation)
 
 ---
 
@@ -250,7 +251,7 @@ A Figma ComponentSet is a **flat matrix** of all property combinations. Each **F
 ```json
 {
   "type": "foundation-icons",
-  "targetPage": "⚙️ Icons",
+  "targetPage": "🔣 Icons",
   "size": 24,
   "icons": [
     {
@@ -887,6 +888,104 @@ Mỗi ComponentSet được tạo trên Figma PHẢI tuân theo các quy tắc v
 
 ---
 
+## 7. Foundation Docs (Visual Documentation)
+
+**Plugin function**: `doFoundationDocs(spec)` (planned — not yet implemented in plugin)
+**JSON files**: `figma-specs/docs/*.json` (7 files)
+**Output**: Visual documentation frames on the 🧱 Foundation page
+
+Foundation Docs are JSON files that define **visual documentation pages** for design tokens — showing color swatches, typography samples, spacing bars, radius demos, effect cards, etc. They are the Figma equivalent of the web React foundation tabs (Colors, Typography, Spacing, Border Radius, Effects, Icons, Illustrations).
+
+### Source of Truth Chain
+
+```
+index.css (CSS custom properties)
+    ↓ defines tokens
+Web DS page (design-system/index.tsx → *Docs() functions)
+    ↓ displays all tokens visually
+Foundation Docs JSON (figma-specs/docs/*.json)
+    ↓ mirrors web sections 1:1
+Figma Foundation page (🧱 Foundation)
+```
+
+**Rule**: Every token in `index.css` MUST appear in the web DS page AND the corresponding JSON doc. When updating one, update ALL three.
+
+### File Inventory
+
+| File | Web Tab | Sections |
+|------|---------|----------|
+| `colors.json` | Colors | 17 sections: Base, Card & Popover, Primary, Secondary & Accent, Border & Ring, Input & Form, Ghost & Outline, Surface & Code, Destructive, Success, Warning, Emphasis, Brand, Glass, Chart, Sidebar, Color Palettes |
+| `typography.json` | Typography | 6 sections: Font Families, Headings, Body Text, Labels & Captions, Data & KPI, Font Weights |
+| `spacing.json` | Spacing | 1 section: Scale (14 items: none→6xl) |
+| `border-radius.json` | Border Radius | 1 section: Scale (10 items: none→full) |
+| `shadows.json` | Effects | 4 sections: Shadows (7), Glass Blur (4), Glow (3), Focus Rings (6) |
+| `illustrations.json` | Illustrations | 3 sections: Empty States, Decorative Patterns, Guidelines |
+| (none) | Icons | Dynamic Lucide browser on web — icons exist as Figma components via `foundation-icons.json` |
+
+### JSON Structure
+
+```json
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Colors",
+  "description": "Description text...",
+  "sections": [
+    {
+      "title": "Section Title",
+      "sectionType": "color-grid|palette|type-scale|font-family|font-weight|spacing-bar|radius-grid|shadow-grid|illustration-grid|pattern-grid|guidelines",
+      "columns": 4,
+      "items": [
+        { "name": "Background", "variable": "background", "tw": "bg-background" }
+      ]
+    }
+  ]
+}
+```
+
+### Section Types
+
+| sectionType | Used in | Item fields |
+|-------------|---------|-------------|
+| `color-grid` | colors.json | `name`, `variable` (Figma var name), `tw` (Tailwind class) |
+| `palette` | colors.json | `name`, `shades` (object: `"50": "#hex"` ... `"950": "#hex"`) |
+| `type-scale` | typography.json | `name`, `textStyle` (Figma text style name e.g. `SP/H1`), `spec`, `sample` |
+| `font-family` | typography.json | `name`, `usage`, `class` |
+| `font-weight` | typography.json | `name`, `weight`, `fontFamily`, `class` |
+| `spacing-bar` | spacing.json | `name`, `value` (px number), `tw` |
+| `radius-grid` | border-radius.json | `name`, `value` (px number), `tw` |
+| `shadow-grid` | shadows.json | `name`, `tw`, `effectStyle` (Figma effect style name), `desc` |
+
+### Color Token Rules
+
+- **Semantic colors** (`variable` field): Bind to Figma variables → auto dark mode
+- **Raw palette hex** (`shades` object): Hardcoded fill → reference colors, no dark mode
+- **Variable names** must match `foundation-variables.json` semantic color collection exactly
+- **`tw` field**: Full Tailwind class including prefix (`bg-`, `text-`, `border-`, `ring-`)
+- **No `destructive-hover`** or other non-existent tokens — only tokens defined in `index.css`
+
+### Sync Protocol — Updating Foundation Docs
+
+When CSS tokens change in `index.css`:
+
+1. **Update web** — edit the `*Docs()` function in `design-system/index.tsx`
+2. **Update JSON** — edit corresponding `figma-specs/docs/*.json` to match web exactly
+3. **Verify sync** — count items per section in web vs JSON — must be identical
+4. **Check tw values** — use full Tailwind class names (e.g. `text-destructive-subtle-foreground`), NOT abbreviations (`text-destructive-subtle-fg`)
+
+### Lessons Learned
+
+| Issue | Fix |
+|-------|-----|
+| `destructive-hover` in JSON but not in CSS | Always grep `index.css` for token existence before adding to JSON |
+| Sidebar section had 6/10 items | Count CSS `--color-sidebar-*` lines and match exactly |
+| Backdrop placement differed (JSON: Base Colors, web: Surface & Code) | Follow web section grouping as source of truth |
+| `tw` abbreviations (`-fg` instead of `-foreground`) | Copy full tw class names from web, no shortcuts |
+| Chart section missing entirely | Scan ALL `--color-*` lines in `index.css` — don't miss any category |
+| Icons tab = dynamic browser | Not suitable for static JSON doc — icons already exist as Figma components |
+
+---
+
 ## Quick Checklist — Before Submitting Any JSON
 
 ### Variables
@@ -941,3 +1040,12 @@ Mỗi ComponentSet được tạo trên Figma PHẢI tuân theo các quy tắc v
 - [ ] Form components (Input/Select/Textarea) do NOT use `hideLabel: true` — label is the placeholder/value text
 - [ ] Focus states use `effectStyleName: "Ring/default"` (preferred) or `focusRing: "ring"` (for indicators)
 - [ ] **All `radius` values use string tokens** (`"none"`, `"full"`, `"lg"`, `"md"`, `"sm"`, etc.) — NEVER raw numbers like `9999`, `16`, `8`. Applies to `base.radius`, `variantStyles.radius`, `children[].radius`, `indicator.radius`. Plugin auto-binds `border radius/none` for number `0` as safety net, but string `"none"` is preferred for explicit zero radius.
+
+### Foundation Docs
+- [ ] Every token in `index.css` appears in both the web DS page AND the JSON doc
+- [ ] `variable` names match `foundation-variables.json` semantic color collection
+- [ ] `tw` values use full Tailwind class names (no abbreviations like `-fg`)
+- [ ] `textStyle` values use Figma text style names (`SP/H1`, not CSS classes)
+- [ ] `effectStyle` values match Figma effect style names exactly (`Shadows/md`, `Glass/card`, `Ring/default`)
+- [ ] Section count and item count match web DS page exactly
+- [ ] No tokens that don't exist in `index.css` (grep before adding)

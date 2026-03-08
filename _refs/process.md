@@ -1177,6 +1177,11 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 - Generate Figma variables (raw colors, semantic colors, spacing, border radius)
 - Generate text styles, effect styles
 - Verify CSS ↔ Figma sync
+- **Foundation Docs**: Create/update visual documentation JSONs in `figma-specs/docs/` (7 files: colors, typography, spacing, border-radius, shadows, illustrations, icons)
+  - Source chain: `index.css` → web DS page `*Docs()` → `figma-specs/docs/*.json` → Figma Foundation page
+  - Every token in `index.css` must appear in both web and JSON
+  - Sync protocol: update web first, then JSON, then verify counts match
+  - Reference: `_refs/plugin-json-pattern.md` → "Foundation Docs (Visual Documentation)"
 
 #### 7b. Design System Page
 - Viết component docs theo chuẩn `component-docs-pattern.md` (10 sections)
@@ -1215,6 +1220,7 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 
 ### Checklist
 - [ ] Foundation variables + text styles + effects synced
+- [ ] Foundation Docs JSONs (`figma-specs/docs/*.json`) match web DS page tabs 1:1 (item counts, section names, token names)
 - [ ] Component docs viết theo `component-docs-pattern.md` (10 sections)
 - [ ] Explore Behavior shows component face (NOT trigger)
 - [ ] Group+Item components: Tab 2 item state syncs into Tab 1 group

@@ -1,0 +1,56 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Effects",
+  "description": "All Figma effect styles: shadows, glass blur, glow accents, and focus rings. Each card applies the actual Figma effect style.",
+  "sections": [
+    {
+      "title": "Shadows",
+      "sectionType": "shadow-grid",
+      "columns": 3,
+      "items": [
+        { "name": "2xs", "tw": "shadow-2xs", "effectStyle": "Shadows/2xs", "desc": "0 1px 0 black/5%" },
+        { "name": "xs", "tw": "shadow-xs", "effectStyle": "Shadows/xs", "desc": "0 1px 2px black/5%" },
+        { "name": "sm (default)", "tw": "shadow", "effectStyle": "Shadows/sm", "desc": "0 1px 3px black/10%, 0 1px 2px -1px black/10%" },
+        { "name": "md", "tw": "shadow-md", "effectStyle": "Shadows/md", "desc": "0 4px 6px -1px black/10%, 0 2px 4px -2px black/10%" },
+        { "name": "lg", "tw": "shadow-lg", "effectStyle": "Shadows/lg", "desc": "0 10px 15px -3px black/10%, 0 4px 6px -4px black/10%" },
+        { "name": "xl", "tw": "shadow-xl", "effectStyle": "Shadows/xl", "desc": "0 20px 25px -5px black/10%, 0 8px 10px -6px black/10%" },
+        { "name": "2xl", "tw": "shadow-2xl", "effectStyle": "Shadows/2xl", "desc": "0 25px 50px 12px black/25%" }
+      ]
+    },
+    {
+      "title": "Glass Blur",
+      "sectionType": "shadow-grid",
+      "columns": 4,
+      "items": [
+        { "name": "Glass Card", "tw": "backdrop-blur-md", "effectStyle": "Glass/card", "desc": "Background blur 12px" },
+        { "name": "Glass Elevated", "tw": "backdrop-blur-lg", "effectStyle": "Glass/elevated", "desc": "Background blur 16px" },
+        { "name": "Glass Panel", "tw": "backdrop-blur-xl", "effectStyle": "Glass/panel", "desc": "Background blur 24px" },
+        { "name": "Glass Accent", "tw": "backdrop-blur-md", "effectStyle": "Glass/accent", "desc": "Background blur 12px (accent)" }
+      ]
+    },
+    {
+      "title": "Glow",
+      "sectionType": "shadow-grid",
+      "columns": 3,
+      "items": [
+        { "name": "Glow Accent", "tw": "glow-accent", "effectStyle": "Glow/accent", "desc": "Violet glow — 3 layers (spread + blur 20 + blur 40)" },
+        { "name": "Glow Success", "tw": "glow-success", "effectStyle": "Glow/success", "desc": "Green glow — 2 layers (spread + blur 20)" },
+        { "name": "Glow Destructive", "tw": "glow-destructive", "effectStyle": "Glow/destructive", "desc": "Red glow — 2 layers (spread + blur 20)" }
+      ]
+    },
+    {
+      "title": "Focus Rings",
+      "sectionType": "shadow-grid",
+      "columns": 3,
+      "items": [
+        { "name": "Ring Default", "tw": "ring", "effectStyle": "Ring/default", "desc": "Zinc 800 — 3px spread, 0 blur" },
+        { "name": "Ring Error", "tw": "ring-error", "effectStyle": "Ring/error", "desc": "Red 900 — 3px spread, 0 blur" },
+        { "name": "Ring Brand", "tw": "ring-brand", "effectStyle": "Ring/brand", "desc": "Violet 900 — 3px spread, 0 blur" },
+        { "name": "Ring Success", "tw": "ring-success", "effectStyle": "Ring/success", "desc": "Green 900 — 3px spread, 0 blur" },
+        { "name": "Ring Warning", "tw": "ring-warning", "effectStyle": "Ring/warning", "desc": "Amber 900 — 3px spread, 0 blur" },
+        { "name": "Ring Emphasis", "tw": "ring-emphasis", "effectStyle": "Ring/emphasis", "desc": "Blue 900 — 3px spread, 0 blur" }
+      ]
+    }
+  ]
+}

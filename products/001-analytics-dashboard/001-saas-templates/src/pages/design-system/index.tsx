@@ -313,9 +313,9 @@ function CodeBlockFlush({ code }: { code: string }) {
     setTimeout(() => setCopied(false), 2000)
   }, [code])
   return (
-    <div className="group relative bg-zinc-950 text-zinc-100 text-[13px] p-md overflow-x-auto border-t border-border">
+    <div className="group relative bg-code text-code-foreground text-[13px] p-md overflow-x-auto border-t border-border">
       <pre className="font-mono whitespace-pre-wrap">{code}</pre>
-      <button onClick={copy} className="absolute top-2 right-2 p-1 rounded bg-zinc-800/80 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button onClick={copy} className="absolute top-2 right-2 p-1 rounded bg-muted/60 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
         {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
       </button>
     </div>
@@ -8496,30 +8496,23 @@ function ContextMenuDocs() {
 // ============================================================
 
 function ColorsDocs() {
-  const semanticColors = [
-    { name: "Background", var: "background", tw: "bg-background" },
-    { name: "Foreground", var: "foreground", tw: "text-foreground" },
-    { name: "Primary", var: "primary", tw: "bg-primary" },
-    { name: "Primary Foreground", var: "primary-foreground", tw: "text-primary-foreground" },
-    { name: "Secondary", var: "secondary", tw: "bg-secondary" },
-    { name: "Muted", var: "muted", tw: "bg-muted" },
-    { name: "Muted Foreground", var: "muted-foreground", tw: "text-muted-foreground" },
-    { name: "Accent", var: "accent", tw: "bg-accent" },
-    { name: "Destructive", var: "destructive", tw: "bg-destructive" },
-    { name: "Border", var: "border", tw: "border-border" },
-    { name: "Ring", var: "ring", tw: "ring-ring" },
-    { name: "Card", var: "card", tw: "bg-card" },
-  ]
-  const statusColors = [
-    { name: "Success", var: "success", tw: "bg-success" },
-    { name: "Success Subtle", var: "success-subtle", tw: "bg-success-subtle" },
-    { name: "Warning", var: "warning", tw: "bg-warning" },
-    { name: "Warning Subtle", var: "warning-subtle", tw: "bg-warning-subtle" },
-    { name: "Emphasis", var: "emphasis", tw: "bg-emphasis" },
-    { name: "Emphasis Subtle", var: "emphasis-subtle", tw: "bg-emphasis-subtle" },
-    { name: "Brand", var: "brand", tw: "bg-brand" },
-    { name: "Brand Subtle", var: "brand-subtle", tw: "bg-brand-subtle" },
-  ]
+  const ColorGrid = ({ title, items }: { title: string; items: { name: string; var: string; tw: string }[] }) => (
+    <section className="space-y-md">
+      <h2 className="text-lg font-semibold font-heading">{title}</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm">
+        {items.map(c => (
+          <div key={c.var} className="border border-border rounded-lg overflow-hidden">
+            <div className="h-16" style={{ backgroundColor: `var(--${c.var})` }} />
+            <div className="p-xs">
+              <p className="font-semibold text-xs">{c.name}</p>
+              <p className="text-[10px] font-mono text-muted-foreground">--{c.var}</p>
+              <p className="text-[10px] font-mono text-muted-foreground">{c.tw}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
   return (
     <div className="space-y-3xl">
       <header>
@@ -8527,36 +8520,148 @@ function ColorsDocs() {
         <h1 className="text-2xl font-bold font-heading mt-xs">Colors</h1>
         <p className="text-muted-foreground mt-xs max-w-2xl font-body">Semantic color tokens from the design system. All colors adapt to light/dark mode automatically.</p>
       </header>
-      <section className="space-y-md">
-        <h2 className="text-lg font-semibold font-heading">Semantic Colors</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm">
-          {semanticColors.map(c => (
-            <div key={c.name} className="border border-border rounded-lg overflow-hidden">
-              <div className="h-16" style={{ backgroundColor: `var(--${c.var})` }} />
-              <div className="p-xs">
-                <p className="font-semibold text-xs">{c.name}</p>
-                <p className="text-[10px] font-mono text-muted-foreground">--{c.var}</p>
-                <p className="text-[10px] font-mono text-muted-foreground">{c.tw}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="space-y-md">
-        <h2 className="text-lg font-semibold font-heading">Status Colors</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm">
-          {statusColors.map(c => (
-            <div key={c.name} className="border border-border rounded-lg overflow-hidden">
-              <div className="h-16" style={{ backgroundColor: `var(--${c.var})` }} />
-              <div className="p-xs">
-                <p className="font-semibold text-xs">{c.name}</p>
-                <p className="text-[10px] font-mono text-muted-foreground">--{c.var}</p>
-                <p className="text-[10px] font-mono text-muted-foreground">{c.tw}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+
+      <ColorGrid title="Base Colors" items={[
+        { name: "Background", var: "background", tw: "bg-background" },
+        { name: "Foreground", var: "foreground", tw: "text-foreground" },
+        { name: "Foreground Subtle", var: "foreground-subtle", tw: "text-foreground-subtle" },
+      ]} />
+
+      <ColorGrid title="Card & Popover" items={[
+        { name: "Card", var: "card", tw: "bg-card" },
+        { name: "Card Foreground", var: "card-foreground", tw: "text-card-foreground" },
+        { name: "Card Subtle", var: "card-subtle", tw: "bg-card-subtle" },
+        { name: "Card Subtle Foreground", var: "card-subtle-foreground", tw: "text-card-subtle-foreground" },
+        { name: "Popover", var: "popover", tw: "bg-popover" },
+        { name: "Popover Foreground", var: "popover-foreground", tw: "text-popover-foreground" },
+      ]} />
+
+      <ColorGrid title="Primary" items={[
+        { name: "Primary", var: "primary", tw: "bg-primary" },
+        { name: "Primary Foreground", var: "primary-foreground", tw: "text-primary-foreground" },
+        { name: "Primary Hover", var: "primary-hover", tw: "bg-primary-hover" },
+        { name: "Primary 10%", var: "primary-10", tw: "bg-primary-10" },
+        { name: "Primary 20%", var: "primary-20", tw: "bg-primary-20" },
+        { name: "Primary Subtle", var: "primary-subtle", tw: "bg-primary-subtle" },
+        { name: "Primary Subtle FG", var: "primary-subtle-foreground", tw: "text-primary-subtle-foreground" },
+      ]} />
+
+      <ColorGrid title="Secondary & Accent" items={[
+        { name: "Secondary", var: "secondary", tw: "bg-secondary" },
+        { name: "Secondary Foreground", var: "secondary-foreground", tw: "text-secondary-foreground" },
+        { name: "Secondary Hover", var: "secondary-hover", tw: "bg-secondary-hover" },
+        { name: "Muted", var: "muted", tw: "bg-muted" },
+        { name: "Muted Foreground", var: "muted-foreground", tw: "text-muted-foreground" },
+        { name: "Accent", var: "accent", tw: "bg-accent" },
+        { name: "Accent Foreground", var: "accent-foreground", tw: "text-accent-foreground" },
+        { name: "Accent Selected", var: "accent-selected", tw: "bg-accent-selected" },
+      ]} />
+
+      <ColorGrid title="Border & Ring" items={[
+        { name: "Border", var: "border", tw: "border-border" },
+        { name: "Border Subtle", var: "border-subtle", tw: "border-border-subtle" },
+        { name: "Border Strong", var: "border-strong", tw: "border-border-strong" },
+        { name: "Border Card", var: "border-card", tw: "border-border-card" },
+        { name: "Ring", var: "ring", tw: "ring-ring" },
+        { name: "Ring Error", var: "ring-error", tw: "ring-ring-error" },
+        { name: "Ring Brand", var: "ring-brand", tw: "ring-ring-brand" },
+        { name: "Ring Success", var: "ring-success", tw: "ring-ring-success" },
+        { name: "Ring Warning", var: "ring-warning", tw: "ring-ring-warning" },
+        { name: "Ring Emphasis", var: "ring-emphasis", tw: "ring-ring-emphasis" },
+      ]} />
+
+      <ColorGrid title="Input & Form" items={[
+        { name: "Input", var: "input", tw: "bg-input" },
+        { name: "Input Readonly", var: "input-readonly", tw: "bg-input-readonly" },
+      ]} />
+
+      <ColorGrid title="Ghost & Outline" items={[
+        { name: "Ghost", var: "ghost", tw: "bg-ghost" },
+        { name: "Ghost Foreground", var: "ghost-foreground", tw: "text-ghost-foreground" },
+        { name: "Ghost Hover", var: "ghost-hover", tw: "bg-ghost-hover" },
+        { name: "Outline", var: "outline", tw: "bg-outline" },
+        { name: "Outline Hover", var: "outline-hover", tw: "bg-outline-hover" },
+      ]} />
+
+      <ColorGrid title="Surface & Code" items={[
+        { name: "Surface Raised", var: "surface-raised", tw: "bg-surface-raised" },
+        { name: "Surface Inset", var: "surface-inset", tw: "bg-surface-inset" },
+        { name: "Backdrop", var: "backdrop", tw: "bg-backdrop" },
+        { name: "Code", var: "code", tw: "bg-code" },
+        { name: "Code Foreground", var: "code-foreground", tw: "text-code-foreground" },
+      ]} />
+
+      <ColorGrid title="Destructive" items={[
+        { name: "Destructive", var: "destructive", tw: "bg-destructive" },
+        { name: "Destructive FG", var: "destructive-foreground", tw: "text-destructive-foreground" },
+        { name: "Destructive Subtle", var: "destructive-subtle", tw: "bg-destructive-subtle" },
+        { name: "Destructive Subtle FG", var: "destructive-subtle-foreground", tw: "text-destructive-subtle-foreground" },
+        { name: "Destructive Border", var: "destructive-border", tw: "border-destructive-border" },
+      ]} />
+
+      <ColorGrid title="Success" items={[
+        { name: "Success", var: "success", tw: "bg-success" },
+        { name: "Success FG", var: "success-foreground", tw: "text-success-foreground" },
+        { name: "Success Subtle", var: "success-subtle", tw: "bg-success-subtle" },
+        { name: "Success Subtle FG", var: "success-subtle-foreground", tw: "text-success-subtle-foreground" },
+        { name: "Success Border", var: "success-border", tw: "border-success-border" },
+      ]} />
+
+      <ColorGrid title="Warning" items={[
+        { name: "Warning", var: "warning", tw: "bg-warning" },
+        { name: "Warning FG", var: "warning-foreground", tw: "text-warning-foreground" },
+        { name: "Warning Subtle", var: "warning-subtle", tw: "bg-warning-subtle" },
+        { name: "Warning Subtle FG", var: "warning-subtle-foreground", tw: "text-warning-subtle-foreground" },
+        { name: "Warning Border", var: "warning-border", tw: "border-warning-border" },
+      ]} />
+
+      <ColorGrid title="Emphasis" items={[
+        { name: "Emphasis", var: "emphasis", tw: "bg-emphasis" },
+        { name: "Emphasis FG", var: "emphasis-foreground", tw: "text-emphasis-foreground" },
+        { name: "Emphasis Subtle", var: "emphasis-subtle", tw: "bg-emphasis-subtle" },
+        { name: "Emphasis Subtle FG", var: "emphasis-subtle-foreground", tw: "text-emphasis-subtle-foreground" },
+        { name: "Emphasis Border", var: "emphasis-border", tw: "border-emphasis-border" },
+      ]} />
+
+      <ColorGrid title="Brand" items={[
+        { name: "Brand", var: "brand", tw: "bg-brand" },
+        { name: "Brand Hover", var: "brand-hover", tw: "bg-brand-hover" },
+        { name: "Brand FG", var: "brand-foreground", tw: "text-brand-foreground" },
+        { name: "Brand Subtle", var: "brand-subtle", tw: "bg-brand-subtle" },
+        { name: "Brand Subtle FG", var: "brand-subtle-foreground", tw: "text-brand-subtle-foreground" },
+        { name: "Brand Subtle FG Hover", var: "brand-subtle-foreground-hover", tw: "text-brand-subtle-foreground-hover" },
+        { name: "Brand Border", var: "brand-border", tw: "border-brand-border" },
+      ]} />
+
+      <ColorGrid title="Glass" items={[
+        { name: "Glass BG", var: "glass-bg", tw: "bg-glass-bg" },
+        { name: "Glass BG Hover", var: "glass-bg-hover", tw: "bg-glass-bg-hover" },
+        { name: "Glass Border", var: "glass-border", tw: "border-glass-border" },
+        { name: "Glass Border Hover", var: "glass-border-hover", tw: "border-glass-border-hover" },
+      ]} />
+
+      <ColorGrid title="Chart" items={[
+        { name: "Chart 1", var: "chart-1", tw: "bg-chart-1" },
+        { name: "Chart 2", var: "chart-2", tw: "bg-chart-2" },
+        { name: "Chart 3", var: "chart-3", tw: "bg-chart-3" },
+        { name: "Chart 4", var: "chart-4", tw: "bg-chart-4" },
+        { name: "Chart 5", var: "chart-5", tw: "bg-chart-5" },
+        { name: "Chart 6", var: "chart-6", tw: "bg-chart-6" },
+      ]} />
+
+      <ColorGrid title="Sidebar" items={[
+        { name: "Sidebar", var: "sidebar-background", tw: "bg-sidebar" },
+        { name: "Sidebar FG", var: "sidebar-foreground", tw: "text-sidebar-foreground" },
+        { name: "Sidebar Primary", var: "sidebar-primary", tw: "bg-sidebar-primary" },
+        { name: "Sidebar Primary FG", var: "sidebar-primary-foreground", tw: "text-sidebar-primary-foreground" },
+        { name: "Sidebar Accent", var: "sidebar-accent", tw: "bg-sidebar-accent" },
+        { name: "Sidebar Accent FG", var: "sidebar-accent-foreground", tw: "text-sidebar-accent-foreground" },
+        { name: "Sidebar Accent Hover", var: "sidebar-accent-hover", tw: "bg-sidebar-accent-hover" },
+        { name: "Sidebar Muted", var: "sidebar-muted", tw: "text-sidebar-muted" },
+        { name: "Sidebar Border", var: "sidebar-border", tw: "border-sidebar-border" },
+        { name: "Sidebar Ring", var: "sidebar-ring", tw: "ring-sidebar-ring" },
+      ]} />
+
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Color Palettes</h2>
         {[
@@ -8595,28 +8700,65 @@ function ColorsDocs() {
 }
 
 function TypographyDocs() {
-  const typeScale = [
-    { name: "Heading 1", cls: "text-4xl font-bold font-heading", spec: "Plus Jakarta Sans / Bold / 36px / 40px" },
-    { name: "Heading 2", cls: "text-3xl font-bold font-heading", spec: "Plus Jakarta Sans / Bold / 30px / 36px" },
-    { name: "Heading 3", cls: "text-2xl font-semibold font-heading", spec: "Plus Jakarta Sans / SemiBold / 24px / 32px" },
-    { name: "Heading 4", cls: "text-xl font-semibold font-heading", spec: "Plus Jakarta Sans / SemiBold / 20px / 28px" },
-    { name: "Paragraph", cls: "text-base font-body", spec: "Inter / Regular / 16px / 24px" },
-    { name: "Paragraph SM", cls: "text-sm font-body", spec: "Inter / Regular / 14px / 20px" },
-    { name: "Paragraph XS", cls: "text-xs font-body", spec: "Inter / Regular / 12px / 16px" },
-    { name: "Code", cls: "text-sm font-mono", spec: "JetBrains Mono / Regular / 14px / 20px" },
+  const headings = [
+    { name: "H1", cls: "sp-h1", spec: "Plus Jakarta Sans / ExtraBold / 36px / 40px / -0.02em", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "H2", cls: "sp-h2", spec: "Plus Jakarta Sans / Bold / 24px / 32px / -0.01em", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "H3", cls: "sp-h3", spec: "Plus Jakarta Sans / Bold / 20px / 28px / -0.01em", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "H4", cls: "sp-h4", spec: "Plus Jakarta Sans / SemiBold / 16px / 24px", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "H5", cls: "sp-h5", spec: "Plus Jakarta Sans / SemiBold / 14px / 20px / 0.01em", sample: "The quick brown fox jumps over the lazy dog" },
   ]
+  const bodyText = [
+    { name: "Body LG", cls: "sp-body-lg", spec: "Inter / Regular / 16px / 24px", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "Body", cls: "sp-body", spec: "Inter / Regular / 14px / 20px", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "Body Medium", cls: "sp-body-medium", spec: "Inter / Medium / 14px / 20px", sample: "The quick brown fox jumps over the lazy dog" },
+    { name: "Body Semibold", cls: "sp-body-semibold", spec: "Inter / SemiBold / 14px / 20px", sample: "The quick brown fox jumps over the lazy dog" },
+  ]
+  const labels = [
+    { name: "Label", cls: "sp-label", spec: "Inter / Medium / 12px / 16px / 0.02em", sample: "Form label text" },
+    { name: "Label Uppercase", cls: "sp-label-uppercase", spec: "Inter / SemiBold / 11px / 16px / 0.05em / UPPER", sample: "SECTION HEADER" },
+    { name: "Caption", cls: "sp-caption", spec: "Inter / Regular / 12px / 16px / 0.01em", sample: "Helper text and descriptions" },
+    { name: "Overline", cls: "sp-overline", spec: "Inter / SemiBold / 10px / 12px / 0.08em / UPPER", sample: "CATEGORY LABEL" },
+  ]
+  const dataKpi = [
+    { name: "KPI Hero", cls: "sp-kpi-hero", spec: "JetBrains Mono / SemiBold / 48px / 48px / -0.02em", sample: "$1,234,567" },
+    { name: "KPI LG", cls: "sp-kpi-lg", spec: "JetBrains Mono / SemiBold / 32px / 36px / -0.01em", sample: "$123,456" },
+    { name: "KPI MD", cls: "sp-kpi-md", spec: "JetBrains Mono / Medium / 24px / 28px / -0.01em", sample: "$12,345" },
+    { name: "KPI SM", cls: "sp-kpi-sm", spec: "JetBrains Mono / Medium / 20px / 24px", sample: "$1,234" },
+    { name: "Data", cls: "sp-data", spec: "JetBrains Mono / Regular / 14px / 20px", sample: "const x = await fetchData()" },
+    { name: "Data SM", cls: "sp-data-sm", spec: "JetBrains Mono / Regular / 12px / 16px / 0.01em", sample: "0x1a2b3c4d" },
+    { name: "Order ID", cls: "sp-order-id", spec: "JetBrains Mono / Medium / 13px / 20px / 0.02em", sample: "#ORD-2024-0001" },
+  ]
+  const TypeScaleSection = ({ title, items }: { title: string; items: typeof headings }) => (
+    <section className="space-y-md">
+      <h2 className="text-lg font-semibold font-heading">{title}</h2>
+      <div className="space-y-xs">
+        {items.map(t => (
+          <div key={t.name} className="border border-border rounded-lg p-md flex items-center justify-between gap-md">
+            <div className="space-y-xs min-w-0">
+              <p className={t.cls}>{t.sample}</p>
+              <p className="text-xs font-mono text-muted-foreground">{t.spec}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <span className="text-xs font-mono text-muted-foreground bg-muted px-sm py-1 rounded">{t.name}</span>
+              <p className="text-[10px] font-mono text-muted-foreground mt-3xs">{t.cls}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
   return (
     <div className="space-y-3xl">
       <header>
         <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Foundation</p>
         <h1 className="text-2xl font-bold font-heading mt-xs">Typography</h1>
-        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Three font families optimized for readability: Plus Jakarta Sans for headings, Inter for body, JetBrains Mono for code.</p>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Three font families optimized for readability: Plus Jakarta Sans for headings, Inter for body, JetBrains Mono for code & data.</p>
       </header>
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Font Families</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
           <div className="border border-border rounded-lg p-md space-y-xs">
-            <p className="font-heading font-bold text-xl">Plus Jakarta Sans</p>
+            <p className="font-heading font-extrabold text-xl">Plus Jakarta Sans</p>
             <p className="text-xs text-muted-foreground">Headings & Titles</p>
             <p className="text-xs font-mono text-muted-foreground">font-heading</p>
           </div>
@@ -8627,33 +8769,30 @@ function TypographyDocs() {
           </div>
           <div className="border border-border rounded-lg p-md space-y-xs">
             <p className="font-mono text-xl">JetBrains Mono</p>
-            <p className="text-xs text-muted-foreground">Code & Monospace</p>
+            <p className="text-xs text-muted-foreground">Code, Data & KPIs</p>
             <p className="text-xs font-mono text-muted-foreground">font-mono</p>
           </div>
         </div>
       </section>
-      <section className="space-y-md">
-        <h2 className="text-lg font-semibold font-heading">Type Scale</h2>
-        <div className="space-y-md">
-          {typeScale.map(t => (
-            <div key={t.name} className="border border-border rounded-lg p-md flex items-center justify-between">
-              <div className="space-y-xs">
-                <p className={t.cls}>The quick brown fox jumps over the lazy dog</p>
-                <p className="text-xs font-mono text-muted-foreground">{t.spec}</p>
-              </div>
-              <span className="text-xs font-mono text-muted-foreground bg-muted px-sm py-1 rounded shrink-0 ml-md">{t.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      <TypeScaleSection title="Headings" items={headings} />
+      <TypeScaleSection title="Body Text" items={bodyText} />
+      <TypeScaleSection title="Labels & Captions" items={labels} />
+      <TypeScaleSection title="Data & KPI" items={dataKpi} />
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Font Weights</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-md">
-          {[["Regular (400)","font-normal"],["Medium (500)","font-medium"],["SemiBold (600)","font-semibold"],["Bold (700)","font-bold"]].map(([name,cls]) => (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-md">
+          {[
+            ["Regular (400)","font-normal","Inter"],
+            ["Medium (500)","font-medium","Inter"],
+            ["SemiBold (600)","font-semibold","Plus Jakarta Sans"],
+            ["Bold (700)","font-bold","Plus Jakarta Sans"],
+            ["ExtraBold (800)","font-extrabold","Plus Jakarta Sans"],
+          ].map(([name,cls,family]) => (
             <div key={name} className="border border-border rounded-lg p-md text-center">
-              <p className={`text-xl font-heading ${cls}`}>Aa</p>
+              <p className={`text-xl ${family === "Inter" ? "font-body" : "font-heading"} ${cls}`}>Aa</p>
               <p className="text-xs text-muted-foreground mt-xs">{name}</p>
               <p className="text-[10px] font-mono text-muted-foreground">{cls}</p>
+              <p className="text-[10px] text-muted-foreground">{family}</p>
             </div>
           ))}
         </div>
@@ -8664,6 +8803,7 @@ function TypographyDocs() {
 
 function SpacingDocs() {
   const spacings = [
+    { name: "none", value: "0px", tw: "p-0" },
     { name: "4xs", value: "2px", tw: "p-4xs" },
     { name: "3xs", value: "4px", tw: "p-3xs" },
     { name: "2xs", value: "6px", tw: "p-2xs" },
@@ -8675,6 +8815,8 @@ function SpacingDocs() {
     { name: "2xl", value: "32px", tw: "p-2xl" },
     { name: "3xl", value: "40px", tw: "p-3xl" },
     { name: "4xl", value: "48px", tw: "p-4xl" },
+    { name: "5xl", value: "56px", tw: "p-5xl" },
+    { name: "6xl", value: "64px", tw: "p-6xl" },
   ]
   return (
     <div className="space-y-3xl">
@@ -8689,7 +8831,7 @@ function SpacingDocs() {
           {spacings.map(s => (
             <div key={s.name} className="flex items-center gap-md border border-border rounded-lg p-xs">
               <span className="w-12 text-xs font-semibold">{s.name}</span>
-              <div className="bg-gradient-to-r from-violet-500 to-violet-600 rounded-sm" style={{ width: s.value, height: "20px" }} />
+              <div className="bg-primary rounded-sm" style={{ width: s.value, height: "20px" }} />
               <span className="text-xs font-mono text-muted-foreground">{s.value}</span>
               <span className="text-xs font-mono text-muted-foreground bg-muted px-sm py-0.5 rounded">{s.tw}</span>
             </div>
@@ -8725,7 +8867,7 @@ function BorderRadiusDocs() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-md">
           {radii.map(r => (
             <div key={r.name} className="border border-border rounded-lg p-md flex flex-col items-center gap-xs">
-              <div className="size-16 bg-gradient-to-br from-violet-500 to-violet-600" style={{ borderRadius: r.value }} />
+              <div className="size-16 bg-primary" style={{ borderRadius: r.value }} />
               <p className="font-semibold text-xs">{r.name}</p>
               <p className="text-[10px] font-mono text-muted-foreground">{r.value}</p>
               <p className="text-[10px] font-mono text-muted-foreground">{r.tw}</p>
@@ -8747,21 +8889,75 @@ function ShadowsDocs() {
     { name: "xl", tw: "shadow-xl", desc: "0 20px 25px -5px black/10%, 0 8px 10px -6px black/10%" },
     { name: "2xl", tw: "shadow-2xl", desc: "0 25px 50px 12px black/25%" },
   ]
+  const glassBlur = [
+    { name: "Glass Card", tw: "backdrop-blur-md", desc: "Background blur 12px" },
+    { name: "Glass Elevated", tw: "backdrop-blur-lg", desc: "Background blur 16px" },
+    { name: "Glass Panel", tw: "backdrop-blur-xl", desc: "Background blur 24px" },
+    { name: "Glass Accent", tw: "backdrop-blur-md", desc: "Background blur 12px (accent)" },
+  ]
+  const glows = [
+    { name: "Glow Accent", color: "#7c3aed", desc: "Violet glow \u2014 3 layers (spread + blur 20 + blur 40)", style: { boxShadow: "0 0 0 1px rgba(124,58,237,0.15), 0 0 20px -4px rgba(124,58,237,0.25), 0 0 40px -8px rgba(124,58,237,0.1)" } },
+    { name: "Glow Success", color: "#22c55e", desc: "Green glow \u2014 2 layers (spread + blur 20)", style: { boxShadow: "0 0 0 1px rgba(34,197,94,0.15), 0 0 20px -4px rgba(34,197,94,0.2)" } },
+    { name: "Glow Destructive", color: "#ef4444", desc: "Red glow \u2014 2 layers (spread + blur 20)", style: { boxShadow: "0 0 0 1px rgba(239,68,68,0.15), 0 0 20px -4px rgba(239,68,68,0.2)" } },
+  ]
+  const focusRings = [
+    { name: "Ring Default", tw: "ring", color: "#27272a", desc: "Zinc 800 \u2014 3px spread, 0 blur" },
+    { name: "Ring Error", tw: "ring-error", color: "#7f1d1d", desc: "Red 900 \u2014 3px spread, 0 blur" },
+    { name: "Ring Brand", tw: "ring-brand", color: "#4c1d95", desc: "Violet 900 \u2014 3px spread, 0 blur" },
+    { name: "Ring Success", tw: "ring-success", color: "#14532d", desc: "Green 900 \u2014 3px spread, 0 blur" },
+    { name: "Ring Warning", tw: "ring-warning", color: "#78350f", desc: "Amber 900 \u2014 3px spread, 0 blur" },
+    { name: "Ring Emphasis", tw: "ring-emphasis", color: "#1e3a8a", desc: "Blue 900 \u2014 3px spread, 0 blur" },
+  ]
   return (
     <div className="space-y-3xl">
       <header>
         <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Foundation</p>
-        <h1 className="text-2xl font-bold font-heading mt-xs">Shadows</h1>
-        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Elevation shadow tokens. Figma shadow-sm = Tailwind shadow (default), not shadow-sm.</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Effects</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">All Figma effect styles: shadows, glass blur, glow accents, and focus rings. Each card applies the actual effect.</p>
       </header>
       <section className="space-y-md">
-        <h2 className="text-lg font-semibold font-heading">Scale</h2>
+        <h2 className="text-lg font-semibold font-heading">Shadows</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
           {shadows.map(s => (
             <div key={s.name} className={`bg-card border border-border rounded-xl p-lg ${s.tw}`}>
               <p className="font-semibold text-sm">{s.name}</p>
               <p className="text-xs font-mono text-muted-foreground mt-xs">{s.tw}</p>
               <p className="text-[10px] text-muted-foreground mt-3xs">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Glass Blur</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-md">
+          {glassBlur.map(g => (
+            <div key={g.name} className={`border border-border rounded-xl p-lg ${g.tw}`} style={{ backgroundColor: "rgba(124,58,237,0.08)" }}>
+              <p className="font-semibold text-sm">{g.name}</p>
+              <p className="text-xs font-mono text-muted-foreground mt-xs">{g.tw}</p>
+              <p className="text-[10px] text-muted-foreground mt-3xs">{g.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Glow</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+          {glows.map(g => (
+            <div key={g.name} className="bg-card border border-border rounded-xl p-lg" style={g.style}>
+              <p className="font-semibold text-sm">{g.name}</p>
+              <p className="text-[10px] text-muted-foreground mt-3xs">{g.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Focus Rings</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-lg">
+          {focusRings.map(r => (
+            <div key={r.name} className="bg-card border border-border rounded-xl p-lg" style={{ boxShadow: `0 0 0 3px ${r.color}` }}>
+              <p className="font-semibold text-sm">{r.name}</p>
+              <p className="text-xs font-mono text-muted-foreground mt-xs">{r.tw}</p>
+              <p className="text-[10px] text-muted-foreground mt-3xs">{r.desc}</p>
             </div>
           ))}
         </div>
@@ -9735,7 +9931,7 @@ const componentGroups = [
       { id: "typography", label: "Typography" },
       { id: "spacing", label: "Spacing" },
       { id: "border-radius", label: "Border Radius" },
-      { id: "shadows", label: "Shadows" },
+      { id: "shadows", label: "Effects" },
       { id: "icons", label: "Icons" },
       { id: "illustrations", label: "Illustrations" },
     ],

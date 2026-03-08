@@ -355,6 +355,29 @@ function getRadiusValue(token) {
   return parseInt(token) || 0;
 }
 
+// ─── Foundation Docs helpers: bind spacing/radius variables ───
+var _SPACING_TOKEN_MAP = { 0: "none", 2: "4xs", 4: "3xs", 6: "2xs", 8: "xs", 12: "sm", 16: "md", 20: "lg", 24: "xl", 32: "2xl", 40: "3xl", 48: "4xl", 56: "5xl", 64: "6xl" };
+var _RADIUS_TOKEN_MAP = { 0: "none", 4: "sm", 6: "md", 8: "lg", 10: "10", 12: "xl", 16: "2xl", 24: "3xl", 9999: "full" };
+
+function _bindSp(node, field, px) {
+  node[field] = px; // Always set raw value first (safe for detached nodes)
+  var token = _SPACING_TOKEN_MAP[px];
+  if (token !== undefined) {
+    try { var v = findVar("spacing/" + token); if (v) node.setBoundVariable(field, v); } catch(e) {}
+  }
+}
+function _bindPad(node, top, right, bottom, left) {
+  _bindSp(node, "paddingTop", top); _bindSp(node, "paddingRight", right);
+  _bindSp(node, "paddingBottom", bottom); _bindSp(node, "paddingLeft", left);
+}
+function _bindRad(node, px) {
+  node.cornerRadius = px; // Always set raw value first
+  var token = _RADIUS_TOKEN_MAP[px];
+  if (token !== undefined) {
+    try { var v = findVar("border radius/" + token); if (v) node.setBoundVariable("cornerRadius", v); } catch(e) {}
+  }
+}
+
 // ============================================================
 // SECTION 4: FONT LOADING
 // ============================================================
@@ -2102,9 +2125,15 @@ async function _makeLabel(text, styleName, fillName, parent) {
     // Fallback font by style name
     var fm = { "SP/H1": ["Plus Jakarta Sans","ExtraBold",36], "SP/H2": ["Plus Jakarta Sans","Bold",24],
       "SP/H3": ["Plus Jakarta Sans","Bold",20], "SP/H4": ["Plus Jakarta Sans","SemiBold",16],
-      "SP/Body": ["Inter","Regular",14], "SP/Body LG": ["Inter","Regular",16],
-      "SP/Body Semibold": ["Inter","SemiBold",14], "SP/Label": ["Inter","Medium",12],
-      "SP/Caption": ["Inter","Regular",12], "SP/Overline": ["Inter","SemiBold",10] };
+      "SP/H5": ["Plus Jakarta Sans","SemiBold",14],
+      "SP/Body LG": ["Inter","Regular",16], "SP/Body": ["Inter","Regular",14],
+      "SP/Body Medium": ["Inter","Medium",14], "SP/Body Semibold": ["Inter","SemiBold",14],
+      "SP/Label": ["Inter","Medium",12], "SP/Label Uppercase": ["Inter","SemiBold",11],
+      "SP/Caption": ["Inter","Regular",12], "SP/Overline": ["Inter","SemiBold",10],
+      "SP/KPI Hero": ["JetBrains Mono","SemiBold",48], "SP/KPI LG": ["JetBrains Mono","SemiBold",32],
+      "SP/KPI MD": ["JetBrains Mono","Medium",24], "SP/KPI SM": ["JetBrains Mono","Medium",20],
+      "SP/Data": ["JetBrains Mono","Regular",14], "SP/Data SM": ["JetBrains Mono","Regular",12],
+      "SP/Order ID": ["JetBrains Mono","Medium",13] };
     var fi = fm[styleName];
     if (fi) { var ld = await loadFontSafe(fi[0], fi[1]); if (ld) node.fontName = ld; node.fontSize = fi[2]; }
   }
@@ -3763,11 +3792,10 @@ async function _buildInstallSec(parent, installData) {
     var depCode = figma.createFrame(); depCode.name = "Code Block";
     depCode.layoutMode = "VERTICAL"; depCode.itemSpacing = 0;
     depCode.paddingTop = 16; depCode.paddingBottom = 16; depCode.paddingLeft = 16; depCode.paddingRight = 16;
-    depCode.fills = [{ type: "SOLID", color: { r: 0.035, g: 0.035, b: 0.043 } }];
+    setFill(depCode, "code");
     installCard.appendChild(depCode);
     try { depCode.layoutSizingHorizontal = "FILL"; depCode.layoutSizingVertical = "HUG"; } catch(e) {}
-    var depText = await _makeLabel(installData.dependencies, "SP/Caption", null, depCode);
-    if (depText) depText.fills = [{ type: "SOLID", color: { r: 0.961, g: 0.961, b: 0.969 } }];
+    var depText = await _makeLabel(installData.dependencies, "SP/Caption", "code-foreground", depCode);
   }
   // Import sub-section
   if (installData.import) {
@@ -3786,11 +3814,10 @@ async function _buildInstallSec(parent, installData) {
     var impCode = figma.createFrame(); impCode.name = "Code Block";
     impCode.layoutMode = "VERTICAL"; impCode.itemSpacing = 0;
     impCode.paddingTop = 16; impCode.paddingBottom = 16; impCode.paddingLeft = 16; impCode.paddingRight = 16;
-    impCode.fills = [{ type: "SOLID", color: { r: 0.035, g: 0.035, b: 0.043 } }];
+    setFill(impCode, "code");
     installCard.appendChild(impCode);
     try { impCode.layoutSizingHorizontal = "FILL"; impCode.layoutSizingVertical = "HUG"; } catch(e) {}
-    var impText = await _makeLabel(installData.import, "SP/Caption", null, impCode);
-    if (impText) impText.fills = [{ type: "SOLID", color: { r: 0.961, g: 0.961, b: 0.969 } }];
+    var impText = await _makeLabel(installData.import, "SP/Caption", "code-foreground", impCode);
   }
   return installSec;
 }
@@ -4651,10 +4678,680 @@ async function doExportEffectStyles() {
 }
 
 // ============================================================
+// SECTION 12.5: FOUNDATION DOCUMENTATION PAGES
+// ============================================================
+
+async function doFoundationDocs(spec) {
+  var startTime = Date.now();
+  var log = [];
+  try {
+    await loadCaches();
+    log.push("Caches loaded");
+
+    // Find or create target page
+    var pageName = spec.targetPage || "🧱 Foundation";
+    var pages = figma.root.children;
+    var page = null;
+    for (var pi = 0; pi < pages.length; pi++) {
+      if (pages[pi].name === pageName) { page = pages[pi]; break; }
+    }
+    if (!page) {
+      page = figma.createPage();
+      page.name = pageName;
+      log.push("Created page: " + pageName);
+    }
+    await figma.setCurrentPageAsync(page);
+
+    // Upsert root frame by name
+    var rootFrameName = spec.name;
+    var existingRoot = null;
+    for (var ri = 0; ri < page.children.length; ri++) {
+      if (page.children[ri].name === rootFrameName) { existingRoot = page.children[ri]; break; }
+    }
+    if (existingRoot) {
+      while (existingRoot.children.length > 0) existingRoot.children[0].remove();
+      log.push("Cleared existing frame: " + rootFrameName);
+    }
+
+    var root = existingRoot || figma.createFrame();
+    root.name = rootFrameName;
+    root.layoutMode = "VERTICAL";
+    root.itemSpacing = 40;
+    root.paddingTop = 40; root.paddingRight = 40; root.paddingBottom = 40; root.paddingLeft = 40;
+    root.resize(1200, 100);
+    root.primaryAxisSizingMode = "AUTO";
+    root.counterAxisSizingMode = "FIXED";
+    setFill(root, "background", "#ffffff");
+    root.clipsContent = false;
+    if (!existingRoot) {
+      page.appendChild(root);
+      // Position based on existing content
+      var maxX = 0;
+      for (var ci = 0; ci < page.children.length; ci++) {
+        var child = page.children[ci];
+        if (child !== root) {
+          var right = child.x + child.width;
+          if (right > maxX) maxX = right;
+        }
+      }
+      root.x = maxX > 0 ? maxX + 100 : 0;
+      root.y = 0;
+    }
+    _bindSp(root, "itemSpacing", 40);
+    _bindPad(root, 40, 40, 40, 40);
+
+    // Render header
+    var header = _makeFrame("Header", "v", 8, root);
+    _bindSp(header, "itemSpacing", 8);
+    _bindSp(header, "paddingBottom", 16);
+    await _makeLabel("FOUNDATION", "SP/Overline", "muted-foreground", header);
+    await _makeLabel(spec.name, "SP/H1", "foreground", header);
+    if (spec.description) {
+      var descNode = await _makeLabel(spec.description, "SP/Body", "muted-foreground", header);
+      if (descNode) { descNode.resize(800, descNode.height); descNode.textAutoResize = "HEIGHT"; }
+    }
+
+    // Render sections
+    for (var si = 0; si < spec.sections.length; si++) {
+      var section = spec.sections[si];
+      log.push("Rendering section: " + section.title);
+      await _renderDocSection(section, root, log);
+    }
+
+    var elapsed = Date.now() - startTime;
+    return { success: true, pageName: pageName, message: spec.name + " docs created", elapsed: elapsed, log: log };
+  } catch (e) {
+    return { success: false, error: e.message || String(e), log: log };
+  }
+}
+
+async function _renderDocSection(section, parent, log) {
+  // Section wrapper
+  var secFrame = _makeFrame(section.title, "v", 16, parent);
+  _bindSp(secFrame, "itemSpacing", 16);
+
+  // Section title
+  await _makeLabel(section.title, "SP/H2", "foreground", secFrame);
+
+  // Dispatch by sectionType
+  switch (section.sectionType) {
+    case "color-grid": await _renderColorGrid(section, secFrame, log); break;
+    case "palette": await _renderPalettes(section, secFrame, log); break;
+    case "font-family": await _renderFontFamily(section, secFrame, log); break;
+    case "type-scale": await _renderTypeScale(section, secFrame, log); break;
+    case "font-weight": await _renderFontWeight(section, secFrame, log); break;
+    case "spacing-bar": await _renderSpacingBar(section, secFrame, log); break;
+    case "radius-grid": await _renderRadiusGrid(section, secFrame, log); break;
+    case "shadow-grid": await _renderShadowGrid(section, secFrame, log); break;
+    case "illustration-grid": await _renderIllustrationGrid(section, secFrame, log); break;
+    case "pattern-grid": await _renderPatternGrid(section, secFrame, log); break;
+    case "guidelines": await _renderGuidelines(section, secFrame, log); break;
+    default: log.push("Unknown sectionType: " + section.sectionType);
+  }
+}
+
+// ─── Color Grid (Semantic / Status colors) ───
+async function _renderColorGrid(section, parent, log) {
+  var cols = section.columns || 4;
+  var grid = _makeFrame("Grid", "h", 12, parent);
+  _bindSp(grid, "itemSpacing", 12);
+  grid.layoutWrap = "WRAP";
+  _bindSp(grid, "counterAxisSpacing", 12);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 12) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 0;
+    card.resize(itemWidth, 120);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    setFill(card, "card", "#ffffff");
+    card.clipsContent = true;
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 0);
+    _bindRad(card, 8);
+
+    // Color swatch
+    var swatch = figma.createFrame();
+    swatch.name = "Swatch";
+    swatch.resize(itemWidth, 64);
+    setFill(swatch, item.variable);
+    card.appendChild(swatch);
+    swatch.layoutSizingHorizontal = "FILL";
+    swatch.layoutSizingVertical = "FIXED";
+
+    // Labels container
+    var labels = figma.createFrame();
+    labels.name = "Labels";
+    labels.layoutMode = "VERTICAL";
+    labels.itemSpacing = 2;
+    labels.paddingTop = 8; labels.paddingRight = 8; labels.paddingBottom = 8; labels.paddingLeft = 8;
+    labels.fills = [];
+    card.appendChild(labels);
+    _bindSp(labels, "itemSpacing", 2);
+    _bindPad(labels, 8, 8, 8, 8);
+    labels.layoutSizingHorizontal = "FILL";
+    labels.layoutSizingVertical = "HUG";
+
+    await _makeLabel(item.name, "SP/Label", "foreground", labels);
+    await _makeLabel("--" + item.variable, "SP/Data SM", "muted-foreground", labels);
+    if (item.tw) {
+      await _makeLabel(item.tw, "SP/Data SM", "muted-foreground", labels);
+    }
+  }
+  log.push("Color grid: " + section.items.length + " items");
+}
+
+// ─── Color Palettes ───
+async function _renderPalettes(section, parent, log) {
+  var shadeKeys = ["50","100","200","300","400","500","600","700","800","900","950"];
+
+  for (var pi = 0; pi < section.palettes.length; pi++) {
+    var palette = section.palettes[pi];
+    var row = _makeFrame(palette.name, "v", 6, parent);
+    _bindSp(row, "itemSpacing", 6);
+
+    // Palette name
+    var nameLabel = await _makeLabel(palette.name, "SP/Body Semibold", "foreground", row);
+    if (nameLabel) nameLabel.textCase = "TITLE";
+
+    // Color bar
+    var bar = _makeFrame("Bar", "h", 2, row);
+    _bindSp(bar, "itemSpacing", 2);
+    _bindRad(bar, 8);
+    bar.clipsContent = true;
+    bar.resize(1120, 40);
+    bar.counterAxisSizingMode = "FIXED";
+    bar.primaryAxisSizingMode = "FIXED";
+
+    for (var si = 0; si < shadeKeys.length; si++) {
+      var hex = palette.shades[shadeKeys[si]];
+      var cell = figma.createFrame();
+      cell.name = shadeKeys[si];
+      cell.resize(Math.floor(1120 / 11), 40);
+      setFill(cell, palette.name.toLowerCase() + "/" + shadeKeys[si], hex);
+      bar.appendChild(cell);
+      cell.layoutSizingHorizontal = "FILL";
+      cell.layoutSizingVertical = "FILL";
+    }
+
+    // Shade labels
+    var labelRow = _makeFrame("Labels", "h", 2, row);
+    _bindSp(labelRow, "itemSpacing", 2);
+    labelRow.resize(1120, 16);
+    labelRow.counterAxisSizingMode = "FIXED";
+    labelRow.primaryAxisSizingMode = "FIXED";
+
+    for (var li = 0; li < shadeKeys.length; li++) {
+      var shadeFrame = figma.createFrame();
+      shadeFrame.name = "L" + shadeKeys[li];
+      shadeFrame.layoutMode = "HORIZONTAL";
+      shadeFrame.primaryAxisAlignItems = "CENTER";
+      shadeFrame.counterAxisAlignItems = "CENTER";
+      shadeFrame.fills = [];
+      shadeFrame.resize(Math.floor(1120 / 11), 16);
+      labelRow.appendChild(shadeFrame);
+      shadeFrame.layoutSizingHorizontal = "FILL";
+      shadeFrame.layoutSizingVertical = "FILL";
+
+      var sl = await _makeLabel(shadeKeys[li], "SP/Data SM", "muted-foreground", shadeFrame);
+      if (sl) { sl.textAlignHorizontal = "CENTER"; }
+    }
+  }
+  log.push("Palettes: " + section.palettes.length + " rendered");
+}
+
+// ─── Font Family Cards ───
+async function _renderFontFamily(section, parent, log) {
+  var cols = section.columns || 3;
+  var grid = _makeFrame("Grid", "h", 16, parent);
+  _bindSp(grid, "itemSpacing", 16);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 16) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 6;
+    card.resize(itemWidth, 100);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    card.fills = [];
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 6);
+    _bindPad(card, 16, 16, 16, 16);
+    _bindRad(card, 8);
+
+    // Font name in its own font
+    var fontStyle = "Regular";
+    if (item.name === "Plus Jakarta Sans") fontStyle = "Bold";
+    var loaded = await loadFontSafe(item.name, fontStyle);
+    var fontLabel = figma.createText();
+    if (loaded) fontLabel.fontName = loaded;
+    fontLabel.fontSize = 20;
+    fontLabel.characters = item.name;
+    setTextFill(fontLabel, "foreground");
+    card.appendChild(fontLabel);
+
+    await _makeLabel(item.usage, "SP/Caption", "muted-foreground", card);
+    await _makeLabel(item.class, "SP/Data SM", "muted-foreground", card);
+  }
+  log.push("Font families: " + section.items.length);
+}
+
+// ─── Type Scale ───
+async function _renderTypeScale(section, parent, log) {
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var row = figma.createFrame();
+    row.name = item.name;
+    row.layoutMode = "HORIZONTAL";
+    row.itemSpacing = 16;
+    row.primaryAxisAlignItems = "SPACE_BETWEEN";
+    row.counterAxisAlignItems = "CENTER";
+    row.paddingTop = 16; row.paddingRight = 16; row.paddingBottom = 16; row.paddingLeft = 16;
+    row.cornerRadius = 8;
+    row.strokeWeight = 1;
+    setStroke(row, "border", "#e4e4e7");
+    row.fills = [];
+    row.resize(1120, 40);
+    row.primaryAxisSizingMode = "FIXED";
+    row.counterAxisSizingMode = "AUTO";
+    parent.appendChild(row);
+    _bindSp(row, "itemSpacing", 16);
+    _bindPad(row, 16, 16, 16, 16);
+    _bindRad(row, 8);
+    row.layoutSizingHorizontal = "FILL";
+
+    // Left side: sample text + spec
+    var leftGroup = _makeFrame("Content", "v", 6, row);
+    _bindSp(leftGroup, "itemSpacing", 6);
+    leftGroup.layoutSizingHorizontal = "FILL";
+
+    var sampleText = await _makeLabel(item.sample || "The quick brown fox jumps over the lazy dog", item.textStyle, "foreground", leftGroup);
+    if (sampleText) sampleText.layoutSizingHorizontal = "FILL";
+
+    await _makeLabel(item.spec, "SP/Data SM", "muted-foreground", leftGroup);
+
+    // Right side: name badge
+    var badge = figma.createFrame();
+    badge.name = "Badge";
+    badge.layoutMode = "HORIZONTAL";
+    badge.paddingTop = 4; badge.paddingRight = 12; badge.paddingBottom = 4; badge.paddingLeft = 12;
+    badge.cornerRadius = 4;
+    badge.fills = [];
+    setFill(badge, "muted", "#f4f4f5");
+    row.appendChild(badge);
+    _bindPad(badge, 4, 12, 4, 12);
+    _bindRad(badge, 4);
+    badge.layoutSizingHorizontal = "HUG";
+    badge.layoutSizingVertical = "HUG";
+
+    await _makeLabel(item.name, "SP/Data SM", "muted-foreground", badge);
+  }
+  log.push("Type scale: " + section.items.length + " styles");
+}
+
+// ─── Font Weights ───
+async function _renderFontWeight(section, parent, log) {
+  var cols = section.columns || 4;
+  var grid = _makeFrame("Grid", "h", 16, parent);
+  _bindSp(grid, "itemSpacing", 16);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 16) / cols);
+  var weightToStyle = { 400: "Regular", 500: "Medium", 600: "SemiBold", 700: "Bold" };
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 8;
+    card.resize(itemWidth, 100);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    card.fills = [];
+    card.primaryAxisAlignItems = "CENTER";
+    card.counterAxisAlignItems = "CENTER";
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 8);
+    _bindPad(card, 16, 16, 16, 16);
+    _bindRad(card, 8);
+
+    // "Aa" sample
+    var fontFamily = item.fontFamily || "Inter";
+    var fontStyle = weightToStyle[item.weight] || "Regular";
+    var loaded = await loadFontSafe(fontFamily, fontStyle);
+    var aaNode = figma.createText();
+    if (loaded) aaNode.fontName = loaded;
+    aaNode.fontSize = 24;
+    aaNode.characters = "Aa";
+    setTextFill(aaNode, "foreground");
+    aaNode.textAlignHorizontal = "CENTER";
+    card.appendChild(aaNode);
+
+    await _makeLabel(item.name, "SP/Caption", "muted-foreground", card);
+    await _makeLabel(item.class, "SP/Data SM", "muted-foreground", card);
+  }
+  log.push("Font weights: " + section.items.length);
+}
+
+// ─── Spacing Bars ───
+async function _renderSpacingBar(section, parent, log) {
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var row = figma.createFrame();
+    row.name = item.name;
+    row.layoutMode = "HORIZONTAL";
+    row.itemSpacing = 12;
+    row.counterAxisAlignItems = "CENTER";
+    row.paddingTop = 8; row.paddingRight = 12; row.paddingBottom = 8; row.paddingLeft = 12;
+    row.cornerRadius = 8;
+    row.strokeWeight = 1;
+    setStroke(row, "border", "#e4e4e7");
+    row.fills = [];
+    row.resize(1120, 40);
+    row.primaryAxisSizingMode = "FIXED";
+    row.counterAxisSizingMode = "AUTO";
+    parent.appendChild(row);
+    _bindSp(row, "itemSpacing", 12);
+    _bindPad(row, 8, 12, 8, 12);
+    _bindRad(row, 8);
+    row.layoutSizingHorizontal = "FILL";
+
+    // Name label (fixed width)
+    var nameLabel = await _makeLabel(item.name, "SP/Label", "foreground", row);
+    if (nameLabel) { nameLabel.resize(48, nameLabel.height); nameLabel.layoutSizingHorizontal = "FIXED"; }
+
+    // Colored bar
+    var bar = figma.createFrame();
+    bar.name = "Bar";
+    var barWidth = Math.max(item.value, 4);
+    bar.resize(barWidth, 20);
+    bar.cornerRadius = 4;
+    setFill(bar, "primary", "#7c3aed");
+    row.appendChild(bar);
+    _bindRad(bar, 4);
+    bar.layoutSizingHorizontal = "FIXED";
+    bar.layoutSizingVertical = "FIXED";
+
+    // Value label
+    await _makeLabel(item.value + "px", "SP/Data SM", "muted-foreground", row);
+
+    // Tailwind class badge
+    var twBadge = figma.createFrame();
+    twBadge.name = "TW";
+    twBadge.layoutMode = "HORIZONTAL";
+    twBadge.paddingTop = 2; twBadge.paddingRight = 8; twBadge.paddingBottom = 2; twBadge.paddingLeft = 8;
+    twBadge.cornerRadius = 4;
+    twBadge.fills = [];
+    setFill(twBadge, "muted", "#f4f4f5");
+    row.appendChild(twBadge);
+    _bindPad(twBadge, 2, 8, 2, 8);
+    _bindRad(twBadge, 4);
+    twBadge.layoutSizingHorizontal = "HUG";
+    twBadge.layoutSizingVertical = "HUG";
+
+    await _makeLabel(item.tw, "SP/Data SM", "muted-foreground", twBadge);
+  }
+  log.push("Spacing bars: " + section.items.length + " tokens");
+}
+
+// ─── Border Radius Grid ───
+async function _renderRadiusGrid(section, parent, log) {
+  var cols = section.columns || 5;
+  var grid = _makeFrame("Grid", "h", 16, parent);
+  _bindSp(grid, "itemSpacing", 16);
+  grid.layoutWrap = "WRAP";
+  _bindSp(grid, "counterAxisSpacing", 16);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 16) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 8;
+    card.resize(itemWidth, 160);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    card.fills = [];
+    card.counterAxisAlignItems = "CENTER";
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 8);
+    _bindPad(card, 16, 16, 16, 16);
+    _bindRad(card, 8);
+
+    // Radius demo square
+    var demo = figma.createFrame();
+    demo.name = "Demo";
+    demo.resize(64, 64);
+    var radius = item.value > 32 ? 32 : item.value;
+    demo.cornerRadius = radius;
+    setFill(demo, "primary", "#7c3aed");
+    card.appendChild(demo);
+    _bindRad(demo, radius);
+    demo.layoutSizingHorizontal = "FIXED";
+    demo.layoutSizingVertical = "FIXED";
+
+    await _makeLabel(item.name, "SP/Label", "foreground", card);
+    await _makeLabel(item.value + "px", "SP/Data SM", "muted-foreground", card);
+    await _makeLabel(item.tw, "SP/Data SM", "muted-foreground", card);
+  }
+  log.push("Radius grid: " + section.items.length + " tokens");
+}
+
+// ─── Shadow Grid ───
+async function _renderShadowGrid(section, parent, log) {
+  var cols = section.columns || 3;
+  var grid = _makeFrame("Grid", "h", 20, parent);
+  _bindSp(grid, "itemSpacing", 20);
+  grid.layoutWrap = "WRAP";
+  _bindSp(grid, "counterAxisSpacing", 20);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 20) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 6;
+    card.resize(itemWidth, 120);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 20; card.paddingRight = 20; card.paddingBottom = 20; card.paddingLeft = 20;
+    card.cornerRadius = 12;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    setFill(card, "card", "#ffffff");
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 6);
+    _bindPad(card, 20, 20, 20, 20);
+    _bindRad(card, 12);
+
+    // Apply effect style
+    if (item.effectStyle) {
+      try {
+        var effStyles = await figma.getLocalEffectStylesAsync();
+        for (var ei = 0; ei < effStyles.length; ei++) {
+          if (effStyles[ei].name === item.effectStyle) {
+            await card.setEffectStyleIdAsync(effStyles[ei].id);
+            break;
+          }
+        }
+      } catch(e) {}
+    }
+
+    await _makeLabel(item.name, "SP/Body Semibold", "foreground", card);
+    await _makeLabel(item.tw, "SP/Data SM", "muted-foreground", card);
+    await _makeLabel(item.desc, "SP/Caption", "muted-foreground", card);
+  }
+  log.push("Shadow grid: " + section.items.length + " tokens");
+}
+
+// ─── Illustration Grid (empty state icons) ───
+async function _renderIllustrationGrid(section, parent, log) {
+  var cols = section.columns || 3;
+  var grid = _makeFrame("Grid", "h", 16, parent);
+  _bindSp(grid, "itemSpacing", 16);
+  grid.layoutWrap = "WRAP";
+  _bindSp(grid, "counterAxisSpacing", 16);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 16) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 12;
+    card.resize(itemWidth, 100);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 24; card.paddingRight = 16; card.paddingBottom = 24; card.paddingLeft = 16;
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    card.fills = [];
+    card.counterAxisAlignItems = "CENTER";
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 12);
+    _bindPad(card, 24, 16, 24, 16);
+    _bindRad(card, 8);
+
+    // Icon placeholder circle
+    var circle = figma.createFrame();
+    circle.name = "IconBg";
+    circle.resize(48, 48);
+    circle.cornerRadius = 24;
+    setFill(circle, "muted", "#f4f4f5");
+    circle.layoutMode = "HORIZONTAL";
+    circle.primaryAxisAlignItems = "CENTER";
+    circle.counterAxisAlignItems = "CENTER";
+    card.appendChild(circle);
+    _bindRad(circle, 24);
+    circle.layoutSizingHorizontal = "FIXED";
+    circle.layoutSizingVertical = "FIXED";
+
+    // Try to place icon inside circle
+    if (item.icon) {
+      try {
+        var iconComp = figma.root.findOne(function(n) { return n.type === "COMPONENT" && n.name === "Icon / " + item.icon; });
+        if (iconComp) {
+          var iconInst = iconComp.createInstance();
+          iconInst.resize(24, 24);
+          circle.appendChild(iconInst);
+        }
+      } catch(e) {}
+    }
+
+    await _makeLabel(item.name, "SP/Body Semibold", "foreground", card);
+    var descLabel = await _makeLabel(item.desc, "SP/Caption", "muted-foreground", card);
+    if (descLabel) { descLabel.textAutoResize = "HEIGHT"; }
+  }
+  log.push("Illustration grid: " + section.items.length + " items");
+}
+
+// ─── Pattern Grid (decorative patterns) ───
+async function _renderPatternGrid(section, parent, log) {
+  var cols = section.columns || 2;
+  var grid = _makeFrame("Grid", "h", 16, parent);
+  _bindSp(grid, "itemSpacing", 16);
+  grid.resize(1120, 100);
+  grid.counterAxisSizingMode = "AUTO";
+  grid.primaryAxisSizingMode = "FIXED";
+
+  var itemWidth = Math.floor((1120 - (cols - 1) * 16) / cols);
+
+  for (var i = 0; i < section.items.length; i++) {
+    var item = section.items[i];
+    var card = figma.createFrame();
+    card.name = item.name;
+    card.layoutMode = "VERTICAL";
+    card.itemSpacing = 8;
+    card.resize(itemWidth, 100);
+    card.primaryAxisSizingMode = "AUTO";
+    card.counterAxisSizingMode = "FIXED";
+    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
+    card.cornerRadius = 8;
+    card.strokeWeight = 1;
+    setStroke(card, "border", "#e4e4e7");
+    card.fills = [];
+    grid.appendChild(card);
+    _bindSp(card, "itemSpacing", 8);
+    _bindPad(card, 16, 16, 16, 16);
+    _bindRad(card, 8);
+
+    await _makeLabel(item.name, "SP/Body Semibold", "foreground", card);
+    await _makeLabel(item.desc, "SP/Data SM", "muted-foreground", card);
+  }
+  log.push("Pattern grid: " + section.items.length + " items");
+}
+
+// ─── Guidelines (bullet list) ───
+async function _renderGuidelines(section, parent, log) {
+  var list = _makeFrame("List", "v", 8, parent);
+  _bindSp(list, "itemSpacing", 8);
+  _bindPad(list, 12, 16, 12, 16);
+  _bindRad(list, 8);
+  list.strokeWeight = 1;
+  setStroke(list, "border", "#e4e4e7");
+  list.fills = [];
+
+  for (var i = 0; i < section.items.length; i++) {
+    var bulletText = "• " + section.items[i];
+    var label = await _makeLabel(bulletText, "SP/Body", "muted-foreground", list);
+    if (label) { label.resize(1080, label.height); label.textAutoResize = "HEIGHT"; }
+  }
+  log.push("Guidelines: " + section.items.length + " items");
+}
+
+// ============================================================
 // SECTION 13: PLUGIN MESSAGE HANDLER
 // ============================================================
 
-figma.showUI(__html__, { width: 520, height: 680 });
+figma.showUI(__html__, { width: 420, height: 480 });
 
 figma.ui.onmessage = async function(msg) {
   // ─── Image data response from UI ───
@@ -4705,6 +5402,9 @@ figma.ui.onmessage = async function(msg) {
       } else if (specType === "foundation-components") {
         figma.ui.postMessage({ type: "status", text: "Creating components...", source: source });
         result = await doCreateComponents(spec);
+      } else if (specType === "foundation-docs") {
+        figma.ui.postMessage({ type: "status", text: "Creating " + spec.name + " docs...", source: source });
+        result = await doFoundationDocs(spec);
       } else {
         // Default: page generation
         figma.ui.postMessage({ type: "status", text: "Generating...", source: source });

@@ -147,6 +147,8 @@
   --color-surface-raised: var(--surface-raised);
   --color-surface-inset: var(--surface-inset);
   --color-border-card: var(--border-card);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
 
   /* --- Brand colors (Teal-based brand identity) --- */
   --color-brand: var(--brand);
@@ -713,6 +715,8 @@
     --surface-raised: var(--color-zinc-100);   /* icon containers, image placeholders */
     --surface-inset: var(--color-zinc-100);    /* progress tracks, inset panels */
     --border-card: rgba(0,0,0,0.06);           /* subtle list-item / card borders */
+    --code: var(--color-zinc-100);             /* code block background */
+    --code-foreground: var(--color-zinc-800);  /* code block text */
 
     /* --- Shadow Token --- */
     --shadow-color: #00000040;                 /* black 25% */
@@ -912,6 +916,8 @@
     --surface-raised: rgba(255,255,255,0.06);  /* icon containers, image placeholders */
     --surface-inset: rgba(255,255,255,0.04);   /* progress tracks, inset panels */
     --border-card: rgba(255,255,255,0.06);     /* subtle list-item / card borders */
+    --code: var(--color-zinc-900);             /* code block background */
+    --code-foreground: var(--color-zinc-200);  /* code block text */
 
     /* --- Shadow Token --- */
     --shadow-color: #00000080;                 /* black 50% — darker for dark mode depth */

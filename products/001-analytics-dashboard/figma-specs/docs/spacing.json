@@ -1,0 +1,28 @@
+{
+  "type": "foundation-docs",
+  "targetPage": "🧱 Foundation",
+  "name": "Spacing",
+  "description": "Consistent spacing scale from Figma semantic tokens. Used for padding, margin, and gap.",
+  "sections": [
+    {
+      "title": "Scale",
+      "sectionType": "spacing-bar",
+      "items": [
+        { "name": "none", "value": 0, "tw": "p-0" },
+        { "name": "4xs", "value": 2, "tw": "p-4xs" },
+        { "name": "3xs", "value": 4, "tw": "p-3xs" },
+        { "name": "2xs", "value": 6, "tw": "p-2xs" },
+        { "name": "xs", "value": 8, "tw": "p-xs" },
+        { "name": "sm", "value": 12, "tw": "p-sm" },
+        { "name": "md", "value": 16, "tw": "p-md" },
+        { "name": "lg", "value": 20, "tw": "p-lg" },
+        { "name": "xl", "value": 24, "tw": "p-xl" },
+        { "name": "2xl", "value": 32, "tw": "p-2xl" },
+        { "name": "3xl", "value": 40, "tw": "p-3xl" },
+        { "name": "4xl", "value": 48, "tw": "p-4xl" },
+        { "name": "5xl", "value": 56, "tw": "p-5xl" },
+        { "name": "6xl", "value": 64, "tw": "p-6xl" }
+      ]
+    }
+  ]
+}

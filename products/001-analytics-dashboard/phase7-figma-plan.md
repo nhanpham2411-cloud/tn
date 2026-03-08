@@ -9,7 +9,7 @@
 
 ---
 
-## Cấu trúc Figma File (12 pages)
+## Cấu trúc Figma File (10 pages)
 
 | # | Page Name | Est. Frames | Nội dung |
 |---|-----------|-------------|----------|
@@ -18,43 +18,34 @@
 | 2 | 👤 Personas & Research | 4 | 6 personas + 2 journey maps |
 | 3 | 🔀 User Flows | 12 | 12 flows dạng screen sequences |
 | 4 | 🗺️ Sitemap & Features | 2 | Sitemap tree + feature matrix |
-| 5 | 🎛️ Tokens | 3-4 | Spacing, border radius, shadows, glass |
-| 6 | 🔤 Typography | 1-2 | Type scale + type pairing |
-| 7 | 🎨 Colors | 3-4 | Raw palette, semantic tokens, chart colors, status colors |
-| 8 | 🔣 Icons | 1-2 | 30 Lucide icon components + showcase grid (stroke bound to foreground variable) |
-| 9 | 🧩 Components | 6-10 | Button, Input, Card, Table, Badge, Chart, Navigation, Overlay — mỗi component có showcase (header, component grid, installation). Detailed docs (examples, props, tokens, etc.) are web-only |
-| 10 | 📱 Visual | ~100 | Tất cả màn hình app: Auth, Dashboard, Management, Settings, Utility, Edge Cases, Responsive |
-| 11 | 📋 Change Log | 1 | Version info |
+| 5 | 🧱 Foundation | 8-10 | Colors (raw palette, semantic tokens, chart, status), Typography (type scale, type pairing), Tokens (spacing, border radius, shadows, glass) |
+| 6 | 🔣 Icons | 1-2 | 1900+ Lucide icon components + showcase grid (stroke bound to foreground variable) |
+| 7 | 🧩 Components | 6-10 | Button, Input, Card, Table, Badge, Chart, Navigation, Overlay — mỗi component có showcase (header, component grid, installation). Detailed docs (examples, props, tokens, etc.) are web-only |
+| 8 | 📱 Visual | ~100 | Tất cả màn hình app: Auth, Dashboard, Management, Settings, Utility, Edge Cases, Responsive |
+| 9 | 📋 Change Log | 1 | Version info |
 | | **Tổng** | **~140** | |
 
 ---
 
-## Page 5: 🎛️ Tokens
+## Page 5: 🧱 Foundation
 
 | Frame | Nội dung |
 |-------|----------|
+| **Colors** | |
+| Raw Palette | Violet (50-950), Zinc (50-950), status raw colors |
+| Semantic Tokens | Light vs Dark side-by-side: background, foreground, card, primary, secondary, muted, border, sidebar, destructive, success, warning, info |
+| Chart Colors | chart-1 → chart-6 với sample donut/bar |
+| Status Colors | success, warning, destructive, info — dot badge + fill + text samples |
+| **Typography** | |
+| Type Scale | Tất cả sp-* styles: display, h1-h4, body, body-semibold, caption, label, kpi-hero, kpi-label, kpi-value, mono, mono-sm — font name, size, weight, line-height |
+| Type Pairing | Plus Jakarta Sans (headings) + Inter (body) + JetBrains Mono (data) sample compositions |
+| **Tokens** | |
 | Spacing Scale | 3xs (2px) → 3xl (48px) visual boxes side-by-side |
 | Border Radius | sm/md/lg/xl/2xl/full với sample boxes |
 | Shadows & Elevation | 5 levels (sm → 2xl) light vs dark comparison |
 | Glass & Elevation | 4 levels (subtle, light, medium, heavy) với backdrop blur samples |
 
-## Page 6: 🔤 Typography
-
-| Frame | Nội dung |
-|-------|----------|
-| Type Scale | Tất cả sp-* styles: display, h1-h4, body, body-semibold, caption, label, kpi-hero, kpi-label, kpi-value, mono, mono-sm — font name, size, weight, line-height |
-| Type Pairing | Plus Jakarta Sans (headings) + Inter (body) + JetBrains Mono (data) sample compositions |
-
-## Page 7: 🎨 Colors
-
-| Frame | Nội dung |
-|-------|----------|
-| Raw Palette | Violet (50-950), Zinc (50-950), status raw colors |
-| Semantic Tokens | Light vs Dark side-by-side: background, foreground, card, primary, secondary, muted, border, sidebar, destructive, success, warning, info |
-| Chart Colors | chart-1 → chart-6 với sample donut/bar |
-| Status Colors | success, warning, destructive, info — dot badge + fill + text samples |
-
-## Page 8: 🔣 Icons
+## Page 6: 🔣 Icons
 
 | Frame | Nội dung |
 |-------|----------|
@@ -69,7 +60,7 @@
 - SVG paths từ Lucide React (cùng bộ icon dùng trong React app)
 - Naming convention: `Icon / {PascalCase}` — Figma tự nhóm vào thư mục "Icon" trong Assets panel
 
-## Page 9: 🧩 Components
+## Page 7: 🧩 Components
 
 Mỗi component tạo ra gồm 2 phần:
 1. **ComponentSet** (raw) — chứa tất cả variants, dùng cho design (Assets panel)
@@ -95,7 +86,7 @@ Mỗi component tạo ra gồm 2 phần:
 
 ---
 
-## Page 9: 📱 Visual (tất cả màn hình app)
+## Page 8: 📱 Visual (tất cả màn hình app)
 
 ### Quy tắc đặt tên Frame
 
