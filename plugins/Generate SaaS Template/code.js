@@ -224,7 +224,13 @@ function setFill(node, varName, fallbackHex) {
 function setFillWithOpacity(node, varName, opacity) {
   var v = findVar(varName);
   if (v) {
-    node.fills = [makeBoundPaint(v, opacity)];
+    // Two-step: assign variable-bound paint first, then clone fills and set opacity.
+    // Direct paint.opacity before node.fills assignment is unreliable —
+    // Figma may clone the paint internally and drop the opacity value.
+    node.fills = [makeBoundPaint(v)];
+    var fills = node.fills.slice();
+    fills[0] = Object.assign({}, fills[0], { opacity: opacity });
+    node.fills = fills;
   }
 }
 
@@ -241,7 +247,10 @@ function setStroke(node, varName, fallbackHex) {
 function setStrokeWithOpacity(node, varName, opacity) {
   var v = findVar(varName);
   if (v) {
-    node.strokes = [makeBoundPaint(v, opacity)];
+    node.strokes = [makeBoundPaint(v)];
+    var strokes = node.strokes.slice();
+    strokes[0] = Object.assign({}, strokes[0], { opacity: opacity });
+    node.strokes = strokes;
   }
 }
 
@@ -2232,6 +2241,12 @@ async function _processChildren(childrenSpec, parent, combo) {
       }
       txt.characters = cs.textContent || "";
       if (cs.textFill) setTextFill(txt, cs.textFill);
+      // Truncation must be set BEFORE fill sizing (ORDER MATTERS: TRUNCATE → maxLines → textTruncation → FILL)
+      if (cs.truncate) {
+        txt.textAutoResize = "TRUNCATE";
+        txt.maxLines = 1;
+        txt.textTruncation = "ENDING";
+      }
       try { txt.layoutSizingHorizontal = cs.fillWidth ? "FILL" : "HUG"; } catch(e) {}
       try { txt.layoutSizingVertical = "HUG"; } catch(e) {}
     }
@@ -2272,7 +2287,7 @@ async function _processChildren(childrenSpec, parent, combo) {
       var frmW = cs.width || 100; var frmH = cs.height || 36;
       frm.resize(frmW, frmH);
       try { frm.layoutSizingHorizontal = cs.widthMode === "fixed" ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"; } catch(e) {}
-      try { frm.layoutSizingVertical = cs.heightMode === "fixed" ? "FIXED" : "HUG"; } catch(e) {}
+      try { frm.layoutSizingVertical = cs.fillHeight ? "FILL" : cs.heightMode === "fixed" ? "FIXED" : "HUG"; } catch(e) {}
       // Padding — supports paddingX/paddingY (both sides) and per-side paddingTop/paddingBottom/paddingLeft/paddingRight
       var px = cs.paddingX !== undefined ? cs.paddingX : "none"; var py = cs.paddingY !== undefined ? cs.paddingY : "none";
       if (typeof px === "string") {
@@ -2344,7 +2359,7 @@ async function _processChildren(childrenSpec, parent, combo) {
         if (cs.fillOpacity !== undefined) setFillWithOpacity(frm, cs.fill, cs.fillOpacity);
         else setFill(frm, cs.fill);
       } else frm.fills = [];
-      if (cs.stroke) { setStroke(frm, cs.stroke); frm.strokeWeight = cs.strokeWeight || 1; frm.strokeAlign = "INSIDE"; if (cs.strokeSides) _applyStrokeSides(frm, cs.strokeSides, cs.strokeWeight || 1); }
+      if (cs.stroke) { if (cs.strokeOpacity !== undefined) setStrokeWithOpacity(frm, cs.stroke, cs.strokeOpacity); else setStroke(frm, cs.stroke); frm.strokeWeight = cs.strokeWeight || 1; frm.strokeAlign = "INSIDE"; if (cs.strokeSides) _applyStrokeSides(frm, cs.strokeSides, cs.strokeWeight || 1); }
       else frm.strokes = [];
       // Absolute positioning (child ignores parent auto-layout, uses x/y)
       if (cs.position === "absolute") {
@@ -2482,6 +2497,18 @@ async function _processChildren(childrenSpec, parent, combo) {
                 if (_toNode) { try { _toNode.characters = cs.textOverrides[_toKey]; } catch(e) {} }
               }
             }
+            // iconOverrides: swap icon instances inside the component instance
+            if (cs.iconOverrides) {
+              for (var _ioKey in cs.iconOverrides) {
+                var _ioIconComp = findIconComponent(cs.iconOverrides[_ioKey]);
+                if (_ioIconComp) {
+                  var _ioNodes = _inst.findAll(function(n) { return n.name === _ioKey && n.type === "INSTANCE"; });
+                  for (var _ion = 0; _ion < _ioNodes.length; _ion++) {
+                    try { _ioNodes[_ion].swapComponent(_ioIconComp); } catch(e) {}
+                  }
+                }
+              }
+            }
             // iconFill: override all vector strokes/fills inside the instance to a different color variable
             if (cs.iconFill) {
               var _ifVar = findVar(cs.iconFill);
@@ -2518,6 +2545,15 @@ async function _processChildren(childrenSpec, parent, combo) {
           else { var _swapComp = findComponent(compSetName); if (_swapComp && _swapComp.type === "COMPONENT") _swapInst = _swapComp.createInstance(); }
           if (_swapInst) {
             _swapInst.name = name;
+            if (cs.iconOverrides) {
+              for (var _sioKey in cs.iconOverrides) {
+                var _sioComp = findIconComponent(cs.iconOverrides[_sioKey]);
+                if (_sioComp) {
+                  var _sioNodes = _swapInst.findAll(function(n) { return n.name === _sioKey && n.type === "INSTANCE"; });
+                  for (var _sion = 0; _sion < _sioNodes.length; _sion++) { try { _sioNodes[_sion].swapComponent(_sioComp); } catch(e) {} }
+                }
+              }
+            }
             if (cs.iconFill) {
               var _sfVar = findVar(cs.iconFill);
               if (_sfVar) {
@@ -2541,6 +2577,16 @@ async function _processChildren(childrenSpec, parent, combo) {
                 var _fn4 = _toNode2.fontName;
                 if (_fn4 && _fn4 !== figma.mixed) { try { await figma.loadFontAsync(_fn4); } catch(e) {} }
                 try { _toNode2.characters = cs.textOverrides[_toKey2]; } catch(e) {}
+              }
+            }
+          }
+          // iconOverrides on existing instance
+          if (cs.iconOverrides) {
+            for (var _eioKey in cs.iconOverrides) {
+              var _eioComp = findIconComponent(cs.iconOverrides[_eioKey]);
+              if (_eioComp) {
+                var _eioNodes = existNode.findAll(function(n) { return n.name === _eioKey && n.type === "INSTANCE"; });
+                for (var _eion = 0; _eion < _eioNodes.length; _eion++) { try { _eioNodes[_eion].swapComponent(_eioComp); } catch(e) {} }
               }
             }
           }
@@ -3047,7 +3093,12 @@ async function doCreateComponents(spec) {
           if (_eSpec.fill) {
             var _efVar = findVar(_eSpec.fill);
             if (_efVar) {
-              _ellipse.fills = [makeBoundPaint(_efVar, _eSpec.fillOpacity)];
+              _ellipse.fills = [makeBoundPaint(_efVar)];
+              if (_eSpec.fillOpacity !== undefined && _eSpec.fillOpacity < 1) {
+                var _eFills = _ellipse.fills.slice();
+                _eFills[0] = Object.assign({}, _eFills[0], { opacity: _eSpec.fillOpacity });
+                _ellipse.fills = _eFills;
+              }
             } else {
               var _efOp = _eSpec.fillOpacity !== undefined ? _eSpec.fillOpacity : 1;
               _ellipse.fills = [{ type: "SOLID", color: { r: 0.5, g: 0.5, b: 0.5 }, opacity: _efOp }];

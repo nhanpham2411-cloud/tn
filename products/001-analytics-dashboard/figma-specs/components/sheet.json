@@ -110,6 +110,7 @@
         "layout": "vertical",
         "width": 384,
         "height": 280,
+        "heightMode": "fixed",
         "fill": "card",
         "strokeSides": "left",
         "stroke": "border",
@@ -185,6 +186,7 @@
             "primaryAlign": "end",
             "counterAlign": "center",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Show Footer=Yes",
             "children": [
               {
@@ -192,14 +194,16 @@
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Cancel" }
+                "textOverrides": { "Label": "Cancel" },
+                "widthMode": "hug"
               },
               {
                 "name": "Save",
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Save" }
+                "textOverrides": { "Label": "Save" },
+                "widthMode": "hug"
               }
             ]
           }

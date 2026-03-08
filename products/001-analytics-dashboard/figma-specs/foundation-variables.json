@@ -96,6 +96,8 @@
         {"name": "primary", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/600"}},
         {"name": "primary-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "primary-hover", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/violet/700", "Dark": "$raw colors/violet/700"}},
+        {"name": "primary-10", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#7c3aed1a", "Dark": "#7c3aed1a"}},
+        {"name": "primary-20", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#7c3aed33", "Dark": "#7c3aed33"}},
         {"name": "primary-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/violet/50", "Dark": "$raw colors/violet/950"}},
         {"name": "primary-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/400"}},
 

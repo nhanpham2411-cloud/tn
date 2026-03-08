@@ -16,26 +16,23 @@
         "paddingX": "xs",
         "paddingY": "2xs",
         "radius": "sm",
-        "gap": "sm",
+        "gap": "xs",
         "hideLabel": true,
         "children": [
           {
             "name": "Icon",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "radius": 2,
-            "fill": "foreground",
-            "fillOpacity": 0.7,
+            "type": "icon",
+            "iconName": "User",
+            "iconSize": 16,
+            "iconFill": "foreground",
             "showWhen": "Type=With Icon"
           },
           {
-            "name": "Icon Destructive",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "radius": 2,
-            "fill": "destructive",
+            "name": "Icon D",
+            "type": "icon",
+            "iconName": "Trash2",
+            "iconSize": 16,
+            "iconFill": "destructive",
             "showWhen": "Type=Destructive"
           },
           {
@@ -44,15 +41,15 @@
             "textStyle": "SP/Body",
             "textContent": "Profile",
             "textFill": "foreground",
-            "fillWidth": true
+            "fillWidth": true,
+            "truncate": true
           },
           {
             "name": "Shortcut",
             "type": "text",
             "textStyle": "SP/Mini",
-            "textContent": "\u2318P",
-            "textFill": "foreground",
-            "textOpacity": 0.6,
+            "textContent": "\u2318,",
+            "textFill": "muted-foreground",
             "showWhen": "Type=With Shortcut"
           }
         ]
@@ -63,18 +60,88 @@
         "Type=With Icon": {},
         "Type=Destructive": {
           "children": [
-            { "name": "Label", "textFill": "destructive", "textContent": "Delete" }
+            { "name": "Icon", "type": "icon", "iconName": "User", "iconSize": 16, "iconFill": "foreground", "showWhen": "Type=With Icon" },
+            { "name": "Icon D", "type": "icon", "iconName": "Trash2", "iconSize": 16, "iconFill": "destructive", "showWhen": "Type=Destructive" },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body", "textContent": "Delete Account", "textFill": "destructive", "fillWidth": true, "truncate": true },
+            { "name": "Shortcut", "type": "text", "textStyle": "SP/Mini", "textContent": "\u2318,", "textFill": "muted-foreground", "showWhen": "Type=With Shortcut" }
           ]
         },
         "Type=With Shortcut": {
           "children": [
-            { "name": "Label", "textContent": "Settings" }
+            { "name": "Icon", "type": "icon", "iconName": "User", "iconSize": 16, "iconFill": "foreground", "showWhen": "Type=With Icon" },
+            { "name": "Icon D", "type": "icon", "iconName": "Trash2", "iconSize": 16, "iconFill": "destructive", "showWhen": "Type=Destructive" },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body", "textContent": "Settings", "textFill": "foreground", "fillWidth": true, "truncate": true },
+            { "name": "Shortcut", "type": "text", "textStyle": "SP/Mini", "textContent": "\u2318,", "textFill": "muted-foreground", "showWhen": "Type=With Shortcut" }
           ]
         },
         "State=Default": {},
         "State=Hover": { "fill": "muted" },
         "State=Disabled": { "opacity": 0.5 }
       },
+
+      "examples": [
+        {
+          "name": "Item Types",
+          "description": "Available item variants for dropdown menus.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
+            { "label": "With Icon", "props": { "Type": "With Icon", "State": "Default" } },
+            { "label": "With Shortcut", "props": { "Type": "With Shortcut", "State": "Default" } },
+            { "label": "Destructive", "props": { "Type": "Destructive", "State": "Default" } }
+          ]
+        },
+        {
+          "name": "Item States",
+          "description": "Interactive states for dropdown items.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
+            { "label": "Hover", "props": { "Type": "Default", "State": "Hover" } },
+            { "label": "Disabled", "props": { "Type": "Default", "State": "Disabled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "onSelect", "type": "(event: Event) => void", "default": "\u2014", "description": "Callback when item is selected" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the item and grey it out" },
+        { "name": "inset", "type": "boolean", "default": "false", "description": "Add left padding to align text with icon items" }
+      ],
+
+      "designTokens": [
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Default item text + icon color" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover/focus background" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Shortcut text color" },
+        { "token": "--destructive", "value": "red-500", "description": "Destructive item text + icon" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use icons consistently \u2014 either all items in a group have icons or none.", "dont": "Mix icon and non-icon items within the same DropdownMenuGroup." },
+        { "do": "Pair DropdownMenuShortcut with frequently-used actions only.", "dont": "Add shortcuts to every item \u2014 it creates visual noise." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Item", "value": "px-xs py-2xs rounded-sm gap-xs", "code": "DropdownMenuItem", "codeValue": "px-xs py-2xs rounded-sm typo-paragraph-sm gap-2" },
+        { "figma": "State=Hover", "value": "bg-muted", "code": "focus:bg-muted", "codeValue": "bg-muted text-foreground" },
+        { "figma": "Shortcut", "value": "SP/Mini, muted-foreground", "code": "DropdownMenuShortcut", "codeValue": "ml-auto typo-paragraph-mini opacity-60" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Enter", "action": "Select the focused item" },
+          { "key": "Arrow Up/Down", "action": "Navigate between items" }
+        ],
+        "notes": [
+          "Items have role=\"menuitem\"",
+          "Disabled items are excluded from keyboard navigation"
+        ]
+      },
+
+      "related": [
+        { "name": "Context Menu", "desc": "Right-click triggered menu with the same item types." },
+        { "name": "Command", "desc": "Searchable command palette for large action lists." }
+      ],
 
       "showcase": {
         "sections": ["header", "component"]
@@ -92,8 +159,6 @@
 
       "properties": {
         "Show Label": ["Yes", "No"],
-        "Show Icons": ["Yes", "No"],
-        "Show Separator": ["Yes", "No"],
         "Show Destructive": ["Yes", "No"]
       },
 
@@ -104,98 +169,103 @@
         "stroke": "border",
         "radius": "md",
         "effectStyleName": "Shadows/md",
-        "paddingX": "3xs",
-        "paddingY": "3xs",
+        "paddingX": 0,
+        "paddingY": 0,
         "gap": 0,
         "hideLabel": true,
         "children": [
           {
-            "name": "Label",
-            "type": "text",
-            "textStyle": "SP/Body Semibold",
-            "textContent": "My Account",
-            "textFill": "muted-foreground",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "showWhen": "Show Label=Yes"
+            "name": "Label Group",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
+            "showWhen": "Show Label=Yes",
+            "children": [
+              {
+                "name": "Label",
+                "type": "frame",
+                "layout": "horizontal",
+                "paddingX": "xs",
+                "paddingY": "2xs",
+                "children": [
+                  {
+                    "name": "Text",
+                    "type": "text",
+                    "textStyle": "SP/Body Semibold",
+                    "textContent": "My Account",
+                    "textFill": "foreground"
+                  }
+                ]
+              }
+            ]
           },
           {
             "name": "Separator Top",
-            "type": "frame",
-            "height": 1,
+            "type": "divider",
             "fill": "muted",
-            "fillWidth": true,
-            "paddingY": "3xs",
             "showWhen": "Show Label=Yes"
           },
           {
-            "name": "Item 1",
+            "name": "Items Group",
             "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "gap": "xs",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "radius": "sm",
-            "fillWidth": true,
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
             "children": [
-              { "name": "Icon 1", "type": "frame", "width": 16, "height": 16, "radius": 2, "fill": "foreground", "fillOpacity": 0.7, "showWhen": "Show Icons=Yes" },
-              { "name": "Text 1", "type": "text", "textStyle": "SP/Body", "textContent": "Profile", "textFill": "foreground" }
-            ]
-          },
-          {
-            "name": "Item 2",
-            "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "gap": "xs",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "radius": "sm",
-            "fillWidth": true,
-            "children": [
-              { "name": "Icon 2", "type": "frame", "width": 16, "height": 16, "radius": 2, "fill": "foreground", "fillOpacity": 0.7, "showWhen": "Show Icons=Yes" },
-              { "name": "Text 2", "type": "text", "textStyle": "SP/Body", "textContent": "Settings", "textFill": "foreground" }
-            ]
-          },
-          {
-            "name": "Item 3",
-            "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "gap": "xs",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "radius": "sm",
-            "fillWidth": true,
-            "children": [
-              { "name": "Icon 3", "type": "frame", "width": 16, "height": 16, "radius": 2, "fill": "foreground", "fillOpacity": 0.7, "showWhen": "Show Icons=Yes" },
-              { "name": "Text 3", "type": "text", "textStyle": "SP/Body", "textContent": "Notifications", "textFill": "foreground" }
+              {
+                "name": "Item 1",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Profile" },
+                "iconOverrides": { "Icon": "User" },
+                "fillWidth": true
+              },
+              {
+                "name": "Item 2",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Settings" },
+                "iconOverrides": { "Icon": "Settings" },
+                "fillWidth": true
+              },
+              {
+                "name": "Item 3",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Notifications" },
+                "iconOverrides": { "Icon": "Bell" },
+                "fillWidth": true
+              }
             ]
           },
           {
             "name": "Separator Bottom",
-            "type": "frame",
-            "height": 1,
+            "type": "divider",
             "fill": "muted",
-            "fillWidth": true,
-            "paddingY": "3xs",
-            "showWhen": "Show Separator=Yes"
+            "showWhen": "Show Destructive=Yes"
           },
           {
-            "name": "Destructive Item",
+            "name": "Destructive Group",
             "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "gap": "xs",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "radius": "sm",
-            "fillWidth": true,
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
             "showWhen": "Show Destructive=Yes",
             "children": [
-              { "name": "Icon D", "type": "frame", "width": 16, "height": 16, "radius": 2, "fill": "destructive", "showWhen": "Show Icons=Yes" },
-              { "name": "Text D", "type": "text", "textStyle": "SP/Body", "textContent": "Delete Account", "textFill": "destructive" }
+              {
+                "name": "Destructive Item",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "Destructive", "State": "Default" },
+                "fillWidth": true
+              }
             ]
           }
         ]
@@ -204,66 +274,56 @@
       "variantStyles": {
         "Show Label=Yes": {},
         "Show Label=No": {},
-        "Show Icons=Yes": {},
-        "Show Icons=No": {},
-        "Show Separator=Yes": {},
-        "Show Separator=No": {},
         "Show Destructive=Yes": {},
         "Show Destructive=No": {}
       },
 
       "examples": [
         {
-          "name": "Account Menu",
-          "description": "Label, icons, separator, and destructive action.",
+          "name": "Menu Variants",
+          "description": "Dropdown menu with different content combinations.",
           "layout": "horizontal",
           "items": [
-            { "label": "Full", "props": { "Show Label": "Yes", "Show Icons": "Yes", "Show Separator": "Yes", "Show Destructive": "Yes" } },
-            { "label": "No Icons", "props": { "Show Label": "Yes", "Show Icons": "No", "Show Separator": "Yes", "Show Destructive": "Yes" } }
-          ]
-        },
-        {
-          "name": "Minimal",
-          "description": "Clean menu without label or separator.",
-          "layout": "horizontal",
-          "items": [
-            { "label": "No Label", "props": { "Show Label": "No", "Show Icons": "Yes", "Show Separator": "No", "Show Destructive": "Yes" } },
-            { "label": "Plain", "props": { "Show Label": "No", "Show Icons": "No", "Show Separator": "No", "Show Destructive": "No" } }
+            { "label": "Full", "props": { "Show Label": "Yes", "Show Destructive": "Yes" } },
+            { "label": "No Label", "props": { "Show Label": "No", "Show Destructive": "Yes" } },
+            { "label": "Minimal", "props": { "Show Label": "No", "Show Destructive": "No" } }
           ]
         }
       ],
 
       "props": [
-        { "name": "align", "type": "\"start\" | \"center\" | \"end\"", "default": "\"center\"", "description": "Horizontal alignment relative to trigger" },
-        { "name": "sideOffset", "type": "number", "default": "4", "description": "Gap in px between trigger and menu" },
-        { "name": "inset", "type": "boolean", "default": "false", "description": "Add left padding to align text with icon items" },
-        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the item" }
+        { "name": "align", "type": "\"start\" | \"center\" | \"end\"", "default": "\"center\"", "description": "Horizontal alignment relative to trigger (DropdownMenuContent)" },
+        { "name": "sideOffset", "type": "number", "default": "4", "description": "Gap in px between trigger and menu (DropdownMenuContent)" },
+        { "name": "className", "type": "string", "default": "\u2014", "description": "Additional CSS classes (DropdownMenuContent)" },
+        { "name": "inset", "type": "boolean", "default": "false", "description": "Add left padding to align text with icon items (DropdownMenuItem)" },
+        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the item (DropdownMenuItem)" },
+        { "name": "checked", "type": "boolean | 'indeterminate'", "default": "false", "description": "Controlled checked state (DropdownMenuCheckboxItem)" },
+        { "name": "onCheckedChange", "type": "(checked: boolean) => void", "default": "\u2014", "description": "Callback when checked changes (DropdownMenuCheckboxItem)" },
+        { "name": "value", "type": "string", "default": "\u2014", "description": "Item value within its RadioGroup (DropdownMenuRadioItem)" }
       ],
 
       "designTokens": [
         { "token": "--card", "value": "white / #252522", "description": "Menu background" },
         { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Menu border" },
         { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover background + separator" },
-        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Default item text" },
-        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Label text color" },
-        { "token": "--destructive", "value": "red-500", "description": "Destructive item text" }
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Label + item text" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Shortcut text color" },
+        { "token": "--destructive", "value": "red-500", "description": "Destructive item text + icon" }
       ],
 
       "bestPractices": [
-        { "do": "Use DropdownMenu for contextual actions tied to a specific element.", "dont": "Use DropdownMenu as a nav menu — use links, Tabs, or Sidebar." },
+        { "do": "Use DropdownMenu for contextual actions tied to a specific element.", "dont": "Use DropdownMenu as a nav menu \u2014 use links, Tabs, or Sidebar." },
         { "do": "Group related items with separator and label.", "dont": "Put more than 10 items without grouping." },
+        { "do": "Add DropdownMenuShortcut to items that have keyboard shortcuts.", "dont": "Show keyboard shortcuts that don't actually work." },
         { "do": "Place destructive actions last, separated by a divider.", "dont": "Mix destructive items among regular items." }
       ],
 
       "figmaMapping": [
-        { "figma": "Menu", "value": "bg-card border rounded-md shadow-md", "code": "DropdownMenuContent", "codeValue": "min-w-[8rem] p-1 z-50" },
-        { "figma": "Label", "value": "SP/Body Semibold, muted-foreground", "code": "DropdownMenuLabel", "codeValue": "px-xs py-2xs typo-paragraph-sm-bold" },
-        { "figma": "Separator", "value": "1px muted", "code": "DropdownMenuSeparator", "codeValue": "-mx-1 my-1 h-px bg-muted" },
-        { "figma": "Item", "value": "SP/Body, foreground", "code": "DropdownMenuItem", "codeValue": "flex items-center gap-2 px-xs py-2xs rounded-sm" },
-        { "figma": "Item Hover", "value": "bg-muted", "code": "focus:bg-muted", "codeValue": "Radix focus state" },
-        { "figma": "Item Disabled", "value": "opacity-50", "code": "data-[disabled]", "codeValue": "pointer-events-none opacity-50" },
-        { "figma": "Destructive", "value": "text-destructive", "code": "className", "codeValue": "text-destructive on DropdownMenuItem" },
-        { "figma": "Shortcut", "value": "SP/Mini, opacity-60", "code": "DropdownMenuShortcut", "codeValue": "ml-auto tracking-widest opacity-60" }
+        { "figma": "Menu", "value": "bg-card border rounded-md shadow-md", "code": "DropdownMenuContent", "codeValue": "min-w-[8rem] p-1 rounded-md border bg-card shadow-md" },
+        { "figma": "Label", "value": "SP/Body Semibold, foreground", "code": "DropdownMenuLabel", "codeValue": "px-xs py-2xs typo-paragraph-sm-bold" },
+        { "figma": "Separator", "value": "1px muted edge-to-edge", "code": "DropdownMenuSeparator", "codeValue": "-mx-1 my-1 h-px bg-muted" },
+        { "figma": "Item", "value": "Dropdown Item instance", "code": "DropdownMenuItem", "codeValue": "flex items-center gap-2 px-xs py-2xs rounded-sm" },
+        { "figma": "Animation", "value": "Zoom + Fade", "code": "data-[state]", "codeValue": "zoom-in-95 fade-in-0" }
       ],
 
       "accessibility": {
@@ -272,13 +332,14 @@
           { "key": "Arrow Up / Down", "action": "Navigate between items" },
           { "key": "Arrow Right", "action": "Open submenu" },
           { "key": "Arrow Left / Escape", "action": "Close submenu or menu" },
-          { "key": "Enter", "action": "Activate focused item" }
+          { "key": "Enter", "action": "Activate focused item" },
+          { "key": "Tab", "action": "Close menu and move focus to next element" }
         ],
         "notes": [
           "Uses role=\"menu\" with role=\"menuitem\"",
           "First item auto-focuses on open",
           "Supports type-ahead for item search",
-          "Trigger must be focusable — use asChild with Button"
+          "Trigger must be focusable \u2014 use asChild with Button"
         ]
       },
 

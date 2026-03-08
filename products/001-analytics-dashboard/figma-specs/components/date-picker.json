@@ -17,12 +17,15 @@
         "layout": "horizontal",
         "width": 48,
         "height": 48,
+        "heightMode": "fixed",
         "primaryAlign": "center",
         "counterAlign": "center",
         "fill": "transparent",
         "radius": "sm",
+        "paddingX": "none",
+        "paddingY": "none",
         "hideLabel": true,
-        "gap": 0,
+        "gap": "none",
         "children": [
           {
             "name": "Day",
@@ -41,23 +44,30 @@
         },
         "State=Today": {
           "stroke": "primary",
-          "strokeOpacity": 0.4
+          "strokeOpacity": 0.4,
+          "strokeAlign": "inside"
         },
         "State=Selected": {
           "fill": "primary",
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "primary-foreground"
             }
           ]
         },
         "State=Outside": {
+          "opacity": 0.4,
           "children": [
             {
               "name": "Day",
-              "textFill": "muted-foreground",
-              "textOpacity": 0.4
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
+              "textFill": "muted-foreground"
             }
           ]
         },
@@ -66,6 +76,9 @@
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "muted-foreground"
             }
           ]
@@ -79,17 +92,22 @@
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "primary-foreground"
             }
           ]
         },
         "State=Range Middle": {
-          "radius": 0,
-          "fill": "primary",
-          "fillOpacity": 0.1,
+          "radius": "none",
+          "fill": "primary-10",
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "foreground"
             }
           ]
@@ -103,16 +121,21 @@
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "primary-foreground"
             }
           ]
         },
         "State=Range Hover": {
-          "fill": "primary",
-          "fillOpacity": 0.2,
+          "fill": "primary-20",
           "children": [
             {
               "name": "Day",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "14",
               "textFill": "foreground"
             }
           ]
@@ -189,7 +212,7 @@
 
       "related": [
         { "name": "Calendar", "desc": "Month calendar grid using Day Cell instances." },
-        { "name": "Date Picker", "desc": "Popover trigger + Calendar for date selection." }
+        { "name": "Date Picker", "desc": "Calendar popover for date selection." }
       ],
 
       "showcase": {
@@ -198,39 +221,864 @@
     },
 
     {
-      "name": "Date Picker",
-      "description": "A trigger button that opens a Calendar popup for selecting a single date or date range. DateRangePicker adds a two-month calendar with preset shortcuts sidebar. Uses Popover + Calendar internally.",
+      "name": "Preset Item",
+      "description": "A preset shortcut item used in the DatePicker Range sidebar. Displays a quick date range option with default, hover, and active states.",
+      "category": "Primitives",
+      "installation": {
+        "dependencies": "",
+        "import": "// Internal sub-component — used by DatePicker Range sidebar\n// Not exported separately"
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Active"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "fill": "transparent",
+        "radius": "md",
+        "paddingX": "sm",
+        "paddingY": "xs",
+        "gap": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Label",
+            "type": "text",
+            "textStyle": "SP/Caption",
+            "textContent": "Last 30 days",
+            "textFill": "muted-foreground"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Default": {},
+        "State=Hover": {
+          "fill": "muted",
+          "children": [
+            {
+              "name": "Label",
+              "type": "text",
+              "textStyle": "SP/Caption",
+              "textContent": "Last 30 days",
+              "textFill": "foreground"
+            }
+          ]
+        },
+        "State=Active": {
+          "fill": "primary",
+          "children": [
+            {
+              "name": "Label",
+              "type": "text",
+              "textStyle": "SP/Label",
+              "textContent": "Last 30 days",
+              "textFill": "primary-foreground"
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "All preset item states.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default" } },
+            { "label": "Hover", "props": { "State": "Hover" } },
+            { "label": "Active", "props": { "State": "Active" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "state", "type": "PresetItemState", "default": "\"default\"", "description": "Visual state of the preset item" },
+        { "name": "children", "type": "ReactNode", "default": "—", "description": "Preset label text" },
+        { "name": "onClick", "type": "() => void", "default": "—", "description": "Click handler for selecting the preset" }
+      ],
+
+      "designTokens": [
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Default text color" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover background" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Hover text color" },
+        { "token": "--primary", "value": "violet-600", "description": "Active background" },
+        { "token": "--primary-foreground", "value": "white", "description": "Active text color" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use PresetItem as instance inside DatePicker Range presets sidebar.", "dont": "Render PresetItem standalone outside DatePicker context." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Preset Item", "value": "px-sm py-xs rounded-md", "code": "PresetItem", "codeValue": "sp-caption px-sm py-xs rounded-md" },
+        { "figma": "State=Default", "value": "transparent bg, muted-foreground text", "code": "default", "codeValue": "text-muted-foreground" },
+        { "figma": "State=Hover", "value": "muted bg, foreground text", "code": "hover", "codeValue": "bg-muted text-foreground" },
+        { "figma": "State=Active", "value": "primary bg, primary-foreground text, medium weight", "code": "active", "codeValue": "bg-primary text-primary-foreground font-medium" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Enter / Space", "action": "Select the preset date range" }
+        ],
+        "notes": [
+          "Acts as a button for preset date range selection"
+        ]
+      },
+
+      "related": [
+        { "name": "Date Picker", "desc": "Parent component — PresetItem lives in the Range mode sidebar." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Calendar",
+      "description": "A single-month date picker calendar built on react-day-picker. Displays navigation, weekday headers, and a grid of Day Cell instances. Used standalone or composed inside DatePicker.",
       "category": "Form",
       "installation": {
         "dependencies": "pnpm add react-day-picker date-fns",
-        "import": "import { DatePicker, DateRangePicker } from \"@/components/ui/date-picker\""
+        "import": "import { Calendar } from \"@/components/ui/calendar\""
       },
 
       "properties": {
         "Mode": ["Single", "Range"],
-        "State": ["Placeholder", "Filled"]
+        "Show Outside Days": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 360,
+        "fill": "card",
+        "paddingX": "sm",
+        "paddingY": "sm",
+        "gap": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Nav",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "space-between",
+            "counterAlign": "center",
+            "fillWidth": true,
+            "height": 32,
+            "heightMode": "fixed",
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              {
+                "name": "Prev",
+                "type": "frame",
+                "layout": "horizontal",
+                "primaryAlign": "center",
+                "counterAlign": "center",
+                "width": 32,
+                "widthMode": "fixed",
+                "height": 32,
+                "heightMode": "fixed",
+                "radius": 8,
+                "stroke": "border",
+                "fill": "card",
+                "paddingX": "none",
+                "paddingY": "none",
+                "gap": "none",
+                "children": [
+                  {
+                    "name": "Chevron Left",
+                    "type": "icon",
+                    "iconName": "ChevronLeft",
+                    "iconSize": 18,
+                    "iconFill": "foreground"
+                  }
+                ]
+              },
+              {
+                "name": "Month Title",
+                "type": "text",
+                "textStyle": "SP/Body Semibold",
+                "textContent": "March 2026",
+                "textFill": "foreground"
+              },
+              {
+                "name": "Next",
+                "type": "frame",
+                "layout": "horizontal",
+                "primaryAlign": "center",
+                "counterAlign": "center",
+                "width": 32,
+                "widthMode": "fixed",
+                "height": 32,
+                "heightMode": "fixed",
+                "radius": 8,
+                "stroke": "border",
+                "fill": "card",
+                "paddingX": "none",
+                "paddingY": "none",
+                "gap": "none",
+                "children": [
+                  {
+                    "name": "Chevron Right",
+                    "type": "icon",
+                    "iconName": "ChevronRight",
+                    "iconSize": 18,
+                    "iconFill": "foreground"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Spacer Nav",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "height": 16,
+            "heightMode": "fixed",
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none"
+          },
+          {
+            "name": "Weekdays",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "WD1", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Su", "textFill": "muted-foreground" }] },
+              { "name": "WD2", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Mo", "textFill": "muted-foreground" }] },
+              { "name": "WD3", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Tu", "textFill": "muted-foreground" }] },
+              { "name": "WD4", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "We", "textFill": "muted-foreground" }] },
+              { "name": "WD5", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Th", "textFill": "muted-foreground" }] },
+              { "name": "WD6", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Fr", "textFill": "muted-foreground" }] },
+              { "name": "WD7", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Sa", "textFill": "muted-foreground" }] }
+            ]
+          },
+          {
+            "name": "Row 1",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "R1C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "1" } },
+              { "name": "R1C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "2" } },
+              { "name": "R1C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "3" } },
+              { "name": "R1C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "4" } },
+              { "name": "R1C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "5" } },
+              { "name": "R1C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "6" } },
+              { "name": "R1C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "7" } }
+            ]
+          },
+          {
+            "name": "Row 2",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "R2C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Today" }, "textOverrides": { "Day": "8" } },
+              { "name": "R2C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "9" } },
+              { "name": "R2C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "10" } },
+              { "name": "R2C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "11" } },
+              { "name": "R2C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "12" } },
+              { "name": "R2C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "13" } },
+              { "name": "R2C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "14" } }
+            ]
+          },
+          {
+            "name": "Row 3",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "R3C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "15" } },
+              { "name": "R3C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "16" } },
+              { "name": "R3C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "17" } },
+              { "name": "R3C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Selected" }, "textOverrides": { "Day": "18" } },
+              { "name": "R3C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "19" } },
+              { "name": "R3C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "20" } },
+              { "name": "R3C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "21" } }
+            ]
+          },
+          {
+            "name": "Row 4",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "R4C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "22" } },
+              { "name": "R4C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "23" } },
+              { "name": "R4C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "24" } },
+              { "name": "R4C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "25" } },
+              { "name": "R4C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "26" } },
+              { "name": "R4C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "27" } },
+              { "name": "R4C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "28" } }
+            ]
+          },
+          {
+            "name": "Row 5",
+            "type": "frame",
+            "layout": "horizontal",
+            "fillWidth": true,
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "children": [
+              { "name": "R5C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "29" } },
+              { "name": "R5C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "30" } },
+              { "name": "R5C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "31" } },
+              { "name": "R5C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "1" }, "showWhen": "Show Outside Days=Yes" },
+              { "name": "R5C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "2" }, "showWhen": "Show Outside Days=Yes" },
+              { "name": "R5C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "3" }, "showWhen": "Show Outside Days=Yes" },
+              { "name": "R5C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "4" }, "showWhen": "Show Outside Days=Yes" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Mode=Single": {},
+        "Mode=Range": {
+          "width": 708,
+          "children": [
+            {
+              "name": "Months",
+              "type": "frame",
+              "layout": "horizontal",
+              "fillWidth": true,
+              "paddingX": "none",
+              "paddingY": "none",
+              "gap": "md",
+              "children": [
+                {
+                  "name": "Month 1",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "fillWidth": true,
+                  "paddingX": "none",
+                  "paddingY": "none",
+                  "gap": "none",
+                  "children": [
+                    {
+                      "name": "Header",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "primaryAlign": "space-between",
+                      "counterAlign": "center",
+                      "fillWidth": true,
+                      "height": 32,
+                      "heightMode": "fixed",
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        {
+                          "name": "Prev",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "primaryAlign": "center",
+                          "counterAlign": "center",
+                          "width": 32,
+                          "widthMode": "fixed",
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "radius": 8,
+                          "stroke": "border",
+                          "fill": "card",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            {
+                              "name": "Chevron Left",
+                              "type": "icon",
+                              "iconName": "ChevronLeft",
+                              "iconSize": 18,
+                              "iconFill": "foreground"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Month Title",
+                          "type": "text",
+                          "textStyle": "SP/Body Semibold",
+                          "textContent": "March 2026",
+                          "textFill": "foreground"
+                        },
+                        {
+                          "name": "Spacer",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "width": 32,
+                          "widthMode": "fixed",
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Spacer Nav",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "height": 16,
+                      "heightMode": "fixed",
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none"
+                    },
+                    {
+                      "name": "Weekdays",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "WD1", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Su", "textFill": "muted-foreground" }] },
+                        { "name": "WD2", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Mo", "textFill": "muted-foreground" }] },
+                        { "name": "WD3", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Tu", "textFill": "muted-foreground" }] },
+                        { "name": "WD4", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "We", "textFill": "muted-foreground" }] },
+                        { "name": "WD5", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Th", "textFill": "muted-foreground" }] },
+                        { "name": "WD6", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Fr", "textFill": "muted-foreground" }] },
+                        { "name": "WD7", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Sa", "textFill": "muted-foreground" }] }
+                      ]
+                    },
+                    {
+                      "name": "Row 1",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R1C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "1" } },
+                        { "name": "R1C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "2" } },
+                        { "name": "R1C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "3" } },
+                        { "name": "R1C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "4" } },
+                        { "name": "R1C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "5" } },
+                        { "name": "R1C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "6" } },
+                        { "name": "R1C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "7" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 2",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R2C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Today" }, "textOverrides": { "Day": "8" } },
+                        { "name": "R2C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "9" } },
+                        { "name": "R2C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "10" } },
+                        { "name": "R2C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "11" } },
+                        { "name": "R2C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "12" } },
+                        { "name": "R2C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "13" } },
+                        { "name": "R2C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "14" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 3",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R3C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "15" } },
+                        { "name": "R3C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "16" } },
+                        { "name": "R3C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "17" } },
+                        { "name": "R3C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Start" }, "textOverrides": { "Day": "18" } },
+                        { "name": "R3C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "19" } },
+                        { "name": "R3C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "20" } },
+                        { "name": "R3C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "21" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 4",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R4C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "22" } },
+                        { "name": "R4C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "23" } },
+                        { "name": "R4C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "24" } },
+                        { "name": "R4C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "25" } },
+                        { "name": "R4C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "26" } },
+                        { "name": "R4C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "27" } },
+                        { "name": "R4C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "28" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 5",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R5C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "29" } },
+                        { "name": "R5C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "30" } },
+                        { "name": "R5C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "31" } },
+                        { "name": "R5C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "1" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R5C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "2" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R5C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "3" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R5C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "4" }, "showWhen": "Show Outside Days=Yes" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Month 2",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "fillWidth": true,
+                  "paddingX": "none",
+                  "paddingY": "none",
+                  "gap": "none",
+                  "children": [
+                    {
+                      "name": "Header",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "primaryAlign": "space-between",
+                      "counterAlign": "center",
+                      "fillWidth": true,
+                      "height": 32,
+                      "heightMode": "fixed",
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        {
+                          "name": "Spacer",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "width": 32,
+                          "widthMode": "fixed",
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none"
+                        },
+                        {
+                          "name": "Month Title",
+                          "type": "text",
+                          "textStyle": "SP/Body Semibold",
+                          "textContent": "April 2026",
+                          "textFill": "foreground"
+                        },
+                        {
+                          "name": "Next",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "primaryAlign": "center",
+                          "counterAlign": "center",
+                          "width": 32,
+                          "widthMode": "fixed",
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "radius": 8,
+                          "stroke": "border",
+                          "fill": "card",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            {
+                              "name": "Chevron Right",
+                              "type": "icon",
+                              "iconName": "ChevronRight",
+                              "iconSize": 18,
+                              "iconFill": "foreground"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Spacer Nav",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "height": 16,
+                      "heightMode": "fixed",
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none"
+                    },
+                    {
+                      "name": "Weekdays",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "WD1", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Su", "textFill": "muted-foreground" }] },
+                        { "name": "WD2", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Mo", "textFill": "muted-foreground" }] },
+                        { "name": "WD3", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Tu", "textFill": "muted-foreground" }] },
+                        { "name": "WD4", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "We", "textFill": "muted-foreground" }] },
+                        { "name": "WD5", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Th", "textFill": "muted-foreground" }] },
+                        { "name": "WD6", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Fr", "textFill": "muted-foreground" }] },
+                        { "name": "WD7", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Sa", "textFill": "muted-foreground" }] }
+                      ]
+                    },
+                    {
+                      "name": "Row 1",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R1C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "29" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R1C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "30" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R1C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "31" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R1C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "1" } },
+                        { "name": "R1C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "2" } },
+                        { "name": "R1C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "3" } },
+                        { "name": "R1C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "4" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 2",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R2C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "5" } },
+                        { "name": "R2C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "6" } },
+                        { "name": "R2C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "7" } },
+                        { "name": "R2C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range End" }, "textOverrides": { "Day": "8" } },
+                        { "name": "R2C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "9" } },
+                        { "name": "R2C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "10" } },
+                        { "name": "R2C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "11" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 3",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R3C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "12" } },
+                        { "name": "R3C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "13" } },
+                        { "name": "R3C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "14" } },
+                        { "name": "R3C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "15" } },
+                        { "name": "R3C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "16" } },
+                        { "name": "R3C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "17" } },
+                        { "name": "R3C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "18" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 4",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R4C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "19" } },
+                        { "name": "R4C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "20" } },
+                        { "name": "R4C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "21" } },
+                        { "name": "R4C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "22" } },
+                        { "name": "R4C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "23" } },
+                        { "name": "R4C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "24" } },
+                        { "name": "R4C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "25" } }
+                      ]
+                    },
+                    {
+                      "name": "Row 5",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        { "name": "R5C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "26" } },
+                        { "name": "R5C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "27" } },
+                        { "name": "R5C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "28" } },
+                        { "name": "R5C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "29" } },
+                        { "name": "R5C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "30" } },
+                        { "name": "R5C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "1" }, "showWhen": "Show Outside Days=Yes" },
+                        { "name": "R5C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "2" }, "showWhen": "Show Outside Days=Yes" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Show Outside Days=Yes": {},
+        "Show Outside Days=No": {}
+      },
+
+      "examples": [
+        {
+          "name": "Modes",
+          "description": "Single month and range (two-month) calendar.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Single", "props": { "Mode": "Single", "Show Outside Days": "Yes" } },
+            { "label": "Range", "props": { "Mode": "Range", "Show Outside Days": "Yes" } }
+          ]
+        },
+        {
+          "name": "Outside Days",
+          "description": "Toggle visibility of days from adjacent months.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Shown", "props": { "Mode": "Single", "Show Outside Days": "Yes" } },
+            { "label": "Hidden", "props": { "Mode": "Single", "Show Outside Days": "No" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "mode", "type": "\"single\" | \"range\"", "default": "\"single\"", "description": "Selection mode" },
+        { "name": "selected", "type": "Date | DateRange", "default": "—", "description": "Selected date(s)" },
+        { "name": "onSelect", "type": "(date) => void", "default": "—", "description": "Callback on selection" },
+        { "name": "showOutsideDays", "type": "boolean", "default": "true", "description": "Show days from adjacent months" },
+        { "name": "disabled", "type": "Date[] | Matcher", "default": "—", "description": "Dates to disable" },
+        { "name": "numberOfMonths", "type": "number", "default": "1", "description": "Number of months to display (range mode uses 2)" }
+      ],
+
+      "designTokens": [
+        { "token": "--card", "value": "white / #252522", "description": "Calendar background" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Day text color" },
+        { "token": "--primary", "value": "violet-600", "description": "Selected day background" },
+        { "token": "--primary-foreground", "value": "white", "description": "Selected day text color" },
+        { "token": "--ghost-hover", "value": "zinc-100 / zinc-800", "description": "Day hover background" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Weekday labels + outside day text" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Calendar border + nav button border" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Calendar inline when date selection is the primary task on the page.", "dont": "Use Calendar inline for quick date picking — use DatePicker with popover instead." },
+        { "do": "Disable dates outside valid ranges with the disabled prop.", "dont": "Allow selection of invalid dates and validate later." },
+        { "do": "Show outside days by default — it helps users understand the month context.", "dont": "Hide outside days when the calendar is used in a date range context." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Calendar", "value": "p-sm, vertical layout", "code": "Calendar", "codeValue": "p-sm flex flex-col" },
+        { "figma": "Nav buttons", "value": "32×32, outline, rounded-lg", "code": "button_previous/next", "codeValue": "size-2xl rounded-lg border p-[7px]" },
+        { "figma": "Caption", "value": "SP/Body Semibold, center", "code": "caption_label", "codeValue": "typo-paragraph-sm font-semibold" },
+        { "figma": "Weekday", "value": "48×32, SP/Mini, muted-fg", "code": "weekday", "codeValue": "w-[48px] h-[32px] text-[12px] text-muted-foreground" },
+        { "figma": "Day Cell", "value": "48×48, Day Cell instance", "code": "day_button", "codeValue": "size-[48px] rounded-sm p-xs" },
+        { "figma": "Today", "value": "ring-1 primary/40", "code": "today", "codeValue": "ring-1 ring-primary/40 rounded-sm" },
+        { "figma": "Selected", "value": "bg-primary, primary-fg", "code": "selected", "codeValue": "bg-primary text-primary-foreground rounded-sm" },
+        { "figma": "Range", "value": "start/middle/end styling", "code": "range_start/middle/end", "codeValue": "rounded-l-sm | bg-primary/10 | rounded-r-sm" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Arrow Keys", "action": "Navigate between days" },
+          { "key": "Enter / Space", "action": "Select the focused day" },
+          { "key": "Page Up/Down", "action": "Navigate to previous/next month" },
+          { "key": "Home / End", "action": "Navigate to first/last day of week" }
+        ],
+        "notes": [
+          "Built on react-day-picker v9",
+          "Day cells receive aria-selected when selected",
+          "Outside days have aria-disabled for screen readers",
+          "Today's date announced via aria-current=\"date\"",
+          "Supports disabled dates via Matcher"
+        ]
+      },
+
+      "related": [
+        { "name": "Day Cell", "desc": "Sub-component for individual day states — 10 state variants." },
+        { "name": "Preset Item", "desc": "Sub-component for preset shortcuts in DatePicker Range sidebar." },
+        { "name": "Date Picker", "desc": "Calendar in a popover with trigger button." },
+        { "name": "Input", "desc": "For manual date entry as text." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Date Picker Trigger",
+      "description": "The trigger button for Date Picker. Displays a calendar icon and selected date text in an input-style field. Supports default, hover, error, and disabled states.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add react-day-picker date-fns",
+        "import": "import { DatePickerTrigger } from \"@/components/ui/date-picker\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover", "Error", "Disable"],
+        "Value": ["Placeholder", "Filled"]
       },
 
       "base": {
         "layout": "horizontal",
         "width": 280,
         "height": 36,
+        "heightMode": "fixed",
         "primaryAlign": "start",
         "counterAlign": "center",
         "fill": "input",
         "stroke": "border",
-        "radius": 8,
+        "radius": "lg",
         "paddingX": "sm",
-        "paddingY": 0,
+        "paddingY": "none",
         "gap": "xs",
         "hideLabel": true,
         "children": [
           {
             "name": "Calendar Icon",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "fill": "foreground"
+            "type": "icon",
+            "iconName": "Calendar",
+            "iconSize": 16,
+            "iconFill": "foreground"
           },
           {
             "name": "Text",
@@ -244,31 +1092,719 @@
       },
 
       "variantStyles": {
+        "State=Default": {},
+        "State=Hover": {
+          "stroke": "border-strong"
+        },
+        "State=Error": {
+          "stroke": "destructive",
+          "focusRing": "ring-error"
+        },
+        "State=Disable": {
+          "opacity": 0.5
+        },
+        "Value=Placeholder": {},
+        "Value=Filled": {
+          "children": [
+            {
+              "name": "Calendar Icon",
+              "type": "icon",
+              "iconName": "Calendar",
+              "iconSize": 16,
+              "iconFill": "foreground"
+            },
+            {
+              "name": "Text",
+              "type": "text",
+              "textStyle": "SP/Body",
+              "textContent": "March 7, 2026",
+              "textFill": "foreground",
+              "fillWidth": true
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "States",
+          "description": "All trigger states with placeholder value.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder" } },
+            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder" } },
+            { "label": "Disabled", "props": { "State": "Disable", "Value": "Placeholder" } }
+          ]
+        },
+        {
+          "name": "Values",
+          "description": "Placeholder vs filled trigger.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "state", "type": "\"default\" | \"hover\" | \"error\" | \"disable\"", "default": "\"default\"", "description": "Visual state of the trigger" },
+        { "name": "value", "type": "\"placeholder\" | \"filled\"", "default": "\"placeholder\"", "description": "Whether to show placeholder or filled date" },
+        { "name": "date", "type": "Date | undefined", "default": "—", "description": "Selected date to display when filled" },
+        { "name": "placeholder", "type": "string", "default": "\"Pick a date\"", "description": "Placeholder text when no date selected" },
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--input", "value": "zinc-50 / zinc-900", "description": "Trigger background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Default border" },
+        { "token": "--border-strong", "value": "zinc-400 / zinc-600", "description": "Hover border" },
+        { "token": "--destructive", "value": "red-500", "description": "Error border" },
+        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Filled text + icon color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text color" },
+        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use DatePickerTrigger for design system documentation and static Figma representations.", "dont": "Use DatePickerTrigger in app pages — use the composed DatePicker or DateRangePicker instead." },
+        { "do": "Show error state with a helper text below the trigger for context.", "dont": "Use error state alone without explaining what went wrong." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Trigger", "value": "h-36, w-280, rounded-lg, border, bg-input", "code": "trigger button", "codeValue": "h-9 w-full sm:w-[280px] rounded-lg border bg-input px-sm" },
+        { "figma": "Calendar Icon", "value": "16×16, foreground", "code": "CalendarIcon", "codeValue": "size-md shrink-0" },
+        { "figma": "Placeholder", "value": "SP/Body, muted-foreground", "code": "value='placeholder'", "codeValue": "text-muted-foreground" },
+        { "figma": "Filled", "value": "SP/Body, foreground", "code": "value='filled'", "codeValue": "text-foreground, format(date, 'PPP')" },
+        { "figma": "Hover", "value": "border-strong", "code": "state='hover'", "codeValue": "border-border-strong" },
+        { "figma": "Error", "value": "border-destructive + ring-error", "code": "state='error'", "codeValue": "border-destructive ring-[3px] ring-destructive/30" },
+        { "figma": "Disable", "value": "opacity 0.5", "code": "state='disable'", "codeValue": "disabled:opacity-50 disabled:cursor-not-allowed" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Focus the trigger button" },
+          { "key": "Enter / Space", "action": "Open the calendar popover" }
+        ],
+        "notes": [
+          "Trigger acts as a button with aria-haspopup",
+          "Displays selected date text for screen readers",
+          "Disabled state sets disabled attribute on button"
+        ]
+      },
+
+      "related": [
+        { "name": "Date Picker", "desc": "Calendar popover — the content shown when trigger is clicked." },
+        { "name": "Input", "desc": "For manual text-based date entry." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Date Picker",
+      "description": "Calendar popover panel for date selection. Single mode shows a one-month calendar. Range mode shows a two-month calendar with preset shortcuts sidebar and an action footer with Cancel/Apply buttons.",
+      "category": "Form",
+      "installation": {
+        "dependencies": "pnpm add react-day-picker date-fns",
+        "import": "import { DatePicker, DateRangePicker } from \"@/components/ui/date-picker\""
+      },
+
+      "properties": {
+        "Mode": ["Single", "Range"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 360,
+        "fill": "card",
+        "stroke": "border",
+        "radius": "lg",
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "none",
+        "hideLabel": true,
+        "effectStyleName": "Elevation/shadow-md",
+        "children": [
+          {
+            "name": "Calendar",
+            "type": "instance",
+            "component": "Calendar",
+            "variants": { "Show Outside Days": "Yes" }
+          }
+        ]
+      },
+
+      "variantStyles": {
         "Mode=Single": {},
         "Mode=Range": {
+          "layout": "horizontal",
+          "width": 848,
           "children": [
             {
-              "name": "Text",
-              "textContent": "Pick a date range"
-            }
-          ]
-        },
-        "State=Placeholder": {},
-        "State=Filled": {
-          "children": [
+              "name": "Presets",
+              "type": "frame",
+              "layout": "vertical",
+              "width": 140,
+              "widthMode": "fixed",
+              "fillHeight": true,
+              "paddingX": "sm",
+              "paddingY": "sm",
+              "gap": "3xs",
+              "strokeSides": "right",
+              "stroke": "border",
+              "strokeOpacity": 0.3,
+              "counterAlign": "start",
+              "children": [
+                {
+                  "name": "Presets Label",
+                  "type": "frame",
+                  "layout": "horizontal",
+                  "fillWidth": true,
+                  "paddingX": "sm",
+                  "paddingY": "xs",
+                  "gap": "none",
+                  "counterAlign": "start",
+                  "children": [
+                    {
+                      "name": "Label",
+                      "type": "text",
+                      "textStyle": "SP/Label",
+                      "textContent": "PRESETS",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "name": "Preset 1",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "Last 7 days" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 2",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "Last 14 days" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 3",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Active" },
+                  "textOverrides": { "Label": "Last 30 days" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 4",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "Last 60 days" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 5",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "Last 90 days" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 6",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "This month" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 7",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "Last month" },
+                  "fillWidth": true
+                },
+                {
+                  "name": "Preset 8",
+                  "type": "instance",
+                  "component": "Preset Item",
+                  "variants": { "State": "Default" },
+                  "textOverrides": { "Label": "This year" },
+                  "fillWidth": true
+                }
+              ]
+            },
             {
-              "name": "Text",
-              "textContent": "March 7, 2026",
-              "textFill": "foreground"
-            }
-          ]
-        },
-        "Mode=Range,State=Filled": {
-          "children": [
-            {
-              "name": "Text",
-              "textContent": "Mar 1 – Mar 14, 2026",
-              "textFill": "foreground"
+              "name": "Calendar Area",
+              "type": "frame",
+              "layout": "vertical",
+              "fillWidth": true,
+              "paddingX": "none",
+              "paddingY": "none",
+              "gap": "none",
+              "children": [
+                {
+                  "name": "Calendar Content",
+                  "type": "frame",
+                  "layout": "vertical",
+                  "fillWidth": true,
+                  "paddingX": "sm",
+                  "paddingY": "sm",
+                  "gap": "none",
+                  "children": [
+                {
+                  "name": "Months",
+                  "type": "frame",
+                  "layout": "horizontal",
+                  "fillWidth": true,
+                  "paddingX": "none",
+                  "paddingY": "none",
+                  "gap": "md",
+                  "children": [
+                    {
+                      "name": "Month 1",
+                      "type": "frame",
+                      "layout": "vertical",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        {
+                          "name": "Header",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "primaryAlign": "space-between",
+                          "counterAlign": "center",
+                          "fillWidth": true,
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            {
+                              "name": "Prev",
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "primaryAlign": "center",
+                              "counterAlign": "center",
+                              "width": 32,
+                              "widthMode": "fixed",
+                              "height": 32,
+                              "heightMode": "fixed",
+                              "radius": 8,
+                              "stroke": "border",
+                              "fill": "card",
+                              "paddingX": "none",
+                              "paddingY": "none",
+                              "gap": "none",
+                              "children": [
+                                {
+                                  "name": "Chevron Left",
+                                  "type": "icon",
+                                  "iconName": "ChevronLeft",
+                                  "iconSize": 18,
+                                  "iconFill": "foreground"
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Month Title",
+                              "type": "text",
+                              "textStyle": "SP/Body Semibold",
+                              "textContent": "March 2026",
+                              "textFill": "foreground"
+                            },
+                            {
+                              "name": "Spacer",
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "width": 32,
+                              "widthMode": "fixed",
+                              "height": 32,
+                              "heightMode": "fixed",
+                              "paddingX": "none",
+                              "paddingY": "none",
+                              "gap": "none"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Spacer Nav",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "height": 16,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none"
+                        },
+                        {
+                          "name": "Weekdays",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "WD1", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Su", "textFill": "muted-foreground" }] },
+                            { "name": "WD2", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Mo", "textFill": "muted-foreground" }] },
+                            { "name": "WD3", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Tu", "textFill": "muted-foreground" }] },
+                            { "name": "WD4", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "We", "textFill": "muted-foreground" }] },
+                            { "name": "WD5", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Th", "textFill": "muted-foreground" }] },
+                            { "name": "WD6", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Fr", "textFill": "muted-foreground" }] },
+                            { "name": "WD7", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Sa", "textFill": "muted-foreground" }] }
+                          ]
+                        },
+                        {
+                          "name": "Row 1",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R1C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "1" } },
+                            { "name": "R1C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "2" } },
+                            { "name": "R1C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "3" } },
+                            { "name": "R1C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "4" } },
+                            { "name": "R1C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "5" } },
+                            { "name": "R1C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "6" } },
+                            { "name": "R1C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "7" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 2",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R2C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Today" }, "textOverrides": { "Day": "8" } },
+                            { "name": "R2C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "9" } },
+                            { "name": "R2C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "10" } },
+                            { "name": "R2C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "11" } },
+                            { "name": "R2C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "12" } },
+                            { "name": "R2C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "13" } },
+                            { "name": "R2C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "14" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 3",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R3C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "15" } },
+                            { "name": "R3C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "16" } },
+                            { "name": "R3C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "17" } },
+                            { "name": "R3C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Start" }, "textOverrides": { "Day": "18" } },
+                            { "name": "R3C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "19" } },
+                            { "name": "R3C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "20" } },
+                            { "name": "R3C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "21" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 4",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R4C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "22" } },
+                            { "name": "R4C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "23" } },
+                            { "name": "R4C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "24" } },
+                            { "name": "R4C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "25" } },
+                            { "name": "R4C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "26" } },
+                            { "name": "R4C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "27" } },
+                            { "name": "R4C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "28" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 5",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R5C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "29" } },
+                            { "name": "R5C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "30" } },
+                            { "name": "R5C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "31" } },
+                            { "name": "R5C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "1" } },
+                            { "name": "R5C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "2" } },
+                            { "name": "R5C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "3" } },
+                            { "name": "R5C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "4" } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Month 2",
+                      "type": "frame",
+                      "layout": "vertical",
+                      "fillWidth": true,
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "gap": "none",
+                      "children": [
+                        {
+                          "name": "Header",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "primaryAlign": "space-between",
+                          "counterAlign": "center",
+                          "fillWidth": true,
+                          "height": 32,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            {
+                              "name": "Spacer",
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "width": 32,
+                              "widthMode": "fixed",
+                              "height": 32,
+                              "heightMode": "fixed",
+                              "paddingX": "none",
+                              "paddingY": "none",
+                              "gap": "none"
+                            },
+                            {
+                              "name": "Month Title",
+                              "type": "text",
+                              "textStyle": "SP/Body Semibold",
+                              "textContent": "April 2026",
+                              "textFill": "foreground"
+                            },
+                            {
+                              "name": "Next",
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "primaryAlign": "center",
+                              "counterAlign": "center",
+                              "width": 32,
+                              "widthMode": "fixed",
+                              "height": 32,
+                              "heightMode": "fixed",
+                              "radius": 8,
+                              "stroke": "border",
+                              "fill": "card",
+                              "paddingX": "none",
+                              "paddingY": "none",
+                              "gap": "none",
+                              "children": [
+                                {
+                                  "name": "Chevron Right",
+                                  "type": "icon",
+                                  "iconName": "ChevronRight",
+                                  "iconSize": 18,
+                                  "iconFill": "foreground"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Spacer Nav",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "height": 16,
+                          "heightMode": "fixed",
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none"
+                        },
+                        {
+                          "name": "Weekdays",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "WD1", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Su", "textFill": "muted-foreground" }] },
+                            { "name": "WD2", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Mo", "textFill": "muted-foreground" }] },
+                            { "name": "WD3", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Tu", "textFill": "muted-foreground" }] },
+                            { "name": "WD4", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "We", "textFill": "muted-foreground" }] },
+                            { "name": "WD5", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Th", "textFill": "muted-foreground" }] },
+                            { "name": "WD6", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Fr", "textFill": "muted-foreground" }] },
+                            { "name": "WD7", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "width": 48, "widthMode": "fixed", "height": 32, "heightMode": "fixed", "paddingX": "none", "paddingY": "none", "gap": "none", "children": [{ "name": "Label", "type": "text", "textStyle": "SP/Mini", "textContent": "Sa", "textFill": "muted-foreground" }] }
+                          ]
+                        },
+                        {
+                          "name": "Row 1",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R1C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "29" } },
+                            { "name": "R1C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "30" } },
+                            { "name": "R1C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "31" } },
+                            { "name": "R1C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "1" } },
+                            { "name": "R1C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "2" } },
+                            { "name": "R1C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "3" } },
+                            { "name": "R1C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "4" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 2",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R2C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "5" } },
+                            { "name": "R2C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "6" } },
+                            { "name": "R2C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Range Middle" }, "textOverrides": { "Day": "7" } },
+                            { "name": "R2C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Range End" }, "textOverrides": { "Day": "8" } },
+                            { "name": "R2C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "9" } },
+                            { "name": "R2C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "10" } },
+                            { "name": "R2C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "11" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 3",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R3C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "12" } },
+                            { "name": "R3C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "13" } },
+                            { "name": "R3C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "14" } },
+                            { "name": "R3C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "15" } },
+                            { "name": "R3C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "16" } },
+                            { "name": "R3C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "17" } },
+                            { "name": "R3C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "18" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 4",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R4C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "19" } },
+                            { "name": "R4C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "20" } },
+                            { "name": "R4C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "21" } },
+                            { "name": "R4C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "22" } },
+                            { "name": "R4C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "23" } },
+                            { "name": "R4C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "24" } },
+                            { "name": "R4C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "25" } }
+                          ]
+                        },
+                        {
+                          "name": "Row 5",
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "fillWidth": true,
+                          "paddingX": "none",
+                          "paddingY": "none",
+                          "gap": "none",
+                          "children": [
+                            { "name": "R5C1", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "26" } },
+                            { "name": "R5C2", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "27" } },
+                            { "name": "R5C3", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "28" } },
+                            { "name": "R5C4", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "29" } },
+                            { "name": "R5C5", "type": "instance", "component": "Day Cell", "variants": { "State": "Default" }, "textOverrides": { "Day": "30" } },
+                            { "name": "R5C6", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "1" } },
+                            { "name": "R5C7", "type": "instance", "component": "Day Cell", "variants": { "State": "Outside" }, "textOverrides": { "Day": "2" } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+                  ]
+                },
+                {
+                  "name": "Footer",
+                  "type": "frame",
+                  "layout": "horizontal",
+                  "fillWidth": true,
+                  "primaryAlign": "space-between",
+                  "counterAlign": "center",
+                  "paddingX": "md",
+                  "paddingY": "sm",
+                  "gap": "sm",
+                  "strokeSides": "top",
+                  "stroke": "border",
+                  "strokeOpacity": 0.3,
+                  "children": [
+                    {
+                      "name": "Range Label",
+                      "type": "text",
+                      "textStyle": "SP/Caption",
+                      "textContent": "Mar 18 – Apr 8, 2026",
+                      "textFill": "muted-foreground"
+                    },
+                    {
+                      "name": "Actions",
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "widthMode": "hug",
+                      "gap": "sm",
+                      "paddingX": "none",
+                      "paddingY": "none",
+                      "children": [
+                        {
+                          "name": "Cancel",
+                          "type": "instance",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Small" },
+                          "textOverrides": { "Label": "Cancel" },
+                          "widthMode": "hug"
+                        },
+                        {
+                          "name": "Apply",
+                          "type": "instance",
+                          "component": "Button",
+                          "variants": { "Variant": "Primary", "Size": "Small" },
+                          "textOverrides": { "Label": "Apply" },
+                          "widthMode": "hug"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -277,13 +1813,11 @@
       "examples": [
         {
           "name": "Modes",
-          "description": "Single date and date range trigger variants.",
+          "description": "Single month and range (two-month with presets) calendar panels.",
           "layout": "vertical",
           "items": [
-            { "label": "Single Placeholder", "props": { "Mode": "Single", "State": "Placeholder" } },
-            { "label": "Single Filled", "props": { "Mode": "Single", "State": "Filled" } },
-            { "label": "Range Placeholder", "props": { "Mode": "Range", "State": "Placeholder" } },
-            { "label": "Range Filled", "props": { "Mode": "Range", "State": "Filled" } }
+            { "label": "Single", "props": { "Mode": "Single" } },
+            { "label": "Range", "props": { "Mode": "Range" } }
           ]
         }
       ],
@@ -295,16 +1829,16 @@
         { "name": "to", "type": "Date | undefined", "default": "—", "description": "Controlled range end (DateRangePicker)" },
         { "name": "onRangeChange", "type": "(range: {from?: Date; to?: Date}) => void", "default": "—", "description": "Callback when range changes (DateRangePicker)" },
         { "name": "presets", "type": "boolean", "default": "true", "description": "Show preset shortcut sidebar (DateRangePicker)" },
-        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes on trigger" }
+        { "name": "className", "type": "string", "default": "\"\"", "description": "Additional CSS classes" }
       ],
 
       "designTokens": [
-        { "token": "--input", "value": "zinc-50 / zinc-900", "description": "Trigger background" },
-        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Trigger border" },
-        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Filled state text + icon color" },
-        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Placeholder text color" },
-        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring on trigger" },
-        { "token": "--primary", "value": "violet-600", "description": "Selected date in Calendar" }
+        { "token": "--card", "value": "white / zinc-900", "description": "Popover background" },
+        { "token": "--border", "value": "zinc-200 / zinc-800", "description": "Popover border + dividers" },
+        { "token": "--primary", "value": "violet-600", "description": "Selected date + active preset" },
+        { "token": "--primary-foreground", "value": "white", "description": "Selected text color" },
+        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Preset labels + range label" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Preset hover background" }
       ],
 
       "bestPractices": [
@@ -314,18 +1848,18 @@
       ],
 
       "figmaMapping": [
-        { "figma": "Trigger", "value": "h-36, w-280, rounded-lg, border, bg-input", "code": "trigger button", "codeValue": "h-9 w-full sm:w-[280px] rounded-lg border bg-input px-sm" },
-        { "figma": "Calendar Icon", "value": "16×16, foreground", "code": "CalendarIcon", "codeValue": "size-md shrink-0" },
-        { "figma": "Placeholder", "value": "SP/Body, muted-foreground", "code": "!selected", "codeValue": "text-muted-foreground" },
-        { "figma": "Filled", "value": "SP/Body, foreground", "code": "selected", "codeValue": "text-foreground, format(date, 'PPP')" },
-        { "figma": "Focus", "value": "ring-3 ring", "code": "focus-visible", "codeValue": "ring-[3px] ring-ring" },
-        { "figma": "Popover", "value": "Uses Popover + Calendar", "code": "PopoverContent", "codeValue": "w-auto p-0" }
+        { "figma": "Popover panel", "value": "card bg, border, shadow-md, rounded-lg", "code": "PopoverContent", "codeValue": "w-auto p-0" },
+        { "figma": "Calendar (Single)", "value": "Calendar instance", "code": "Calendar mode='single'", "codeValue": "mode='single' selected={selected} onSelect={handleSelect}" },
+        { "figma": "Calendar (Range)", "value": "Inline two-month grid with shared nav", "code": "Calendar mode='range'", "codeValue": "mode='range' numberOfMonths={2}" },
+        { "figma": "Presets sidebar", "value": "140px, border-r, p-sm, Preset Item instances", "code": "preset buttons", "codeValue": "flex flex-col gap-3xs border-r p-sm min-w-[140px]" },
+        { "figma": "Preset Item", "value": "Preset Item instance with state", "code": "PresetItem", "codeValue": "sp-caption px-sm py-xs rounded-md" },
+        { "figma": "Footer", "value": "border-t, px-md py-sm", "code": "footer div", "codeValue": "flex items-center justify-between border-t px-md py-sm" },
+        { "figma": "Cancel button", "value": "Button Ghost Small", "code": "Button variant='ghost'", "codeValue": "variant='ghost' size='sm'" },
+        { "figma": "Apply button", "value": "Button Primary Small", "code": "Button", "codeValue": "size='sm'" }
       ],
 
       "accessibility": {
         "keyboard": [
-          { "key": "Tab", "action": "Focus the trigger button" },
-          { "key": "Enter / Space", "action": "Open the calendar popover" },
           { "key": "Arrow Keys", "action": "Navigate days within the calendar" },
           { "key": "Enter", "action": "Select the focused date" },
           { "key": "Escape", "action": "Close the popover" }
@@ -339,10 +1873,11 @@
       },
 
       "related": [
-        { "name": "Calendar", "desc": "Standalone calendar without trigger — use for inline date selection." },
+        { "name": "Date Picker Trigger", "desc": "The trigger button that opens this popover." },
+        { "name": "Calendar", "desc": "Standalone calendar without popover — use for inline date selection." },
         { "name": "Day Cell", "desc": "Sub-component for individual day states inside Calendar." },
-        { "name": "Popover", "desc": "Floating panel used to host the calendar dropdown." },
-        { "name": "Input", "desc": "For manual text-based date entry." }
+        { "name": "Preset Item", "desc": "Sub-component for preset shortcuts in Range sidebar." },
+        { "name": "Popover", "desc": "Floating panel used to host the calendar dropdown." }
       ],
 
       "showcase": {

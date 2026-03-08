@@ -114,7 +114,7 @@
         "gap": "sm",
         "paddingX": "md",
         "paddingY": "md",
-        "width": 320,
+        "width": 384,
         "heightMode": "hug",
         "fill": "card",
         "stroke": "border",

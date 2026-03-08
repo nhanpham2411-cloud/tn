@@ -1,159 +1,6 @@
 {
   "components": [
     {
-      "name": "Context Menu Item",
-      "description": "A single item inside a Context Menu. Supports icon, shortcut, and destructive variants with hover and disabled states.",
-      "category": "Overlay",
-      "installation": {
-        "dependencies": "pnpm add @radix-ui/react-context-menu",
-        "import": "import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuItem, ContextMenuSeparator, ContextMenuLabel,\n  ContextMenuShortcut\n} from \"@/components/ui/context-menu\""
-      },
-
-      "properties": {
-        "Type": ["Default", "With Icon", "Destructive", "With Shortcut"],
-        "State": ["Default", "Hover", "Disabled"]
-      },
-
-      "base": {
-        "layout": "horizontal",
-        "width": 180,
-        "height": 32,
-        "primaryAlign": "start",
-        "counterAlign": "center",
-        "fill": "transparent",
-        "radius": "sm",
-        "paddingX": "xs",
-        "paddingY": "2xs",
-        "gap": "sm",
-        "hideLabel": true,
-        "children": [
-          {
-            "name": "Icon",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "fill": "foreground",
-            "showWhen": "Type=With Icon"
-          },
-          {
-            "name": "Icon Destructive",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "fill": "destructive",
-            "showWhen": "Type=Destructive"
-          },
-          {
-            "name": "Label",
-            "type": "text",
-            "textStyle": "SP/Body",
-            "textContent": "Open",
-            "textFill": "foreground",
-            "fillWidth": true
-          },
-          {
-            "name": "Shortcut",
-            "type": "text",
-            "textStyle": "SP/Mini",
-            "textContent": "⌘O",
-            "textFill": "muted-foreground",
-            "showWhen": "Type=With Shortcut"
-          }
-        ]
-      },
-
-      "variantStyles": {
-        "Type=Default": {},
-        "Type=With Icon": {},
-        "Type=Destructive": {
-          "children": [
-            {
-              "name": "Label",
-              "textContent": "Delete",
-              "textFill": "destructive"
-            }
-          ]
-        },
-        "Type=With Shortcut": {},
-        "State=Default": {},
-        "State=Hover": {
-          "fill": "muted"
-        },
-        "State=Disabled": {
-          "opacity": 0.5
-        }
-      },
-
-      "examples": [
-        {
-          "name": "Item Types",
-          "description": "Available item variants for context menus.",
-          "layout": "vertical",
-          "items": [
-            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
-            { "label": "With Icon", "props": { "Type": "With Icon", "State": "Default" } },
-            { "label": "With Shortcut", "props": { "Type": "With Shortcut", "State": "Default" } },
-            { "label": "Destructive", "props": { "Type": "Destructive", "State": "Default" } }
-          ]
-        },
-        {
-          "name": "Item States",
-          "description": "Interactive states for context menu items.",
-          "layout": "vertical",
-          "items": [
-            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
-            { "label": "Hover", "props": { "Type": "Default", "State": "Hover" } },
-            { "label": "Disabled", "props": { "Type": "Default", "State": "Disabled" } }
-          ]
-        }
-      ],
-
-      "props": [
-        { "name": "disabled", "type": "boolean", "default": "false", "description": "Disable the item" },
-        { "name": "onSelect", "type": "(e: Event) => void", "default": "—", "description": "Callback when item is selected" },
-        { "name": "textValue", "type": "string", "default": "—", "description": "Text for typeahead matching" }
-      ],
-
-      "designTokens": [
-        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Default item text + icon color" },
-        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover background" },
-        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Shortcut text color" },
-        { "token": "--destructive", "value": "red-600", "description": "Destructive item text + icon color" }
-      ],
-
-      "bestPractices": [
-        { "do": "Use destructive variant for irreversible actions like delete.", "dont": "Mix destructive items in the middle of a group — place at bottom with a separator." },
-        { "do": "Add keyboard shortcuts for frequently used actions.", "dont": "Put more than 8 items in a single context menu — use sub-menus." }
-      ],
-
-      "figmaMapping": [
-        { "figma": "Item", "value": "px-xs py-2xs rounded-sm", "code": "ContextMenuItem", "codeValue": "px-xs py-2xs rounded-sm text-sm cursor-default" },
-        { "figma": "State=Hover", "value": "bg-muted", "code": "focus", "codeValue": "bg-muted text-foreground" },
-        { "figma": "Type=Destructive", "value": "text-destructive", "code": "variant=\"destructive\"", "codeValue": "text-destructive focus:text-destructive" }
-      ],
-
-      "accessibility": {
-        "keyboard": [
-          { "key": "Enter / Space", "action": "Select the focused item" },
-          { "key": "Arrow Up/Down", "action": "Navigate between items" }
-        ],
-        "notes": [
-          "Items have role=\"menuitem\"",
-          "Disabled items are skipped during keyboard navigation"
-        ]
-      },
-
-      "related": [
-        { "name": "Dropdown Menu", "desc": "Click-triggered menu — use when a button trigger is needed." },
-        { "name": "Command", "desc": "Searchable command palette — use for large action lists." }
-      ],
-
-      "showcase": {
-        "sections": ["header", "component", "installation"]
-      }
-    },
-
-    {
       "name": "Context Menu",
       "description": "A right-click triggered menu with keyboard navigation and typeahead. Use for contextual actions on elements like files, rows, or canvas areas.",
       "category": "Overlay",
@@ -164,8 +11,6 @@
 
       "properties": {
         "Show Label": ["Yes", "No"],
-        "Show Icons": ["Yes", "No"],
-        "Show Separator": ["Yes", "No"],
         "Show Destructive": ["Yes", "No"]
       },
 
@@ -176,152 +21,102 @@
         "stroke": "border",
         "radius": "md",
         "effectStyleName": "Shadows/md",
-        "paddingX": "3xs",
-        "paddingY": "3xs",
-        "gap": "3xs",
+        "paddingX": 0,
+        "paddingY": 0,
+        "gap": 0,
         "hideLabel": true,
         "children": [
           {
-            "name": "Label",
-            "type": "text",
-            "textStyle": "SP/Body Semibold",
-            "textContent": "file.tsx",
-            "textFill": "foreground",
-            "fillWidth": true,
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "showWhen": "Show Label=Yes"
+            "name": "Label Group",
+            "type": "frame",
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
+            "showWhen": "Show Label=Yes",
+            "children": [
+              {
+                "name": "Label",
+                "type": "frame",
+                "layout": "horizontal",
+                "paddingX": "xs",
+                "paddingY": "2xs",
+                "children": [
+                  {
+                    "name": "Text",
+                    "type": "text",
+                    "textStyle": "SP/Body Semibold",
+                    "textContent": "file.tsx",
+                    "textFill": "foreground"
+                  }
+                ]
+              }
+            ]
           },
           {
             "name": "Separator Top",
-            "type": "frame",
-            "fillWidth": true,
-            "height": 1,
+            "type": "divider",
             "fill": "border",
             "showWhen": "Show Label=Yes"
           },
           {
-            "name": "Item 1",
+            "name": "Items Group",
             "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "fillWidth": true,
-            "height": 32,
-            "radius": "sm",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "gap": "sm",
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
             "children": [
               {
-                "name": "Icon 1",
-                "type": "frame",
-                "width": 16,
-                "height": 16,
-                "fill": "foreground",
-                "showWhen": "Show Icons=Yes"
+                "name": "Item 1",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Open" },
+                "iconOverrides": { "Icon": "Eye" },
+                "fillWidth": true
               },
               {
-                "name": "Label 1",
-                "type": "text",
-                "textStyle": "SP/Body",
-                "textContent": "Open",
-                "textFill": "foreground"
-              }
-            ]
-          },
-          {
-            "name": "Item 2",
-            "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "fillWidth": true,
-            "height": 32,
-            "radius": "sm",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "gap": "sm",
-            "children": [
-              {
-                "name": "Icon 2",
-                "type": "frame",
-                "width": 16,
-                "height": 16,
-                "fill": "foreground",
-                "showWhen": "Show Icons=Yes"
+                "name": "Item 2",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Rename" },
+                "iconOverrides": { "Icon": "Pencil" },
+                "fillWidth": true
               },
               {
-                "name": "Label 2",
-                "type": "text",
-                "textStyle": "SP/Body",
-                "textContent": "Rename",
-                "textFill": "foreground"
-              }
-            ]
-          },
-          {
-            "name": "Item 3",
-            "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "fillWidth": true,
-            "height": 32,
-            "radius": "sm",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "gap": "sm",
-            "children": [
-              {
-                "name": "Icon 3",
-                "type": "frame",
-                "width": 16,
-                "height": 16,
-                "fill": "foreground",
-                "showWhen": "Show Icons=Yes"
-              },
-              {
-                "name": "Label 3",
-                "type": "text",
-                "textStyle": "SP/Body",
-                "textContent": "Duplicate",
-                "textFill": "foreground"
+                "name": "Item 3",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Duplicate" },
+                "iconOverrides": { "Icon": "Copy" },
+                "fillWidth": true
               }
             ]
           },
           {
             "name": "Separator Bottom",
-            "type": "frame",
-            "fillWidth": true,
-            "height": 1,
+            "type": "divider",
             "fill": "border",
             "showWhen": "Show Destructive=Yes"
           },
           {
-            "name": "Destructive Item",
+            "name": "Destructive Group",
             "type": "frame",
-            "layout": "horizontal",
-            "counterAlign": "center",
-            "fillWidth": true,
-            "height": 32,
-            "radius": "sm",
-            "paddingX": "xs",
-            "paddingY": "2xs",
-            "gap": "sm",
+            "layout": "vertical",
+            "paddingX": "3xs",
+            "paddingY": "3xs",
+            "gap": 0,
             "showWhen": "Show Destructive=Yes",
             "children": [
               {
-                "name": "Icon Delete",
-                "type": "frame",
-                "width": 16,
-                "height": 16,
-                "fill": "destructive",
-                "showWhen": "Show Icons=Yes"
-              },
-              {
-                "name": "Label Delete",
-                "type": "text",
-                "textStyle": "SP/Body",
-                "textContent": "Delete",
-                "textFill": "destructive"
+                "name": "Destructive Item",
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "Destructive", "State": "Default" },
+                "fillWidth": true
               }
             ]
           }
@@ -331,10 +126,6 @@
       "variantStyles": {
         "Show Label=Yes": {},
         "Show Label=No": {},
-        "Show Icons=Yes": {},
-        "Show Icons=No": {},
-        "Show Separator=Yes": {},
-        "Show Separator=No": {},
         "Show Destructive=Yes": {},
         "Show Destructive=No": {}
       },
@@ -345,9 +136,9 @@
           "description": "Context menu with different content combinations.",
           "layout": "horizontal",
           "items": [
-            { "label": "Full", "props": { "Show Label": "Yes", "Show Icons": "Yes", "Show Separator": "Yes", "Show Destructive": "Yes" } },
-            { "label": "No Icons", "props": { "Show Label": "Yes", "Show Icons": "No", "Show Separator": "Yes", "Show Destructive": "Yes" } },
-            { "label": "Minimal", "props": { "Show Label": "No", "Show Icons": "No", "Show Separator": "No", "Show Destructive": "No" } }
+            { "label": "Full", "props": { "Show Label": "Yes", "Show Destructive": "Yes" } },
+            { "label": "No Label", "props": { "Show Label": "No", "Show Destructive": "Yes" } },
+            { "label": "Minimal", "props": { "Show Label": "No", "Show Destructive": "No" } }
           ]
         }
       ],
@@ -375,9 +166,10 @@
       ],
 
       "figmaMapping": [
-        { "figma": "Content", "value": "bg-card, border, shadow-md", "code": "ContextMenuContent", "codeValue": "w-48 rounded-md border bg-card p-1 shadow-md" },
-        { "figma": "Label", "value": "SP/Body Semibold, foreground", "code": "ContextMenuLabel", "codeValue": "typo-paragraph-sm-bold text-foreground px-xs py-2xs" },
-        { "figma": "Separator", "value": "1px, border", "code": "ContextMenuSeparator", "codeValue": "h-px bg-border" },
+        { "figma": "Content", "value": "bg-card, border, shadow-md", "code": "ContextMenuContent", "codeValue": "min-w-[8rem] rounded-md border bg-card p-1 shadow-md" },
+        { "figma": "Label", "value": "SP/Body Semibold, foreground", "code": "ContextMenuLabel", "codeValue": "px-xs py-2xs typo-paragraph-sm-bold text-foreground" },
+        { "figma": "Separator", "value": "1px, border", "code": "ContextMenuSeparator", "codeValue": "-mx-1 my-1 h-px bg-border" },
+        { "figma": "Item", "value": "Dropdown Item instance", "code": "ContextMenuItem", "codeValue": "flex items-center gap-2 px-xs py-2xs rounded-sm" },
         { "figma": "Animation", "value": "Zoom + Fade", "code": "data-[state]", "codeValue": "zoom-in-95 fade-in-0" }
       ],
 

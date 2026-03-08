@@ -12,6 +12,49 @@ import {
 } from "@/components/ui/popover"
 
 /**
+ * SprouX Date Picker Trigger
+ *
+ * Standalone trigger button (no popover). Used in design system docs
+ * to showcase the trigger independently from the composed DatePicker.
+ * Input size default (36px height), radius-lg (8px), bg-input, border-border, px-sm (12px).
+ */
+function DatePickerTrigger({
+  date,
+  value = "placeholder",
+  state = "default",
+  placeholder = "Pick a date",
+  className,
+}: {
+  date?: Date
+  value?: "placeholder" | "filled"
+  state?: "default" | "hover" | "error" | "disable"
+  placeholder?: string
+  className?: string
+}) {
+  const isFilled = value === "filled" && date
+  const isDisabled = state === "disable"
+
+  return (
+    <button
+      data-slot="date-picker-trigger"
+      disabled={isDisabled}
+      className={cn(
+        "flex h-9 w-full sm:w-[280px] items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        !isFilled && "text-muted-foreground",
+        state === "hover" && "border-border-strong",
+        state === "error" && "border-destructive ring-[3px] ring-destructive/30",
+        className
+      )}
+    >
+      <CalendarIcon className="size-md shrink-0" />
+      <span className="flex-1 text-left">
+        {isFilled ? format(date, "PPP") : placeholder}
+      </span>
+    </button>
+  )
+}
+
+/**
  * SprouX Date Picker
  *
  * Figma: [SprouX - DS] Foundation & Component (node 60:9340)
@@ -166,7 +209,7 @@ function DateRangePicker({
         <div className="flex">
           {presets && (
             <div className="flex flex-col gap-3xs border-r border-border/30 dark:border-white/[0.06] p-sm min-w-[140px]">
-              <p className="sp-label text-muted-foreground px-sm pb-2xs">Presets</p>
+              <p className="sp-label text-muted-foreground/60 uppercase tracking-wider px-sm pt-xs pb-2xs">Presets</p>
               {RANGE_PRESETS.map((preset) => (
                 <button
                   key={preset.label}
@@ -210,4 +253,4 @@ function DateRangePicker({
   )
 }
 
-export { DatePicker, DateRangePicker }
+export { DatePickerTrigger, DatePicker, DateRangePicker }

@@ -137,6 +137,7 @@
             "primaryAlign": "end",
             "counterAlign": "center",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Desktop,Show Action=Yes",
             "children": [
               {
@@ -145,14 +146,16 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "showWhen": "Show Action Secondary=Yes"
+                "showWhen": "Show Action Secondary=Yes",
+                "widthMode": "hug"
               },
               {
                 "name": "Action",
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Continue" }
+                "textOverrides": { "Label": "Continue" },
+                "widthMode": "hug"
               }
             ]
           },
@@ -161,6 +164,7 @@
             "type": "frame",
             "layout": "vertical",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Mobile,Show Action=Yes",
             "children": [
               {
@@ -169,7 +173,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Continue" },
-                "fillWidth": true
+                "widthMode": "hug"
               },
               {
                 "name": "Cancel",
@@ -177,8 +181,8 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "fillWidth": true,
-                "showWhen": "Show Action Secondary=Yes"
+                "showWhen": "Show Action Secondary=Yes",
+                "widthMode": "hug"
               }
             ]
           }

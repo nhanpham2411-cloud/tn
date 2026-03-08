@@ -114,8 +114,8 @@
         "radius": "xl",
         "effectStyleName": "Shadows/sm",
         "paddingX": "none",
-        "paddingY": "md",
-        "gap": "xs",
+        "paddingY": "none",
+        "gap": 0,
         "hideLabel": true,
         "children": [
           {
@@ -125,6 +125,8 @@
             "counterAlign": "start",
             "gap": "xs",
             "paddingX": "md",
+            "paddingTop": "md",
+            "paddingBottom": "md",
             "fillWidth": true,
             "children": [
               {
@@ -169,7 +171,7 @@
             "type": "frame",
             "layout": "vertical",
             "paddingX": "md",
-            "paddingY": "md",
+            "paddingBottom": "md",
             "fillWidth": true,
             "showWhen": "Type=Desktop",
             "children": [
@@ -231,7 +233,7 @@
             "type": "frame",
             "layout": "vertical",
             "paddingX": "md",
-            "paddingY": "md",
+            "paddingBottom": "md",
             "fillWidth": true,
             "showWhen": "Type=Mobile",
             "children": [
@@ -295,7 +297,9 @@
             "primaryAlign": "end",
             "counterAlign": "center",
             "paddingX": "md",
+            "paddingBottom": "md",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Desktop,Show Footer=Yes",
             "children": [
               {
@@ -303,14 +307,16 @@
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Cancel" }
+                "textOverrides": { "Label": "Cancel" },
+                "widthMode": "hug"
               },
               {
                 "name": "Save",
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Save changes" }
+                "textOverrides": { "Label": "Save changes" },
+                "widthMode": "hug"
               }
             ]
           },
@@ -321,7 +327,10 @@
             "primaryAlign": "end",
             "counterAlign": "center",
             "paddingX": "md",
+            "paddingTop": "md",
+            "paddingBottom": "md",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Desktop Scrollable,Show Footer=Yes",
             "children": [
               {
@@ -329,14 +338,16 @@
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Cancel" }
+                "textOverrides": { "Label": "Cancel" },
+                "widthMode": "hug"
               },
               {
                 "name": "Save",
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Save changes" }
+                "textOverrides": { "Label": "Save changes" },
+                "widthMode": "hug"
               }
             ]
           },
@@ -345,7 +356,9 @@
             "type": "frame",
             "layout": "vertical",
             "paddingX": "md",
+            "paddingBottom": "md",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Mobile,Show Footer=Yes",
             "children": [
               {
@@ -354,7 +367,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Save changes" },
-                "fillWidth": true
+                "widthMode": "hug"
               },
               {
                 "name": "Cancel",
@@ -362,7 +375,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "fillWidth": true
+                "widthMode": "hug"
               }
             ]
           },
@@ -371,7 +384,10 @@
             "type": "frame",
             "layout": "vertical",
             "paddingX": "md",
+            "paddingTop": "md",
+            "paddingBottom": "md",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Type=Mobile Full Screen,Show Footer=Yes",
             "children": [
               {
@@ -380,7 +396,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Save changes" },
-                "fillWidth": true
+                "widthMode": "hug"
               },
               {
                 "name": "Cancel",
@@ -388,7 +404,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "fillWidth": true
+                "widthMode": "hug"
               }
             ]
           }
@@ -405,7 +421,7 @@
         "Show Description=Yes": {},
         "Show Description=No": {},
         "Show Footer=Yes": {},
-        "Show Footer=No": { "paddingBottom": 0 }
+        "Show Footer=No": {}
       },
 
       "examples": [
@@ -484,7 +500,7 @@
 
       "figmaMapping": [
         { "figma": "Overlay", "value": "Black 50%", "code": "DialogOverlay", "codeValue": "fixed inset-0 z-50 bg-black/50" },
-        { "figma": "Content", "value": "bg-card, border, shadow", "code": "DialogContent", "codeValue": "sm:max-w-lg sm:rounded-xl p-md gap-xs" },
+        { "figma": "Content", "value": "bg-card, border, shadow", "code": "DialogContent", "codeValue": "sm:max-w-lg sm:rounded-xl" },
         { "figma": "Header", "value": "Title + Description stack", "code": "DialogHeader", "codeValue": "flex flex-col gap-xs" },
         { "figma": "Title", "value": "SP/H4", "code": "DialogTitle", "codeValue": "sp-h4 text-foreground" },
         { "figma": "Description", "value": "SP/Body", "code": "DialogDescription", "codeValue": "typo-paragraph-sm text-muted-foreground" },

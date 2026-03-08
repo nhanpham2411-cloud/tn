@@ -5,6 +5,60 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
+/* ── Day Cell Styles ── */
+
+type DayCellState = "default" | "hover" | "today" | "selected" | "outside" | "disabled" | "range-start" | "range-middle" | "range-end" | "range-hover"
+
+const dayCellStyles: Record<DayCellState, string> = {
+  "default":      "rounded-sm text-foreground bg-transparent",
+  "hover":        "rounded-sm text-foreground bg-ghost-hover",
+  "today":        "rounded-sm text-foreground ring-1 ring-primary/40",
+  "selected":     "rounded-sm text-primary-foreground bg-primary",
+  "outside":      "rounded-sm text-muted-foreground/40 bg-transparent",
+  "disabled":     "rounded-sm text-muted-foreground opacity-50 bg-transparent",
+  "range-start":  "rounded-l-sm text-primary-foreground bg-primary",
+  "range-middle": "text-foreground bg-primary-10",
+  "range-end":    "rounded-r-sm text-primary-foreground bg-primary",
+  "range-hover":  "text-foreground bg-primary-20",
+}
+
+/** DayCell — standalone visual component for design system docs */
+function DayCell({ state, children }: { state: DayCellState; children: React.ReactNode }) {
+  return (
+    <div className={cn("size-[48px] flex items-center justify-center typo-paragraph-sm font-normal", dayCellStyles[state])}>
+      {children}
+    </div>
+  )
+}
+
+/** CalendarDayButton — swaps react-day-picker's default DayButton with DayCell styles */
+function CalendarDayButton({ day, modifiers, className, ...props }: any) {
+  let state: DayCellState = "default"
+  if (modifiers.outside) state = "outside"
+  if (modifiers.today) state = "today"
+  if (modifiers.disabled) state = "disabled"
+  if (modifiers.selected) state = "selected"
+  if (modifiers.range_start) state = "range-start"
+  if (modifiers.range_middle) state = "range-middle"
+  if (modifiers.range_end) state = "range-end"
+
+  const isOutside = modifiers.outside
+
+  return (
+    <button
+      {...props}
+      className={cn(
+        "size-[48px] flex items-center justify-center typo-paragraph-sm font-normal transition-colors",
+        "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
+        "disabled:pointer-events-none",
+        dayCellStyles[state],
+        (state === "default" || state === "today" || state === "outside") && "hover:bg-ghost-hover",
+        isOutside && state !== "outside" && "opacity-40",
+      )}
+    />
+  )
+}
+
 /**
  * SprouX Calendar
  *
@@ -19,12 +73,13 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  components,
   ...props
 }: React.ComponentProps<typeof DayPicker>) {
   return (
     <DayPicker
       data-slot="calendar"
-      showOutsideDays={showOutsideDays}
+      showOutsideDays
       className={cn("p-sm", className)}
       classNames={{
         months: "relative flex flex-col sm:flex-row gap-md",
@@ -48,40 +103,34 @@ function Calendar({
         day: cn(
           "relative p-0 text-center typo-paragraph-sm focus-within:relative focus-within:z-20",
           props.mode === "range"
-            ? "[&:has([aria-selected])]:bg-primary/10 [&:has([aria-selected].day-outside)]:bg-primary/5 [&:has(>.day-range-end)]:rounded-r-sm [&:has(>.day-range-start)]:rounded-l-sm first:[&:has([aria-selected])]:rounded-l-sm last:[&:has([aria-selected])]:rounded-r-sm"
+            ? "[&:has(>.day-range-end)]:rounded-r-sm [&:has(>.day-range-start)]:rounded-l-sm first:[&:has([aria-selected])]:rounded-l-sm last:[&:has([aria-selected])]:rounded-r-sm"
             : "[&:has([aria-selected])]:rounded-sm"
         ),
-        day_button: cn(
-          "inline-flex items-center justify-center whitespace-nowrap transition-colors",
-          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
-          "disabled:pointer-events-none disabled:opacity-50",
-          "size-[48px] rounded-sm p-xs font-normal",
-          "bg-transparent text-foreground hover:bg-ghost-hover",
-          "aria-selected:bg-primary aria-selected:text-primary-foreground",
-          "aria-selected:hover:bg-primary aria-selected:hover:text-primary-foreground",
+        day_button: "",
+        range_start: "day-range-start",
+        range_end: "day-range-end",
+        selected: "",
+        today: "",
+        outside: cn(
+          "day-outside",
+          !showOutsideDays && "invisible"
         ),
-        range_start: "day-range-start rounded-l-sm",
-        range_end: "day-range-end rounded-r-sm",
-        selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-sm",
-        today: "ring-1 ring-primary/40 rounded-sm",
-        outside:
-          "day-outside text-muted-foreground/40 aria-selected:text-primary-foreground/70",
-        disabled: "text-muted-foreground opacity-50",
-        range_middle:
-          "day-range-middle aria-selected:bg-primary/10 aria-selected:text-foreground aria-selected:rounded-none aria-selected:hover:bg-primary/20 [&>button]:aria-selected:bg-transparent [&>button]:aria-selected:text-foreground [&>button]:aria-selected:hover:bg-transparent [&>button]:aria-selected:hover:text-foreground",
+        disabled: "",
+        range_middle: "day-range-middle",
         hidden: "invisible",
         ...classNames,
       }}
       components={{
+        DayButton: CalendarDayButton,
         Chevron: ({ orientation }) => {
           const Icon = orientation === "left" ? ChevronLeft : ChevronRight
           return <Icon aria-hidden="true" className="size-[18px]" />
         },
+        ...components,
       }}
       {...props}
     />
   )
 }
 
-export { Calendar }
+export { Calendar, DayCell, dayCellStyles, type DayCellState }

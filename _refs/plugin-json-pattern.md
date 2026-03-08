@@ -602,6 +602,29 @@ Table, Calendar, DatePicker, Tabs, Input OTP, Navigation Menu, Breadcrumb, Pagin
 | Table rows (type × striped × state) | `Table Row` | `table.json` (index 0, same file as Table) | Table |
 | Alert Dialog icon circle | Icon instance (from Icons foundation) | — | Alert Dialog |
 
+### Menu/Overlay Component Pattern (Dropdown, Context Menu, Command)
+
+Menu components share a common structure. Follow these rules to avoid recurring mistakes:
+
+**Item component** (e.g. Dropdown Item, Context Menu Item, Command Item):
+- Use **`children` array** with `hideLabel: true` — NOT icon+label flow (`iconLeft`/`iconLeftName`)
+- Why: Items need conditional icons (show/hide per variant via `showWhen`). `iconLeft` doesn't support `showWhen`. Using `children` with `"type": "icon"` gives per-variant icon control.
+- Icon children: `"type": "icon"` with `iconName`, `iconSize: 16`, `iconFill`, `showWhen`. Separate child per variant: "Icon" (`showWhen: "Type=With Icon"`) + "Icon D" (`showWhen: "Type=Destructive"`)
+- Label child: `"type": "text"` with `textContent`, `textFill: "foreground"`, `fillWidth: true` (pushes shortcuts right)
+- Shortcut child: `"type": "text"` with `textStyle: "SP/Mini"`, `textFill: "muted-foreground"`, `showWhen: "Type=With Shortcut"`
+- `gap: "xs"` (8px), `paddingX: "xs"`, `paddingY: "2xs"`, `radius: "sm"`
+- States: `"State=Hover": { "fill": "muted" }`, `"State=Disabled": { "opacity": 0.5 }`
+- **Shallow merge rule**: variantStyles that change label text (Destructive, With Shortcut) MUST include the FULL `children` array — shallow merge replaces entire array
+
+**Parent/Group component** (e.g. Dropdown Menu, Context Menu, Command):
+- Use `"type": "instance"` for items — `component: "Dropdown Item"`, `variants`, `textOverrides`, `fillWidth: true`
+- **Edge-to-edge dividers**: Parent `paddingX: 0, paddingY: 0`. Items wrapped in group frames with `paddingX: "3xs"`, `paddingY: "3xs"` (4px). Dividers at parent level fill full width.
+- React `p-1` (4px) on Content = group frame `paddingX: "3xs"`. Item `px-xs` (8px built-in) + group 4px = 12px from edge.
+- Label/heading text: wrap in `"type": "frame"` with `paddingX: "xs"`, `paddingY: "2xs"` (text nodes don't support padding)
+- Separator `showWhen`: tie to the element it logically separates from (e.g. bottom separator → `showWhen: "Show Destructive=Yes"`)
+- Use `"type": "divider"` for separators, NOT `"type": "frame"` with height 1
+- Separator fill: check React source — Dropdown uses `bg-muted`, Context Menu and Command use `bg-border`
+
 ### examples Rules
 
 - Each example must have `"name"` (NOT `"title"`) — plugin reads `exDef.name` for card name
@@ -674,7 +697,13 @@ Components must be generated in **dependency order** — leaf components first, 
 | Form component shows no placeholder | `hideLabel: true` suppresses the label text node entirely. For Input/Select/Textarea the label IS the placeholder — never use `hideLabel` on form components. |
 | Icon variant not rendering | Setting only `iconLeftName: "Search"` is insufficient. Must ALSO set `iconLeft: true` — plugin checks boolean flag `merged.iconLeft` before rendering. Same for `iconRight`. |
 | Gap hardcoded 8px without variable | Plugin defaults `gap` to `8` (raw number) when omitted. Set `"gap": 0` explicitly for no-gap components (Input/Textarea). Use string tokens (`"xs"`, `"sm"`) for variable binding. |
-| `children` array breaks icon+label flow | Plugin rendering paths are **mutually exclusive**: `children`, `addon`, `indicator`, and default icon+label flow. When `children` is present, the default text label (`textContent`) and icon (`iconLeft`/`iconRight`) are **completely skipped**. For item components that need icon+label (e.g. Tabs Item, Nav Menu Item), use `iconLeft`/`iconRight` + `iconLeftName`/`iconRightName` in variantStyles instead of `children` with `"type": "icon"`. Only use `children` on parent/group components that compose instances (`hideLabel: true`). |
+| `children` array breaks icon+label flow | Plugin rendering paths are **mutually exclusive**: `children`, `addon`, `indicator`, and default icon+label flow. When `children` is present, the default text label (`textContent`) and icon (`iconLeft`/`iconRight`) are **completely skipped**. **Two valid approaches**: (1) For items with simple always-on icons (e.g. Tabs Item, Nav Menu Item) → use `iconLeft`/`iconRight` in variantStyles. (2) For items with conditional icons per variant (e.g. Dropdown Item, Context Menu Item) → use `children` array with `"type": "icon"` + `showWhen` + `"type": "text"` for label. Parent/group components always use `children` with `"type": "instance"`. |
+| Frame child defaults to FILL width | Plugin line 2274: `frm.layoutSizingHorizontal = cs.widthMode === "fixed" ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"`. Frame children without `widthMode` default to **FILL**. Fixed-size elements (icon placeholders 16×16, handle bars) MUST set `"widthMode": "fixed"` to prevent stretching to parent width. |
+| Instance child defaults to FIXED width | Plugin line 2502: `_inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"`. Instance children without `fillWidth` or `widthMode` default to **FIXED**. Buttons that should hug content MUST set `"widthMode": "hug"`. |
+| Text children ignore padding | Plugin `_processChildren` for `type: "text"` (line 2225-2236) only sets text content, fill, and sizing. `paddingX`/`paddingY` on text children are **silently ignored**. To add padding around text, wrap it in a `"type": "frame"` child with `layout` and put the text as a nested child. |
+| Divider fills within parent padding | `type: "divider"` sets `layoutSizingHorizontal = "FILL"` but fills only within parent content area (after padding). React separators like `-mx-1` bleed edge-to-edge. **Fix for edge-to-edge dividers**: set parent `paddingX: 0` and add `paddingX` to individual items instead. |
+| Footer/alignment needs fillWidth | `primaryAlign: "end"` (or `"center"`) on a frame has no effect unless the frame fills its parent width. Without `fillWidth: true`, the frame HUGs content and alignment is meaningless. Always set `"fillWidth": true` on frames that use `primaryAlign`. |
+| Icon placeholder frames in menus | Manual `"type": "frame"` with `width: 16, height: 16, fill: "foreground"` creates opaque rectangles, NOT proper Lucide icon instances. **For menu item components** (DropdownItem, ContextMenuItem, CommandItem): use `children` array with `"type": "icon"` children + `showWhen` for conditional icons per variant. **For parent/group components** with `children` array: use `"type": "instance"` referencing the item ComponentSet, NOT manual frames. |
 | `textStyle` mismatch causing height difference | `SP/Label` = 12px/16px, `SP/Body Medium` = 14px/20px. Web `text-sm font-medium` = 14px/20px. Using wrong text style causes 4px line-height difference → visible height mismatch between web and Figma. **Always verify textStyle against web CSS**: `text-sm` = 14px/20px = `SP/Body` or `SP/Body Medium`; `text-xs` = 12px/16px = `SP/Label`. Check `index.css` for `@utility sp-*` definitions. |
 | Addon path missing focus ring | Addon inner frame only checked `focusRing`, not `effectStyleName`. Fixed: addon path now checks `effectStyleName` first → falls back to `focusRing` → falls back to clear effects. |
 | Prefix/Suffix/TextLeft/TextRight wrong font | These nodes used hardcoded `Inter Regular 14px`. Fixed: now resolve `merged.textStyle` via `findTextStyle()` for proper Figma text style binding. |

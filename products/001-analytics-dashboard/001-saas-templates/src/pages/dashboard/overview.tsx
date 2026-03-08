@@ -75,10 +75,8 @@ import {
 import { useChartColors } from "@/hooks/use-chart-colors"
 import { SalesGlobe } from "@/components/charts/sales-globe"
 import { countryFlag } from "@/components/charts/sales-map"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { format, subDays, startOfYear } from "date-fns"
-import type { DateRange } from "react-day-picker"
+import { DateRangePicker } from "@/components/ui/date-picker"
+import { format, subDays } from "date-fns"
 import {
   Sheet,
   SheetContent,
@@ -563,8 +561,6 @@ export default function DashboardOverviewPage() {
   const [refreshingOrders, setRefreshingOrders] = useState(false)
   const [globeError, setGlobeError] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<"online" | "offline">("online")
-  const [datePickerOpen, setDatePickerOpen] = useState(false)
-  const [draftRange, setDraftRange] = useState<DateRange | undefined>(undefined)
 
   // Sheet / Dialog states for action UIs
   const [revenueSheet, setRevenueSheet] = useState(false)
@@ -575,11 +571,10 @@ export default function DashboardOverviewPage() {
   const [globeSheet, setGlobeSheet] = useState(false)
   const [channelDialog, setChannelDialog] = useState(false)
   const [addChannelDialog, setAddChannelDialog] = useState(false)
-  const [dateRange, setDateRange] = useState<DateRange>({
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
     from: subDays(new Date(), 60),
     to: new Date(),
   })
-  const [presetLabel, setPresetLabel] = useState("Last 60 days")
   const [comparePeriod, setComparePeriod] = useState<"previous" | "last-year">("previous")
 
   // Simulate loading
@@ -654,98 +649,18 @@ export default function DashboardOverviewPage() {
         {/* Date range + last updated */}
         <div className="flex items-center justify-between gap-sm">
           <div className="flex items-center gap-sm min-w-0">
-            <Popover open={datePickerOpen} onOpenChange={(open) => {
-              setDatePickerOpen(open)
-              if (open) setDraftRange(dateRange)
-              if (!open) setDraftRange(undefined)
-            }}>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-xs px-md py-2xs h-auto rounded-lg border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong sp-body-medium text-foreground" aria-label="Select date range">
-                  <Calendar className="size-[14px] text-muted-foreground" />
-                  {dateRange.from && dateRange.to
-                    ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
-                    : "Pick a date range"}
-                  <ChevronDown className="size-[12px] text-muted-foreground/50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start" sideOffset={8}>
-                <div className="flex">
-                  <div className="flex flex-col gap-3xs border-r border-border/30 dark:border-white/[0.06] p-sm min-w-[140px]">
-                    <p className="sp-label text-muted-foreground px-sm pb-2xs">Presets</p>
-                    {([
-                      { label: "Last 7 days", days: 7 },
-                      { label: "Last 14 days", days: 14 },
-                      { label: "Last 30 days", days: 30 },
-                      { label: "Last 60 days", days: 60 },
-                      { label: "Last 90 days", days: 90 },
-                      { label: "This year", days: 0 },
-                    ] as const).map((preset) => (
-                      <button
-                        key={preset.label}
-                        onClick={() => {
-                          const to = new Date()
-                          const from = preset.days > 0 ? subDays(to, preset.days) : startOfYear(to)
-                          setDraftRange({ from, to })
-                          setPresetLabel(preset.label)
-                        }}
-                        className={`sp-caption text-left px-sm py-xs rounded-md transition-colors ${
-                          presetLabel === preset.label
-                            ? "bg-primary text-primary-foreground font-medium"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                        }`}
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="flex flex-col">
-                    <CalendarComponent
-                      mode="range"
-                      required
-                      selected={draftRange}
-                      onSelect={(range) => {
-                        setDraftRange(range)
-                        setPresetLabel("")
-                      }}
-                      numberOfMonths={2}
-                      disabled={{ after: new Date() }}
-                    />
-                    {/* Apply / Cancel footer */}
-                    <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
-                      <p className="sp-caption text-muted-foreground">
-                        {draftRange?.from && draftRange?.to
-                          ? `${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`
-                          : draftRange?.from
-                            ? `${format(draftRange.from, "MMM d, yyyy")} – ...`
-                            : "Select a range"}
-                      </p>
-                      <div className="flex items-center gap-sm">
-                        <Button variant="ghost" size="sm" onClick={() => { setDraftRange(undefined); setDatePickerOpen(false) }}>
-                          Cancel
-                        </Button>
-                        <Button
-                          size="sm"
-                          disabled={!draftRange?.from || !draftRange?.to}
-                          onClick={() => {
-                            if (draftRange?.from && draftRange?.to) {
-                              setDateRange(draftRange)
-                              setDatePickerOpen(false)
-                              toast(
-                                presetLabel
-                                  ? `Applied: ${presetLabel}`
-                                  : `${format(draftRange.from, "MMM d")} – ${format(draftRange.to, "MMM d, yyyy")}`
-                              )
-                            }
-                          }}
-                        >
-                          Apply
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <DateRangePicker
+              from={dateRange.from}
+              to={dateRange.to}
+              onRangeChange={(range) => {
+                setDateRange(range)
+                toast(
+                  range.from && range.to
+                    ? `${format(range.from, "MMM d")} – ${format(range.to, "MMM d, yyyy")}`
+                    : "Date range updated"
+                )
+              }}
+            />
 
             {/* Compare period */}
             <DropdownMenu>
@@ -1110,7 +1025,7 @@ export default function DashboardOverviewPage() {
                   <DropdownMenuItem onClick={() => navigate("/management/products")}>
                     <Filter className="size-[14px]" /> Filter by Category
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDatePickerOpen(true)}>
+                  <DropdownMenuItem onClick={() => toast("Use the date range picker at the top of the page")}>
                     <Calendar className="size-[14px]" /> Change Period
                   </DropdownMenuItem>
                 </DropdownMenuContent>

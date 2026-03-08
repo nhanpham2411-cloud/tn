@@ -119,9 +119,9 @@
         "stroke": "border",
         "radius": "md",
         "effectStyleName": "Shadows/md",
-        "paddingX": "sm",
-        "paddingY": "sm",
-        "gap": "xs",
+        "paddingX": "md",
+        "paddingY": "md",
+        "gap": "md",
         "hideLabel": true,
         "children": [
           {
@@ -171,21 +171,16 @@
             "primaryAlign": "end",
             "counterAlign": "center",
             "gap": "xs",
+            "fillWidth": true,
             "showWhen": "Show Footer=Yes",
             "children": [
-              {
-                "name": "Cancel",
-                "type": "instance",
-                "component": "Button",
-                "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Cancel" }
-              },
               {
                 "name": "Apply",
                 "type": "instance",
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
-                "textOverrides": { "Label": "Apply" }
+                "textOverrides": { "Label": "Apply" },
+                "widthMode": "hug"
               }
             ]
           }
@@ -235,7 +230,7 @@
       ],
 
       "figmaMapping": [
-        { "figma": "Content", "value": "bg-card, border, shadow-md", "code": "PopoverContent", "codeValue": "w-72 rounded-md border bg-card p-3 shadow-md" },
+        { "figma": "Content", "value": "bg-card, border, shadow-md", "code": "PopoverContent", "codeValue": "w-72 rounded-md border bg-card p-md shadow-md" },
         { "figma": "Title", "value": "SP/Body Semibold", "code": "—", "codeValue": "text-sm font-semibold text-foreground" },
         { "figma": "Description", "value": "SP/Body", "code": "—", "codeValue": "typo-paragraph-sm text-muted-foreground" },
         { "figma": "Animation", "value": "Zoom + Fade", "code": "data-[state]", "codeValue": "zoom-in-95 fade-in-0" }

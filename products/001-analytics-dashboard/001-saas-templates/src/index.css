@@ -121,6 +121,8 @@
 
   /* --- SprouX Figma Semantic Colors --- */
   --color-primary-hover: var(--primary-hover);
+  --color-primary-10: var(--primary-10);
+  --color-primary-20: var(--primary-20);
   --color-secondary-hover: var(--secondary-hover);
   --color-border-strong: var(--border-strong);
   --color-ghost: var(--ghost);
@@ -639,6 +641,8 @@
     --primary: var(--color-violet-600);
     --primary-foreground: #ffffff;             /* raw: white */
     --primary-hover: var(--color-violet-700);
+    --primary-10: rgba(124, 58, 237, 0.1);         /* violet-600 @ 10% */
+    --primary-20: rgba(124, 58, 237, 0.2);         /* violet-600 @ 20% */
 
     --secondary: var(--color-zinc-200);
     --secondary-foreground: var(--color-zinc-900);
@@ -836,6 +840,8 @@
     --primary: var(--color-violet-600);
     --primary-foreground: #ffffff;             /* raw: white */
     --primary-hover: var(--color-violet-700);
+    --primary-10: rgba(124, 58, 237, 0.1);         /* violet-600 @ 10% */
+    --primary-20: rgba(124, 58, 237, 0.2);         /* violet-600 @ 20% */
 
     --secondary: var(--color-zinc-800);
     --secondary-foreground: var(--color-zinc-50);

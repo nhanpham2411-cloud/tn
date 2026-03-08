@@ -70,7 +70,7 @@
       "category": "Overlay",
       "installation": {
         "dependencies": "pnpm add vaul",
-        "import": "import {\n  Drawer, DrawerTrigger, DrawerContent,\n  DrawerHeader, DrawerFooter, DrawerTitle,\n  DrawerDescription, DrawerClose\n} from \"@/components/ui/drawer\""
+        "import": "import {\n  Drawer, DrawerTrigger, DrawerPortal,\n  DrawerOverlay, DrawerContent, DrawerHeader,\n  DrawerTitle, DrawerDescription, DrawerFooter,\n  DrawerClose\n} from \"@/components/ui/drawer\""
       },
 
       "properties": {
@@ -99,16 +99,18 @@
             "layout": "horizontal",
             "primaryAlign": "center",
             "fillWidth": true,
-            "paddingY": "md",
+            "paddingTop": "md",
+            "paddingBottom": 0,
             "showWhen": "Show Handle=Yes",
             "children": [
               {
                 "name": "Handle Bar",
                 "type": "frame",
                 "width": 100,
-                "height": 6,
+                "height": 4,
                 "radius": 9999,
-                "fill": "muted"
+                "fill": "muted",
+                "widthMode": "fixed"
               }
             ]
           },
@@ -144,7 +146,8 @@
             "type": "frame",
             "layout": "vertical",
             "paddingX": "md",
-            "paddingY": "md",
+            "paddingTop": 0,
+            "paddingBottom": "sm",
             "fillWidth": true,
             "children": [
               {
@@ -243,7 +246,7 @@
       "figmaMapping": [
         { "figma": "Overlay", "value": "black/50", "code": "DrawerOverlay", "codeValue": "fixed inset-0 z-50 bg-black/50" },
         { "figma": "Content", "value": "bg-card, border, rounded-t-[10px]", "code": "DrawerContent", "codeValue": "fixed inset-x-0 bottom-0 rounded-t-[10px]" },
-        { "figma": "Handle bar", "value": "100x4px rounded-full muted", "code": "—", "codeValue": "mx-auto mt-md h-2xs w-[100px] rounded-full bg-muted" },
+        { "figma": "Handle bar", "value": "100x4px rounded-full muted", "code": "—", "codeValue": "mx-auto mt-md h-1 w-[100px] rounded-full bg-muted" },
         { "figma": "Header", "value": "Title + Description", "code": "DrawerHeader", "codeValue": "grid gap-2xs p-md" },
         { "figma": "Title", "value": "SP/H4", "code": "DrawerTitle", "codeValue": "sp-h4 text-foreground" },
         { "figma": "Description", "value": "SP/Body", "code": "DrawerDescription", "codeValue": "typo-paragraph-sm text-muted-foreground" },

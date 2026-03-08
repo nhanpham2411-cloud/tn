@@ -77,11 +77,11 @@ import {
   CommandItem, CommandList, CommandSeparator, CommandShortcut,
 } from "@/components/ui/command"
 import { Combobox } from "@/components/ui/combobox"
-import { DatePicker, DateRangePicker } from "@/components/ui/date-picker"
+import { DatePickerTrigger, DatePicker, DateRangePicker } from "@/components/ui/date-picker"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar, DayCell, dayCellStyles, type DayCellState } from "@/components/ui/calendar"
 import { SearchBox } from "@/components/ui/search-box"
 import {
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuTrigger,
@@ -3403,6 +3403,7 @@ function TooltipDocs() {
 
 function CardDocs() {
   const [showHeader, setShowHeader] = useState(true)
+  const [showDescription, setShowDescription] = useState(true)
   const [showFooter, setShowFooter] = useState(true)
   const [state, setState] = useState("default")
   const [size, setSize] = useState("default")
@@ -3424,6 +3425,7 @@ function CardDocs() {
         { label: "State", type: "select", options: ["default", "hover"], value: state, onChange: setState },
         { label: "Size", type: "select", options: ["default", "md", "lg"], value: size, onChange: setSize },
         { label: "Show Header", type: "toggle", value: showHeader, onChange: setShowHeader },
+        { label: "Show Description", type: "toggle", value: showDescription, onChange: setShowDescription, disabled: !showHeader },
         { label: "Show Footer", type: "toggle", value: showFooter, onChange: setShowFooter },
       ]}>
         <div className="w-full flex justify-center">
@@ -3431,7 +3433,7 @@ function CardDocs() {
             {showHeader && (
               <div className="flex flex-col gap-2xs">
                 <p className="text-sm font-medium text-foreground">Card Title</p>
-                <p className="text-sm text-muted-foreground">Supporting description for this card.</p>
+                {showDescription && <p className="text-sm text-muted-foreground">Supporting description for this card.</p>}
               </div>
             )}
             <p className="text-sm text-muted-foreground">Card content area. Place any element here — text, charts, lists, or forms.</p>
@@ -3716,8 +3718,8 @@ function DialogDocs() {
         )}>
           {isScrollable ? (
             <>
-              <div className="px-xl pt-xl pb-md">
-                {showClose && <div className="absolute right-xl top-xl opacity-70"><X className="size-md" /></div>}
+              <div className="p-md">
+                {showClose && <div className="absolute right-md top-md opacity-70"><X className="size-md" /></div>}
                 <div className={cn("flex flex-col gap-xs", showClose && "pr-xl")}>
                   <h3 className="sp-h4 text-foreground">Edit profile</h3>
                   {showDesc && <p className="typo-paragraph-sm text-muted-foreground">Make changes to your profile here. Click save when you're done.</p>}
@@ -3740,7 +3742,7 @@ function DialogDocs() {
                 </div>
               </div>
               {showFooter && (
-                <div className={cn("px-xl pb-xl pt-md", isMobile ? "flex flex-col-reverse gap-xs" : "flex justify-end gap-xs")}>
+                <div className={cn("p-md", isMobile ? "flex flex-col-reverse gap-xs" : "flex justify-end gap-xs")}>
                   <Button variant="outline" size="sm">Cancel</Button>
                   <Button size="sm">Save changes</Button>
                 </div>
@@ -6545,15 +6547,15 @@ function AlertDialogDocs() {
       <FigmaMapping rows={[
         ["Overlay","Black 50%","AlertDialogOverlay","bg-black/50, fixed inset-0, z-50"],
         ["Content","bg-card, border, shadow","AlertDialogContent","max-w-lg, rounded-xl, p-xl, gap-lg"],
-        ["Icon","36px circle + icon","—","size-9 rounded-full border flex items-center justify-center"],
-        ["Title","heading 4","AlertDialogTitle","typo-heading-4 text-foreground"],
-        ["Description","paragraph small","AlertDialogDescription","typo-paragraph-sm text-muted-foreground"],
-        ["Footer","flex, gap-xs","AlertDialogFooter","flex-col-reverse sm:flex-row sm:justify-end gap-xs"],
-        ["Action","Button default","AlertDialogAction","Wraps Radix in Button via asChild"],
-        ["Cancel","Button outline","AlertDialogCancel","Wraps Radix in Button via asChild"],
-        ["ShowTitle","true / false","—","Toggle title text visibility"],
-        ["ShowAction","true / false","—","Toggle footer action buttons"],
-        ["ShowCancel","true / false","—","Toggle Cancel button (requires ShowAction=true)"],
+        ["Title","SP/H4","AlertDialogTitle","text-base font-semibold font-heading text-foreground"],
+        ["Description","SP/Body","AlertDialogDescription","text-sm text-muted-foreground font-body"],
+        ["Footer Desktop","flex, justify-end, gap-xs","AlertDialogFooter","flex justify-end gap-xs"],
+        ["Footer Mobile","flex-col, gap-xs","AlertDialogFooter","flex flex-col-reverse gap-xs"],
+        ["Action","Button instance (Default/Small)","AlertDialogAction","Wraps Radix in Button via asChild"],
+        ["Cancel","Button instance (Outline/Small)","AlertDialogCancel","Wraps Radix in Button via asChild"],
+        ["Type","Desktop / Mobile","—","Desktop = max-w-lg (512px), Mobile = max-w-sm (384px)"],
+        ["Show Action","Yes / No","—","Toggle footer action buttons"],
+        ["Show Action Secondary","Yes / No","—","Toggle Cancel button (requires Show Action=Yes)"],
         ["Behavior","Non-dismissible","—","Cannot close by clicking overlay (Radix default)"],
         ["Animation","Open / Close","data-state","zoom-in-95 / zoom-out-95, fade-in / fade-out"],
       ]} />
@@ -6907,13 +6909,17 @@ function ComboboxDocs() {
 }
 
 function DatePickerControlledExample() {
-  const [date, setDate] = useState<Date | undefined>(new Date(2026, 2, 4))
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 2, 18))
   return <DatePicker date={date} onDateChange={setDate} />
 }
 
 function DatePickerDocs() {
   const [mode, setMode] = useState<"single" | "range">("single")
+  const [triggerState, setTriggerState] = useState<"default" | "hover" | "error" | "disable">("default")
+  const [triggerValue, setTriggerValue] = useState<"placeholder" | "filled">("placeholder")
   const [dayCellState, setDayCellState] = useState<DayCellState>("default")
+  const [presetItemState, setPresetItemState] = useState<PresetItemState>("default")
+  const [activePresetIdx, setActivePresetIdx] = useState(2)
   return (
     <div className="space-y-3xl">
 
@@ -6924,21 +6930,46 @@ function DatePickerDocs() {
         <p className="text-muted-foreground mt-xs max-w-2xl font-body">A trigger that opens a calendar popup for selecting a single date or date range. DateRangePicker adds a two-month view with a preset shortcuts sidebar.</p>
       </header>
 
-      {/* 2. Explore Behavior — tabbed: Date Picker | Day Cell */}
+      {/* 2. Explore Behavior — tabbed: Date Picker | Date Picker Trigger | Day Cell */}
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Explore Behavior</h2>
         <Tabs defaultValue="date-picker" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
               <TabsTrigger value="date-picker" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Date Picker</span></TabsTrigger>
+              <TabsTrigger value="date-picker-trigger" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Date Picker Trigger</span></TabsTrigger>
               <TabsTrigger value="day-cell" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Day Cell</span></TabsTrigger>
+              <TabsTrigger value="preset-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Preset Item</span></TabsTrigger>
             </TabsList>
 
-            {/* Tab 1: Date Picker */}
+            {/* Tab 1: Date Picker — shows popover content (calendar panel) */}
             <TabsContent value="date-picker" className="mt-0">
               <div>
                 <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
-                  {mode === "range" ? <DateRangePicker /> : <DatePicker />}
+                  {mode === "range" ? (
+                    <div className="rounded-lg border border-border bg-card shadow-md flex overflow-hidden">
+                      <div className="flex flex-col gap-3xs border-r border-border/30 dark:border-white/[0.06] p-sm min-w-[140px]">
+                        <p className="sp-label text-muted-foreground/60 uppercase tracking-wider px-sm pt-xs pb-2xs">Presets</p>
+                        {["Last 7 days","Last 14 days","Last 30 days","Last 60 days","Last 90 days","This month","Last month","This year"].map((p, i) => (
+                          <PresetItem key={p} state={activePresetIdx === i ? "active" : "default"} onClick={() => setActivePresetIdx(i)}>{p}</PresetItem>
+                        ))}
+                      </div>
+                      <div className="flex flex-col">
+                        <Calendar mode="range" numberOfMonths={2} selected={{ from: new Date(2026, 2, 18), to: new Date(2026, 3, 8) }} components={calendarDayCellComponents} />
+                        <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
+                          <p className="sp-caption text-muted-foreground">Mar 18 – Apr 8, 2026</p>
+                          <div className="flex items-center gap-sm">
+                            <Button variant="ghost" size="sm">Cancel</Button>
+                            <Button size="sm">Apply</Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="rounded-lg border border-border bg-card shadow-md overflow-hidden">
+                      <Calendar mode="single" selected={new Date(2026, 2, 18)} components={calendarDayCellComponents} />
+                    </div>
+                  )}
                 </div>
                 <div className="border-t border-border p-md bg-muted/10">
                   <div className="space-y-xs">
@@ -6953,7 +6984,40 @@ function DatePickerDocs() {
               </div>
             </TabsContent>
 
-            {/* Tab 2: Day Cell */}
+            {/* Tab 2: Date Picker Trigger */}
+            <TabsContent value="date-picker-trigger" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <DatePickerTrigger
+                    state={triggerState}
+                    value={triggerValue}
+                    date={triggerValue === "filled" ? new Date(2026, 2, 7) : undefined}
+                  />
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover", "error", "disable"] as const).map(s => (
+                          <button key={s} onClick={() => setTriggerState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", triggerState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["placeholder", "filled"] as const).map(v => (
+                          <button key={v} onClick={() => setTriggerValue(v)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", triggerValue === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab 3: Day Cell */}
             <TabsContent value="day-cell" className="mt-0">
               <div>
                 <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
@@ -6975,12 +7039,33 @@ function DatePickerDocs() {
                 </div>
               </div>
             </TabsContent>
+
+            {/* Tab 4: Preset Item */}
+            <TabsContent value="preset-item" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <PresetItem state={presetItemState}>Last 30 days</PresetItem>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover", "active"] as PresetItemState[]).map(s => (
+                          <button key={s} onClick={() => setPresetItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", presetItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
           </div>
         </Tabs>
       </section>
 
       {/* 3. Installation */}
-      <InstallationSection pkg={["react-day-picker","date-fns"]} importCode={`import { DatePicker, DateRangePicker } from "@/components/ui/date-picker"`} />
+      <InstallationSection pkg={["react-day-picker","date-fns"]} importCode={`import { DatePickerTrigger, DatePicker, DateRangePicker } from "@/components/ui/date-picker"`} />
 
       {/* 4. Examples */}
       <section className="space-y-md">
@@ -7023,7 +7108,15 @@ function DatePickerDocs() {
       {/* 5. Props */}
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Props</h2>
-        <h3 className="font-semibold text-sm">DatePicker</h3>
+        <h3 className="font-semibold text-sm">DatePickerTrigger</h3>
+        <PropsTable rows={[
+          ["state", '"default" | "hover" | "error" | "disable"', '"default"', "Visual state of the trigger"],
+          ["value", '"placeholder" | "filled"', '"placeholder"', "Whether to show placeholder or filled date"],
+          ["date", "Date | undefined", "—", "Selected date to display when filled"],
+          ["placeholder", "string", '"Pick a date"', "Placeholder text when no date selected"],
+          ["className", "string", '""', "Additional CSS classes"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">DatePicker</h3>
         <PropsTable rows={[
           ["date", "Date | undefined", "—", "Controlled selected date"],
           ["onDateChange", "(date: Date | undefined) => void", "—", "Callback when date changes"],
@@ -7886,61 +7979,28 @@ function HoverCardDocs() {
   )
 }
 
-type DayCellState = "default" | "hover" | "today" | "selected" | "outside" | "disabled" | "range-start" | "range-middle" | "range-end" | "range-hover"
+/* ── Preset Item ── */
+type PresetItemState = "default" | "hover" | "active"
 
-const dayCellStyles: Record<DayCellState, string> = {
-  "default":      "rounded-sm text-foreground bg-transparent",
-  "hover":        "rounded-sm text-foreground bg-ghost-hover",
-  "today":        "rounded-sm text-foreground ring-1 ring-primary/40",
-  "selected":     "rounded-sm text-primary-foreground bg-primary",
-  "outside":      "rounded-sm text-muted-foreground/40 bg-transparent",
-  "disabled":     "rounded-sm text-muted-foreground opacity-50 bg-transparent",
-  "range-start":  "rounded-l-sm text-primary-foreground bg-primary",
-  "range-middle": "text-foreground bg-primary/10",
-  "range-end":    "rounded-r-sm text-primary-foreground bg-primary",
-  "range-hover":  "text-foreground bg-primary/20",
+const presetItemStyles: Record<PresetItemState, string> = {
+  "default": "text-muted-foreground",
+  "hover":   "bg-muted text-foreground",
+  "active":  "bg-primary text-primary-foreground font-medium",
 }
 
-
-function DayCell({ state, children }: { state: DayCellState; children: ReactNode }) {
-  return (
-    <div className={cn("size-[48px] flex items-center justify-center typo-paragraph-sm font-normal", dayCellStyles[state])}>
-      {children}
-    </div>
-  )
-}
-
-/** Custom DayButton that uses DayCell styles — "instance swap" of DayCell into Calendar */
-function CalendarDayButton({ day, modifiers, className, ...props }: any) {
-  let state: DayCellState = "default"
-  if (modifiers.outside) state = "outside"
-  if (modifiers.today) state = "today"
-  if (modifiers.disabled) state = "disabled"
-  if (modifiers.selected) state = "selected"
-  if (modifiers.range_start) state = "range-start"
-  if (modifiers.range_middle) state = "range-middle"
-  if (modifiers.range_end) state = "range-end"
-
+function PresetItem({ state, children, onClick }: { state: PresetItemState; children: ReactNode; onClick?: () => void }) {
   return (
     <button
-      {...props}
+      onClick={onClick}
       className={cn(
-        "size-[48px] flex items-center justify-center typo-paragraph-sm font-normal transition-colors",
-        "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring",
-        "disabled:pointer-events-none",
-        dayCellStyles[state],
-        (state === "default" || state === "today" || state === "outside") && "hover:bg-ghost-hover",
+        "sp-caption text-left px-sm py-xs rounded-md transition-colors",
+        presetItemStyles[state],
+        state === "default" && "hover:bg-muted hover:text-foreground",
       )}
-    />
+    >
+      {children}
+    </button>
   )
-}
-
-const calendarDayCellComponents = {
-  DayButton: CalendarDayButton,
-  Chevron: ({ orientation }: { orientation: string }) => {
-    const Icon = orientation === "left" ? ChevronLeft : ChevronRight
-    return <Icon aria-hidden="true" className="size-[18px]" />
-  },
 }
 
 function DayStatesSection() {
@@ -7974,12 +8034,12 @@ function DayStatesSection() {
 }
 
 function CalendarSingleExample() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 2, 18))
   return <Calendar mode="single" selected={date} onSelect={setDate} className="rounded-md border" />
 }
 
 function CalendarRangeExample() {
-  const [range, setRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined })
+  const [range, setRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: new Date(2026, 2, 18), to: new Date(2026, 3, 8) })
   return (
     <Calendar
       mode="range"
@@ -7991,8 +8051,8 @@ function CalendarRangeExample() {
 }
 
 function CalendarDocs() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [calRange, setCalRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined })
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 2, 18))
+  const [calRange, setCalRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: new Date(2026, 2, 18), to: new Date(2026, 3, 8) })
   const [calMode, setCalMode] = useState<"single" | "range">("single")
   const [showOutsideDays, setShowOutsideDays] = useState(true)
   const [calDayCellState, setCalDayCellState] = useState<DayCellState>("default")
@@ -8027,8 +8087,7 @@ function CalendarDocs() {
                     showOutsideDays={showOutsideDays}
                     numberOfMonths={2}
                     className="rounded-md border"
-                    components={calendarDayCellComponents}
-                  />
+                                     />
                 ) : (
                   <Calendar
                     mode="single"
@@ -8036,8 +8095,7 @@ function CalendarDocs() {
                     onSelect={setDate}
                     showOutsideDays={showOutsideDays}
                     className="rounded-md border"
-                    components={calendarDayCellComponents}
-                  />
+                                     />
                 )}
               </div>
               <div className="border-t border-border p-md bg-muted/10">

@@ -1,154 +1,6 @@
 {
   "components": [
     {
-      "name": "Command Item",
-      "description": "A single selectable row inside a Command palette. Supports icon and shortcut variants with hover and disabled states.",
-      "category": "Overlay",
-      "installation": {
-        "dependencies": "pnpm add cmdk",
-        "import": "import {\n  Command, CommandInput, CommandList,\n  CommandEmpty, CommandGroup, CommandItem,\n  CommandShortcut, CommandSeparator\n} from \"@/components/ui/command\""
-      },
-
-      "properties": {
-        "Type": ["Default", "With Icon", "With Shortcut"],
-        "State": ["Default", "Hover", "Disabled"]
-      },
-
-      "base": {
-        "layout": "horizontal",
-        "width": 180,
-        "height": 32,
-        "primaryAlign": "start",
-        "counterAlign": "center",
-        "fill": "transparent",
-        "radius": "sm",
-        "paddingX": "xs",
-        "paddingY": "2xs",
-        "gap": "sm",
-        "hideLabel": true,
-        "children": [
-          {
-            "name": "Icon",
-            "type": "frame",
-            "width": 16,
-            "height": 16,
-            "fill": "foreground",
-            "showWhen": "Type=With Icon"
-          },
-          {
-            "name": "Label",
-            "type": "text",
-            "textStyle": "SP/Body",
-            "textContent": "Profile",
-            "textFill": "foreground",
-            "fillWidth": true
-          },
-          {
-            "name": "Shortcut",
-            "type": "text",
-            "textStyle": "SP/Mini",
-            "textContent": "⌘A",
-            "textFill": "muted-foreground",
-            "showWhen": "Type=With Shortcut"
-          }
-        ]
-      },
-
-      "variantStyles": {
-        "Type=Default": {},
-        "Type=With Icon": {
-          "children": [
-            {
-              "name": "Label",
-              "textContent": "Analytics"
-            }
-          ]
-        },
-        "Type=With Shortcut": {
-          "children": [
-            {
-              "name": "Label",
-              "textContent": "Analytics"
-            }
-          ]
-        },
-        "State=Default": {},
-        "State=Hover": {
-          "fill": "muted"
-        },
-        "State=Disabled": {
-          "opacity": 0.5
-        }
-      },
-
-      "examples": [
-        {
-          "name": "Item Types",
-          "description": "Available item variants for command palettes.",
-          "layout": "vertical",
-          "items": [
-            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
-            { "label": "With Icon", "props": { "Type": "With Icon", "State": "Default" } },
-            { "label": "With Shortcut", "props": { "Type": "With Shortcut", "State": "Default" } }
-          ]
-        },
-        {
-          "name": "Item States",
-          "description": "Interactive states for command items.",
-          "layout": "vertical",
-          "items": [
-            { "label": "Default", "props": { "Type": "Default", "State": "Default" } },
-            { "label": "Hover", "props": { "Type": "Default", "State": "Hover" } },
-            { "label": "Disabled", "props": { "Type": "Default", "State": "Disabled" } }
-          ]
-        }
-      ],
-
-      "props": [
-        { "name": "onSelect", "type": "(value: string) => void", "default": "—", "description": "Callback when item is selected via click or Enter" },
-        { "name": "disabled", "type": "boolean", "default": "false", "description": "Removes item from keyboard navigation and greys it out" },
-        { "name": "value", "type": "string", "default": "—", "description": "Override the search matching value (defaults to text content)" }
-      ],
-
-      "designTokens": [
-        { "token": "--foreground", "value": "zinc-900 / zinc-50", "description": "Default item text + icon color" },
-        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover/selected background" },
-        { "token": "--muted-foreground", "value": "zinc-500 / zinc-400", "description": "Shortcut text color" }
-      ],
-
-      "bestPractices": [
-        { "do": "Use icons consistently — either all items in a group have icons or none.", "dont": "Mix icon and non-icon items within the same CommandGroup." },
-        { "do": "Pair CommandShortcut with frequently-used actions only.", "dont": "Add shortcuts to every item — it creates visual noise." }
-      ],
-
-      "figmaMapping": [
-        { "figma": "Item", "value": "px-xs py-2xs rounded-sm gap-sm", "code": "CommandItem", "codeValue": "px-xs py-2xs rounded-sm typo-paragraph-sm gap-2" },
-        { "figma": "State=Hover", "value": "bg-muted", "code": "data-[selected=true]", "codeValue": "bg-muted text-foreground" },
-        { "figma": "Shortcut", "value": "SP/Mini, muted-foreground", "code": "CommandShortcut", "codeValue": "ml-auto typo-paragraph-mini text-muted-foreground" }
-      ],
-
-      "accessibility": {
-        "keyboard": [
-          { "key": "Enter", "action": "Select the currently highlighted item" },
-          { "key": "Arrow Up/Down", "action": "Navigate between items" }
-        ],
-        "notes": [
-          "Items have role within a listbox context",
-          "Disabled items are excluded from keyboard navigation"
-        ]
-      },
-
-      "related": [
-        { "name": "Dropdown Menu", "desc": "For contextual action menus without search." },
-        { "name": "Combobox", "desc": "For searchable single-value select fields." }
-      ],
-
-      "showcase": {
-        "sections": ["header", "component", "installation"]
-      }
-    },
-
-    {
       "name": "Command",
       "description": "A searchable command palette for surfacing actions, navigation items, and settings. Supports keyboard navigation, item grouping, empty state, and per-item shortcut hints. Built on cmdk.",
       "category": "Overlay",
@@ -178,20 +30,20 @@
             "type": "frame",
             "layout": "horizontal",
             "counterAlign": "center",
-            "fillWidth": true,
-            "height": 48,
+            "height": 40,
+            "heightMode": "fixed",
             "paddingX": "sm",
             "gap": "xs",
-            "strokeSides": "bottom",
             "stroke": "border",
+            "strokeSides": "bottom",
             "children": [
               {
                 "name": "Search Icon",
-                "type": "frame",
-                "width": 16,
-                "height": 16,
-                "fill": "foreground",
-                "fillOpacity": 0.5
+                "type": "icon",
+                "iconName": "Search",
+                "iconSize": 16,
+                "iconFill": "muted-foreground",
+                "opacity": 0.5
               },
               {
                 "name": "Placeholder",
@@ -207,231 +59,101 @@
             "name": "Group 1",
             "type": "frame",
             "layout": "vertical",
-            "fillWidth": true,
             "paddingX": "3xs",
             "paddingY": "3xs",
-            "gap": "3xs",
+            "gap": 0,
             "children": [
               {
                 "name": "Heading 1",
-                "type": "text",
-                "textStyle": "SP/Mini Medium",
-                "textContent": "Navigation",
-                "textFill": "muted-foreground",
+                "type": "frame",
+                "layout": "horizontal",
                 "paddingX": "xs",
-                "paddingY": "2xs"
+                "paddingY": "2xs",
+                "children": [
+                  {
+                    "name": "Heading Text 1",
+                    "type": "text",
+                    "textStyle": "SP/Mini Medium",
+                    "textContent": "Navigation",
+                    "textFill": "muted-foreground"
+                  }
+                ]
               },
               {
                 "name": "Item 1",
-                "type": "frame",
-                "layout": "horizontal",
-                "counterAlign": "center",
-                "fillWidth": true,
-                "height": 32,
-                "radius": "sm",
-                "paddingX": "xs",
-                "paddingY": "2xs",
-                "gap": "sm",
-                "children": [
-                  {
-                    "name": "Icon 1",
-                    "type": "frame",
-                    "width": 16,
-                    "height": 16,
-                    "fill": "foreground"
-                  },
-                  {
-                    "name": "Label 1",
-                    "type": "text",
-                    "textStyle": "SP/Body",
-                    "textContent": "Analytics",
-                    "textFill": "foreground",
-                    "fillWidth": true
-                  },
-                  {
-                    "name": "Shortcut 1",
-                    "type": "text",
-                    "textStyle": "SP/Mini",
-                    "textContent": "⌘A",
-                    "textFill": "muted-foreground",
-                    "showWhen": "Show Shortcuts=Yes"
-                  }
-                ]
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Analytics" },
+                "iconOverrides": { "Icon": "BarChart3" },
+                "fillWidth": true
               },
               {
                 "name": "Item 2",
-                "type": "frame",
-                "layout": "horizontal",
-                "counterAlign": "center",
-                "fillWidth": true,
-                "height": 32,
-                "radius": "sm",
-                "paddingX": "xs",
-                "paddingY": "2xs",
-                "gap": "sm",
-                "children": [
-                  {
-                    "name": "Icon 2",
-                    "type": "frame",
-                    "width": 16,
-                    "height": 16,
-                    "fill": "foreground"
-                  },
-                  {
-                    "name": "Label 2",
-                    "type": "text",
-                    "textStyle": "SP/Body",
-                    "textContent": "Profile",
-                    "textFill": "foreground",
-                    "fillWidth": true
-                  },
-                  {
-                    "name": "Shortcut 2",
-                    "type": "text",
-                    "textStyle": "SP/Mini",
-                    "textContent": "⌘P",
-                    "textFill": "muted-foreground",
-                    "showWhen": "Show Shortcuts=Yes"
-                  }
-                ]
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Profile" },
+                "iconOverrides": { "Icon": "User" },
+                "fillWidth": true
               },
               {
                 "name": "Item 3",
-                "type": "frame",
-                "layout": "horizontal",
-                "counterAlign": "center",
-                "fillWidth": true,
-                "height": 32,
-                "radius": "sm",
-                "paddingX": "xs",
-                "paddingY": "2xs",
-                "gap": "sm",
-                "children": [
-                  {
-                    "name": "Icon 3",
-                    "type": "frame",
-                    "width": 16,
-                    "height": 16,
-                    "fill": "foreground"
-                  },
-                  {
-                    "name": "Label 3",
-                    "type": "text",
-                    "textStyle": "SP/Body",
-                    "textContent": "Settings",
-                    "textFill": "foreground",
-                    "fillWidth": true
-                  },
-                  {
-                    "name": "Shortcut 3",
-                    "type": "text",
-                    "textStyle": "SP/Mini",
-                    "textContent": "⌘,",
-                    "textFill": "muted-foreground",
-                    "showWhen": "Show Shortcuts=Yes"
-                  }
-                ]
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Settings" },
+                "iconOverrides": { "Icon": "Settings" },
+                "fillWidth": true
               }
             ]
           },
           {
             "name": "Separator",
-            "type": "frame",
-            "fillWidth": true,
-            "height": 1,
+            "type": "divider",
             "fill": "border"
           },
           {
             "name": "Group 2",
             "type": "frame",
             "layout": "vertical",
-            "fillWidth": true,
             "paddingX": "3xs",
             "paddingY": "3xs",
-            "gap": "3xs",
+            "gap": 0,
             "children": [
               {
                 "name": "Heading 2",
-                "type": "text",
-                "textStyle": "SP/Mini Medium",
-                "textContent": "Actions",
-                "textFill": "muted-foreground",
+                "type": "frame",
+                "layout": "horizontal",
                 "paddingX": "xs",
-                "paddingY": "2xs"
+                "paddingY": "2xs",
+                "children": [
+                  {
+                    "name": "Heading Text 2",
+                    "type": "text",
+                    "textStyle": "SP/Mini Medium",
+                    "textContent": "Actions",
+                    "textFill": "muted-foreground"
+                  }
+                ]
               },
               {
                 "name": "Item 4",
-                "type": "frame",
-                "layout": "horizontal",
-                "counterAlign": "center",
-                "fillWidth": true,
-                "height": 32,
-                "radius": "sm",
-                "paddingX": "xs",
-                "paddingY": "2xs",
-                "gap": "sm",
-                "children": [
-                  {
-                    "name": "Icon 4",
-                    "type": "frame",
-                    "width": 16,
-                    "height": 16,
-                    "fill": "foreground"
-                  },
-                  {
-                    "name": "Label 4",
-                    "type": "text",
-                    "textStyle": "SP/Body",
-                    "textContent": "New Order",
-                    "textFill": "foreground",
-                    "fillWidth": true
-                  },
-                  {
-                    "name": "Shortcut 4",
-                    "type": "text",
-                    "textStyle": "SP/Mini",
-                    "textContent": "⌘N",
-                    "textFill": "muted-foreground",
-                    "showWhen": "Show Shortcuts=Yes"
-                  }
-                ]
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "New Order" },
+                "iconOverrides": { "Icon": "Plus" },
+                "fillWidth": true
               },
               {
                 "name": "Item 5",
-                "type": "frame",
-                "layout": "horizontal",
-                "counterAlign": "center",
-                "fillWidth": true,
-                "height": 32,
-                "radius": "sm",
-                "paddingX": "xs",
-                "paddingY": "2xs",
-                "gap": "sm",
-                "children": [
-                  {
-                    "name": "Icon 5",
-                    "type": "frame",
-                    "width": 16,
-                    "height": 16,
-                    "fill": "foreground"
-                  },
-                  {
-                    "name": "Label 5",
-                    "type": "text",
-                    "textStyle": "SP/Body",
-                    "textContent": "Notifications",
-                    "textFill": "foreground",
-                    "fillWidth": true
-                  },
-                  {
-                    "name": "Shortcut 5",
-                    "type": "text",
-                    "textStyle": "SP/Mini",
-                    "textContent": "⌘B",
-                    "textFill": "muted-foreground",
-                    "showWhen": "Show Shortcuts=Yes"
-                  }
-                ]
+                "type": "instance",
+                "component": "Dropdown Item",
+                "variants": { "Type": "With Icon", "State": "Default" },
+                "textOverrides": { "Label": "Notifications" },
+                "iconOverrides": { "Icon": "Bell" },
+                "fillWidth": true
               }
             ]
           }
@@ -478,9 +200,10 @@
 
       "figmaMapping": [
         { "figma": "Wrapper", "value": "bg-card, rounded-md, border", "code": "Command", "codeValue": "rounded-md bg-card text-foreground overflow-hidden" },
-        { "figma": "Input", "value": "border-b, h-48, search icon", "code": "CommandInput", "codeValue": "h-3xl border-b border-border px-sm typo-paragraph-sm" },
+        { "figma": "Input", "value": "border-b, h-40, search icon opacity-50", "code": "CommandInput", "codeValue": "h-3xl border-b border-border px-sm typo-paragraph-sm" },
         { "figma": "Group heading", "value": "SP/Mini Medium, muted-foreground", "code": "[cmdk-group-heading]", "codeValue": "px-xs py-2xs typo-paragraph-mini-medium text-muted-foreground" },
-        { "figma": "Separator", "value": "1px, border", "code": "CommandSeparator", "codeValue": "h-px bg-border" },
+        { "figma": "Separator", "value": "1px, border", "code": "CommandSeparator", "codeValue": "-mx-1 h-px bg-border" },
+        { "figma": "Item", "value": "Dropdown Item instance", "code": "CommandItem", "codeValue": "px-xs py-2xs rounded-sm typo-paragraph-sm gap-2" },
         { "figma": "Empty", "value": "center, muted-foreground", "code": "CommandEmpty", "codeValue": "py-xl text-center typo-paragraph-sm" }
       ],
 
