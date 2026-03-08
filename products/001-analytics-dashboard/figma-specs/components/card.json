@@ -11,10 +11,10 @@
 
       "base": {
         "layout": "vertical",
+        "width": 240,
         "paddingX": "none",
         "paddingY": "none",
         "gap": "md",
-        "fillWidth": true,
         "hideLabel": true,
         "children": [
           {
@@ -165,7 +165,8 @@
                 "type": "instance",
                 "component": "Card Slot",
                 "variants": { "Content": "Text" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },

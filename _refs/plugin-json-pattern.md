@@ -75,6 +75,7 @@ A Figma ComponentSet is a **flat matrix** of all property combinations. Each **F
 5. [Components (ComponentSet + Variants)](#5-components-componentset--variants)
 6. [Showcase (Auto-generated from Component)](#6-showcase-auto-generated-from-component)
 7. [Foundation Docs (Visual Documentation)](#7-foundation-docs-visual-documentation)
+8. [Screens (Page UI Generation)](#8-screens-page-ui-generation)
 
 ---
 
@@ -986,6 +987,294 @@ When CSS tokens change in `index.css`:
 
 ---
 
+## 8. Screens (Page UI Generation)
+
+**Plugin function**: `doGenerate(spec)` — reuses existing layout engine, **NO plugin code changes needed**.
+**UI tab**: "Generate UI" — paste JSON → Generate.
+
+Screens render full-page UI frames on Figma — complete with sidebar, header, content, using real ComponentSet instances from Type 5.
+
+### Structure
+
+```json
+{
+  "pageName": "Dashboard — Overview",
+  "sectionLabel": "Dashboard",
+  "roots": [
+    {
+      "type": "frame",
+      "name": "Overview / Default — Dark",
+      "layout": "horizontal",
+      "sizing": { "width": "fixed:1440", "height": "fixed:900" },
+      "fill": "background",
+      "children": [
+        { "sidebar (80px)": "..." },
+        {
+          "type": "frame", "name": "Main Area",
+          "layout": "vertical", "sizing": { "width": "fill", "height": "fill" },
+          "children": [
+            { "header (56px)": "..." },
+            { "content area": "page-specific content" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+- `pageName` → creates Figma page `[Gen] {pageName}`
+- `roots` array → multiple frames rendered left→right (Dark + Light variants)
+- `sectionLabel` → gray label text above frames
+
+### File Organization
+
+```
+figma-specs/screens/
+├── auth/            sign-in, sign-up, forgot-password, onboarding
+├── dashboard/       overview, analytics, reports
+├── management/      orders, order-detail, products, users-list, user-profile, invoices
+├── settings/        general, notifications, billing, help-support
+└── utility/         empty-state, not-found
+```
+
+### Naming Conventions
+
+| Field | Pattern | Example |
+|-------|---------|---------|
+| `pageName` | `"{Category} — {Screen}"` | `"Auth — Sign In"` |
+| `sectionLabel` | Category name | `"Dashboard"` |
+| Root frame `name` | `"{Screen} / {State} — {Theme}"` | `"Overview / Default — Dark"` |
+
+State values: Default, Loading, Empty, Error, Offline.
+Theme values: Dark, Light.
+
+### Frame Dimensions
+
+| Breakpoint | Width × Height | Usage |
+|-----------|---------------|-------|
+| Desktop | 1440 × 900 | Primary — all screens |
+| Tablet | 768 × 1024 | Secondary — key screens |
+| Mobile | 375 × 812 | Secondary — key screens |
+
+### Node Types (renderNode dispatcher)
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `frame` | Auto-layout container + children | Card, row, column, section |
+| `text` | Styled text node | Heading, body, label, caption |
+| `component` | Instance from ComponentSet (Type 5) | Button, Input, Checkbox, Badge |
+| `placeholder` | Colored rect + label text | Chart, image, illustration |
+| `separator` | 1px divider | Horizontal/vertical line |
+
+### Layout Templates
+
+#### Dashboard Layout Wrapper (Sidebar + Header + Content)
+```json
+{
+  "type": "frame",
+  "name": "Overview / Default — Dark",
+  "layout": "horizontal",
+  "sizing": { "width": "fixed:1440", "height": "fixed:900" },
+  "fill": "background",
+  "children": [
+    {
+      "type": "frame", "name": "Sidebar",
+      "layout": "vertical",
+      "sizing": { "width": "fixed:80", "height": "fill" },
+      "fill": "sidebar", "padding": "sm", "gap": "xs",
+      "align": { "counter": "center" },
+      "children": ["logo, nav icons, user avatar"]
+    },
+    {
+      "type": "frame", "name": "Main Area",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "fill" },
+      "children": [
+        {
+          "type": "frame", "name": "Header",
+          "layout": "horizontal",
+          "sizing": { "width": "fill", "height": "fixed:56" },
+          "fill": "background", "stroke": "border",
+          "padding": { "x": "xl" }, "gap": "md",
+          "align": { "counter": "center", "justify": "space-between" },
+          "children": ["breadcrumb/title left, search+notifications+avatar right"]
+        },
+        {
+          "type": "frame", "name": "Content",
+          "layout": "vertical",
+          "sizing": { "width": "fill", "height": "fill" },
+          "padding": "2xl", "gap": "xl",
+          "children": ["page-specific content sections"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Auth Layout Wrapper (Left Panel + Right Panel)
+```json
+{
+  "type": "frame",
+  "name": "Sign In / Default — Dark",
+  "layout": "horizontal",
+  "sizing": { "width": "fixed:1440", "height": "fixed:900" },
+  "fill": "background",
+  "children": [
+    {
+      "type": "frame", "name": "Left Panel — Branding",
+      "layout": "vertical",
+      "sizing": { "width": "fixed:720", "height": "fill" },
+      "fill": "sidebar", "padding": "2xl", "gap": "xl",
+      "align": { "justify": "space-between", "counter": "center" },
+      "children": ["logo row, illustration + tagline, stats row"]
+    },
+    {
+      "type": "frame", "name": "Right Panel — Form",
+      "layout": "vertical",
+      "sizing": { "width": "fill", "height": "fill" },
+      "fill": "background",
+      "align": { "justify": "center", "counter": "center" },
+      "children": ["form card (max-w 440px)"]
+    }
+  ]
+}
+```
+
+### Reusable Section Patterns
+
+#### KPI Card Row (Dashboard/Management)
+```json
+{
+  "type": "frame", "name": "KPI Cards",
+  "layout": "horizontal", "gap": "lg", "sizing": { "width": "fill" },
+  "children": [
+    {
+      "type": "frame", "name": "KPI — Revenue",
+      "layout": "vertical", "sizing": { "width": "fill" },
+      "fill": "card", "stroke": "border", "radius": "xl",
+      "padding": "lg", "gap": "sm",
+      "children": [
+        { "type": "text", "content": "Total Revenue", "textStyle": "sp-label", "fill": "muted-foreground" },
+        { "type": "text", "content": "$45,231.89", "textStyle": "sp-kpi-lg", "fill": "foreground" },
+        { "type": "text", "content": "+20.1% from last month", "textStyle": "sp-caption", "fill": "success" }
+      ]
+    }
+  ]
+}
+```
+
+#### Table Section (Management)
+```json
+{
+  "type": "frame", "name": "Orders Table",
+  "layout": "vertical", "sizing": { "width": "fill" },
+  "fill": "card", "stroke": "border", "radius": "xl", "clip": true,
+  "children": [
+    { "// header": "horizontal frame, fill muted/50, sp-label headers" },
+    { "// rows": "horizontal frames with data, separator between each" },
+    { "// pagination": "horizontal frame at bottom" }
+  ]
+}
+```
+
+#### Form Section (Settings)
+```json
+{
+  "type": "frame", "name": "Profile Form",
+  "layout": "vertical", "sizing": { "width": "fill" },
+  "fill": "card", "stroke": "border", "radius": "xl",
+  "padding": "xl", "gap": "lg",
+  "children": [
+    { "// header": "title + description text" },
+    {
+      "type": "frame", "name": "Field — Name",
+      "layout": "vertical", "gap": "3xs", "sizing": { "width": "fill" },
+      "children": [
+        { "type": "text", "content": "Full Name", "textStyle": "sp-label", "fill": "foreground" },
+        { "type": "component", "componentSet": "Input",
+          "overrides": { "text": { "Input": "John Doe" } },
+          "sizing": { "width": "fill" } }
+      ]
+    }
+  ]
+}
+```
+
+#### Chart Placeholder
+```json
+{
+  "type": "placeholder", "name": "Revenue Chart",
+  "sizing": { "width": "fill", "height": "fixed:300" },
+  "fill": "card", "stroke": "border", "radius": "xl",
+  "label": "Revenue Bar Chart\n(Recharts — 12 months)"
+}
+```
+
+### Component References
+
+Screens use `"type": "component"` to create instances from existing ComponentSets (Type 5):
+
+```json
+{
+  "type": "component",
+  "componentSet": "Button",
+  "name": "Save Button",
+  "variants": { "Variant": "Default", "Size": "Default" },
+  "overrides": { "text": { "Label": "Save Changes" } },
+  "sizing": { "width": "fill" }
+}
+```
+
+**Override types**:
+- `overrides.text` — text swap: `{ "Label": "Save" }`
+- `overrides.boolean` — show/hide: `{ "Show Icon": true }`
+- `overrides.nested` — nested text: `{ "childName": { "Label": "text" } }`
+- `overrides.nestedVariants` — nested variant swap: `{ "childName": { "Size": "Small" } }`
+- `slots` — shorthand for text overrides
+
+### State Variants per Screen Type
+
+| Page Type | Required Roots |
+|-----------|----------------|
+| Auth | Default Dark, Default Light |
+| Dashboard | Default Dark, Default Light |
+| Management (list) | Default Dark, Default Light, Loading Dark, Empty Dark |
+| Management (detail) | Default Dark, Default Light |
+| Settings | Default Dark, Default Light |
+| Utility | Default Dark, Default Light |
+
+### Source of Truth
+
+```
+React Page (.tsx) → Screen JSON (.json) → Figma Frame
+```
+
+- **Content**: From React mock data (`src/data/*.ts`) — realistic names, numbers, dates
+- **Layout**: Match React JSX nesting (flex direction, gap, padding)
+- **Components**: Reference ComponentSets by exact name from `figma-specs/components/`
+- **Colors**: Semantic tokens only — NO hardcoded hex
+- **Typography**: `sp-*` text styles from Figma text styles
+
+### Rules
+
+1. Root frames MUST be `fixed:1440` width × `fixed:900` height (desktop)
+2. Sidebar = `fixed:80` width, Header = `fixed:56` height
+3. All `componentSet` names must exist in `figma-specs/components/`
+4. No hardcoded hex colors — use semantic fill tokens (`background`, `card`, `sidebar`, `primary`, etc.)
+5. Text styles use `sp-*` names (fallback to font map in plugin)
+6. Charts/images that can't be rendered as components → use `placeholder` type
+7. Frame hierarchy should match React JSX nesting structure
+8. Mock data must be realistic (no "Lorem ipsum", no "John Doe" ×20)
+9. Each screen JSON = 1 file, produces 1 Figma page with 2-4 root frames (Dark + Light variants)
+
+### Lessons Learned
+
+*(To be populated as screens are built)*
+
+---
+
 ## Quick Checklist — Before Submitting Any JSON
 
 ### Variables
@@ -1049,3 +1338,14 @@ When CSS tokens change in `index.css`:
 - [ ] `effectStyle` values match Figma effect style names exactly (`Shadows/md`, `Glass/card`, `Ring/default`)
 - [ ] Section count and item count match web DS page exactly
 - [ ] No tokens that don't exist in `index.css` (grep before adding)
+
+### Screens
+- [ ] Root frame dimensions: `fixed:1440` × `fixed:900`
+- [ ] Sidebar `fixed:80`, Header `fixed:56`
+- [ ] All `componentSet` names exist in `figma-specs/components/`
+- [ ] No hardcoded hex — semantic fill tokens only
+- [ ] Text styles use `sp-*` names
+- [ ] Frame hierarchy matches React JSX nesting
+- [ ] Mock data is realistic (from `src/data/*.ts`)
+- [ ] `pageName` format: `"{Category} — {Screen}"`
+- [ ] Root frame `name` format: `"{Screen} / {State} — {Theme}"`

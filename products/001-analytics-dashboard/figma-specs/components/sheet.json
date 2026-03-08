@@ -11,10 +11,10 @@
 
       "base": {
         "layout": "vertical",
+        "width": 240,
         "paddingX": "none",
         "paddingY": "none",
         "gap": "md",
-        "fillWidth": true,
         "hideLabel": true,
         "children": [
           {
@@ -109,7 +109,7 @@
       "base": {
         "layout": "vertical",
         "width": 384,
-        "height": 280,
+        "height": 320,
         "heightMode": "fixed",
         "fill": "card",
         "strokeSides": "left",
@@ -169,13 +169,15 @@
             "type": "frame",
             "layout": "vertical",
             "fillWidth": true,
+            "fillHeight": true,
             "children": [
               {
                 "name": "Slot",
                 "type": "instance",
                 "component": "Sheet Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -213,8 +215,8 @@
       "variantStyles": {
         "Side=Right": {},
         "Side=Left": { "strokeSides": "right" },
-        "Side=Top": { "width": 512, "height": 160, "strokeSides": "bottom" },
-        "Side=Bottom": { "width": 512, "height": 160, "strokeSides": "top" },
+        "Side=Top": { "width": 512, "height": 320, "strokeSides": "bottom" },
+        "Side=Bottom": { "width": 512, "height": 320, "strokeSides": "top" },
         "Show Close=Yes": {},
         "Show Close=No": {},
         "Show Description=Yes": {},

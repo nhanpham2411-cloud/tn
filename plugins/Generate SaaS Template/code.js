@@ -2557,6 +2557,7 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_inst);
             try { _inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _inst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // swapProperty handled in post-build phase after combineAsVariants
         }
       } else {
         // Update existing instance — check if component needs swapping
@@ -2596,6 +2597,7 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_swapInst);
             try { _swapInst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _swapInst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // swapProperty handled in post-build phase after combineAsVariants
           }
         } else {
           if (cs.variants) { try { existNode.setProperties(cs.variants); } catch(e) {} }
@@ -2661,7 +2663,14 @@ async function doCreateComponents(spec) {
   await figma.setCurrentPageAsync(targetPage);
 
   var createdSets = 0, createdVariants = 0, _anyUpsert = false;
-  var _showcaseXOffset = 0; // horizontal alignment with 100px gap
+  // Start after existing content on the page (so new frames appear to the right)
+  var _showcaseXOffset = 0;
+  var _existingPageKids = targetPage.children.slice();
+  for (var _exi = 0; _exi < _existingPageKids.length; _exi++) {
+    var _rightEdge = _existingPageKids[_exi].x + _existingPageKids[_exi].width;
+    if (_rightEdge > _showcaseXOffset) _showcaseXOffset = _rightEdge;
+  }
+  if (_showcaseXOffset > 0) _showcaseXOffset += 100; // 100px gap after existing content
   var _subComponentSets = []; // multi-component: sub-component CSes to nest into parent showcase
 
   for (var ci = 0; ci < components.length; ci++) {
@@ -3465,6 +3474,7 @@ async function doCreateComponents(spec) {
       cs.name = compName;
       if (compSpec.description) cs.description = compSpec.description;
       cs.layoutMode = "NONE"; cs.fills = [];
+      componentSetCache[compName] = cs;
       _anyUpsert = true;
       log.push("  Upserted: " + (combos.length - varComps.length) + " updated, " + varComps.length + " added, " + _removedCount + " removed (always rebuild)");
     } else {
@@ -3478,6 +3488,7 @@ async function doCreateComponents(spec) {
       if (compSpec.description) cs.description = compSpec.description;
       cs.layoutMode = "NONE";
       cs.fills = []; // transparent — showcase frame provides bg
+      componentSetCache[compName] = cs;
       createdSets++;
       log.push("  ComponentSet: " + varComps.length + " in, " + cs.children.length + " in CS");
     }
@@ -3532,6 +3543,64 @@ async function doCreateComponents(spec) {
       if (_postPage[_ppk2].type === "COMPONENT" && propNames.length > 0 && _postPage[_ppk2].name.indexOf(propNames[0] + "=") >= 0) {
         try { cs.appendChild(_postPage[_ppk2]); log.push("  Fix2: moved " + _postPage[_ppk2].name.substring(0, 40) + " into CS"); }
         catch(e) { _postPage[_ppk2].remove(); log.push("  Fix2: removed " + _postPage[_ppk2].name.substring(0, 40)); }
+      }
+    }
+
+    // --- 3b. Post-build: Instance Swap Properties ---
+    // Scan compSpec children for swapProperty, create INSTANCE_SWAP on ComponentSet, link all instances
+    var _swapSpecs = [];
+    var _scanSwap = function(children) {
+      if (!children) return;
+      for (var _si = 0; _si < children.length; _si++) {
+        if (children[_si].type === "instance" && children[_si].swapProperty) {
+          _swapSpecs.push({ name: children[_si].name, propName: children[_si].swapProperty });
+        }
+        if (children[_si].children) _scanSwap(children[_si].children);
+      }
+    };
+    if (compSpec.base && compSpec.base.children) _scanSwap(compSpec.base.children);
+    if (_swapSpecs.length > 0 && cs && cs.type === "COMPONENT_SET") {
+      for (var _ssi = 0; _ssi < _swapSpecs.length; _ssi++) {
+        var _ssName = _swapSpecs[_ssi].name;
+        var _ssPropName = _swapSpecs[_ssi].propName;
+        // Find all instances with this name across all variants
+        var _ssInstances = [];
+        for (var _svi = 0; _svi < cs.children.length; _svi++) {
+          var _ssFound = cs.children[_svi].findAll(function(n) { return n.type === "INSTANCE" && n.name === _ssName; });
+          for (var _sfi = 0; _sfi < _ssFound.length; _sfi++) _ssInstances.push(_ssFound[_sfi]);
+        }
+        if (_ssInstances.length === 0) { log.push("  [swap] No instances named '" + _ssName + "' found"); continue; }
+        // Check if property already exists on ComponentSet
+        var _ssKey = null;
+        var _ssDefs = cs.componentPropertyDefinitions || {};
+        for (var _sdk in _ssDefs) {
+          if ((_sdk === _ssPropName || _sdk.indexOf(_ssPropName + "#") === 0) && _ssDefs[_sdk].type === "INSTANCE_SWAP") {
+            _ssKey = _sdk; break;
+          }
+        }
+        // Create property if not exists — use first instance's mainComponent as default
+        if (!_ssKey) {
+          try {
+            var _ssMainComp = await _ssInstances[0].getMainComponentAsync();
+            if (_ssMainComp) {
+              _ssKey = cs.addComponentProperty(_ssPropName, "INSTANCE_SWAP", _ssMainComp.id);
+              log.push("  [swap] Created '" + _ssPropName + "' key=" + _ssKey);
+            }
+          } catch(e) { log.push("  [swap] Failed to create property: " + e.message); }
+        } else {
+          log.push("  [swap] Reusing existing '" + _ssKey + "'");
+        }
+        // Link all instances to the property + expose nested instance properties
+        if (_ssKey) {
+          for (var _sli = 0; _sli < _ssInstances.length; _sli++) {
+            try {
+              _ssInstances[_sli].componentPropertyReferences = { mainComponent: _ssKey };
+              // Expose properties from nested instance (makes Slot's properties visible on parent)
+              _ssInstances[_sli].isExposedInstance = true;
+            } catch(e) {}
+          }
+          log.push("  [swap] Linked " + _ssInstances.length + " instances + exposed nested properties");
+        }
       }
     }
 

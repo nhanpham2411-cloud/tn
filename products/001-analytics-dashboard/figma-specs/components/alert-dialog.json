@@ -11,10 +11,10 @@
 
       "base": {
         "layout": "vertical",
+        "width": 240,
         "paddingX": "none",
         "paddingY": "none",
         "gap": "md",
-        "fillWidth": true,
         "hideLabel": true,
         "children": [
           {
@@ -126,7 +126,8 @@
                 "type": "instance",
                 "component": "Alert Dialog Slot",
                 "variants": { "Content": "Text" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -173,7 +174,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Continue" },
-                "widthMode": "hug"
+                "fillWidth": true
               },
               {
                 "name": "Cancel",
@@ -182,7 +183,7 @@
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
                 "showWhen": "Show Action Secondary=Yes",
-                "widthMode": "hug"
+                "fillWidth": true
               }
             ]
           }

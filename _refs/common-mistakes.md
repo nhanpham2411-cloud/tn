@@ -1048,7 +1048,16 @@ if (merged.ellipses && Array.isArray(merged.ellipses)) {
 - **Web DS Switch/toggle**: Show but `disabled` — `<Switch disabled={type !== "page"} />`
 - **Reset on change**: `if (type === "ellipsis") setState("default")` khi Type thay đổi
 
-**Rule**: Khi 1 property value restrict values của property khác → dùng `variantRestrictions` trong JSON + restrict (KHÔNG hide) controls trên web DS. Áp dụng cho: Pagination Item, Breadcrumb Item, và bất kỳ component nào có conditional property validity.
+**Anti-pattern — conditional spread ẩn control**:
+```tsx
+// ❌ SAI — ẩn hoàn toàn Level khi Type≠badge
+...(isBadge ? [{ label: "Level", options: ["primary","secondary"] }] : []),
+
+// ✅ ĐÚNG — luôn show Level, restrict values theo Type
+{ label: "Level", options: isBadge ? ["primary","secondary"] : ["primary"] },
+```
+
+**Rule**: Khi 1 property value restrict values của property khác → dùng `variantRestrictions` trong JSON + restrict (KHÔNG hide) controls trên web DS. KHÔNG BAO GIỜ dùng conditional spread (`...( ? [] : [])`) để ẩn control — luôn render control với restricted options. Áp dụng cho: Pagination Item, Breadcrumb Item, Badge (Type→Level, Type→Variant), và bất kỳ component nào có conditional property validity.
 
 ---
 

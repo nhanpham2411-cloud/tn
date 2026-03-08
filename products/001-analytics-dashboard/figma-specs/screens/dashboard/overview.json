@@ -1,0 +1,1360 @@
+{
+  "pageName": "Dashboard — Overview",
+  "sectionLabel": "Dashboard",
+  "roots": [
+    {
+      "type": "frame",
+      "name": "Overview / Default — Dark",
+      "layout": "vertical",
+      "sizing": { "width": "fixed:1440", "height": "hug" },
+      "fill": "background",
+      "gap": "none",
+      "children": [
+
+        {
+          "type": "frame",
+          "name": "Header",
+          "layout": "vertical",
+          "sizing": { "width": "fill" },
+          "padding": { "top": "2xl", "left": "2xl", "right": "2xl", "bottom": "none" },
+          "gap": "lg",
+          "children": [
+            {
+              "type": "frame",
+              "name": "Header Top Row",
+              "layout": "horizontal",
+              "sizing": { "width": "fill" },
+              "align": { "justify": "space-between", "counter": "center" },
+              "children": [
+                {
+                  "type": "frame",
+                  "name": "Brand",
+                  "layout": "horizontal",
+                  "gap": "sm",
+                  "align": { "counter": "center" },
+                  "children": [
+                    {
+                      "type": "placeholder",
+                      "name": "Logo",
+                      "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                      "fill": "primary",
+                      "radius": "sm",
+                      "label": "◇"
+                    },
+                    { "type": "text", "content": "ShopPulse", "textStyle": "sp-h4", "fill": "foreground" }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "name": "Tab Navigation",
+                  "layout": "horizontal",
+                  "fill": "foreground",
+                  "fillOpacity": 0.04,
+                  "radius": "full",
+                  "padding": "2xs",
+                  "gap": "3xs",
+                  "align": { "counter": "center" },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Tab — Dashboard (Active)",
+                      "layout": "horizontal",
+                      "fill": "foreground",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Dashboard", "textStyle": "sp-label", "fill": "background" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Tab — Analytics",
+                      "layout": "horizontal",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Analytics", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Tab — Reports",
+                      "layout": "horizontal",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Reports", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Tab — Users",
+                      "layout": "horizontal",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Users", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Tab — Products",
+                      "layout": "horizontal",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Products", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Tab — Orders",
+                      "layout": "horizontal",
+                      "radius": "full",
+                      "padding": { "x": "lg", "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "text", "content": "Orders", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "name": "Header Actions",
+                  "layout": "horizontal",
+                  "gap": "xs",
+                  "align": { "counter": "center" },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Btn — Palette",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fixed:36", "height": "fixed:36" },
+                      "radius": "full",
+                      "align": { "justify": "center", "counter": "center" },
+                      "children": [
+                        {
+                          "type": "placeholder",
+                          "name": "Icon Palette",
+                          "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                          "fill": "muted-foreground",
+                          "radius": "sm",
+                          "label": "🎨"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Btn — Theme",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fixed:36", "height": "fixed:36" },
+                      "radius": "full",
+                      "align": { "justify": "center", "counter": "center" },
+                      "children": [
+                        {
+                          "type": "placeholder",
+                          "name": "Icon Sun",
+                          "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                          "fill": "muted-foreground",
+                          "radius": "sm",
+                          "label": "☀"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Btn — Notifications",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fixed:36", "height": "fixed:36" },
+                      "radius": "full",
+                      "align": { "justify": "center", "counter": "center" },
+                      "children": [
+                        {
+                          "type": "placeholder",
+                          "name": "Icon Bell",
+                          "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                          "fill": "muted-foreground",
+                          "radius": "sm",
+                          "label": "🔔"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "component",
+                      "componentSet": "Avatar",
+                      "name": "User Avatar",
+                      "variants": { "Size": "Default", "Shape": "Circle" },
+                      "overrides": {
+                        "text": { "Fallback": "LN" }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "name": "Greeting Row",
+              "layout": "horizontal",
+              "sizing": { "width": "fill" },
+              "align": { "justify": "space-between", "counter": "end" },
+              "children": [
+                {
+                  "type": "frame",
+                  "name": "Greeting Text",
+                  "layout": "vertical",
+                  "gap": "3xs",
+                  "children": [
+                    { "type": "text", "content": "Good morning, Linh", "textStyle": "sp-h2", "fill": "foreground" },
+                    { "type": "text", "content": "Stay on top of your tasks, monitor progress, and track status.", "textStyle": "sp-body", "fill": "muted-foreground" }
+                  ]
+                },
+                {
+                  "type": "component",
+                  "componentSet": "Search Box",
+                  "name": "Search",
+                  "overrides": {
+                    "text": { "Placeholder": "Search product" }
+                  },
+                  "sizing": { "width": "fixed:280" }
+                }
+              ]
+            }
+          ]
+        },
+
+        {
+          "type": "frame",
+          "name": "Main Content",
+          "layout": "vertical",
+          "sizing": { "width": "fill" },
+          "padding": "2xl",
+          "gap": "lg",
+          "children": [
+
+            {
+              "type": "frame",
+              "name": "Date Range Row",
+              "layout": "horizontal",
+              "sizing": { "width": "fill" },
+              "align": { "justify": "space-between", "counter": "center" },
+              "children": [
+                {
+                  "type": "frame",
+                  "name": "Date Range Left",
+                  "layout": "horizontal",
+                  "gap": "sm",
+                  "align": { "counter": "center" },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Date Picker Frame",
+                      "layout": "horizontal",
+                      "stroke": "border",
+                      "radius": "lg",
+                      "padding": { "x": "md", "y": "2xs" },
+                      "gap": "xs",
+                      "align": { "counter": "center" },
+                      "children": [
+                        {
+                          "type": "placeholder",
+                          "name": "Calendar Icon",
+                          "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                          "fill": "muted-foreground",
+                          "label": "📅"
+                        },
+                        { "type": "text", "content": "Jan 07 – Mar 08, 2026", "textStyle": "sp-body", "fill": "foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Compare Button",
+                      "layout": "horizontal",
+                      "stroke": "border",
+                      "radius": "lg",
+                      "padding": { "x": "md", "y": "2xs" },
+                      "gap": "xs",
+                      "align": { "counter": "center" },
+                      "children": [
+                        {
+                          "type": "placeholder",
+                          "name": "Chart Icon",
+                          "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                          "fill": "muted-foreground",
+                          "label": "📊"
+                        },
+                        { "type": "text", "content": "Compare: Previous period", "textStyle": "sp-body", "fill": "foreground" },
+                        {
+                          "type": "placeholder",
+                          "name": "Chevron",
+                          "sizing": { "width": "fixed:12", "height": "fixed:12" },
+                          "fill": "muted-foreground",
+                          "label": "▾"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "name": "Updated Indicator",
+                  "layout": "horizontal",
+                  "gap": "2xs",
+                  "align": { "counter": "center" },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Green Pulse Dot",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fixed:6", "height": "fixed:6" },
+                      "fill": "success",
+                      "radius": "full"
+                    },
+                    { "type": "text", "content": "Updated just now", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                  ]
+                }
+              ]
+            },
+
+            {
+              "type": "frame",
+              "name": "Main Grid",
+              "layout": "horizontal",
+              "sizing": { "width": "fill" },
+              "gap": "lg",
+              "align": { "counter": "start" },
+              "children": [
+
+                {
+                  "type": "frame",
+                  "name": "Left Column (col-span-8)",
+                  "layout": "vertical",
+                  "sizing": { "width": "fill" },
+                  "gap": "lg",
+                  "children": [
+
+                    {
+                      "type": "frame",
+                      "name": "Revenue + KPI Row",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "gap": "lg",
+                      "align": { "counter": "start" },
+                      "children": [
+
+                        {
+                          "type": "frame",
+                          "name": "Total Revenue Card",
+                          "layout": "vertical",
+                          "sizing": { "width": "fixed:332" },
+                          "fill": "card",
+                          "stroke": "border",
+                          "radius": "2xl",
+                          "padding": "xl",
+                          "gap": "lg",
+                          "clip": true,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "name": "Revenue Header",
+                              "layout": "horizontal",
+                              "sizing": { "width": "fill" },
+                              "align": { "justify": "space-between", "counter": "start" },
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "Revenue Title Group",
+                                  "layout": "vertical",
+                                  "gap": "3xs",
+                                  "children": [
+                                    { "type": "text", "content": "Total Revenue", "textStyle": "sp-body-semibold", "fill": "foreground" },
+                                    { "type": "text", "content": "All-time gross revenue.", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                                  ]
+                                },
+                                { "type": "text", "content": "Details +", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "name": "KPI Value",
+                              "layout": "vertical",
+                              "sizing": { "width": "fill" },
+                              "gap": "xs",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "KPI Number Row",
+                                  "layout": "horizontal",
+                                  "gap": "xs",
+                                  "align": { "counter": "baseline" },
+                                  "children": [
+                                    { "type": "text", "content": "28,764", "textStyle": "sp-kpi-lg", "fill": "foreground" },
+                                    { "type": "text", "content": ".85", "textStyle": "sp-body", "fill": "muted-foreground" },
+                                    { "type": "text", "content": "USD", "textStyle": "sp-label", "fill": "muted-foreground" }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "Revenue Change Row",
+                                  "layout": "horizontal",
+                                  "gap": "sm",
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    { "type": "text", "content": "Retail Sales", "textStyle": "sp-caption", "fill": "muted-foreground" },
+                                    { "type": "text", "content": "↑ +8.7%", "textStyle": "sp-caption", "fill": "success" }
+                                  ]
+                                },
+                                { "type": "text", "content": "In-store & point-of-sale revenue", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "name": "Category Buttons",
+                              "layout": "horizontal",
+                              "sizing": { "width": "fill" },
+                              "gap": "sm",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "Cat — Online",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "surface-inset",
+                                  "fillOpacity": 0.5,
+                                  "radius": "xl",
+                                  "padding": { "x": "sm", "y": "sm" },
+                                  "gap": "xs",
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    {
+                                      "type": "placeholder",
+                                      "name": "Globe Icon",
+                                      "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                                      "fill": "muted-foreground",
+                                      "label": "🌐"
+                                    },
+                                    { "type": "text", "content": "Online", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "Cat — Retail (Active)",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "background",
+                                  "stroke": "border",
+                                  "radius": "xl",
+                                  "padding": { "x": "sm", "y": "sm" },
+                                  "gap": "xs",
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    {
+                                      "type": "placeholder",
+                                      "name": "Store Icon",
+                                      "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                                      "fill": "foreground",
+                                      "label": "🏪"
+                                    },
+                                    { "type": "text", "content": "Retail", "textStyle": "sp-caption", "fill": "foreground" }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "Cat — Wholesale",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "surface-inset",
+                                  "fillOpacity": 0.5,
+                                  "radius": "xl",
+                                  "padding": { "x": "sm", "y": "sm" },
+                                  "gap": "xs",
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    {
+                                      "type": "placeholder",
+                                      "name": "Warehouse Icon",
+                                      "sizing": { "width": "fixed:18", "height": "fixed:18" },
+                                      "fill": "muted-foreground",
+                                      "label": "🏭"
+                                    },
+                                    { "type": "text", "content": "Wholesale", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+
+                        {
+                          "type": "frame",
+                          "name": "KPI Cards Grid",
+                          "layout": "vertical",
+                          "sizing": { "width": "fill" },
+                          "gap": "lg",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "name": "KPI Row 1",
+                              "layout": "horizontal",
+                              "sizing": { "width": "fill" },
+                              "gap": "lg",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "KPI — Current Balance",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "card",
+                                  "stroke": "border",
+                                  "radius": "2xl",
+                                  "padding": "md",
+                                  "gap": "md",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Header",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "gap": "sm",
+                                      "align": { "counter": "center" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Icon Circle",
+                                          "layout": "horizontal",
+                                          "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                                          "fill": "muted",
+                                          "fillOpacity": 0.3,
+                                          "radius": "full",
+                                          "align": { "justify": "center", "counter": "center" },
+                                          "children": [
+                                            {
+                                              "type": "placeholder",
+                                              "name": "Dollar Icon",
+                                              "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                                              "fill": "muted-foreground",
+                                              "label": "$"
+                                            }
+                                          ]
+                                        },
+                                        { "type": "text", "content": "Current Balance", "textStyle": "sp-label", "fill": "muted-foreground", "sizing": { "width": "fill" } }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Values",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "align": { "justify": "space-between", "counter": "end" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Value Group",
+                                          "layout": "vertical",
+                                          "gap": "2xs",
+                                          "children": [
+                                            { "type": "text", "content": "$7,000.75", "textStyle": "sp-kpi-sm", "fill": "foreground" },
+                                            { "type": "text", "content": "↑ +34.5%", "textStyle": "sp-caption", "fill": "success" }
+                                          ]
+                                        },
+                                        {
+                                          "type": "placeholder",
+                                          "name": "Sparkline",
+                                          "sizing": { "width": "fixed:80", "height": "fixed:32" },
+                                          "fill": "primary",
+                                          "fillOpacity": 0.15,
+                                          "radius": "sm",
+                                          "label": "~"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "KPI — Savings",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "card",
+                                  "stroke": "border",
+                                  "radius": "2xl",
+                                  "padding": "md",
+                                  "gap": "md",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Header",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "gap": "sm",
+                                      "align": { "counter": "center" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Icon Circle",
+                                          "layout": "horizontal",
+                                          "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                                          "fill": "muted",
+                                          "fillOpacity": 0.3,
+                                          "radius": "full",
+                                          "align": { "justify": "center", "counter": "center" },
+                                          "children": [
+                                            {
+                                              "type": "placeholder",
+                                              "name": "Piggy Icon",
+                                              "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                                              "fill": "muted-foreground",
+                                              "label": "🐷"
+                                            }
+                                          ]
+                                        },
+                                        { "type": "text", "content": "Savings", "textStyle": "sp-label", "fill": "muted-foreground", "sizing": { "width": "fill" } }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Values",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "align": { "justify": "space-between", "counter": "end" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Value Group",
+                                          "layout": "vertical",
+                                          "gap": "2xs",
+                                          "children": [
+                                            { "type": "text", "content": "$5,300.50", "textStyle": "sp-kpi-sm", "fill": "foreground" },
+                                            { "type": "text", "content": "↑ +12.01%", "textStyle": "sp-caption", "fill": "success" }
+                                          ]
+                                        },
+                                        {
+                                          "type": "placeholder",
+                                          "name": "Sparkline",
+                                          "sizing": { "width": "fixed:80", "height": "fixed:32" },
+                                          "fill": "chart-2",
+                                          "fillOpacity": 0.15,
+                                          "radius": "sm",
+                                          "label": "~"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "name": "KPI Row 2",
+                              "layout": "horizontal",
+                              "sizing": { "width": "fill" },
+                              "gap": "lg",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "KPI — Income",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "card",
+                                  "stroke": "border",
+                                  "radius": "2xl",
+                                  "padding": "md",
+                                  "gap": "md",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Header",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "gap": "sm",
+                                      "align": { "counter": "center" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Icon Circle",
+                                          "layout": "horizontal",
+                                          "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                                          "fill": "muted",
+                                          "fillOpacity": 0.3,
+                                          "radius": "full",
+                                          "align": { "justify": "center", "counter": "center" },
+                                          "children": [
+                                            {
+                                              "type": "placeholder",
+                                              "name": "Income Icon",
+                                              "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                                              "fill": "muted-foreground",
+                                              "label": "💰"
+                                            }
+                                          ]
+                                        },
+                                        { "type": "text", "content": "Income", "textStyle": "sp-label", "fill": "muted-foreground", "sizing": { "width": "fill" } }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Values",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "align": { "justify": "space-between", "counter": "end" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Value Group",
+                                          "layout": "vertical",
+                                          "gap": "2xs",
+                                          "children": [
+                                            { "type": "text", "content": "$28,750.75", "textStyle": "sp-kpi-sm", "fill": "foreground" },
+                                            { "type": "text", "content": "↑ +7.76%", "textStyle": "sp-caption", "fill": "success" }
+                                          ]
+                                        },
+                                        {
+                                          "type": "placeholder",
+                                          "name": "Sparkline",
+                                          "sizing": { "width": "fixed:80", "height": "fixed:32" },
+                                          "fill": "chart-4",
+                                          "fillOpacity": 0.15,
+                                          "radius": "sm",
+                                          "label": "~"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "KPI — Expenses",
+                                  "layout": "vertical",
+                                  "sizing": { "width": "fill" },
+                                  "fill": "card",
+                                  "stroke": "border",
+                                  "radius": "2xl",
+                                  "padding": "md",
+                                  "gap": "md",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Header",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "gap": "sm",
+                                      "align": { "counter": "center" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Icon Circle",
+                                          "layout": "horizontal",
+                                          "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                                          "fill": "muted",
+                                          "fillOpacity": 0.3,
+                                          "radius": "full",
+                                          "align": { "justify": "center", "counter": "center" },
+                                          "children": [
+                                            {
+                                              "type": "placeholder",
+                                              "name": "Receipt Icon",
+                                              "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                                              "fill": "muted-foreground",
+                                              "label": "🧾"
+                                            }
+                                          ]
+                                        },
+                                        { "type": "text", "content": "Expenses", "textStyle": "sp-label", "fill": "muted-foreground", "sizing": { "width": "fill" } }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "name": "KPI Values",
+                                      "layout": "horizontal",
+                                      "sizing": { "width": "fill" },
+                                      "align": { "justify": "space-between", "counter": "end" },
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "name": "Value Group",
+                                          "layout": "vertical",
+                                          "gap": "2xs",
+                                          "children": [
+                                            { "type": "text", "content": "$21,450.00", "textStyle": "sp-kpi-sm", "fill": "foreground" },
+                                            { "type": "text", "content": "↓ -8.12%", "textStyle": "sp-caption", "fill": "destructive" }
+                                          ]
+                                        },
+                                        {
+                                          "type": "placeholder",
+                                          "name": "Sparkline",
+                                          "sizing": { "width": "fixed:80", "height": "fixed:32" },
+                                          "fill": "chart-3",
+                                          "fillOpacity": 0.15,
+                                          "radius": "sm",
+                                          "label": "~"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+
+                    {
+                      "type": "frame",
+                      "name": "Statistics Card",
+                      "layout": "vertical",
+                      "sizing": { "width": "fill" },
+                      "fill": "card",
+                      "stroke": "border",
+                      "radius": "2xl",
+                      "padding": "md",
+                      "gap": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "name": "Stats Header",
+                          "layout": "horizontal",
+                          "sizing": { "width": "fill" },
+                          "align": { "justify": "space-between", "counter": "center" },
+                          "padding": { "bottom": "xl" },
+                          "children": [
+                            {
+                              "type": "frame",
+                              "name": "Stats Title Group",
+                              "layout": "horizontal",
+                              "gap": "md",
+                              "align": { "counter": "center" },
+                              "children": [
+                                { "type": "text", "content": "Statistics", "textStyle": "sp-h4", "fill": "foreground" },
+                                {
+                                  "type": "component",
+                                  "componentSet": "Badge",
+                                  "name": "Live Badge",
+                                  "variants": { "Variant": "Default", "Level": "Secondary", "Size": "Small" },
+                                  "overrides": { "text": { "Label": "Live" } }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "name": "Period Tabs",
+                              "layout": "horizontal",
+                              "fill": "muted",
+                              "radius": "full",
+                              "padding": "3xs",
+                              "gap": "3xs",
+                              "align": { "counter": "center" },
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "Tab — Days (Active)",
+                                  "layout": "horizontal",
+                                  "fill": "card",
+                                  "radius": "full",
+                                  "padding": { "x": "sm", "y": "3xs" },
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    { "type": "text", "content": "Days", "textStyle": "sp-label", "fill": "foreground" }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "Tab — Weeks",
+                                  "layout": "horizontal",
+                                  "radius": "full",
+                                  "padding": { "x": "sm", "y": "3xs" },
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    { "type": "text", "content": "Weeks", "textStyle": "sp-label", "fill": "muted-foreground" }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "name": "Tab — Months",
+                                  "layout": "horizontal",
+                                  "radius": "full",
+                                  "padding": { "x": "sm", "y": "3xs" },
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    { "type": "text", "content": "Months", "textStyle": "sp-label", "fill": "muted-foreground" }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "name": "Day Selector",
+                          "layout": "horizontal",
+                          "sizing": { "width": "fill" },
+                          "gap": "none",
+                          "align": { "counter": "center" },
+                          "padding": { "y": "sm" },
+                          "children": [
+                            { "type": "frame", "name": "Day 01", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "01", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Sat", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 02", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "02", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Sun", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 03", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "03", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Mon", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 04", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "04", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Tue", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 05 (Active)", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "fill": "primary", "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "05", "textStyle": "sp-body-semibold", "fill": "primary-foreground", "textAlign": "center" }, { "type": "text", "content": "Wed", "textStyle": "sp-caption", "fill": "primary-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 06", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "06", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Thu", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 07", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "07", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Fri", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 08", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "08", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Sat", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 09", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "09", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Sun", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 10", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "10", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Mon", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 11", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "11", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Tue", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 12", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "12", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Wed", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] },
+                            { "type": "separator", "name": "D", "direction": "vertical", "fill": "surface-raised" },
+                            { "type": "frame", "name": "Day 13", "layout": "vertical", "sizing": { "width": "fixed:48", "height": "fixed:48" }, "radius": "2xl", "gap": "2xs", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "text", "content": "13", "textStyle": "sp-body-semibold", "fill": "foreground", "textAlign": "center" }, { "type": "text", "content": "Thu", "textStyle": "sp-caption", "fill": "muted-foreground", "fontSize": 10, "textAlign": "center" }] }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "name": "Stats Summary + Legend",
+                          "layout": "horizontal",
+                          "sizing": { "width": "fill" },
+                          "align": { "justify": "space-between", "counter": "center" },
+                          "padding": { "bottom": "lg" },
+                          "children": [
+                            {
+                              "type": "frame",
+                              "name": "Summary Left",
+                              "layout": "horizontal",
+                              "gap": "md",
+                              "align": { "counter": "center" },
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "name": "Change Pill",
+                                  "layout": "horizontal",
+                                  "fill": "success",
+                                  "fillOpacity": 0.1,
+                                  "radius": "full",
+                                  "padding": { "x": "sm", "y": "3xs" },
+                                  "gap": "2xs",
+                                  "align": { "counter": "center" },
+                                  "children": [
+                                    { "type": "text", "content": "15.8% ↑", "textStyle": "sp-caption", "fill": "success" }
+                                  ]
+                                },
+                                { "type": "text", "content": "+ $2,143 increased", "textStyle": "sp-body", "fill": "muted-foreground" }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "name": "Legend",
+                              "layout": "horizontal",
+                              "gap": "lg",
+                              "align": { "counter": "center" },
+                              "children": [
+                                { "type": "frame", "name": "L-Online", "layout": "horizontal", "gap": "2xs", "align": { "counter": "center" }, "children": [{ "type": "frame", "name": "Dot", "layout": "horizontal", "sizing": { "width": "fixed:8", "height": "fixed:8" }, "fill": "chart-4", "radius": "sm" }, { "type": "text", "content": "Online", "textStyle": "sp-caption", "fill": "muted-foreground" }] },
+                                { "type": "frame", "name": "L-Retail", "layout": "horizontal", "gap": "2xs", "align": { "counter": "center" }, "children": [{ "type": "frame", "name": "Dot", "layout": "horizontal", "sizing": { "width": "fixed:8", "height": "fixed:8" }, "fill": "chart-2", "radius": "sm" }, { "type": "text", "content": "Retail", "textStyle": "sp-caption", "fill": "muted-foreground" }] },
+                                { "type": "frame", "name": "L-Wholesale", "layout": "horizontal", "gap": "2xs", "align": { "counter": "center" }, "children": [{ "type": "frame", "name": "Dot", "layout": "horizontal", "sizing": { "width": "fixed:8", "height": "fixed:8" }, "fill": "chart-5", "radius": "sm" }, { "type": "text", "content": "Wholesale", "textStyle": "sp-caption", "fill": "muted-foreground" }] },
+                                { "type": "frame", "name": "L-Services", "layout": "horizontal", "gap": "2xs", "align": { "counter": "center" }, "children": [{ "type": "frame", "name": "Dot", "layout": "horizontal", "sizing": { "width": "fixed:8", "height": "fixed:8" }, "fill": "chart-1", "radius": "sm" }, { "type": "text", "content": "Services", "textStyle": "sp-caption", "fill": "muted-foreground" }] }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "placeholder",
+                          "name": "Statistics Bar Chart",
+                          "sizing": { "width": "fill", "height": "fixed:230" },
+                          "fill": "card",
+                          "radius": "lg",
+                          "label": "Stacked Bar Chart\n(Recharts — 13 days, 4 segments)"
+                        }
+                      ]
+                    }
+                  ]
+                },
+
+                {
+                  "type": "frame",
+                  "name": "Right Column (col-span-4)",
+                  "layout": "vertical",
+                  "sizing": { "width": "fixed:452" },
+                  "gap": "lg",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Global Sales Card",
+                      "layout": "vertical",
+                      "sizing": { "width": "fill", "height": "fixed:502" },
+                      "fill": "card",
+                      "stroke": "border",
+                      "radius": "2xl",
+                      "padding": "md",
+                      "clip": true,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "name": "Globe Header",
+                          "layout": "horizontal",
+                          "sizing": { "width": "fill" },
+                          "align": { "justify": "space-between", "counter": "center" },
+                          "padding": { "bottom": "sm" },
+                          "children": [
+                            {
+                              "type": "frame",
+                              "name": "Globe Title",
+                              "layout": "horizontal",
+                              "gap": "sm",
+                              "align": { "counter": "center" },
+                              "children": [
+                                { "type": "text", "content": "Global Sales", "textStyle": "sp-h4", "fill": "foreground" },
+                                {
+                                  "type": "component",
+                                  "componentSet": "Badge",
+                                  "name": "Regions Badge",
+                                  "variants": { "Variant": "Success", "Level": "Secondary", "Size": "Small" },
+                                  "overrides": { "text": { "Label": "8 regions" } }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "placeholder",
+                              "name": "More Btn",
+                              "sizing": { "width": "fixed:24", "height": "fixed:24" },
+                              "fill": "muted-foreground",
+                              "fillOpacity": 0.3,
+                              "radius": "sm",
+                              "label": "···"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "placeholder",
+                          "name": "3D Globe Visualization",
+                          "sizing": { "width": "fill", "height": "fill" },
+                          "fill": "primary",
+                          "fillOpacity": 0.05,
+                          "radius": "xl",
+                          "label": "Interactive 3D Globe\n(Three.js — 8 locations)"
+                        }
+                      ]
+                    },
+
+                    {
+                      "type": "frame",
+                      "name": "Upgrade CTA",
+                      "layout": "vertical",
+                      "sizing": { "width": "fill" },
+                      "fill": "primary",
+                      "radius": "2xl",
+                      "padding": "xl",
+                      "gap": "lg",
+                      "clip": true,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "name": "CTA Brand",
+                          "layout": "horizontal",
+                          "gap": "sm",
+                          "align": { "counter": "center" },
+                          "children": [
+                            {
+                              "type": "placeholder",
+                              "name": "Logo White",
+                              "sizing": { "width": "fixed:28", "height": "fixed:28" },
+                              "fill": "primary-foreground",
+                              "fillOpacity": 0.25,
+                              "radius": "sm",
+                              "label": "◇"
+                            },
+                            { "type": "text", "content": "ShopPulse®", "textStyle": "sp-body", "fill": "primary-foreground" }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "name": "CTA Text",
+                          "layout": "vertical",
+                          "sizing": { "width": "fill" },
+                          "gap": "xs",
+                          "children": [
+                            { "type": "text", "content": "Advanced Analytics Suite", "textStyle": "sp-h3", "fill": "primary-foreground" },
+                            { "type": "text", "content": "Unlock deeper e-commerce insights, real-time reports & predictive trends.", "textStyle": "sp-body", "fill": "primary-foreground", "sizing": { "width": "fill" } }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "name": "Upgrade Button",
+                          "layout": "horizontal",
+                          "sizing": { "width": "fill", "height": "fixed:40" },
+                          "fill": "primary-foreground",
+                          "radius": "xl",
+                          "gap": "xs",
+                          "align": { "justify": "center", "counter": "center" },
+                          "children": [
+                            { "type": "text", "content": "Upgrade", "textStyle": "sp-body", "fill": "primary" },
+                            {
+                              "type": "placeholder",
+                              "name": "Sparkles Icon",
+                              "sizing": { "width": "fixed:14", "height": "fixed:14" },
+                              "fill": "primary",
+                              "label": "✨"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+
+            {
+              "type": "frame",
+              "name": "Bottom Row",
+              "layout": "horizontal",
+              "sizing": { "width": "fill" },
+              "gap": "lg",
+              "align": { "counter": "start" },
+              "children": [
+
+                {
+                  "type": "frame",
+                  "name": "Recent Orders Card",
+                  "layout": "vertical",
+                  "sizing": { "width": "fill" },
+                  "fill": "card",
+                  "stroke": "border",
+                  "radius": "2xl",
+                  "padding": "md",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Orders Header",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "align": { "justify": "space-between", "counter": "center" },
+                      "padding": { "bottom": "xl" },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "name": "Orders Title",
+                          "layout": "horizontal",
+                          "gap": "sm",
+                          "align": { "counter": "center" },
+                          "children": [
+                            { "type": "text", "content": "Recent Orders", "textStyle": "sp-h4", "fill": "foreground" },
+                            {
+                              "type": "component",
+                              "componentSet": "Badge",
+                              "name": "Count Badge",
+                              "variants": { "Variant": "Default", "Level": "Secondary", "Size": "Small" },
+                              "overrides": { "text": { "Label": "6" } }
+                            }
+                          ]
+                        },
+                        { "type": "text", "content": "View all →", "textStyle": "sp-label", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Order Row 1",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "gap": "sm",
+                      "padding": { "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "component", "componentSet": "Avatar", "name": "EZ", "variants": { "Size": "Default", "Shape": "Circle" }, "overrides": { "text": { "Fallback": "EZ" } } },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "3xs", "children": [{ "type": "text", "content": "Emily Zhang", "textStyle": "sp-body-semibold", "fill": "foreground" }, { "type": "frame", "name": "Meta", "layout": "horizontal", "gap": "2xs", "align": { "counter": "center" }, "children": [{ "type": "text", "content": "#SP-4821 · 2 min ago", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] }] },
+                        { "type": "frame", "name": "Right", "layout": "vertical", "gap": "2xs", "align": { "counter": "end" }, "children": [{ "type": "text", "content": "$284.00", "textStyle": "sp-data", "fill": "foreground" }, { "type": "component", "componentSet": "Badge", "name": "S1", "variants": { "Variant": "Success", "Level": "Secondary", "Size": "Small" }, "overrides": { "text": { "Label": "Delivered" } } }] }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Order Row 2",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "gap": "sm",
+                      "padding": { "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "component", "componentSet": "Avatar", "name": "MJ", "variants": { "Size": "Default", "Shape": "Circle" }, "overrides": { "text": { "Fallback": "MJ" } } },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "3xs", "children": [{ "type": "text", "content": "Marcus Johnson", "textStyle": "sp-body-semibold", "fill": "foreground" }, { "type": "text", "content": "#SP-4820 · 18 min ago", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "frame", "name": "Right", "layout": "vertical", "gap": "2xs", "align": { "counter": "end" }, "children": [{ "type": "text", "content": "$156.00", "textStyle": "sp-data", "fill": "foreground" }, { "type": "component", "componentSet": "Badge", "name": "S2", "variants": { "Variant": "Emphasis", "Level": "Secondary", "Size": "Small" }, "overrides": { "text": { "Label": "Shipped" } } }] }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Order Row 3",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "gap": "sm",
+                      "padding": { "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "component", "componentSet": "Avatar", "name": "SP", "variants": { "Size": "Default", "Shape": "Circle" }, "overrides": { "text": { "Fallback": "SP" } } },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "3xs", "children": [{ "type": "text", "content": "Sofia Petrov", "textStyle": "sp-body-semibold", "fill": "foreground" }, { "type": "text", "content": "#SP-4819 · 34 min ago", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "frame", "name": "Right", "layout": "vertical", "gap": "2xs", "align": { "counter": "end" }, "children": [{ "type": "text", "content": "$432.00", "textStyle": "sp-data", "fill": "foreground" }, { "type": "component", "componentSet": "Badge", "name": "S3", "variants": { "Variant": "Warning", "Level": "Secondary", "Size": "Small" }, "overrides": { "text": { "Label": "Processing" } } }] }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "name": "Order Row 4",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "gap": "sm",
+                      "padding": { "y": "xs" },
+                      "align": { "counter": "center" },
+                      "children": [
+                        { "type": "component", "componentSet": "Avatar", "name": "DP", "variants": { "Size": "Default", "Shape": "Circle" }, "overrides": { "text": { "Fallback": "DP" } } },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "3xs", "children": [{ "type": "text", "content": "Daniel Park", "textStyle": "sp-body-semibold", "fill": "foreground" }, { "type": "text", "content": "#SP-4818 · 1h ago", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "frame", "name": "Right", "layout": "vertical", "gap": "2xs", "align": { "counter": "end" }, "children": [{ "type": "text", "content": "$89.00", "textStyle": "sp-data", "fill": "foreground" }, { "type": "component", "componentSet": "Badge", "name": "S4", "variants": { "Variant": "Success", "Level": "Secondary", "Size": "Small" }, "overrides": { "text": { "Label": "Delivered" } } }] }
+                      ]
+                    }
+                  ]
+                },
+
+                {
+                  "type": "frame",
+                  "name": "Top Products Card",
+                  "layout": "vertical",
+                  "sizing": { "width": "fill" },
+                  "fill": "card",
+                  "stroke": "border",
+                  "radius": "2xl",
+                  "padding": "md",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Products Header",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "align": { "justify": "space-between", "counter": "center" },
+                      "padding": { "bottom": "lg" },
+                      "children": [
+                        { "type": "frame", "name": "Title", "layout": "horizontal", "gap": "sm", "align": { "counter": "center" }, "children": [{ "type": "text", "content": "Top Products", "textStyle": "sp-h4", "fill": "foreground" }, { "type": "component", "componentSet": "Badge", "name": "TB", "variants": { "Variant": "Success", "Level": "Secondary", "Size": "Small" }, "overrides": { "text": { "Label": "Trending" } } }] },
+                        { "type": "text", "content": "All →", "textStyle": "sp-caption", "fill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Product 1", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "padding": { "y": "xs" }, "align": { "counter": "center" },
+                      "children": [
+                        { "type": "placeholder", "name": "Img", "sizing": { "width": "fixed:40", "height": "fixed:40" }, "fill": "surface-raised", "radius": "lg", "label": "📱" },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "2xs", "children": [{ "type": "text", "content": "Apple AirPods Pro", "textStyle": "sp-body", "fill": "foreground" }, { "type": "text", "content": "1,842 sold · $249.99", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "text", "content": "↑ +18.3%", "textStyle": "sp-data-sm", "fill": "success" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Product 2", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "padding": { "y": "xs" }, "align": { "counter": "center" },
+                      "children": [
+                        { "type": "placeholder", "name": "Img", "sizing": { "width": "fixed:40", "height": "fixed:40" }, "fill": "surface-raised", "radius": "lg", "label": "⌚" },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "2xs", "children": [{ "type": "text", "content": "Rolex Datejust", "textStyle": "sp-body", "fill": "foreground" }, { "type": "text", "content": "1,456 sold · $4,999.99", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "text", "content": "↑ +12.1%", "textStyle": "sp-data-sm", "fill": "success" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Product 3", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "padding": { "y": "xs" }, "align": { "counter": "center" },
+                      "children": [
+                        { "type": "placeholder", "name": "Img", "sizing": { "width": "fixed:40", "height": "fixed:40" }, "fill": "surface-raised", "radius": "lg", "label": "👟" },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "2xs", "children": [{ "type": "text", "content": "Nike Air Jordan 1", "textStyle": "sp-body", "fill": "foreground" }, { "type": "text", "content": "1,234 sold · $179.99", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "text", "content": "↑ +8.7%", "textStyle": "sp-data-sm", "fill": "success" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Product 4", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "padding": { "y": "xs" }, "align": { "counter": "center" },
+                      "children": [
+                        { "type": "placeholder", "name": "Img", "sizing": { "width": "fixed:40", "height": "fixed:40" }, "fill": "surface-raised", "radius": "lg", "label": "💻" },
+                        { "type": "frame", "name": "Info", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "2xs", "children": [{ "type": "text", "content": "MacBook Pro 14\"", "textStyle": "sp-body", "fill": "foreground" }, { "type": "text", "content": "986 sold · $1,999.99", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] },
+                        { "type": "text", "content": "↑ +25.4%", "textStyle": "sp-data-sm", "fill": "success" }
+                      ]
+                    }
+                  ]
+                },
+
+                {
+                  "type": "frame",
+                  "name": "Sales Channels Card",
+                  "layout": "vertical",
+                  "sizing": { "width": "fill" },
+                  "fill": "card",
+                  "stroke": "border",
+                  "radius": "2xl",
+                  "padding": "md",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "name": "Channels Header",
+                      "layout": "horizontal",
+                      "sizing": { "width": "fill" },
+                      "align": { "justify": "space-between", "counter": "center" },
+                      "padding": { "bottom": "lg" },
+                      "children": [
+                        { "type": "text", "content": "Sales Channels", "textStyle": "sp-h4", "fill": "foreground" },
+                        { "type": "placeholder", "name": "More", "sizing": { "width": "fixed:24", "height": "fixed:24" }, "fill": "muted-foreground", "fillOpacity": 0.3, "radius": "sm", "label": "···" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Ch — Online Store", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "xs", "padding": { "y": "xs" },
+                      "children": [
+                        { "type": "frame", "name": "Row", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "align": { "counter": "center" }, "children": [
+                          { "type": "frame", "name": "Icon", "layout": "horizontal", "sizing": { "width": "fixed:28", "height": "fixed:28" }, "fill": "surface-raised", "radius": "md", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "placeholder", "name": "I", "sizing": { "width": "fixed:14", "height": "fixed:14" }, "fill": "muted-foreground", "label": "🛒" }] },
+                          { "type": "text", "content": "Online Store", "textStyle": "sp-body", "fill": "foreground", "sizing": { "width": "fill" } },
+                          { "type": "frame", "name": "Amt", "layout": "horizontal", "gap": "3xs", "align": { "counter": "baseline" }, "children": [{ "type": "text", "content": "$57,794", "textStyle": "sp-data", "fill": "foreground" }, { "type": "text", "content": "/$120,000", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] }
+                        ]},
+                        { "type": "frame", "name": "Bar", "layout": "horizontal", "sizing": { "width": "fill", "height": "fixed:10" }, "fill": "surface-inset", "radius": "sm", "children": [{ "type": "frame", "name": "Fill", "layout": "horizontal", "sizing": { "width": "fixed:196", "height": "fill" }, "fill": "chart-1", "radius": "sm" }] }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Ch — Marketplace", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "xs", "padding": { "y": "xs" },
+                      "children": [
+                        { "type": "frame", "name": "Row", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "align": { "counter": "center" }, "children": [
+                          { "type": "frame", "name": "Icon", "layout": "horizontal", "sizing": { "width": "fixed:28", "height": "fixed:28" }, "fill": "surface-raised", "radius": "md", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "placeholder", "name": "I", "sizing": { "width": "fixed:14", "height": "fixed:14" }, "fill": "muted-foreground", "label": "🏪" }] },
+                          { "type": "text", "content": "Marketplace", "textStyle": "sp-body", "fill": "foreground", "sizing": { "width": "fill" } },
+                          { "type": "frame", "name": "Amt", "layout": "horizontal", "gap": "3xs", "align": { "counter": "baseline" }, "children": [{ "type": "text", "content": "$32,108", "textStyle": "sp-data", "fill": "foreground" }, { "type": "text", "content": "/$80,000", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] }
+                        ]},
+                        { "type": "frame", "name": "Bar", "layout": "horizontal", "sizing": { "width": "fill", "height": "fixed:10" }, "fill": "surface-inset", "radius": "sm", "children": [{ "type": "frame", "name": "Fill", "layout": "horizontal", "sizing": { "width": "fixed:109", "height": "fill" }, "fill": "chart-2", "radius": "sm" }] }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Ch — Social Media", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "xs", "padding": { "y": "xs" },
+                      "children": [
+                        { "type": "frame", "name": "Row", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "align": { "counter": "center" }, "children": [
+                          { "type": "frame", "name": "Icon", "layout": "horizontal", "sizing": { "width": "fixed:28", "height": "fixed:28" }, "fill": "surface-raised", "radius": "md", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "placeholder", "name": "I", "sizing": { "width": "fixed:14", "height": "fixed:14" }, "fill": "muted-foreground", "label": "📱" }] },
+                          { "type": "text", "content": "Social Media", "textStyle": "sp-body", "fill": "foreground", "sizing": { "width": "fill" } },
+                          { "type": "frame", "name": "Amt", "layout": "horizontal", "gap": "3xs", "align": { "counter": "baseline" }, "children": [{ "type": "text", "content": "$23,117", "textStyle": "sp-data", "fill": "foreground" }, { "type": "text", "content": "/$50,000", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] }
+                        ]},
+                        { "type": "frame", "name": "Bar", "layout": "horizontal", "sizing": { "width": "fill", "height": "fixed:10" }, "fill": "surface-inset", "radius": "sm", "children": [{ "type": "frame", "name": "Fill", "layout": "horizontal", "sizing": { "width": "fixed:78", "height": "fill" }, "fill": "chart-3", "radius": "sm" }] }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Ch — Wholesale", "layout": "vertical", "sizing": { "width": "fill" }, "gap": "xs", "padding": { "y": "xs" },
+                      "children": [
+                        { "type": "frame", "name": "Row", "layout": "horizontal", "sizing": { "width": "fill" }, "gap": "sm", "align": { "counter": "center" }, "children": [
+                          { "type": "frame", "name": "Icon", "layout": "horizontal", "sizing": { "width": "fixed:28", "height": "fixed:28" }, "fill": "surface-raised", "radius": "md", "align": { "justify": "center", "counter": "center" }, "children": [{ "type": "placeholder", "name": "I", "sizing": { "width": "fixed:14", "height": "fixed:14" }, "fill": "muted-foreground", "label": "📦" }] },
+                          { "type": "text", "content": "Wholesale", "textStyle": "sp-body", "fill": "foreground", "sizing": { "width": "fill" } },
+                          { "type": "frame", "name": "Amt", "layout": "horizontal", "gap": "3xs", "align": { "counter": "baseline" }, "children": [{ "type": "text", "content": "$15,412", "textStyle": "sp-data", "fill": "foreground" }, { "type": "text", "content": "/$40,000", "textStyle": "sp-data-sm", "fill": "muted-foreground" }] }
+                        ]},
+                        { "type": "frame", "name": "Bar", "layout": "horizontal", "sizing": { "width": "fill", "height": "fixed:10" }, "fill": "surface-inset", "radius": "sm", "children": [{ "type": "frame", "name": "Fill", "layout": "horizontal", "sizing": { "width": "fixed:52", "height": "fill" }, "fill": "chart-5", "radius": "sm" }] }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

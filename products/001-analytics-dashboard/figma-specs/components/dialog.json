@@ -11,10 +11,10 @@
 
       "base": {
         "layout": "vertical",
+        "width": 240,
         "paddingX": "none",
         "paddingY": "none",
         "gap": "md",
-        "fillWidth": true,
         "hideLabel": true,
         "children": [
           {
@@ -180,7 +180,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -202,7 +203,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -224,7 +226,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -242,7 +245,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -264,7 +268,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -286,7 +291,8 @@
                 "type": "instance",
                 "component": "Dialog Slot",
                 "variants": { "Content": "Form" },
-                "fillWidth": true
+                "fillWidth": true,
+                "swapProperty": "Swap Slot"
               }
             ]
           },
@@ -367,7 +373,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Save changes" },
-                "widthMode": "hug"
+                "fillWidth": true
               },
               {
                 "name": "Cancel",
@@ -375,7 +381,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "widthMode": "hug"
+                "fillWidth": true
               }
             ]
           },
@@ -396,7 +402,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Default", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Save changes" },
-                "widthMode": "hug"
+                "fillWidth": true
               },
               {
                 "name": "Cancel",
@@ -404,7 +410,7 @@
                 "component": "Button",
                 "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" },
                 "textOverrides": { "Label": "Cancel" },
-                "widthMode": "hug"
+                "fillWidth": true
               }
             ]
           }

@@ -63,9 +63,9 @@
             "radius": "sm",
             "fill": "foreground",
             "fillOpacity": 0.05,
-            "stroke": "border",
+            "stroke": "foreground",
             "strokeWidth": 1,
-            "strokeOpacity": 0.4,
+            "strokeOpacity": 0.1,
             "showWhen": "Shortcut=Yes,Value=Placeholder",
             "children": [
               {
@@ -143,7 +143,8 @@
         { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" },
         { "token": "--muted-foreground", "value": "zinc-500", "description": "Search icon & placeholder color" },
         { "token": "--foreground", "value": "zinc-900", "description": "Input text & clear icon hover" },
-        { "token": "--foreground/5", "value": "zinc-900 5%", "description": "⌘K badge background" },
+        { "token": "--foreground/5", "value": "zinc-900 5% / white 5%", "description": "⌘K badge background" },
+        { "token": "--foreground/10", "value": "zinc-900 10% / white 10%", "description": "⌘K badge border" },
         { "token": "rounded-full", "value": "9999px", "description": "Pill shape border radius" }
       ],
 

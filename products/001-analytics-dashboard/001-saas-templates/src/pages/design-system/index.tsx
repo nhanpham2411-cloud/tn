@@ -9,8 +9,8 @@ import {
   Search, Bold, Italic, Underline, ChevronsUpDown, CalendarIcon,
   AlertCircle, CheckCircle2, AlertTriangle, Info, Loader2,
   User, Bell, Settings, ChevronDown, MoreHorizontal,
-  ArrowRight, Pencil, Share, Star, Package, BarChart3, Eye,
-  XCircle, Sparkles, Clock, ArrowUp, ArrowDown,
+  ArrowRight, Pencil, Share, Star, Package, BarChart3, Eye, Palette,
+  XCircle, Sparkles, Clock, ArrowUp, ArrowDown, Menu,
 } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 
@@ -28,6 +28,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ShopPulseLogo, AuthIllustration } from "@/components/layout/auth-layout"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
 import { Spinner } from "@/components/ui/spinner"
@@ -113,8 +114,8 @@ function CodeBlock({ code }: { code: string }) {
   )
 }
 
-function Example({ title, description, code, children, allowOverflow }: {
-  title: string; description?: string; code: string; children: ReactNode; allowOverflow?: boolean
+function Example({ title, description, code, children, allowOverflow, flush }: {
+  title: string; description?: string; code: string; children: ReactNode; allowOverflow?: boolean; flush?: boolean
 }) {
   const [showCode, setShowCode] = useState(false)
   return (
@@ -123,7 +124,7 @@ function Example({ title, description, code, children, allowOverflow }: {
         <h4 className="font-semibold text-sm font-heading">{title}</h4>
         {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
       </div>
-      <div className={cn("p-lg flex flex-wrap items-center gap-md border-t border-border flex-1", allowOverflow && "items-start")}>
+      <div className={cn("border-t border-border flex-1", flush ? "" : "p-lg flex flex-wrap items-center gap-md", allowOverflow && "items-start")}>
         {children}
       </div>
       <div className="border-t border-border px-md py-xs flex justify-end mt-auto">
@@ -253,12 +254,12 @@ type ControlDef = {
   disabled?: boolean
 }
 
-function ExploreBehavior({ controls = [], children }: { controls?: ControlDef[]; children: ReactNode }) {
+function ExploreBehavior({ controls = [], children, flush = false }: { controls?: ControlDef[]; children: ReactNode; flush?: boolean }) {
   return (
     <section className="space-y-md">
       <h2 className="text-lg font-semibold font-heading">Explore Behavior</h2>
       <div className="border border-border rounded-xl overflow-hidden">
-        <div className="p-2xl flex items-center justify-center min-h-[160px] bg-muted/20 gap-md flex-wrap">
+        <div className={cn(flush ? "bg-muted/20" : "p-2xl flex items-center justify-center min-h-[160px] bg-muted/20 gap-md flex-wrap")}>
           {children}
         </div>
         {controls.length > 0 && <div className="border-t border-border p-md bg-muted/10">
@@ -744,9 +745,22 @@ function SearchBoxLiveExample() {
 }
 
 function BadgeDocs() {
+  const [type, setType] = useState<"badge" | "round" | "dot">("badge")
   const [v, setV] = useState("default")
   const [lv, setLv] = useState("primary")
   const [sz, setSz] = useState("default")
+  const isBadge = type === "badge"
+  const isRound = type === "round"
+  const isDot = type === "dot"
+  const dotVariants = ["default","secondary","destructive","emphasis","success","warning"]
+  const allVariants = ["default","secondary","outline","ghost","destructive","emphasis","success","warning"]
+  const variantOptions = isDot ? dotVariants : allVariants
+  const levelOptions = isBadge ? ["primary","secondary"] : ["primary"]
+  // Reset restricted values on type change
+  useEffect(() => {
+    if (isDot && !dotVariants.includes(v)) setV("default")
+    if (!isBadge) setLv("primary")
+  }, [type])
   return (
     <div className="space-y-3xl">
       <header>
@@ -755,11 +769,18 @@ function BadgeDocs() {
         <p className="text-muted-foreground mt-xs max-w-2xl font-body">A compact inline label for categorizing content, indicating status, or displaying notification counts. Three shapes available: Badge (pill text), BadgeRound (circular count), and BadgeDot (status dot).</p>
       </header>
       <ExploreBehavior controls={[
-        { label: "Variant", type: "select", options: ["default","secondary","outline","ghost","destructive","emphasis","success","warning"], value: v, onChange: setV },
-        { label: "Level", type: "select", options: ["primary","secondary"], value: lv, onChange: setLv },
+        { label: "Type", type: "select", options: ["badge","round","dot"], value: type, onChange: (val: string) => setType(val as any) },
+        { label: "Variant", type: "select", options: variantOptions, value: v, onChange: setV },
+        { label: "Level", type: "select", options: levelOptions, value: lv, onChange: setLv },
         { label: "Size", type: "select", options: ["sm","default","lg"], value: sz, onChange: setSz },
       ]}>
-        <Badge variant={v as any} level={lv as any} size={sz as any}>Badge</Badge>
+        {isBadge ? (
+          <Badge variant={v as any} level={lv as any} size={sz as any}>Badge</Badge>
+        ) : isRound ? (
+          <BadgeRound variant={v as any} size={sz as any}>3</BadgeRound>
+        ) : (
+          <BadgeDot variant={v as any} size={sz as any} />
+        )}
       </ExploreBehavior>
 
       <InstallationSection pkg={[]} importCode={`import { Badge, BadgeRound, BadgeDot } from "@/components/ui/badge"`} />
@@ -853,14 +874,12 @@ function BadgeDocs() {
         {do:"Use BadgeDot for inline presence/status indicators alongside a user name or avatar.",dont:"Use Badge where an interactive element is needed — use Button or a clickable tag instead."},
       ]} />
       <FigmaMapping rows={[
-        ["Badge / Variant","Default → Warning (8 values)","variant",'"default" … "warning"'],
-        ["Badge / Level","Primary","level",'"primary"'],
-        ["Badge / Level","Secondary","level",'"secondary"'],
-        ["Badge / Size","Small / Default / Large","size",'"sm" | "default" | "lg"'],
-        ["Badge/Round / Variant","Same 8 color values","variant","same as Badge"],
-        ["Badge/Round / Size","Small / Default / Large","size",'"sm" | "default" | "lg"'],
-        ["Badge/Dot / Variant","6 fill variants (no outline/ghost)","variant",'"default" … "warning"'],
-        ["Badge/Dot / Size","Small / Default / Large","size",'"sm" | "default" | "lg"'],
+        ["Type","Badge","type",'"badge"'],
+        ["Type","Round","type",'"round"'],
+        ["Type","Dot","type",'"dot"'],
+        ["Variant","Default → Warning (8 values, 6 for Dot)","variant",'"default" … "warning"'],
+        ["Level","Primary / Secondary (Badge only)","level",'"primary" | "secondary"'],
+        ["Size","Small / Default / Large","size",'"sm" | "default" | "lg"'],
       ]} />
       <AccessibilityInfo
         keyboard={[["—","Badge, BadgeRound, and BadgeDot are non-interactive and not keyboard-focusable"]]}
@@ -9918,12 +9937,757 @@ function NavigationMenuDocs() {
 }
 
 // ============================================================
+// LOGO
+// ============================================================
+
+function LogoDocs() {
+  const [logoType, setLogoType] = useState<"full" | "icon" | "text">("full")
+  const [logoSize, setLogoSize] = useState<"default" | "small">("default")
+  const sizeVal = logoSize === "default" ? 28 : 24
+  const textClass = logoSize === "default" ? "sp-h4" : "sp-h5"
+  return (
+    <div className="space-y-3xl">
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Logo</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">ShopPulse brand logo. Diamond mark with violet gradient + wordmark. Three types: Full (mark + text), Icon (mark only), Text (wordmark only). Two sizes matching header desktop (Default 28px) and mobile (Small 24px).</p>
+      </header>
+
+      <ExploreBehavior controls={[
+        { label: "Type", type: "select", options: ["full", "icon", "text"], value: logoType, onChange: (v: string) => setLogoType(v as "full" | "icon" | "text") },
+        { label: "Size", type: "select", options: ["default", "small"], value: logoSize, onChange: (v: string) => setLogoSize(v as "default" | "small") },
+      ]}>
+        <div className="flex items-center gap-sm">
+          {(logoType === "full" || logoType === "icon") && (
+            <ShopPulseLogo size={sizeVal} />
+          )}
+          {(logoType === "full" || logoType === "text") && (
+            <span className={cn(textClass, "text-foreground")}>ShopPulse</span>
+          )}
+        </div>
+      </ExploreBehavior>
+
+      <InstallationSection pkg={[]} importCode={`import { ShopPulseLogo } from "@/components/layout/auth-layout"`} />
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+          <Example title="Header Desktop" description="Full logo as used in the main header — mark + wordmark at 28px." code={`<div className="flex items-center gap-sm">\n  <ShopPulseLogo size={28} />\n  <span className="sp-h4 text-foreground">ShopPulse</span>\n</div>`}>
+            <div className="flex items-center gap-sm">
+              <ShopPulseLogo size={28} />
+              <span className="sp-h4 text-foreground">ShopPulse</span>
+            </div>
+          </Example>
+          <Example title="Header Mobile" description="Smaller logo for mobile header — mark + wordmark at 24px." code={`<div className="flex items-center gap-sm">\n  <ShopPulseLogo size={24} />\n  <span className="sp-h5 text-foreground">ShopPulse</span>\n</div>`}>
+            <div className="flex items-center gap-sm">
+              <ShopPulseLogo size={24} />
+              <span className="sp-h5 text-foreground">ShopPulse</span>
+            </div>
+          </Example>
+          <Example title="All Types" description="Full, Icon only, Text only at default size." code={`{/* Full */}\n<div className="flex items-center gap-sm">\n  <ShopPulseLogo size={28} />\n  <span className="sp-h4 text-foreground">ShopPulse</span>\n</div>\n{/* Icon */}\n<ShopPulseLogo size={28} />\n{/* Text */}\n<span className="sp-h4 text-foreground">ShopPulse</span>`}>
+            <div className="flex items-center gap-lg">
+              <div className="flex items-center gap-sm">
+                <ShopPulseLogo size={28} />
+                <span className="sp-h4 text-foreground">ShopPulse</span>
+              </div>
+              <ShopPulseLogo size={28} />
+              <span className="sp-h4 text-foreground">ShopPulse</span>
+            </div>
+          </Example>
+          <Example title="Small Size" description="Small variants for mobile header and compact areas." code={`<div className="flex items-center gap-sm">\n  <ShopPulseLogo size={24} />\n  <span className="sp-h5 text-foreground">ShopPulse</span>\n</div>\n<ShopPulseLogo size={24} />\n<span className="sp-h5 text-foreground">ShopPulse</span>`}>
+            <div className="flex items-center gap-lg">
+              <div className="flex items-center gap-sm">
+                <ShopPulseLogo size={24} />
+                <span className="sp-h5 text-foreground">ShopPulse</span>
+              </div>
+              <ShopPulseLogo size={24} />
+              <span className="sp-h5 text-foreground">ShopPulse</span>
+            </div>
+          </Example>
+        </div>
+      </section>
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground">ShopPulseLogo is a standalone SVG component exported from <code>auth-layout.tsx</code>.</p>
+        <PropsTable rows={[
+          ["size", "number", "32", "Width and height of the SVG in pixels"],
+          ["className", "string", '""', "Additional CSS classes applied to the SVG element"],
+        ]} />
+      </section>
+
+      <DesignTokensTable rows={[
+        ["--primary", "violet-600", "Mark fill mapped to primary token in Figma — actual SVG uses gradient #c4b5fd → #818cf8"],
+        ["--foreground", "zinc-50 / zinc-950", "Wordmark text color"],
+      ]} />
+
+      <BestPractices items={[
+        { do: "Use Full type in desktop headers and auth pages where horizontal space allows.", dont: "Use Full type in cramped spaces like collapsed sidebars — switch to Icon type." },
+        { do: "Use Default size (28px) for desktop and Small (24px) for mobile — matches header breakpoints.", dont: "Use arbitrary sizes that don't match the header design tokens." },
+        { do: "Pair the mark and wordmark with gap-sm (12px) for consistent spacing.", dont: "Use custom gap values between mark and wordmark — keep it consistent across all instances." },
+      ]} />
+
+      <FigmaMapping rows={[
+        ["Type", "Full", "—", "Mark SVG + wordmark text side by side"],
+        ["Type", "Icon", "—", "Mark SVG only (no text)"],
+        ["Type", "Text", "—", "Wordmark text only (no SVG)"],
+        ["Size", "Default", "size={28}", "28×28px mark, SP/H4 text"],
+        ["Size", "Small", "size={24}", "24×24px mark, SP/H5 text"],
+      ]} />
+
+      <AccessibilityInfo
+        keyboard={[["—", "Logo is non-interactive by default — wrap in a Link when used as a home navigation element"]]}
+        notes={[
+          "The SVG has no title or aria-label by default — when used as a link, add accessible text to the wrapping anchor element.",
+          "When used decoratively (alongside visible text), the SVG should have aria-hidden='true' to avoid redundant screen reader announcements.",
+          "The gradient fills are purely decorative — the logo shape alone provides sufficient visual identity at all sizes.",
+        ]}
+      />
+
+      <RelatedComponents items={[
+        { name: "Avatar", desc: "For user profile images — use Logo for brand identity, Avatar for user identity." },
+        { name: "Button", desc: "Wrap Logo in a Button or Link for clickable home navigation in headers." },
+      ]} />
+    </div>
+  )
+}
+
+// ============================================================
+// TOP HEADER
+// ============================================================
+
+const headerNavTabs = ["Dashboard", "Analytics", "Reports", "Users", "Products", "Orders"]
+
+function TopHeaderDocs() {
+  const [breakpoint, setBreakpoint] = useState<"desktop" | "tablet" | "mobile">("desktop")
+  const isDesktop = breakpoint === "desktop"
+  const isMobile = breakpoint === "mobile"
+  const containerWidth = isMobile ? "w-[375px]" : breakpoint === "tablet" ? "w-[768px]" : ""
+  return (
+    <div className="space-y-3xl">
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Top Header</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">The main application header bar. Contains the ShopPulse logo, horizontal navigation tabs, search, notifications, theme toggle, and user avatar. Two rows: top bar (branding + nav + actions) and greeting row (welcome message + search box).</p>
+      </header>
+
+      <ExploreBehavior flush controls={[
+        { label: "Breakpoint", type: "select", options: ["desktop", "tablet", "mobile"], value: breakpoint, onChange: (v: string) => setBreakpoint(v as "desktop" | "tablet" | "mobile") },
+      ]}>
+        <div className={cn(containerWidth, "overflow-hidden bg-background", !isDesktop && "mx-auto")}>
+          <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-2xl gap-lg" : "px-md pt-md gap-sm")}>
+            {/* Row 1: Logo + Nav + Actions — 3-column justify-between */}
+            <div className="flex items-center justify-between">
+              {/* Left: hamburger + logo */}
+              <div className="flex items-center gap-xs">
+                {/* Hamburger — tablet & mobile (md:hidden in real app) */}
+                {!isDesktop && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>}
+                {/* Logo */}
+                <div className="flex items-center gap-sm">
+                  <ShopPulseLogo size={isMobile ? 24 : 28} />
+                  {!isMobile && <span className="sp-h4 text-foreground">ShopPulse</span>}
+                </div>
+              </div>
+              {/* Center: nav tabs — desktop only */}
+              {isDesktop && (
+                <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs" aria-label="Main navigation">
+                  {headerNavTabs.map(tab => (
+                    <span key={tab} className={cn("px-lg py-xs rounded-full sp-label cursor-default",
+                      tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground"
+                    )}>{tab}</span>
+                  ))}
+                </nav>
+              )}
+              {/* Right: action buttons */}
+              <div className="flex items-center gap-3xs">
+                {isMobile && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>}
+                <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+                <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+                <div className="relative">
+                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+                  <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                </div>
+                <div className="relative">
+                  <Avatar className="size-[36px] ring-2 ring-primary/30">
+                    <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                  </Avatar>
+                  <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                </div>
+              </div>
+            </div>
+            {/* Row 2: Greeting + SearchBox */}
+            <div className={cn("flex gap-sm", isMobile ? "flex-col" : "flex-row items-end justify-between")}>
+              <div className="min-w-0">
+                <h1 className={cn(isMobile ? "sp-h3" : "sp-h2", "text-foreground")}>Good morning, Linh</h1>
+                {!isMobile && <p className={cn(isDesktop ? "sp-body" : "sp-caption", "text-muted-foreground mt-3xs")}>Stay on top of your tasks, monitor progress, and track status.</p>}
+              </div>
+              {!isMobile && (
+                <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />
+              )}
+            </div>
+          </div>
+          {/* Bottom spacing to match real header pb */}
+          <div className={cn(isDesktop ? "h-lg" : "h-sm")} />
+        </div>
+      </ExploreBehavior>
+
+      <InstallationSection pkg={[]} importCode={`import { AppHeader } from "@/components/layout/app-header"`} />
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 gap-md">
+          <Example flush title="Desktop (≥1024px)" description="3-column layout: Logo+text | Nav tabs (bg-muted container, active=bg-foreground) | Actions (Palette, Theme, Bell+dot, Avatar+online). Greeting row: sp-h2 + subtitle + SearchBox ⌘K." code={`<AppHeader />\n\n// Inside DashboardLayout:\n// <div className="min-h-svh flex flex-col bg-background">\n//   <AppHeader />\n//   <main className="flex-1">...</main>\n// </div>`}>
+            <div className="w-full overflow-hidden bg-background">
+              <div className="flex flex-col px-2xl pt-2xl gap-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-xs">
+                    <div className="flex items-center gap-sm">
+                      <ShopPulseLogo size={28} />
+                      <span className="sp-h4 text-foreground">ShopPulse</span>
+                    </div>
+                  </div>
+                  <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs">
+                    {headerNavTabs.slice(0, 4).map(tab => (
+                      <span key={tab} className={cn("px-lg py-xs rounded-full sp-label cursor-default",
+                        tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground"
+                      )}>{tab}</span>
+                    ))}
+                  </nav>
+                  <div className="flex items-center gap-3xs">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+                    <div className="relative">
+                      <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                    </div>
+                    <div className="relative">
+                      <Avatar className="size-[36px] ring-2 ring-primary/30">
+                        <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                      </Avatar>
+                      <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-end justify-between gap-sm">
+                  <div className="min-w-0">
+                    <h1 className="sp-h2 text-foreground">Good morning, Linh</h1>
+                    <p className="sp-body text-muted-foreground mt-3xs">Stay on top of your tasks, monitor progress, and track status.</p>
+                  </div>
+                  <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />
+                </div>
+              </div>
+              <div className="h-lg" />
+            </div>
+          </Example>
+          <Example title="Tablet (768px)" description="Hamburger + Logo + text | Actions. No nav tabs at this width. Greeting sp-h2 + subtitle + SearchBox." code={`// Tablet layout (768px):\n// Hamburger + Logo → Actions (Palette, Theme, Bell, Avatar)\n// Greeting + SearchBox`}>
+            <div className="w-[768px] max-w-full border border-border rounded-xl overflow-hidden bg-background">
+              <div className="flex flex-col px-md pt-md gap-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-xs">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>
+                    <div className="flex items-center gap-sm">
+                      <ShopPulseLogo size={28} />
+                      <span className="sp-h4 text-foreground">ShopPulse</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3xs">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+                    <div className="relative">
+                      <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                    </div>
+                    <div className="relative">
+                      <Avatar className="size-[36px] ring-2 ring-primary/30">
+                        <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                      </Avatar>
+                      <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-end justify-between gap-sm">
+                  <div className="min-w-0">
+                    <h1 className="sp-h2 text-foreground">Good morning, Linh</h1>
+                    <p className="sp-caption text-muted-foreground mt-3xs">Stay on top of your tasks, monitor progress, and track status.</p>
+                  </div>
+                  <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />
+                </div>
+              </div>
+              <div className="h-sm" />
+            </div>
+          </Example>
+          <Example title="Mobile (375px)" description="Hamburger + Logo (no text) | Search, Palette, Theme, Bell, Avatar. Greeting sp-h3 only — no subtitle, no SearchBox." code={`// Mobile layout (<640px):\n// Hamburger + Logo (no 'ShopPulse' text)\n// Search icon, Palette, Theme, Bell, Avatar\n// Greeting only (no subtitle, no SearchBox)`}>
+            <div className="w-[375px] border border-border rounded-xl overflow-hidden bg-background">
+              <div className="flex flex-col px-md pt-md gap-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-xs">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>
+                    <ShopPulseLogo size={24} />
+                  </div>
+                  <div className="flex items-center gap-3xs">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+                    <div className="relative">
+                      <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                    </div>
+                    <div className="relative">
+                      <Avatar className="size-[36px] ring-2 ring-primary/30">
+                        <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                      </Avatar>
+                      <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h1 className="sp-h3 text-foreground">Good morning, Linh</h1>
+                </div>
+              </div>
+              <div className="h-sm" />
+            </div>
+          </Example>
+        </div>
+      </section>
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground">AppHeader is a self-contained layout component with no external props. It reads route and theme state internally.</p>
+        <PropsTable rows={[
+          ["—", "—", "—", "No props — AppHeader manages its own state (active tab from route, theme, notifications, user menu)"],
+        ]} />
+      </section>
+
+      <DesignTokensTable rows={[
+        ["--background", "zinc-950 / white", "Header background, active tab text (text-background)"],
+        ["--foreground", "zinc-50 / zinc-950", "Active nav tab fill (bg-foreground), logo wordmark, greeting h1"],
+        ["--muted", "zinc-800 / zinc-200", "Nav tabs container background (bg-muted)"],
+        ["--muted-foreground", "zinc-400 / zinc-500", "Inactive nav tabs, subtitle text, action button icons"],
+        ["--primary", "violet-600", "Avatar ring tint (ring-primary/30)"],
+        ["--destructive", "red-600", "Notification badge background (bg-destructive)"],
+        ["--success", "green-500", "Avatar online status dot (bg-success)"],
+      ]} />
+
+      <BestPractices items={[
+        { do: "Place AppHeader as the first child in DashboardLayout — it provides global navigation context for the entire app.", dont: "Render AppHeader inside individual page components — it should be a layout-level concern." },
+        { do: "Use the built-in Sheet for mobile navigation — it mirrors the desktop tab structure and maintains consistency.", dont: "Create a separate mobile navigation component — the AppHeader already handles responsive behavior." },
+        { do: "Keep the greeting message dynamic (Good morning/afternoon/evening) to add personality to the dashboard.", dont: "Hardcode a static greeting — the time-based message makes the app feel alive." },
+      ]} />
+
+      <FigmaMapping rows={[
+        ["Breakpoint", "Desktop (≥1024px)", "breakpoint", "3-column: Logo | Nav tabs (muted container) | Actions + greeting + SearchBox"],
+        ["Breakpoint", "Tablet (768px)", "breakpoint", "Hamburger + Logo | Actions + greeting sp-caption subtitle + SearchBox"],
+        ["Breakpoint", "Mobile (<375px)", "breakpoint", "Hamburger + Logo (no text) | Search + Actions — no subtitle, no SearchBox"],
+        ["Logo", "ShopPulseLogo", "instance", "Diamond 28px (desktop/tablet) / 24px (mobile) + 'ShopPulse' sp-h4 (hidden on mobile)"],
+        ["Nav tabs", "bg-muted container", "layout", "rounded-full px-2xs py-2xs gap-3xs, active = bg-foreground text-background shadow-sm sp-label"],
+        ["Palette btn", "Button (ghost, icon)", "instance", "Palette 18px in 36px rounded-full — all breakpoints"],
+        ["Theme btn", "Button (ghost, icon)", "instance", "Sun/Moon 18px in 36px rounded-full — all breakpoints"],
+        ["Bell btn", "Button (ghost, icon)", "instance", "Bell 18px + absolute dot 16px bg-destructive ring-2 ring-background"],
+        ["Avatar", "Avatar + online dot", "instance", "36px ring-2 ring-primary/30, AvatarImage, green dot 10px ring-[1.5px]"],
+        ["Hamburger", "Button (ghost, icon)", "instance", "Menu 20px in 36px — tablet & mobile (md:hidden)"],
+        ["Search btn", "Button (ghost, icon)", "instance", "Search 18px — mobile only (sm:hidden), opens CommandDialog"],
+        ["SearchBox", "SearchBox", "instance", "w-[280px] placeholder='Search product' shortcut readOnly — desktop & tablet"],
+      ]} />
+
+      <AccessibilityInfo
+        keyboard={[
+          ["Tab", "Move focus through header elements: logo link → nav tabs → search → notifications → theme toggle → user menu"],
+          ["Enter / Space", "Activate the focused element (nav tab, button, or dropdown trigger)"],
+          ["Escape", "Close any open dropdown, popover, or sheet"],
+          ["⌘K / Ctrl+K", "Open the global search command dialog from anywhere"],
+        ]}
+        notes={[
+          "The header renders as a <header> element with role='banner' — a page-level landmark for screen readers.",
+          "Each nav tab is a Link element with aria-current='page' when active.",
+          "The notification bell includes a visually hidden count for screen readers when unread items exist.",
+          "The mobile Sheet menu includes proper focus trap and Escape dismissal.",
+        ]}
+      />
+
+      <RelatedComponents items={[
+        { name: "Logo", desc: "The ShopPulse brand logo rendered in the header — diamond mark + wordmark." },
+        { name: "Search Box", desc: "SearchBox instance in the greeting row — pill-shaped search with ⌘K shortcut badge." },
+        { name: "Screen", desc: "The full-page layout wrapper that contains Top Header as part of the Dashboard layout." },
+        { name: "Avatar", desc: "User avatar in the header actions — triggers the profile dropdown menu." },
+      ]} />
+    </div>
+  )
+}
+
+// ============================================================
+// SCREEN
+// ============================================================
+
+function ScreenDocs() {
+  const [screenType, setScreenType] = useState<"dashboard" | "auth">("dashboard")
+  const [breakpoint, setBreakpoint] = useState<"desktop" | "tablet" | "mobile">("desktop")
+  const isDesktop = breakpoint === "desktop"
+  const isMobile = breakpoint === "mobile"
+  const containerWidth = isMobile ? "w-[375px]" : breakpoint === "tablet" ? "w-[768px]" : ""
+  return (
+    <div className="space-y-3xl">
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Screen</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Full-page layout wrapper for the application. Two layout types: Dashboard (header + content area with ambient gradient orbs) and Auth (split-screen with branding illustration left + form right). Each layout wraps page content via React Router Outlet.</p>
+      </header>
+
+      <ExploreBehavior flush controls={[
+        { label: "Type", type: "select", options: ["dashboard", "auth"], value: screenType, onChange: (v: string) => setScreenType(v as "dashboard" | "auth") },
+        { label: "Breakpoint", type: "select", options: ["desktop", "tablet", "mobile"], value: breakpoint, onChange: (v: string) => setBreakpoint(v as "desktop" | "tablet" | "mobile") },
+      ]}>
+        {screenType === "dashboard" ? (
+          /* ── Dashboard Layout: AppHeader + content area ── */
+          <div className={cn(containerWidth, "overflow-hidden bg-background flex flex-col", !isDesktop && "mx-auto")}>
+            {/* Top Header instance */}
+            <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-2xl gap-lg" : "px-md pt-md gap-sm")}>
+              {/* Row 1: Logo + Nav + Actions */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-xs">
+                  {!isDesktop && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>}
+                  <div className="flex items-center gap-sm">
+                    <ShopPulseLogo size={isMobile ? 24 : 28} />
+                    {!isMobile && <span className="sp-h4 text-foreground">ShopPulse</span>}
+                  </div>
+                </div>
+                {isDesktop && (
+                  <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs">
+                    {headerNavTabs.slice(0, 4).map(tab => (
+                      <span key={tab} className={cn("px-lg py-xs rounded-full sp-label cursor-default",
+                        tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground"
+                      )}>{tab}</span>
+                    ))}
+                  </nav>
+                )}
+                <div className="flex items-center gap-3xs">
+                  {isMobile && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>}
+                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+                  <div className="relative">
+                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+                    <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                  </div>
+                  <div className="relative">
+                    <Avatar className="size-[36px] ring-2 ring-primary/30">
+                      <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                    </Avatar>
+                    <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+                  </div>
+                </div>
+              </div>
+              {/* Row 2: Greeting + SearchBox */}
+              <div className={cn("flex gap-sm", isMobile ? "flex-col" : "flex-row items-end justify-between")}>
+                <div className="min-w-0">
+                  <h1 className={cn(isMobile ? "sp-h3" : "sp-h2", "text-foreground")}>Good morning, Linh</h1>
+                  {!isMobile && <p className={cn(isDesktop ? "sp-body" : "sp-caption", "text-muted-foreground mt-3xs")}>Stay on top of your tasks, monitor progress, and track status.</p>}
+                </div>
+                {!isMobile && <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />}
+              </div>
+            </div>
+            <div className={cn(isDesktop ? "h-lg" : "h-sm")} />
+            {/* Main content area */}
+            <main className={cn("relative flex-1 overflow-hidden", isDesktop ? "p-2xl" : "p-md")}>
+              <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden" aria-hidden="true">
+                <div className="absolute -top-[200px] -right-[100px] size-[500px] rounded-full bg-primary/[0.03] blur-[200px]" />
+                <div className="absolute top-[40%] -left-[150px] size-[350px] rounded-full bg-indigo-500/[0.02] blur-[180px]" />
+              </div>
+              <div className="relative flex flex-col gap-xl w-full max-w-[1440px] mx-auto">
+                <div className={cn("grid gap-lg", isMobile ? "grid-cols-1" : "grid-cols-3")}>
+                  {[
+                    { label: "Total Revenue", value: "$48,520", change: "+12.5%" },
+                    { label: "Total Orders", value: "1,284", change: "+8.3%" },
+                    { label: "Conversion Rate", value: "3.24%", change: "+2.1%" },
+                  ].map(kpi => (
+                    <div key={kpi.label} className="rounded-2xl border border-border/60 dark:border-border bg-card p-xl">
+                      <p className="sp-caption text-muted-foreground">{kpi.label}</p>
+                      <div className="flex items-end justify-between mt-xs">
+                        <p className="sp-h2 text-foreground">{kpi.value}</p>
+                        <Badge variant="outline" className="text-success border-success/20 bg-success/10">{kpi.change}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-2xl border border-border/60 dark:border-border bg-card p-xl h-[200px] flex items-center justify-center">
+                  <div className="text-center">
+                    <BarChart3 className="size-8 text-muted-foreground/30 mx-auto mb-xs" />
+                    <p className="sp-caption text-muted-foreground/50">Revenue Chart Area</p>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        ) : (
+          /* ── Auth Layout: split-screen branding + form ── */
+          <div className={cn(containerWidth, "overflow-hidden flex", !isDesktop && "mx-auto", isDesktop ? "" : "flex-col")} style={{ minHeight: 600 }}>
+            {/* Left — branding panel (hidden on mobile, visible desktop+tablet) */}
+            {!isMobile && (
+              <div className={cn("flex flex-col items-center justify-between bg-[#0c0a1a] relative overflow-hidden", isDesktop ? "flex-1 p-2xl" : "p-xl")}>
+                <div className="absolute inset-0">
+                  <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
+                  <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-indigo-500/[0.06] blur-[80px]" />
+                  <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-purple-500/[0.04] blur-[60px]" />
+                </div>
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#c4b5fd 1px, transparent 1px), linear-gradient(90deg, #c4b5fd 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+                <div className="relative z-10 flex items-center gap-sm">
+                  <ShopPulseLogo size={28} />
+                  <span className="text-white/90 font-heading text-lg font-bold tracking-tight">ShopPulse</span>
+                </div>
+                <div className="relative z-10 flex flex-col items-center gap-lg">
+                  <AuthIllustration />
+                  <div className="text-center max-w-[360px]">
+                    <h2 className="text-[24px] font-heading font-bold text-white/90 leading-tight tracking-tight mb-xs">
+                      Powerful analytics for<br />modern e-commerce
+                    </h2>
+                    <p className="sp-body text-white/35 leading-relaxed">
+                      Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.
+                    </p>
+                  </div>
+                </div>
+                <div className="relative z-10 flex flex-col items-center gap-md w-full">
+                  <div className="flex items-center gap-xl">
+                    <div className="text-center">
+                      <p className="text-white/80 font-heading text-lg font-bold">10K+</p>
+                      <p className="sp-caption text-white/25">Active Users</p>
+                    </div>
+                    <div className="w-px h-lg bg-white/[0.08]" />
+                    <div className="text-center">
+                      <p className="text-white/80 font-heading text-lg font-bold">99.9%</p>
+                      <p className="sp-caption text-white/25">Uptime</p>
+                    </div>
+                    <div className="w-px h-lg bg-white/[0.08]" />
+                    <div className="text-center">
+                      <p className="text-white/80 font-heading text-lg font-bold">4.9★</p>
+                      <p className="sp-caption text-white/25">Rating</p>
+                    </div>
+                  </div>
+                  <p className="sp-caption text-white/15">&copy; 2026 ShopPulse. All rights reserved.</p>
+                </div>
+              </div>
+            )}
+            {/* Right — form area */}
+            <div className={cn("flex items-center justify-center bg-background relative overflow-hidden", isDesktop ? "flex-1 p-xl" : "p-lg")}>
+              <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-primary/[0.03] blur-[100px] dark:bg-primary/[0.04]" />
+              <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-indigo-500/[0.02] blur-[80px] dark:bg-indigo-500/[0.03]" />
+              <div className="relative z-10 w-full max-w-[440px] space-y-xl">
+                {isMobile && (
+                  <div className="flex items-center justify-center gap-sm mb-md">
+                    <ShopPulseLogo size={24} />
+                    <span className="sp-h4 text-foreground">ShopPulse</span>
+                  </div>
+                )}
+                <div className="text-center">
+                  <h2 className="sp-h2 text-foreground">Welcome back</h2>
+                  <p className="sp-body text-muted-foreground mt-3xs">Sign in to your account to continue</p>
+                </div>
+                <div className="space-y-md">
+                  <div className="space-y-3xs">
+                    <Label>Email</Label>
+                    <Input placeholder="name@example.com" readOnly />
+                  </div>
+                  <div className="space-y-3xs">
+                    <Label>Password</Label>
+                    <Input type="password" placeholder="Enter your password" readOnly />
+                  </div>
+                  <Button className="w-full">Sign In</Button>
+                </div>
+                <div className="flex items-center gap-xs">
+                  <Separator className="flex-1" />
+                  <span className="sp-caption text-muted-foreground">or continue with</span>
+                  <Separator className="flex-1" />
+                </div>
+                <div className="grid grid-cols-2 gap-sm">
+                  <Button variant="outline" className="w-full">Google</Button>
+                  <Button variant="outline" className="w-full">GitHub</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </ExploreBehavior>
+
+      <InstallationSection pkg={[]} importCode={`// Dashboard layout\nimport DashboardLayout from "@/components/layout/dashboard-layout"\n\n// Auth layout\nimport AuthLayout from "@/components/layout/auth-layout"`} />
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+          <Example title="Dashboard Layout" description="Full app shell: Top Header (3-column with nav tabs) + content area with ambient gradient orbs (dark mode only). max-w-[1440px] content constraint. Content renders via React Router Outlet." code={`// In router config:\n<Route element={<DashboardLayout />}>\n  <Route path="/" element={<Overview />} />\n  <Route path="/analytics" element={<Analytics />} />\n</Route>\n\n// DashboardLayout renders:\n// <div className="min-h-svh flex flex-col bg-background">\n//   <AppHeader />\n//   <main className="relative flex-1 p-md sm:p-xl lg:p-2xl overflow-hidden">\n//     <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden">\n//       <div className="absolute ... bg-primary/[0.03] blur-[200px]" />\n//       <div className="absolute ... bg-indigo-500/[0.02] blur-[180px]" />\n//     </div>\n//     <div className="relative flex flex-col gap-xl max-w-[1440px] mx-auto">\n//       <PageTransition><Outlet /></PageTransition>\n//     </div>\n//   </main>\n// </div>`}>
+            <div className="w-full aspect-video border border-border rounded-lg overflow-hidden bg-background flex flex-col">
+              {/* Mini header */}
+              <div className="px-sm py-xs border-b border-border/60 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2xs">
+                  <ShopPulseLogo size={12} />
+                  <span className="text-[9px] font-semibold text-foreground">ShopPulse</span>
+                </div>
+                <div className="flex gap-[3px]">
+                  {["Dashboard", "Analytics", "Reports"].map(t => (
+                    <span key={t} className={cn("text-[7px] px-[5px] py-[2px] rounded-full",
+                      t === "Dashboard" ? "bg-foreground text-background" : "text-muted-foreground"
+                    )}>{t}</span>
+                  ))}
+                </div>
+                <div className="flex gap-1 items-center">
+                  <div className="size-3 rounded-full bg-muted/50" />
+                  <div className="size-3 rounded-full bg-muted/50" />
+                  <Avatar className="size-3"><AvatarFallback className="text-[6px]">LN</AvatarFallback></Avatar>
+                </div>
+              </div>
+              {/* Mini greeting */}
+              <div className="px-sm pt-xs">
+                <p className="text-[9px] font-semibold text-foreground">Good morning, Linh</p>
+                <p className="text-[7px] text-muted-foreground">Stay on top of your tasks</p>
+              </div>
+              {/* Content with ambient orbs */}
+              <div className="flex-1 p-sm pt-xs relative overflow-hidden">
+                <div className="pointer-events-none absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] dark:block hidden" />
+                <div className="grid grid-cols-3 gap-1 mb-1">
+                  {["$48.5K", "1,284", "3.24%"].map(v => (
+                    <div key={v} className="rounded bg-card border border-border p-[4px]">
+                      <div className="h-1 w-6 bg-muted-foreground/20 rounded mb-[2px]" />
+                      <p className="text-[8px] font-semibold text-foreground">{v}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-16 rounded bg-card border border-border flex items-center justify-center">
+                  <BarChart3 className="size-4 text-muted-foreground/20" />
+                </div>
+              </div>
+            </div>
+          </Example>
+          <Example title="Auth Layout" description="Split-screen: left branding panel bg-[#0c0a1a] with gradient orbs, grid pattern, ShopPulseLogo, animated AuthIllustration, tagline, stats row. Right: form area with ambient violet glows. Left panel hidden on mobile (< lg)." code={`// In router config:\n<Route element={<AuthLayout />}>\n  <Route path="/sign-in" element={<SignIn />} />\n  <Route path="/sign-up" element={<SignUp />} />\n</Route>\n\n// AuthLayout renders:\n// <div className="min-h-svh flex">\n//   <aside className="hidden lg:flex lg:flex-1 bg-[#0c0a1a] p-2xl relative overflow-hidden">\n//     {/* gradient orbs + grid pattern + logo + AuthIllustration + tagline + stats */}\n//   </aside>\n//   <main className="flex flex-1 items-center justify-center bg-background p-lg sm:p-xl">\n//     {/* ambient violet glows */}\n//     <PageTransition><Outlet /></PageTransition>\n//   </main>\n// </div>`}>
+            <div className="w-full aspect-video border border-border rounded-lg overflow-hidden bg-background flex">
+              {/* Mini left panel */}
+              <div className="flex-1 bg-[#0c0a1a] flex flex-col items-center justify-between p-sm relative overflow-hidden">
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#c4b5fd 1px, transparent 1px), linear-gradient(90deg, #c4b5fd 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+                <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-32 h-24 rounded-full bg-primary/[0.08] blur-[40px]" />
+                <div className="relative z-10 flex items-center gap-2xs">
+                  <ShopPulseLogo size={12} />
+                  <span className="text-[9px] text-white/90 font-bold">ShopPulse</span>
+                </div>
+                <div className="relative z-10 flex flex-col items-center gap-xs">
+                  <div className="w-24 h-16 rounded bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                    <BarChart3 className="size-5 text-primary/40" />
+                  </div>
+                  <p className="text-[7px] text-white/35 text-center leading-tight">Powerful analytics for<br />modern e-commerce</p>
+                </div>
+                <div className="relative z-10 flex gap-sm text-center">
+                  <div>
+                    <p className="text-[8px] text-white/80 font-bold">10K+</p>
+                    <p className="text-[6px] text-white/25">Users</p>
+                  </div>
+                  <div className="w-px h-3 bg-white/[0.08]" />
+                  <div>
+                    <p className="text-[8px] text-white/80 font-bold">99.9%</p>
+                    <p className="text-[6px] text-white/25">Uptime</p>
+                  </div>
+                  <div className="w-px h-3 bg-white/[0.08]" />
+                  <div>
+                    <p className="text-[8px] text-white/80 font-bold">4.9★</p>
+                    <p className="text-[6px] text-white/25">Rating</p>
+                  </div>
+                </div>
+              </div>
+              {/* Mini right panel */}
+              <div className="flex-1 flex items-center justify-center p-sm">
+                <div className="space-y-1 w-20">
+                  <div className="text-center mb-1">
+                    <div className="h-1.5 w-12 bg-foreground/20 rounded mx-auto mb-[2px]" />
+                    <div className="h-1 w-16 bg-muted-foreground/15 rounded mx-auto" />
+                  </div>
+                  <div className="h-4 w-full bg-muted/30 border border-border rounded" />
+                  <div className="h-4 w-full bg-muted/30 border border-border rounded" />
+                  <div className="h-4 w-full bg-primary rounded" />
+                  <div className="grid grid-cols-2 gap-[2px] mt-1">
+                    <div className="h-3 rounded border border-border flex items-center justify-center">
+                      <span className="text-[6px] text-muted-foreground">Google</span>
+                    </div>
+                    <div className="h-3 rounded border border-border flex items-center justify-center">
+                      <span className="text-[6px] text-muted-foreground">GitHub</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Example>
+        </div>
+      </section>
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground">Both layout components are route wrappers with no external props. They render child routes via React Router&apos;s <code>&lt;Outlet /&gt;</code>.</p>
+        <h3 className="font-semibold text-sm mt-md">DashboardLayout</h3>
+        <PropsTable rows={[
+          ["—", "—", "—", "No props — renders AppHeader + Outlet with ambient gradient orbs and max-w-[1440px] content area"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">AuthLayout</h3>
+        <PropsTable rows={[
+          ["—", "—", "—", "No props — renders split-screen with branding panel (lg+) + form area with Outlet"],
+        ]} />
+      </section>
+
+      <DesignTokensTable rows={[
+        ["--background", "zinc-950 / white", "Main content area and right panel background"],
+        ["#0c0a1a", "custom", "Auth left panel — very dark violet background (not tokenized)"],
+        ["--primary", "violet-600", "Ambient gradient orbs, active states, illustration accents"],
+        ["--border", "zinc-800 / zinc-200", "Card borders, header bottom border"],
+        ["--card", "zinc-900 / white", "Dashboard KPI card and chart card backgrounds"],
+      ]} />
+
+      <BestPractices items={[
+        { do: "Use DashboardLayout for all authenticated pages — it provides the header, ambient effects, and max-width constraint.", dont: "Create custom wrappers for individual pages — the layout handles all structural concerns." },
+        { do: "Use AuthLayout for all unauthenticated pages (sign-in, sign-up, forgot password, onboarding) to maintain visual consistency.", dont: "Mix auth and dashboard layout patterns — each has its own visual language." },
+        { do: "Wrap Outlet with PageTransition inside each layout to ensure smooth page transitions.", dont: "Put PageTransition at the router level wrapping Routes — it must be inside each layout wrapping Outlet." },
+      ]} />
+
+      <FigmaMapping rows={[
+        ["Type", "Dashboard", "component", "DashboardLayout — header + content area"],
+        ["Type", "Auth", "component", "AuthLayout — split-screen branding + form"],
+        ["Content", "Header", "instance", "Top Header component (Dashboard type only)"],
+        ["Content", "Logo", "instance", "ShopPulseLogo in both layout types"],
+        ["Dimensions", "1440 × 900", "root frame", "Desktop viewport size for Figma frames"],
+      ]} />
+
+      <AccessibilityInfo
+        keyboard={[
+          ["Tab", "Navigate through layout landmarks: header → main content → footer"],
+          ["Escape", "Close any open overlay within the layout (sheets, dialogs, popovers)"],
+        ]}
+        notes={[
+          "DashboardLayout uses <header> and <main> elements — automatic landmarks for screen readers.",
+          "AuthLayout left panel is decorative (hidden on mobile) — aria-hidden prevents screen reader confusion.",
+          "Ambient gradient orbs use pointer-events-none and aria-hidden — purely decorative, invisible to assistive tech.",
+          "PageTransition avoids motion for users with prefers-reduced-motion: reduce.",
+        ]}
+      />
+
+      <RelatedComponents items={[
+        { name: "Top Header", desc: "The application header bar — rendered as part of Dashboard layout." },
+        { name: "Logo", desc: "ShopPulse brand logo — appears in both layout types." },
+        { name: "Separator", desc: "Used as visual dividers between layout sections." },
+      ]} />
+    </div>
+  )
+}
+
+// ============================================================
 // COMPONENT REGISTRY
 // ============================================================
 
 type ComponentId = string
 
 const componentGroups = [
+  {
+    label: "Branding",
+    items: [
+      { id: "logo", label: "Logo" },
+      { id: "top-header", label: "Top Header" },
+      { id: "screen", label: "Screen" },
+    ],
+  },
   {
     label: "Foundation",
     items: [
@@ -10010,6 +10774,9 @@ const componentGroups = [
 ]
 
 const componentDocs: Record<string, () => ReactNode> = {
+  logo: LogoDocs,
+  "top-header": TopHeaderDocs,
+  screen: ScreenDocs,
   colors: ColorsDocs,
   typography: TypographyDocs,
   spacing: SpacingDocs,

@@ -39,7 +39,7 @@ tn/
 - **Price**: $79 Figma / $149 Figma + React
 - **React app**: `products/001-analytics-dashboard/saas-app/` (React 19, TS, Tailwind v4, Vite)
 - **Build status**: Phase 5 complete (17 pages, 22+ states), Phase 6 review done (91% test score)
-- **Figma status**: Foundation done (variables, text styles, effects), Design System page done (38 components), Plugin rewrite done — Next: component JSON generation
+- **Figma status**: Foundation done (variables, text styles, effects), Design System page done (38 components), Component JSONs done (43 files), Foundation docs done (7 files) — Next: screen/page generation (Type 8)
 
 ## Tech Stack (React App)
 - React 19, TypeScript 5.9, Tailwind v4, Vite 7
@@ -76,7 +76,7 @@ All general reference files are in `_refs/`:
 - `_refs/process.md` — full 11-phase pipeline detail
 - `_refs/common-mistakes.md` — 91 recurring mistakes to avoid
 - `_refs/component-docs-pattern.md` — 10-section standard for Figma component docs
-- `_refs/plugin-json-pattern.md` — 7-type pattern doc for Figma plugin JSON specs (variables, text styles, effects, icons, components, showcase, foundation docs)
+- `_refs/plugin-json-pattern.md` — 8-type pattern doc for Figma plugin JSON specs (variables, text styles, effects, icons, components, showcase, foundation docs)
 
 Product-specific (per product in `products/{NNN}/`):
 - `STATUS.md` — current phase & progress

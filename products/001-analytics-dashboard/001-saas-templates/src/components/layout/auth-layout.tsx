@@ -25,7 +25,7 @@ export function ShopPulseLogo({ size = 32, className = "" }: { size?: number; cl
 }
 
 /* ── Premium dashboard illustration — full mockup with glass UI ── */
-function AuthIllustration() {
+export function AuthIllustration() {
   return (
     <div className="relative w-full max-w-[440px]" style={{ aspectRatio: "11/9" }}>
       {/* Ambient glow layers */}

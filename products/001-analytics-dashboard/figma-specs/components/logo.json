@@ -1,0 +1,166 @@
+{
+  "components": [
+    {
+      "name": "Logo",
+      "description": "ShopPulse brand logo. Diamond mark with violet gradient + wordmark. Three types: Full (mark + text), Icon (mark only), Text (wordmark only). Two sizes matching header desktop (Default 28px) and mobile (Small 24px).",
+      "category": "Branding",
+      "installation": {
+        "import": "import { ShopPulseLogo } from \"@/components/layout/auth-layout\""
+      },
+
+      "properties": {
+        "Type": ["Full", "Icon", "Text"],
+        "Size": ["Default", "Small"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "counterAlign": "center",
+        "gap": "sm",
+        "paddingX": "none",
+        "paddingY": "none",
+        "widthMode": "hug",
+        "height": 28,
+        "heightMode": "fixed",
+        "hideLabel": true,
+        "children": [
+          {
+            "type": "frame",
+            "name": "Mark",
+            "showWhen": "Type=Full",
+            "width": 28,
+            "height": 28,
+            "widthMode": "fixed",
+            "fill": "primary",
+            "fillOpacity": 0.85,
+            "radius": "md"
+          },
+          {
+            "type": "frame",
+            "name": "Mark",
+            "showWhen": "Type=Icon",
+            "width": 28,
+            "height": 28,
+            "widthMode": "fixed",
+            "fill": "primary",
+            "fillOpacity": 0.85,
+            "radius": "md"
+          },
+          {
+            "type": "text",
+            "name": "Brand",
+            "showWhen": "Type=Full",
+            "textContent": "ShopPulse",
+            "textStyle": "SP/H4",
+            "textFill": "foreground"
+          },
+          {
+            "type": "text",
+            "name": "Brand",
+            "showWhen": "Type=Text",
+            "textContent": "ShopPulse",
+            "textStyle": "SP/H4",
+            "textFill": "foreground"
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Full": {},
+        "Type=Icon": {},
+        "Type=Text": {},
+
+        "Size=Default": {},
+        "Size=Small": { "height": 24 },
+
+        "Size=Small,Type=Full": {
+          "children": [
+            {
+              "type": "frame",
+              "name": "Mark",
+              "showWhen": "Type=Full",
+              "width": 24,
+              "height": 24,
+              "widthMode": "fixed",
+              "fill": "primary",
+              "fillOpacity": 0.85,
+              "radius": "sm"
+            },
+            {
+              "type": "text",
+              "name": "Brand",
+              "showWhen": "Type=Full",
+              "textContent": "ShopPulse",
+              "textStyle": "SP/H5",
+              "textFill": "foreground"
+            }
+          ]
+        },
+        "Size=Small,Type=Icon": {
+          "children": [
+            {
+              "type": "frame",
+              "name": "Mark",
+              "showWhen": "Type=Icon",
+              "width": 24,
+              "height": 24,
+              "widthMode": "fixed",
+              "fill": "primary",
+              "fillOpacity": 0.85,
+              "radius": "sm"
+            }
+          ]
+        },
+        "Size=Small,Type=Text": {
+          "children": [
+            {
+              "type": "text",
+              "name": "Brand",
+              "showWhen": "Type=Text",
+              "textContent": "ShopPulse",
+              "textStyle": "SP/H5",
+              "textFill": "foreground"
+            }
+          ]
+        }
+      },
+
+      "variantRestrictions": {},
+
+      "showcase": {
+        "sections": ["header", "component"]
+      },
+
+      "examples": [
+        {
+          "name": "Header Desktop",
+          "description": "Full logo as used in the main header — mark + wordmark.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Full", "props": { "Type": "Full", "Size": "Default" } }
+          ]
+        },
+        {
+          "name": "All Types",
+          "description": "Full, Icon only, Text only at default size.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Full", "props": { "Type": "Full", "Size": "Default" } },
+            { "label": "Icon", "props": { "Type": "Icon", "Size": "Default" } },
+            { "label": "Text", "props": { "Type": "Text", "Size": "Default" } }
+          ]
+        },
+        {
+          "name": "Small Size",
+          "description": "Small variants for mobile header and compact areas.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Full SM", "props": { "Type": "Full", "Size": "Small" } },
+            { "label": "Icon SM", "props": { "Type": "Icon", "Size": "Small" } },
+            { "label": "Text SM", "props": { "Type": "Text", "Size": "Small" } }
+          ]
+        }
+      ]
+    }
+  ]
+}

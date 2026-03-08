@@ -70,6 +70,11 @@
         "Type=Dot,Size=LG": { "width": 12, "height": 12 }
       },
 
+      "variantRestrictions": {
+        "Type=Round": { "Level": ["Primary"] },
+        "Type=Dot": { "Level": ["Primary"], "Variant": ["Default", "Secondary", "Destructive", "Emphasis", "Success", "Warning"] }
+      },
+
       "examples": [
         {
           "name": "All Variants",
