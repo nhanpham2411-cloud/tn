@@ -1,0 +1,757 @@
+{
+  "components": [
+    {
+      "name": "Screen",
+      "description": "Full-page layout wrapper for the application. Two layout types: Dashboard (header + content area) and Auth (split-screen branding + form). Responsive across Desktop (1440), Tablet (768), and Mobile (375) breakpoints.",
+      "category": "Layout",
+
+      "properties": {
+        "Type": ["Dashboard", "Auth"],
+        "Breakpoint": ["Desktop", "Tablet", "Mobile"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 1440,
+        "height": 900,
+        "heightMode": "fixed",
+        "fill": "background",
+        "clipsContent": true,
+        "paddingX": "none",
+        "paddingY": "none",
+        "gap": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "type": "instance", "name": "Header", "component": "App Header",
+            "variants": { "Page": "Dashboard", "Breakpoint": "Desktop" },
+            "fillWidth": true
+          },
+          {
+            "type": "frame", "name": "Content", "layout": "vertical",
+            "fillWidth": true, "paddingX": "2xl", "paddingY": "2xl", "gap": "xl",
+            "counterAlign": "start",
+            "children": [
+              {
+                "type": "frame", "name": "KPI Row", "layout": "horizontal",
+                "fillWidth": true, "gap": "lg", "paddingX": "none", "paddingY": "none",
+                "children": [
+                  {
+                    "type": "frame", "name": "KPI 1", "layout": "vertical",
+                    "fillWidth": true, "fill": "card", "stroke": "border",
+                    "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                    "gap": "xs", "counterAlign": "start",
+                    "children": [
+                      { "type": "text", "name": "Label", "textContent": "Total Revenue", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                      {
+                        "type": "frame", "name": "Value Row", "layout": "horizontal",
+                        "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                        "gap": "auto", "paddingX": "none", "paddingY": "none",
+                        "children": [
+                          { "type": "text", "name": "Value", "textContent": "$48,520", "textStyle": "SP/H2", "textFill": "foreground" },
+                          { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+12.5%" } }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "KPI 2", "layout": "vertical",
+                    "fillWidth": true, "fill": "card", "stroke": "border",
+                    "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                    "gap": "xs", "counterAlign": "start",
+                    "children": [
+                      { "type": "text", "name": "Label", "textContent": "Total Orders", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                      {
+                        "type": "frame", "name": "Value Row", "layout": "horizontal",
+                        "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                        "gap": "auto", "paddingX": "none", "paddingY": "none",
+                        "children": [
+                          { "type": "text", "name": "Value", "textContent": "1,284", "textStyle": "SP/H2", "textFill": "foreground" },
+                          { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+8.3%" } }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "KPI 3", "layout": "vertical",
+                    "fillWidth": true, "fill": "card", "stroke": "border",
+                    "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                    "gap": "xs", "counterAlign": "start",
+                    "children": [
+                      { "type": "text", "name": "Label", "textContent": "Conversion Rate", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                      {
+                        "type": "frame", "name": "Value Row", "layout": "horizontal",
+                        "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                        "gap": "auto", "paddingX": "none", "paddingY": "none",
+                        "children": [
+                          { "type": "text", "name": "Value", "textContent": "3.24%", "textStyle": "SP/H2", "textFill": "foreground" },
+                          { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+2.1%" } }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame", "name": "Chart Area", "layout": "vertical",
+                "fillWidth": true, "fill": "card", "stroke": "border",
+                "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                "height": 200, "heightMode": "fixed",
+                "counterAlign": "center", "primaryAlign": "center", "gap": "xs",
+                "children": [
+                  { "type": "icon", "name": "Chart Icon", "iconName": "BarChart3", "iconSize": 32, "iconFill": "muted-foreground" },
+                  { "type": "text", "name": "Chart Label", "textContent": "Revenue Chart Area", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Dashboard,Breakpoint=Desktop": {},
+
+        "Type=Dashboard,Breakpoint=Tablet": {
+          "width": 768,
+          "children": [
+            {
+              "type": "instance", "name": "Header", "component": "App Header",
+              "variants": { "Page": "Dashboard", "Breakpoint": "Tablet" },
+              "fillWidth": true
+            },
+            {
+              "type": "frame", "name": "Content", "layout": "vertical",
+              "fillWidth": true, "paddingX": "xl", "paddingY": "xl", "gap": "xl",
+              "counterAlign": "start",
+              "children": [
+                {
+                  "type": "frame", "name": "KPI Row", "layout": "horizontal",
+                  "fillWidth": true, "gap": "lg", "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "KPI 1", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Total Revenue", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "$48,520", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+12.5%" } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "KPI 2", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Total Orders", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "1,284", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+8.3%" } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "KPI 3", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Conversion Rate", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "3.24%", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+2.1%" } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Chart Area", "layout": "vertical",
+                  "fillWidth": true, "fill": "card", "stroke": "border",
+                  "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                  "height": 200, "heightMode": "fixed",
+                  "counterAlign": "center", "primaryAlign": "center", "gap": "xs",
+                  "children": [
+                    { "type": "icon", "name": "Chart Icon", "iconName": "BarChart3", "iconSize": 32, "iconFill": "muted-foreground" },
+                    { "type": "text", "name": "Chart Label", "textContent": "Revenue Chart Area", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+
+        "Type=Dashboard,Breakpoint=Mobile": {
+          "width": 375,
+          "children": [
+            {
+              "type": "instance", "name": "Header", "component": "App Header",
+              "variants": { "Page": "Dashboard", "Breakpoint": "Mobile" },
+              "fillWidth": true
+            },
+            {
+              "type": "frame", "name": "Content", "layout": "vertical",
+              "fillWidth": true, "paddingX": "md", "paddingY": "md", "gap": "xl",
+              "counterAlign": "start",
+              "children": [
+                {
+                  "type": "frame", "name": "KPI Row", "layout": "vertical",
+                  "fillWidth": true, "gap": "lg", "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "KPI 1", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Total Revenue", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "$48,520", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+12.5%" } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "KPI 2", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Total Orders", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "1,284", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+8.3%" } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "KPI 3", "layout": "vertical",
+                      "fillWidth": true, "fill": "card", "stroke": "border",
+                      "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                      "gap": "xs", "counterAlign": "start",
+                      "children": [
+                        { "type": "text", "name": "Label", "textContent": "Conversion Rate", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        {
+                          "type": "frame", "name": "Value Row", "layout": "horizontal",
+                          "fillWidth": true, "counterAlign": "end", "primaryAlign": "space-between",
+                          "gap": "auto", "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "3.24%", "textStyle": "SP/H2", "textFill": "foreground" },
+                            { "type": "instance", "name": "Change", "component": "Badge", "variants": { "Variant": "Success", "Type": "Badge", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Badge": "+2.1%" } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Chart Area", "layout": "vertical",
+                  "fillWidth": true, "fill": "card", "stroke": "border",
+                  "radius": "2xl", "paddingX": "xl", "paddingY": "xl",
+                  "height": 200, "heightMode": "fixed",
+                  "counterAlign": "center", "primaryAlign": "center", "gap": "xs",
+                  "children": [
+                    { "type": "icon", "name": "Chart Icon", "iconName": "BarChart3", "iconSize": 32, "iconFill": "muted-foreground" },
+                    { "type": "text", "name": "Chart Label", "textContent": "Revenue Chart Area", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+
+        "Type=Auth,Breakpoint=Desktop": {
+          "layout": "horizontal",
+          "gap": "none",
+          "children": [
+            {
+              "type": "frame", "name": "Branding Panel", "layout": "vertical",
+              "fillWidth": true, "fill": "background",
+              "paddingX": "2xl", "paddingY": "2xl",
+              "counterAlign": "center", "primaryAlign": "space-between",
+              "gap": "none",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo", "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" }
+                },
+                {
+                  "type": "frame", "name": "Tagline", "layout": "vertical",
+                  "widthMode": "hug", "counterAlign": "center", "gap": "lg",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Illustration", "layout": "vertical",
+                      "width": 280, "height": 200, "widthMode": "fixed", "heightMode": "fixed",
+                      "fill": "muted", "radius": "xl",
+                      "counterAlign": "center", "primaryAlign": "center",
+                      "paddingX": "none", "paddingY": "none", "gap": "none",
+                      "children": [
+                        { "type": "icon", "name": "Chart Icon", "iconName": "BarChart3", "iconSize": 48, "iconFill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Text Group", "layout": "vertical",
+                      "widthMode": "fixed", "width": 360, "counterAlign": "center", "gap": "xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Heading", "textContent": "Powerful analytics for modern e-commerce", "textStyle": "SP/H3", "textFill": "foreground" },
+                        { "type": "text", "name": "Description", "textContent": "Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Footer", "layout": "vertical",
+                  "widthMode": "hug", "counterAlign": "center", "gap": "md",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Stats", "layout": "horizontal",
+                      "widthMode": "hug", "counterAlign": "center", "gap": "xl",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "frame", "name": "Stat 1", "layout": "vertical",
+                          "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "10K+", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                            { "type": "text", "name": "Label", "textContent": "Active Users", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                          ]
+                        },
+                        { "type": "instance", "name": "Div 1", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                        {
+                          "type": "frame", "name": "Stat 2", "layout": "vertical",
+                          "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "99.9%", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                            { "type": "text", "name": "Label", "textContent": "Uptime", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                          ]
+                        },
+                        { "type": "instance", "name": "Div 2", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                        {
+                          "type": "frame", "name": "Stat 3", "layout": "vertical",
+                          "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "text", "name": "Value", "textContent": "4.9★", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                            { "type": "text", "name": "Label", "textContent": "Rating", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                          ]
+                        }
+                      ]
+                    },
+                    { "type": "text", "name": "Copyright", "textContent": "© 2026 ShopPulse. All rights reserved.", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Form Panel", "layout": "vertical",
+              "fillWidth": true, "fill": "background",
+              "paddingX": "xl", "paddingY": "xl",
+              "counterAlign": "center", "primaryAlign": "center",
+              "gap": "none",
+              "children": [
+                {
+                  "type": "frame", "name": "Form", "layout": "vertical",
+                  "width": 440, "widthMode": "fixed",
+                  "counterAlign": "center", "gap": "xl",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Heading", "layout": "vertical",
+                      "fillWidth": true, "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Title", "textContent": "Welcome back", "textStyle": "SP/H2", "textFill": "foreground" },
+                        { "type": "text", "name": "Subtitle", "textContent": "Sign in to your account to continue", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Fields", "layout": "vertical",
+                      "fillWidth": true, "gap": "md", "counterAlign": "start",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "frame", "name": "Email Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Email Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Email" } },
+                            { "type": "instance", "name": "Email Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        {
+                          "type": "frame", "name": "Password Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Password Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Password" } },
+                            { "type": "instance", "name": "Password Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        { "type": "instance", "name": "Sign In", "component": "Button", "variants": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Sign In" } }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Divider Row", "layout": "horizontal",
+                      "fillWidth": true, "counterAlign": "center", "gap": "xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Sep Left", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true },
+                        { "type": "text", "name": "Or Text", "textContent": "or continue with", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        { "type": "instance", "name": "Sep Right", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Social Buttons", "layout": "horizontal",
+                      "fillWidth": true, "gap": "sm",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Google", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Google" } },
+                        { "type": "instance", "name": "GitHub", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "GitHub" } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+
+        "Type=Auth,Breakpoint=Tablet": {
+          "width": 768,
+          "children": [
+            {
+              "type": "frame", "name": "Branding Panel", "layout": "horizontal",
+              "fillWidth": true, "fill": "background",
+              "paddingX": "xl", "paddingY": "xl",
+              "counterAlign": "center", "primaryAlign": "space-between",
+              "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo", "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" }
+                },
+                {
+                  "type": "frame", "name": "Tagline", "layout": "vertical",
+                  "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    { "type": "text", "name": "Heading", "textContent": "Powerful analytics for modern e-commerce", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                    { "type": "text", "name": "Description", "textContent": "Real-time revenue tracking and growth metrics.", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Stats", "layout": "horizontal",
+                  "widthMode": "hug", "counterAlign": "center", "gap": "lg",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Stat 1", "layout": "vertical",
+                      "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Value", "textContent": "10K+", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                        { "type": "text", "name": "Label", "textContent": "Users", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                      ]
+                    },
+                    { "type": "instance", "name": "Div 1", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                    {
+                      "type": "frame", "name": "Stat 2", "layout": "vertical",
+                      "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Value", "textContent": "99.9%", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                        { "type": "text", "name": "Label", "textContent": "Uptime", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                      ]
+                    },
+                    { "type": "instance", "name": "Div 2", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                    {
+                      "type": "frame", "name": "Stat 3", "layout": "vertical",
+                      "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Value", "textContent": "4.9★", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                        { "type": "text", "name": "Label", "textContent": "Rating", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Form Panel", "layout": "vertical",
+              "fillWidth": true, "fill": "background",
+              "paddingX": "lg", "paddingY": "lg",
+              "counterAlign": "center", "primaryAlign": "center",
+              "gap": "none",
+              "children": [
+                {
+                  "type": "frame", "name": "Form", "layout": "vertical",
+                  "width": 440, "widthMode": "fixed",
+                  "counterAlign": "center", "gap": "xl",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Heading", "layout": "vertical",
+                      "fillWidth": true, "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Title", "textContent": "Welcome back", "textStyle": "SP/H2", "textFill": "foreground" },
+                        { "type": "text", "name": "Subtitle", "textContent": "Sign in to your account to continue", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Fields", "layout": "vertical",
+                      "fillWidth": true, "gap": "md", "counterAlign": "start",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "frame", "name": "Email Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Email Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Email" } },
+                            { "type": "instance", "name": "Email Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        {
+                          "type": "frame", "name": "Password Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Password Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Password" } },
+                            { "type": "instance", "name": "Password Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        { "type": "instance", "name": "Sign In", "component": "Button", "variants": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Sign In" } }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Divider Row", "layout": "horizontal",
+                      "fillWidth": true, "counterAlign": "center", "gap": "xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Sep Left", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true },
+                        { "type": "text", "name": "Or Text", "textContent": "or continue with", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        { "type": "instance", "name": "Sep Right", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Social Buttons", "layout": "horizontal",
+                      "fillWidth": true, "gap": "sm",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Google", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Google" } },
+                        { "type": "instance", "name": "GitHub", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "GitHub" } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+
+        "Type=Auth,Breakpoint=Mobile": {
+          "width": 375,
+          "children": [
+            {
+              "type": "frame", "name": "Form Panel", "layout": "vertical",
+              "fillWidth": true, "fill": "background",
+              "paddingX": "lg", "paddingY": "lg",
+              "counterAlign": "center", "primaryAlign": "center",
+              "gap": "none",
+              "children": [
+                {
+                  "type": "frame", "name": "Form", "layout": "vertical",
+                  "fillWidth": true,
+                  "counterAlign": "center", "gap": "xl",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "frame", "name": "Mobile Logo", "layout": "horizontal",
+                      "widthMode": "hug", "counterAlign": "center", "gap": "sm",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Logo", "component": "Logo", "variants": { "Type": "Full", "Size": "Small" } }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Heading", "layout": "vertical",
+                      "fillWidth": true, "counterAlign": "center", "gap": "3xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "text", "name": "Title", "textContent": "Welcome back", "textStyle": "SP/H2", "textFill": "foreground" },
+                        { "type": "text", "name": "Subtitle", "textContent": "Sign in to your account to continue", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Fields", "layout": "vertical",
+                      "fillWidth": true, "gap": "md", "counterAlign": "start",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "frame", "name": "Email Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Email Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Email" } },
+                            { "type": "instance", "name": "Email Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        {
+                          "type": "frame", "name": "Password Field", "layout": "vertical",
+                          "fillWidth": true, "gap": "3xs", "counterAlign": "start",
+                          "paddingX": "none", "paddingY": "none",
+                          "children": [
+                            { "type": "instance", "name": "Password Label", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Password" } },
+                            { "type": "instance", "name": "Password Input", "component": "Input", "variants": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "None" }, "fillWidth": true }
+                          ]
+                        },
+                        { "type": "instance", "name": "Sign In", "component": "Button", "variants": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Sign In" } }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Divider Row", "layout": "horizontal",
+                      "fillWidth": true, "counterAlign": "center", "gap": "xs",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Sep Left", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true },
+                        { "type": "text", "name": "Or Text", "textContent": "or continue with", "textStyle": "SP/Caption", "textFill": "muted-foreground" },
+                        { "type": "instance", "name": "Sep Right", "component": "Separator", "variants": { "Orientation": "Horizontal" }, "fillWidth": true }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Social Buttons", "layout": "horizontal",
+                      "fillWidth": true, "gap": "sm",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        { "type": "instance", "name": "Google", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "Google" } },
+                        { "type": "instance", "name": "GitHub", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "None" }, "fillWidth": true, "textOverrides": { "Button": "GitHub" } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+
+      "variantRestrictions": {},
+
+      "showcase": {
+        "sections": ["header", "component"]
+      },
+
+      "examples": [
+        {
+          "name": "Dashboard Desktop",
+          "description": "Full app shell with header navigation, KPI cards, and content area.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Dashboard", "props": { "Type": "Dashboard", "Breakpoint": "Desktop" } }
+          ]
+        },
+        {
+          "name": "Auth Desktop",
+          "description": "Split-screen layout with branding panel and sign-in form.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Auth", "props": { "Type": "Auth", "Breakpoint": "Desktop" } }
+          ]
+        },
+        {
+          "name": "Responsive — Dashboard",
+          "description": "Dashboard at tablet and mobile breakpoints.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Tablet", "props": { "Type": "Dashboard", "Breakpoint": "Tablet" } },
+            { "label": "Mobile", "props": { "Type": "Dashboard", "Breakpoint": "Mobile" } }
+          ]
+        },
+        {
+          "name": "Responsive — Auth",
+          "description": "Auth at tablet and mobile breakpoints.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Tablet", "props": { "Type": "Auth", "Breakpoint": "Tablet" } },
+            { "label": "Mobile", "props": { "Type": "Auth", "Breakpoint": "Mobile" } }
+          ]
+        }
+      ],
+
+      "designTokens": [
+        { "token": "--color-background", "value": "zinc-950 / white", "description": "Main content area and form panel background" },
+        { "token": "#0c0a1a", "value": "custom", "description": "Auth left panel — very dark violet (not tokenized, approximated with --background in Figma)" },
+        { "token": "--color-primary", "value": "violet-600", "description": "Ambient gradient orbs, active states, illustration accents" },
+        { "token": "--color-border", "value": "zinc-800 / zinc-200", "description": "Card borders, header bottom border" },
+        { "token": "--color-card", "value": "zinc-900 / white", "description": "Dashboard KPI card and chart card backgrounds" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use DashboardLayout for all authenticated pages — it provides the header, ambient effects, and max-width constraint.", "dont": "Create custom wrappers for individual pages — the layout handles all structural concerns." },
+        { "do": "Use AuthLayout for all unauthenticated pages (sign-in, sign-up, forgot password, onboarding) to maintain visual consistency.", "dont": "Mix auth and dashboard layout patterns — each has its own visual language." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Dashboard", "value": "header + content area", "code": "component", "codeValue": "DashboardLayout" },
+        { "figma": "Type=Auth", "value": "split-screen branding + form", "code": "component", "codeValue": "AuthLayout" },
+        { "figma": "Breakpoint=Desktop", "value": "1440px", "code": "--", "codeValue": "Full width" },
+        { "figma": "Breakpoint=Tablet", "value": "768px", "code": "--", "codeValue": "md breakpoint" },
+        { "figma": "Breakpoint=Mobile", "value": "375px", "code": "--", "codeValue": "sm breakpoint" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Navigate through layout landmarks: header → main content" },
+          { "key": "Escape", "action": "Close any open overlay within the layout" }
+        ],
+        "notes": [
+          "DashboardLayout uses <header> and <main> elements — automatic landmarks for screen readers.",
+          "AuthLayout left panel is decorative — aria-hidden prevents screen reader confusion.",
+          "Ambient gradient orbs use pointer-events-none and aria-hidden."
+        ]
+      },
+
+      "related": [
+        { "name": "App Header", "desc": "The application header bar — rendered as part of Dashboard layout." },
+        { "name": "Logo", "desc": "ShopPulse brand logo — appears in both layout types." },
+        { "name": "Separator", "desc": "Used as visual dividers between layout sections." }
+      ]
+    }
+  ]
+}
