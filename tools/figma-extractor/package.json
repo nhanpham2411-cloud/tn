@@ -1,0 +1,18 @@
+{
+  "name": "figma-extractor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "extract": "npx tsx extract.ts",
+    "extract:page": "npx tsx extract.ts --page",
+    "extract:debug": "npx tsx extract.ts --debug",
+    "extract:copy": "npx tsx extract.ts --copy --page",
+    "serve": "npx tsx extract.ts --serve"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

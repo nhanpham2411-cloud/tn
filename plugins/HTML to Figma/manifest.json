@@ -1,0 +1,13 @@
+{
+  "name": "HTML to Figma",
+  "id": "bredarstudio-html-to-figma",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Fetch extracted DOM data from local extractor API server"
+  }
+}
