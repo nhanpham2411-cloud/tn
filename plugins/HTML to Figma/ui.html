@@ -1,0 +1,323 @@
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Inter, system-ui, sans-serif; font-size: 12px; color: #e4e4e7; background: #18181b; padding: 12px; display: flex; flex-direction: column; height: 100vh; }
+  h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .desc { color: #71717a; margin-bottom: 12px; line-height: 1.5; }
+  .tabs { display: flex; gap: 0; margin-bottom: 12px; border-bottom: 1px solid #27272a; }
+  .tab { padding: 6px 12px; background: none; border: none; color: #71717a; cursor: pointer; font-size: 12px; border-bottom: 2px solid transparent; }
+  .tab.active { color: #e4e4e7; border-bottom-color: #7c3aed; }
+  .tab-content { display: none; flex: 1; flex-direction: column; }
+  .tab-content.active { display: flex; }
+  textarea { flex: 1; width: 100%; background: #09090b; border: 1px solid #27272a; border-radius: 8px; color: #e4e4e7; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 8px; resize: none; outline: none; min-height: 200px; }
+  textarea:focus { border-color: #7c3aed; }
+  input[type="text"] { width: 100%; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #e4e4e7; font-size: 12px; padding: 8px; outline: none; margin-bottom: 8px; }
+  input[type="text"]:focus { border-color: #7c3aed; }
+  .page-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 150px; }
+  .page-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .page-item:hover { background: #27272a; }
+  .page-item.selected { background: #7c3aed22; border: 1px solid #7c3aed44; }
+  .page-category { color: #71717a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; }
+  .actions { display: flex; gap: 8px; margin-top: 8px; }
+  button { flex: 1; padding: 8px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: #7c3aed; color: white; }
+  .btn-primary:hover { background: #6d28d9; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary { background: #27272a; color: #e4e4e7; }
+  .btn-secondary:hover { background: #3f3f46; }
+  .status { margin-top: 8px; padding: 8px; border-radius: 6px; font-size: 11px; display: none; }
+  .status.info { display: block; background: #172554; color: #93c5fd; }
+  .status.success { display: block; background: #14532d; color: #86efac; }
+  .status.error { display: block; background: #450a0a; color: #fca5a5; }
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; color: #71717a; font-size: 11px; }
+  .stats span { background: #27272a; padding: 2px 8px; border-radius: 4px; }
+  .breakpoints { display: flex; gap: 12px; margin-bottom: 8px; }
+  .breakpoints label { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #a1a1aa; cursor: pointer; }
+  .breakpoints input[type="checkbox"] { accent-color: #7c3aed; }
+  .server-status { font-size: 11px; color: #71717a; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ef4444; }
+  .dot.connected { background: #22c55e; }
+</style>
+</head>
+<body>
+  <h2>HTML to Figma</h2>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="fetch">Fetch</button>
+    <button class="tab" data-tab="paste">Paste JSON</button>
+  </div>
+
+  <!-- Tab 1: Fetch from API -->
+  <div class="tab-content active" id="tab-fetch">
+    <div class="server-status">
+      <div class="dot" id="serverDot"></div>
+      <span id="serverLabel">Checking server...</span>
+    </div>
+    <input type="text" id="apiUrl" value="http://localhost:3457" placeholder="API server URL" />
+    <div class="page-list" id="pageList">
+      <div style="color:#71717a; padding: 8px;">Loading pages...</div>
+    </div>
+    <div class="breakpoints">
+      <label><input type="checkbox" value="Desktop" checked /> Desktop (1440)</label>
+      <label><input type="checkbox" value="Tablet" /> Tablet (768)</label>
+      <label><input type="checkbox" value="Mobile" /> Mobile (375)</label>
+    </div>
+    <div class="actions">
+      <button class="btn-secondary" id="btnRefresh">Refresh</button>
+      <button class="btn-primary" id="btnFetch" disabled>Extract & Generate</button>
+    </div>
+  </div>
+
+  <!-- Tab 2: Paste JSON -->
+  <div class="tab-content" id="tab-paste">
+    <p class="desc">Paste raw DOM JSON from the CLI tool.</p>
+    <textarea id="json" placeholder='Paste extracted DOM JSON here...'></textarea>
+    <div class="stats" id="stats"></div>
+    <div class="actions">
+      <button class="btn-secondary" id="btnClear">Clear</button>
+      <button class="btn-primary" id="btnGenerate" disabled>Generate</button>
+    </div>
+  </div>
+
+  <div class="status" id="status"></div>
+
+<script>
+  const API_URL_KEY = 'html-to-figma-api-url';
+  const jsonEl = document.getElementById('json');
+  const btnGen = document.getElementById('btnGenerate');
+  const btnClear = document.getElementById('btnClear');
+  const btnFetch = document.getElementById('btnFetch');
+  const btnRefresh = document.getElementById('btnRefresh');
+  const statusEl = document.getElementById('status');
+  const statsEl = document.getElementById('stats');
+  const apiUrlEl = document.getElementById('apiUrl');
+  const pageListEl = document.getElementById('pageList');
+  const serverDot = document.getElementById('serverDot');
+  const serverLabel = document.getElementById('serverLabel');
+
+  let selectedPage = null;
+  let serverConnected = false;
+
+  // Restore API URL
+  try {
+    const savedUrl = localStorage.getItem(API_URL_KEY);
+    if (savedUrl) apiUrlEl.value = savedUrl;
+  } catch(e) { /* localStorage may be blocked in iframe */ }
+
+  // ── Tabs ──
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    };
+  });
+
+  // ── Fetch tab ──
+
+  async function checkServer() {
+    const base = apiUrlEl.value.trim();
+    try { localStorage.setItem(API_URL_KEY, base); } catch(e) {}
+    try {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 3000);
+      const res = await fetch(base + '/api/pages', { signal: controller.signal });
+      const data = await res.json();
+      serverConnected = true;
+      serverDot.classList.add('connected');
+      serverLabel.textContent = 'Connected — ' + data.pages.length + ' pages';
+      renderPages(data.pages);
+    } catch (e) {
+      serverConnected = false;
+      serverDot.classList.remove('connected');
+      serverLabel.textContent = 'Server offline — run: npx tsx html-to-figma.ts --serve';
+      pageListEl.innerHTML = '<div style="color:#71717a; padding: 8px;">Start the extractor server first.</div>';
+      btnFetch.disabled = true;
+    }
+  }
+
+  function renderPages(pages) {
+    pageListEl.innerHTML = '';
+    let lastCategory = '';
+    for (const p of pages) {
+      if (p.category !== lastCategory) {
+        lastCategory = p.category;
+        const cat = document.createElement('div');
+        cat.className = 'page-category';
+        cat.textContent = p.category;
+        pageListEl.appendChild(cat);
+      }
+      const item = document.createElement('div');
+      item.className = 'page-item';
+      item.textContent = p.name;
+      item.dataset.name = p.name;
+      item.onclick = () => {
+        document.querySelectorAll('.page-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedPage = p.name;
+        btnFetch.disabled = false;
+      };
+      pageListEl.appendChild(item);
+    }
+  }
+
+  apiUrlEl.addEventListener('change', checkServer);
+  btnRefresh.onclick = checkServer;
+
+  const BP_SIZES = { Desktop: { width: 1440, minHeight: 900 }, Tablet: { width: 768, minHeight: 1024 }, Mobile: { width: 375, minHeight: 812 } };
+
+  function getSelectedBreakpoints() {
+    return Array.from(document.querySelectorAll('.breakpoints input:checked')).map(cb => cb.value);
+  }
+
+  // Track pending frames for multi-breakpoint generation
+  let pendingBPs = [];
+  let currentBPIndex = 0;
+
+  btnFetch.onclick = async () => {
+    if (!selectedPage || !serverConnected) return;
+    const bps = getSelectedBreakpoints();
+    if (bps.length === 0) {
+      statusEl.className = 'status error';
+      statusEl.textContent = 'Select at least one breakpoint';
+      return;
+    }
+    btnFetch.disabled = true;
+    pendingBPs = bps;
+    currentBPIndex = 0;
+
+    // Tell plugin to start a responsive session (reset position tracking)
+    parent.postMessage({ pluginMessage: { type: 'responsive-start', pageName: selectedPage, total: bps.length } }, '*');
+
+    // Extract and send each breakpoint one at a time
+    await extractNextBreakpoint();
+  };
+
+  async function extractNextBreakpoint() {
+    if (currentBPIndex >= pendingBPs.length) {
+      // All done — tell plugin to finalize
+      parent.postMessage({ pluginMessage: { type: 'responsive-end' } }, '*');
+      return;
+    }
+
+    const bpName = pendingBPs[currentBPIndex];
+    const base = apiUrlEl.value.trim();
+    statusEl.className = 'status info';
+    statusEl.textContent = 'Extracting ' + bpName + ' (' + (currentBPIndex + 1) + '/' + pendingBPs.length + ')...';
+
+    try {
+      const url = base + '/api/extract/' + selectedPage + '?breakpoint=' + bpName;
+      const res = await fetch(url);
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Server error');
+      }
+      const tree = await res.json();
+      const sizes = BP_SIZES[bpName] || { width: 1440, minHeight: 900 };
+
+      statusEl.textContent = 'Generating ' + bpName + ' in Figma...';
+      parent.postMessage({ pluginMessage: {
+        type: 'responsive-frame',
+        tree: tree,
+        breakpoint: bpName,
+        width: sizes.width,
+        minHeight: sizes.minHeight,
+        pageName: selectedPage,
+        index: currentBPIndex,
+        total: pendingBPs.length,
+      } }, '*');
+      // Plugin will reply with 'frame-done' to trigger next
+    } catch (e) {
+      statusEl.className = 'status error';
+      statusEl.textContent = 'Error (' + bpName + '): ' + e.message;
+      btnFetch.disabled = false;
+    }
+  }
+
+  // ── Paste tab ──
+
+  function countNodes(node) {
+    let count = 1;
+    if (node.children) for (const c of node.children) count += countNodes(c);
+    return count;
+  }
+
+  function countTypes(node, types = {}) {
+    types[node.type] = (types[node.type] || 0) + 1;
+    if (node.children) for (const c of node.children) countTypes(c, types);
+    return types;
+  }
+
+  jsonEl.addEventListener('input', () => {
+    const val = jsonEl.value.trim();
+    btnGen.disabled = !val;
+    statusEl.className = 'status';
+    statsEl.innerHTML = '';
+    if (val) {
+      try {
+        const data = JSON.parse(val);
+        const root = data.root || data;
+        const total = countNodes(root);
+        const types = countTypes(root);
+        const parts = Object.entries(types).map(([k,v]) => '<span>' + k + ': ' + v + '</span>');
+        statsEl.innerHTML = '<span>Total: ' + total + ' nodes</span>' + parts.join('');
+      } catch(e) {
+        statsEl.innerHTML = '<span style="color:#fca5a5">Invalid JSON</span>';
+      }
+    }
+  });
+
+  btnClear.onclick = () => {
+    jsonEl.value = '';
+    btnGen.disabled = true;
+    statusEl.className = 'status';
+    statsEl.innerHTML = '';
+  };
+
+  btnGen.onclick = () => {
+    const val = jsonEl.value.trim();
+    if (!val) return;
+    try {
+      const data = JSON.parse(val);
+      btnGen.disabled = true;
+      statusEl.className = 'status info';
+      statusEl.textContent = 'Generating...';
+      parent.postMessage({ pluginMessage: { type: 'generate', data } }, '*');
+    } catch(e) {
+      statusEl.className = 'status error';
+      statusEl.textContent = 'Invalid JSON: ' + e.message;
+    }
+  };
+
+  // ── Plugin messages ──
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === 'frame-done') {
+      // One breakpoint frame created — extract next
+      currentBPIndex++;
+      extractNextBreakpoint();
+    } else if (msg.type === 'done') {
+      statusEl.className = 'status success';
+      statusEl.textContent = msg.message || 'Done!';
+      btnGen.disabled = false;
+      btnFetch.disabled = !selectedPage;
+    } else if (msg.type === 'error') {
+      statusEl.className = 'status error';
+      statusEl.textContent = msg.message || 'Error';
+      btnGen.disabled = false;
+      btnFetch.disabled = !selectedPage;
+    } else if (msg.type === 'progress') {
+      statusEl.className = 'status info';
+      statusEl.textContent = msg.message || 'Working...';
+    }
+  };
+
+  // Init
+  checkServer();
+</script>
+</body>
+</html>
