@@ -476,14 +476,19 @@ export const DOM_WALKER_SCRIPT = `
       const w = parseFloat(el.getAttribute("width") || style.width) || Math.round(rect.width);
       const h = parseFloat(el.getAttribute("height") || style.height) || Math.round(rect.height);
       // Large SVGs (>100px) are likely illustrations, not icons → image placeholder
+      // Use parent container selector for screenshot (SVG elements may fail)
       if (Math.round(w) > 100 || Math.round(h) > 100) {
+        var parentEl = el.parentElement;
+        var useParent = parentEl && parentEl !== document.body && parentEl.children.length <= 5;
+        var screenshotEl = useParent ? parentEl : el;
+        var ssRect = screenshotEl.getBoundingClientRect();
         return {
           type: "image",
           name: "Illustration",
           src: "",
-          selector: getSelector(el),
-          width: Math.round(w),
-          height: Math.round(h),
+          selector: getSelector(screenshotEl),
+          width: Math.round(ssRect.width) || Math.round(w),
+          height: Math.round(ssRect.height) || Math.round(h),
           fillWidth: getFlexGrow(el) || undefined,
           objectFit: "contain",
           tagName: "svg",

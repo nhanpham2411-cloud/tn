@@ -2,6 +2,7 @@ import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
 import { cn } from "@/lib/utils"
+import { figma, AVATAR_SIZE } from "@/lib/figma-dev"
 
 /**
  * SprouX Avatar
@@ -17,6 +18,10 @@ function Avatar({
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
+      {...figma("Avatar", {
+        Type: "Image",
+        Size: AVATAR_SIZE[className?.includes("size-8") ? "sm" : className?.includes("size-14") ? "lg" : "default"] ?? "Default",
+      })}
       className={cn(
         "relative flex size-10 shrink-0 overflow-hidden rounded-full border border-border",
         className

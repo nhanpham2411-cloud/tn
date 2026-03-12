@@ -14,6 +14,9 @@ import {
 } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 
+// Brand icons
+import { GoogleIcon, GitHubIcon, AppleIcon, XIcon, LinkedInIcon, DiscordIcon, MicrosoftIcon, FigmaIcon, FacebookIcon, SlackIcon } from "@/components/ui/brand-icons"
+
 // UI Components
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8994,6 +8997,20 @@ function IconsDocs() {
   const filteredIcons = iconSearch
     ? allIcons.filter(i => i.name.toLowerCase().includes(iconSearch.toLowerCase()))
     : allIcons
+
+  const brandLogos = [
+    { name: "Google", Icon: GoogleIcon },
+    { name: "GitHub", Icon: GitHubIcon },
+    { name: "Apple", Icon: AppleIcon },
+    { name: "X", Icon: XIcon },
+    { name: "Facebook", Icon: FacebookIcon },
+    { name: "LinkedIn", Icon: LinkedInIcon },
+    { name: "Discord", Icon: DiscordIcon },
+    { name: "Slack", Icon: SlackIcon },
+    { name: "Microsoft", Icon: MicrosoftIcon },
+    { name: "Figma", Icon: FigmaIcon },
+  ]
+
   return (
     <div className="space-y-3xl">
       <header>
@@ -9028,6 +9045,20 @@ function IconsDocs() {
           ))}
         </div>
         {filteredIcons.length > 500 && <p className="text-xs text-muted-foreground">Showing 500 of {filteredIcons.length} — use search to find specific icons.</p>}
+      </section>
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Brand Logos</h2>
+        <p className="text-sm text-muted-foreground">Third-party brand logos for social login and integrations. 16px default, multi-color fills.</p>
+        <div className="flex gap-md">
+          {brandLogos.map(({ name, Icon }) => (
+            <div key={name} className="border border-border rounded-md p-md flex flex-col items-center gap-xs min-w-[80px]">
+              <div className="size-10 rounded-lg bg-muted/50 flex items-center justify-center">
+                <Icon />
+              </div>
+              <p className="text-xs font-mono text-muted-foreground">{name}</p>
+            </div>
+          ))}
+        </div>
       </section>
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Usage</h2>
@@ -10092,8 +10123,8 @@ function TopHeaderDocs() {
               {isDesktop && (
                 <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs" aria-label="Main navigation">
                   {headerNavTabs.map(tab => (
-                    <span key={tab} className={cn("px-lg py-xs rounded-full sp-label cursor-default",
-                      tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground"
+                    <span key={tab} className={cn("px-lg py-xs rounded-full sp-label transition-all",
+                      tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:bg-muted/40 hover:text-foreground cursor-default"
                     )}>{tab}</span>
                   ))}
                 </nav>

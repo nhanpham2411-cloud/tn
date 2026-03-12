@@ -28,6 +28,8 @@ export interface RawExtractedNode {
   height?: number
   fillWidth?: boolean
   fillHeight?: boolean
+  hugWidth?: boolean
+  hugHeight?: boolean
   selfAlign?: "center" | "end"  // per-child cross-axis alignment (mx-auto → center)
   // Visual
   fill?: string          // raw rgba
@@ -159,7 +161,8 @@ export const RAW_DOM_WALKER_SCRIPT = `
     const style = getComputedStyle(el);
     if (style.display === "none") return true;
     if (style.visibility === "hidden") return true;
-    if (style.opacity === "0") return true;
+    // opacity 0 = hidden UNLESS element has animation (page-in starts at opacity 0)
+    if (style.opacity === "0" && (!style.animationName || style.animationName === "none")) return true;
     if (style.position === "absolute" && style.clip === "rect(0px, 0px, 0px, 0px)") return true;
     // Width/height 0 with overflow hidden
     if (style.width === "0px" && style.height === "0px" && style.overflow === "hidden") return true;
@@ -383,6 +386,78 @@ export const RAW_DOM_WALKER_SCRIPT = `
       if (alignSelf === "stretch" || ((alignSelf === "auto" || alignSelf === "") && parentStretches)) {
         const parentH = parentStyle.height;
         if (parentH && parentH !== "auto" && parentH !== "0px") return true;
+      }
+    }
+    return false;
+  }
+
+  // Detect if element should HUG width (content-sized, no explicit width)
+  // Any element in a flex parent that sizes to its content → HUG
+  function getHugWidth(el) {
+    var style = getComputedStyle(el);
+    var display = style.display;
+    // inline-flex always sizes to content
+    if (display === "inline-flex") return true;
+    // If fills parent → FILL, not HUG
+    if (getFlexGrow(el)) return false;
+    // If has max-width → explicit sizing intent, not HUG
+    var maxW = style.maxWidth;
+    if (maxW && maxW !== "none") return false;
+    // Check parent context
+    var parent = el.parentElement;
+    if (!parent) return false;
+    var ps = getComputedStyle(parent);
+    var pd = ps.display;
+    if (pd === "flex" || pd === "inline-flex") {
+      var dir = ps.flexDirection || "row";
+      var isRow = dir === "row" || dir === "row-reverse";
+      if (isRow) {
+        // Row flex child: no grow + auto basis → sizes to content width
+        // Applies to ANY element (flex, block, etc.) in a row flex parent
+        var grow = parseFloat(style.flexGrow) || 0;
+        var basis = style.flexBasis;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+      } else {
+        // Column flex child: width is cross-axis
+        // If not stretch → sizes to content width
+        var alignSelf = style.alignSelf;
+        var alignItems = ps.alignItems;
+        var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
+        var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
+        if (selfIsContent) return true;
+        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
+      }
+    }
+    return false;
+  }
+
+  // Detect if element should HUG height (content-sized, no explicit height)
+  function getHugHeight(el) {
+    var style = getComputedStyle(el);
+    var display = style.display;
+    if (display === "inline-flex") return true;
+    if (getFillHeight(el)) return false;
+    var maxH = style.maxHeight;
+    if (maxH && maxH !== "none") return false;
+    var parent = el.parentElement;
+    if (!parent) return false;
+    var ps = getComputedStyle(parent);
+    var pd = ps.display;
+    if (pd === "flex" || pd === "inline-flex") {
+      var dir = ps.flexDirection || "row";
+      var isCol = dir === "column" || dir === "column-reverse";
+      if (isCol) {
+        var grow = parseFloat(style.flexGrow) || 0;
+        var basis = style.flexBasis;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+      } else {
+        // Row flex child: height is cross-axis
+        var alignSelf = style.alignSelf;
+        var alignItems = ps.alignItems;
+        var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
+        var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
+        if (selfIsContent) return true;
+        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
       }
     }
     return false;
@@ -896,6 +971,8 @@ export const RAW_DOM_WALKER_SCRIPT = `
       height: h,
       fillWidth: getFlexGrow(el) || undefined,
       fillHeight: getFillHeight(el) || undefined,
+      hugWidth: getHugWidth(el) || undefined,
+      hugHeight: getHugHeight(el) || undefined,
       selfAlign: getSelfAlign(el) || undefined,
       fill: bg || undefined,
       stroke: strokeInfo ? strokeInfo.color : undefined,

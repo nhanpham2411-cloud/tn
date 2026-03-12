@@ -1,0 +1,317 @@
+{
+  "pageName": "Management — Orders Loading",
+  "root": {
+    "type": "frame",
+    "name": "Management Orders Loading — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "background"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "lg",
+            "name": "Grid (4-col)",
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "component",
+                "componentSet": "Skeleton",
+                "name": "Skeleton",
+                "variants": {
+                  "Shape": "Text"
+                }
+              },
+              {
+                "type": "component",
+                "componentSet": "Skeleton",
+                "name": "Skeleton",
+                "variants": {
+                  "Shape": "Text"
+                }
+              },
+              {
+                "type": "component",
+                "componentSet": "Skeleton",
+                "name": "Skeleton",
+                "variants": {
+                  "Shape": "Text"
+                }
+              },
+              {
+                "type": "component",
+                "componentSet": "Skeleton",
+                "name": "Skeleton",
+                "variants": {
+                  "Shape": "Text"
+                }
+              }
+            ]
+          },
+          {
+            "type": "component",
+            "componentSet": "Skeleton",
+            "name": "Skeleton",
+            "variants": {
+              "Shape": "Text"
+            },
+            "sizing": {
+              "width": "fill"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

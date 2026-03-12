@@ -1,0 +1,3360 @@
+{
+  "pageName": "Dashboard — Analytics",
+  "root": {
+    "type": "frame",
+    "name": "Dashboard Analytics — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "background"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "horizontal",
+        "gap": "lg",
+        "name": "Grid (12-col)",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "xs",
+            "padding": "md",
+            "align": {
+              "justify": "center"
+            },
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 199,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Total Revenue",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "icon",
+                    "name": "DollarSign",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(161, 161, 169, 0.5)"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "content": "$1,161,330",
+                "fill": "card-foreground",
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 85,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "end"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:130"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      },
+                      {
+                        "type": "text",
+                        "content": "vs last year",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "icon",
+                    "name": "Icon",
+                    "sizing": {
+                      "width": "fixed:80",
+                      "height": "fixed:28"
+                    },
+                    "fill": "card-foreground"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "xs",
+            "padding": "md",
+            "align": {
+              "justify": "center"
+            },
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 210,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Total Orders",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "icon",
+                    "name": "ShoppingCart",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(161, 161, 169, 0.5)"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "content": "35,692",
+                "fill": "card-foreground",
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 91,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "end"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:124"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      },
+                      {
+                        "type": "text",
+                        "content": "vs last year",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "icon",
+                    "name": "Icon",
+                    "sizing": {
+                      "width": "fixed:80",
+                      "height": "fixed:28"
+                    },
+                    "fill": "card-foreground"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "xs",
+            "padding": "md",
+            "align": {
+              "justify": "center"
+            },
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 226,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Net Profit",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "icon",
+                    "name": "TrendingUp",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(161, 161, 169, 0.5)"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "content": "$899,100",
+                "fill": "card-foreground",
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 85,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "end"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:130"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      },
+                      {
+                        "type": "text",
+                        "content": "vs last year",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "icon",
+                    "name": "Icon",
+                    "sizing": {
+                      "width": "fixed:80",
+                      "height": "fixed:28"
+                    },
+                    "fill": "card-foreground"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "xs",
+            "padding": "md",
+            "align": {
+              "justify": "center"
+            },
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 184,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Avg. Order Value",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "icon",
+                    "name": "Target",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(161, 161, 169, 0.5)"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "content": "$33.42",
+                "fill": "card-foreground",
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 97,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "end"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:118"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowDownRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "destructive"
+                      },
+                      {
+                        "type": "text",
+                        "content": "vs last year",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "icon",
+                    "name": "Icon",
+                    "sizing": {
+                      "width": "fixed:80",
+                      "height": "fixed:28"
+                    },
+                    "fill": "card-foreground"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": 72,
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 314,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Revenue Overview",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground"
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Badge",
+                    "name": "Badge",
+                    "variants": {
+                      "Variant": "Default",
+                      "Type": "Badge",
+                      "Level": "Secondary",
+                      "Size": "SM"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Channels"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "content": "$1,161,330",
+                "fill": "card-foreground",
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "4xs",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:235",
+                      "height": "fixed:12"
+                    },
+                    "fill": "chart-4",
+                    "radius": "sm"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:130",
+                      "height": "fixed:12"
+                    },
+                    "fill": "success-subtle-foreground",
+                    "radius": "sm"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:62",
+                      "height": "fixed:12"
+                    },
+                    "fill": "chart-5",
+                    "radius": "sm"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:92",
+                      "height": "fixed:12"
+                    },
+                    "fill": "brand-subtle-foreground",
+                    "radius": "sm"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "name": "Grid (2-col)",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:254"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "chart-4",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Online Store",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$525K",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground"
+                          },
+                          {
+                            "type": "text",
+                            "content": "45%",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:254"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "success-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Retail",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$291K",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground"
+                          },
+                          {
+                            "type": "text",
+                            "content": "25%",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:254"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "chart-5",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Wholesale",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$140K",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground"
+                          },
+                          {
+                            "type": "text",
+                            "content": "12%",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:254"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "brand-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Services",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$205K",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground"
+                          },
+                          {
+                            "type": "text",
+                            "content": "18%",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 227,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Traffic Sources",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground"
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Badge",
+                    "name": "Badge",
+                    "variants": {
+                      "Variant": "Default",
+                      "Type": "Badge",
+                      "Level": "Secondary",
+                      "Size": "SM"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Channels"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xl",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill",
+                  "height": "fill"
+                },
+                "children": [
+                  {
+                    "type": "image",
+                    "name": "Illustration",
+                    "sizing": {
+                      "width": "fill",
+                      "height": "fixed:210"
+                    },
+                    "imageBase64": "data:image/png;base64,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hYHqI+u5GNKqoLdtA7ogQRru20xN//YWANUmgFu3bnGFgoICruDl5aVe08Ojcao5N7err9sieW1AF824wubNn6ouuru7c0thdJ4vPv4id/Ho0eNcITT0LVVN2v7NnDmdK0dGHiJdG3YMkJUrlwcFjVH96OvrwxXoMj9XSEtLCw1dRgszZoR8/vlW1W/Pnj1rZ2c3ceIEbvRKBxx0GZf7raWlpWqfVXGxODo6hihXzCbR66Rh5tnZ+cnvOenckDxy4MB+br6tOSUlJb6+A7nyDz98N3Hi+KZ1aEc8cmSgqpOlZs2asWXLpqY3drRpnDdvQWxsHOna0NsqdzG1XIHOAKvKixa9tX37joqKCvWPp6SkBgQMV48dtWfPL4sXL6ErvKq9BbRA68yYMRuxI2jzNGZmJvT398/Ozs7IyGy5Jm32aJtKm7onrnZ0KUgesIH5PGADyQM2kDxgA8kDNpA8YAPzea3S9LFZ0BLaPKVevRxXrFitfqWsrHTDho8aVlrneHv7CASCqqrKI0dizp07TZTrtl888u7rlSuX0u+9e7suWbJcJpOtWbOCm0C2sLBYt25DRMS+M2f+JKAGyVMSi8VhYTuIcslrbl7enVOn4rhtKePGTRg4cFBWVmZi4o3AwJemTn01MzO9sLBg586fBAL++PGTTE2Fe/f+ovo7AQHDSMNjlJ6e3snJSarr2BzVFHpbpbq62uvXWkkIJgAAAnFJREFUr9Ev2lDduyemhfT0NKJ8eHtgefn9b7/9N83i119/SZSP3Cq3dtJU0To0nbW1Eu6D3N/x8emXkZFO2zwugtACtHktsbS0ungxnivTRNIOl/anzVWmXbaJiUly8k3a5nl4aP5+9i4CbV6zDBuon6culcp5vGaHGkOHvkC/3717h/bX9C7Q09OLQPPQ5jWLrvFXVFSIRI2tF72l69bNPCkpobn6gwYpz75YtCiU+9Hff1hKSjKBZiB5Lbl48UJg4Jg5c+bfvp06enRQw5X4x9a0te1Bx78pKTcPHVI+irZ48VL1Dpd2xF5eyuMsSkpKiooKCSB5LYuOPmRubv7cc379+w+srq7as2dnXt7jn5/w9w+g32nsuGDFxf0xYcIkkciD+5GOS7ihSVJS4o4d2whgl1QrGRsb19bWEtAdtHmtgtjpHJIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbCB5wAaSB2wgecAGkgdsIHnABpIHbPwXAAD//8Q6a/4AAAAGSURBVAMAbbBqdHIKjKgAAAAASUVORK5CYII="
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "md",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "paddingX": "sm",
+                        "paddingY": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:201"
+                        },
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:10",
+                              "height": "fixed:10"
+                            },
+                            "fill": "brand-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Online Store",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "45%",
+                            "textStyle": "sp-mono-medium",
+                            "fill": "card-foreground",
+                            "textAlign": "center"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "paddingX": "sm",
+                        "paddingY": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:201"
+                        },
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:10",
+                              "height": "fixed:10"
+                            },
+                            "fill": "success-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Marketplace",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "25%",
+                            "textStyle": "sp-mono-medium",
+                            "fill": "card-foreground",
+                            "textAlign": "center"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "paddingX": "sm",
+                        "paddingY": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:201"
+                        },
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:10",
+                              "height": "fixed:10"
+                            },
+                            "fill": "warning-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Social Media",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "18%",
+                            "textStyle": "sp-mono-medium",
+                            "fill": "card-foreground",
+                            "textAlign": "center"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "paddingX": "sm",
+                        "paddingY": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:201"
+                        },
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:10",
+                              "height": "fixed:10"
+                            },
+                            "fill": "chart-4",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Wholesale",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "12%",
+                            "textStyle": "sp-mono-medium",
+                            "fill": "card-foreground",
+                            "textAlign": "center"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "5xl",
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Product Categories",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground"
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Badge",
+                    "name": "Badge",
+                    "variants": {
+                      "Variant": "Default",
+                      "Type": "Badge",
+                      "Level": "Secondary",
+                      "Size": "SM"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "4 categories"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "paddingY": "xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "align": {
+                              "justify": "center",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:28"
+                            },
+                            "fill": "foreground/6",
+                            "radius": "md",
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ShoppingCart",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "Electronics",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "3xs",
+                            "sizing": {
+                              "width": "fixed:76"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "$38.2k",
+                                "textStyle": "sp-mono-medium",
+                                "fill": "card-foreground"
+                              },
+                              {
+                                "type": "text",
+                                "content": "31%",
+                                "textStyle": "sp-mono",
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:295",
+                          "height": "fixed:10"
+                        },
+                        "fill": "foreground/4",
+                        "radius": "sm"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "paddingY": "xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "align": {
+                              "justify": "center",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:28"
+                            },
+                            "fill": "foreground/6",
+                            "radius": "md",
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "Target",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "Clothing",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "3xs",
+                            "sizing": {
+                              "width": "fixed:76"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "$28.4k",
+                                "textStyle": "sp-mono-medium",
+                                "fill": "card-foreground"
+                              },
+                              {
+                                "type": "text",
+                                "content": "23%",
+                                "textStyle": "sp-mono",
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:295",
+                          "height": "fixed:10"
+                        },
+                        "fill": "foreground/4",
+                        "radius": "sm"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "paddingY": "xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "align": {
+                              "justify": "center",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:28"
+                            },
+                            "fill": "foreground/6",
+                            "radius": "md",
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ChartColumn",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "Home & Garden",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "3xs",
+                            "sizing": {
+                              "width": "fixed:76"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "$22.1k",
+                                "textStyle": "sp-mono-medium",
+                                "fill": "card-foreground"
+                              },
+                              {
+                                "type": "text",
+                                "content": "18%",
+                                "textStyle": "sp-mono",
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:295",
+                          "height": "fixed:10"
+                        },
+                        "fill": "foreground/4",
+                        "radius": "sm"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "paddingY": "xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "align": {
+                              "justify": "center",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:28"
+                            },
+                            "fill": "foreground/6",
+                            "radius": "md",
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "Sparkles",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "Sports",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "3xs",
+                            "sizing": {
+                              "width": "fixed:76"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "$18.6k",
+                                "textStyle": "sp-mono-medium",
+                                "fill": "card-foreground"
+                              },
+                              {
+                                "type": "text",
+                                "content": "15%",
+                                "textStyle": "sp-mono",
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:295",
+                          "height": "fixed:10"
+                        },
+                        "fill": "foreground/4",
+                        "radius": "sm"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "xs",
+                    "sizing": {
+                      "width": "fixed:206"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Daily Orders",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "sm",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "1,048",
+                            "fill": "card-foreground"
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "4xs",
+                            "align": {
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:50"
+                            },
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ArrowUpRight",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "success"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "vs last week",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "lg",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:169"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:75"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "brand-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "This week",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:74"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "success-subtle-foreground",
+                            "radius": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Last week",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "image",
+                "name": "Illustration",
+                "sizing": {
+                  "width": "fill",
+                  "height": "fixed:220"
+                },
+                "imageBase64": "data:image/png;base64,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"
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 251,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Revenue Forecast",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "lg",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:139"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:53"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "sizing": {
+                              "width": "fixed:8",
+                              "height": "fixed:8"
+                            },
+                            "fill": "brand-subtle-foreground",
+                            "radius": "full"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Actual",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:66"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Forecast",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "image",
+                "name": "Illustration",
+                "sizing": {
+                  "width": "fill",
+                  "height": "fixed:174"
+                },
+                "imageBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAhAAAACuCAIAAADoPaPyAAAQAElEQVR4nOzdCXwTdd4/8EmPHG16t9BCue+iItjSIggFhAIFXAR5YEXddR+RB1EQr0VEKyJu0dX1kWepCOsesODq7l8XRfAWRRCEcsh9tpQWaJu0TXOnyf+TDozZFum0mdIUPu9XXnlNvvllOjOZ+X1/R5qExMcnCkRERA0JEYiIiGRgwiAiIlmC5BRKTR0YEsLUQkR0XQsOC9NfuUS3bt3vv/8Bj8ddXFzscjkRiY2NHTx4qMFgsNlsKpUqI2NQv379LRaLyVQlvqRHj57p6YMsFrPJZMLDtLT06mqT3W4XiIio1WogYQwbNmLq1OnBwcHx8QkjR47asuXrvn1vmD37EaSEkydPlJZemD374Rtv7I+0MW7cBESMRsPo0WMnTbrL5XKMH39HYWFheXnZzJkPnThxDAlGICKiVquBIalBgwZv3LihsLDglVdy9+3bExcX17lzl5UrV5jNZjyblNSuQ4dOubmL33prxfvv/zM2Ng7BUaOy8vLeWL165caNH06ePNV3bdnZEzIyBgtERNQKNTAzceDA/jFjsrVarV6vX79+LSIbNrwvPduzZ6/q6uqHH34sKipy79497733TkxMrMfjQYLBs3v35o8bN14qPH36DPRLcnNfvOwfwqt0Op24aLPZfSNYEIezmhYBbH9txG23O5SI1F9zUyJut8fhUCCi3H4FesTtdjscSkbQM9ZoNIEUETQarRIRac01Dofz2ovU1NQ4nWIkSKNR+x8JCgpSqxWJqNRqTQBGXLV8t7lREUkDCQPpoaioaMaMe596auGRI4dXrcrDSSk9GxkZhfmMd99dh+mNmTNnY/Tp1KmT4oaCxVKNsSxxecqUaeidLFq04AozGdg3wVtNqMSHODkuRQR/Ij5rDlIoolIkolIJikSU26+6Ebfbr4j0XrjdKkUiWFQoUnebmxpRKR1RKRvxeU/9jNS/KpsWkc4Nwb+IStmIoNjVrVI2Il0FfkaQA+rse6MikgYSBl6Qn//D0KHD1q1bM3fuY6mpA3fs2C49W1lZUV5evn37Nix///223r1Ttm3bKqYmSEhoI6WHhIQEZBq9Ptxms172D+GUsljqPsVIq46gU8VIC0XczRTBVaxQxKNQxM1IoyI1NU2JSBqYw1iyJHfYsOHiMur0Ov0D9Dmio6MTEtoir9xww03FxWdtNpvZbMnKGovC2dkTCwpOiSXz8pbv2bN7zpz5/HguEVEr1cCnpMrKyu688y7MTAwZMvTYsaObN2/01I71ZGaOPHjwRwxAhYaqMWB1++2jq6oq16z5CxLayZPHMdeNmQ+MR2F63Ol0oPC+fflbtnyVkXFrnz4pu3btFIiIqLVRyfkuqQULnl2+/FWTqfqyz6J7ERoaIs1PijCnVCdCREStmqyEgXl26ZM5RER0fZI1o8BsQUREnIImIiJZmDCIiEgWJgwiIpKFCYOIiGRhwiAiIlmYMIiISBYmDCIikoUJg4iIZGHCICIiWZgwiIhIFiYMIiKShQmDiIhkYcIgIiJZmDCIiEgWJgwiIpKFCYOIiGRhwiAiIlmYMIiISBYmDCIikoUJg4iIZAkSiKhVUWlCtF1iogZ3bDOlb0h8mBSPG9dTIGpO7GEQBS5Nx2iX0VpjsosPOz0xJGZkN3WsTirgOGeq+Lbw4gOPQNSsZCWM1NSBe/bsdrlcAhE1p9jbu0YN6qRpH6FpH6lpq0fk+DOfGT45Lj6LvoWYLWzFJkeJyY77Mqv02vKPjwpEzanhhNGtW/fp02fExcVt2fK11WpBJDY2dsCAtB9+2FFRYQwP1w8cmB4cHLJjx/aqqkrxJT169OzevefevfnFxWfxMC0t/ciRQ1VVVQIRCUJYr3ht55iwbjG6rrEYXDq3Zm/p/zsoPhXet23ChF5SSfv5alXIT+PGxat2Fa/ehVQhELWEBhLGsGEjxowZh4X09EFYfu65hb1795kx476goKCSkmKTqerpp59FVnC5nCNGjFq8+BmbzTZ69NjMzJEnThwdPnzk6tUrkSqys+8wGg1MGHS9CW2r1yZHapIirAUV5v3nxWDyQ+nt7uvvWwxlpGXjV6fsZ6vQdbAVVdkLK+qsEANQAlHLaSBhDBo0eOPGDQMGpL71Vt7Eib9AP6Nz5y4rV664555f4dn27ZMvXDj/f//3OpaffXZxr1590KsYNSrrjTdeKywsQNqYPHnq0qXPS2vLzp5QXm7Yvn2rQHQNUSdGCD61eVxW93Yz03QdoqQCJev2SQnDXlRpPVNpO2W0njRYThhtp42WI2VSyeq953ATiAJSAwnjwIH9Y8Zka7VavV6/fv1aRDZseF96Flnh9dd/j4WoqGi9PqK4uCgmJtbj8SCOIJLHuHHjpcIY18JQVW7ui5f9Q3iVTidO5XlsNrtvxOMR7HZbkyOA7RcX0AFSInJxC5WLeLRaXZMj2GW7/T/WrFzEbbc7lIgosz1ut8fh8EZUKpVGo2lyRNrCJkeib2oX+4ve6iR9aKJe286bLco/OnY2d6tURswWrgob+grWokrzwVKVStBovHtRtelk6QeHa9dzMaLRqP3cnp+LuN1uhyMwI0HY6yZHampqnE4nFjDUoVYrElGp1eIW1jgc/kQurlmpSDPsaVMikgYSBtJDUVHRjBn3PvXUwiNHDq9alYc3r04ZvIVz5z6OOYzS0lL0P6Q/YLFUBwcHi8tTpkxD72TRogVSFVAfrp9aQZceqsTIpXgTI9Kyx6NURKVQxCfgV0Sp7akb8f3UdZMiKt93wf9IUJBvqOkRnz31/FwkKEoX278TkoGmXYS2XZQ6KcJyqPTY05+IZULjdHHZPaTVOgxWweHCC8V3p2LbmR/vflcos3tsLlwvUiUu4z1V/B1UJqJS1d1mPyMqlce/SN33y++Iqt6+Ny0iKB0RFInUrw8bGxE1kDCQavLzfxg6dNi6dWvmzn0sNXUgEkOdAvPmPVFaev69997Bw3PnSsTUBAkJbaT0kJCQgCtHrw+32ayX/UM48FarrU6QkVYe8TRTBJ0PhSLebQ6ND0NWCMewksdj+PSEWEbfK6b74pG+hZ1VNulVxv0lwrJv7LWfU8LNY/+PDxDWVNktVXUbRsptc8tG3IpE0O0LsIibkStEJA0kjCVLcjdv3iguo06v3z+YM2ce+lB5ecvFhxi9MZstWVljP/lkU3b2xIKCU2IcBQYOzJgzZ/6SJc/y47nUIkJidSHRWttJo/hQ0zG616tjtB2jpQLW00YkDHHZfqbC8OVJMSU4iqvsJdX2kp8+teEsNV9474BAdJ1RxccnXuHpfv36//KX94SEePPKoUMH//SnleKQVE7Oi+++ux4jy3hWGqT6/PNPN236qGPHTg8++BD6GZWVFa+99orZXJ2Ts3TNmrdPnDj+1FPPGI3lb775R4Go+QVHaJL/Jw2jSdr2kepEfbA2FAlg7x1rxWdDYnQDNt+HBctJ7/wzZqGrD5VWflsgENHPaCBhiBYseHb58ldNpmpBNmkej6hZxQzvqknSqxMjtMnIChHBEeq9E9aIT6k0IWnf/LdUssbssBVVHbjnPSmi6x5rPW4QiEgeWQlDrdaInzMhuvoi0tpr2upDYrShMTp0CzCsdOzRj6VnB+6YVaf8D8NWua0Xhz3b3NXXWWZ1nDPZik01lTaBiPwg66tBmC2oWUXc0g6dA2SC0ChNaFw4ssLJnM9rLs0bd30mU5MU4Vs+NCEcswji8oV/H8acs/c/3c5WOc9jpsEkZQvvs+9ypoFIMfzyQfpJm5huMZFJ0RFJFlvl/uOfCMrR90vUtI/0dhGiNCGxYepY3amXtkiVfuff3qbrFONbXp0QZr2UMIxfnw6N0ToMVpfR6qqwOY3WmuqfWjCnl3wlENFVwYRxfQkOCo2JbIcbsgJuMbh5l3FL1IfFSsWOFnzX2ISRMLlveJ8E1OwhkdrQuDAsHPqff1sOX/wf5k7zbw3v08a3fGj8T72Eiq2FKOk0epOBq8KKBfs5s1Sy8FV+NQBRQGDCuGZF6ZPaxHZpE9s1Lio5ProjskJcdMfI8Pj6JR1Om7GquLj0MO4NVUUVpvPnyo9i2AeVvr2kWvpu7fiJvfU3tkUvIThSU5sSdMce+9iUXyI+Gzu8S9TAZN/VInNIy5XfF1kLq7zJwHCxl2AvqpSePfOHbQIRBTxZk94U+JAY2sZ2b5fQOzG+Z5uYLonxPdSh2jplyiuLDJVFpUKh0X2uKri8Othg11pKvzlmOHxaLJA8JyMms4u3lxChESNH52+Ufm6hx8tZMcO6+K7w6JObK766+K82McO7Yl7aWTtw5KyweX/FoYpTX0TXFPYwWqUwbXTHxJuQHtq3TUmK69kh8YY6Bc6VHb1gPHWu7HhZxekLhlOGyrNGk/er5rvmDI8fJ357tkYrJCGllJ45LRy++KrQOJ2u48WvzHOUe0eH3M6fvgnmwgeHK7YVefOBweJNCRU2388dGb88KRDRNY0JoxUICdYkxfdKSuiZFNejfdu+7duk1BlZKi49UlJ6tKTsyLnyY1i4YDzxc6tyVtodtYNCrkuVvs3nO7SLV+8q+cse5AnE67+W/9RGdJ3jkFTAwbx027huSfE9LyWJXph7CAr6j19fLzUWFJTknzq7+3RxftGFA243v22FiJpdAPUwXnn0iNVeUW0xmq2Gi/dWg7n2ZjIbbI5qm73a5jTZ7CaH0ypcQxLjerSN804/IEm0S+iF5fplkCEwEX32/MHCc/tPnd1VbS0XiIiurkBJGDpNpEatwy06IklOebO1QkwhFluFxWY0WcpN5tIqM+7LTJZS3FeZS+2ORnyXydWB3BAf3TkhplN8dKf42vs2sV3qFzNWna0dZTpSUjvEhLEmVw0nkImohQXQkJRGHRaujQvXxYTpoiJ0cfqwWCyL9+G6WH1YfERYXER4XKPWaXdYXTU2p8vmdNqdNQ4sOxxWm8NssVdYrMg0lWarEQvVNqPDaXE6rXYnSlodLqt43+D6MbsQGqLFTR2KeyzrsFC7tXGR4Qm4jwjzbjmmHHAfrou+7EoqTReKyw6fKzuGPoQ3T5QdtjssAhFRgGl9cxje6ljnzRyojvXeqjkWvROdNkqn0XsXNBEadUSYNqqxqeXqKKsoLKsoKK8ovGAsMFSeKas4XWo4bXeaBSKigHeNT3prQsPR/A8J0aDhHxKsRocAC8goaOyHa6ORV8LQodFiOUqj0atDdGJfQR2qE/sKcv6E1VblQL9E7Me4vD0Yq70Sg2PVlrJqDJRZyqqqS73TMBaMlXHigYhasWv8Y7VovLP9TkSkCP4fBhERycKEQUREsjBhEBGRLEwYREQkCxMGERHJwoRBRESyMGEQEZEsTBhERCQLEwYREckS1MjyQmrqwJAQphkioutOcFiYXn7pbt2633//Ax6Pu7i42OVyIhIWFj548NCePXtXVBit1otf79qjR8/09EEWi9lkMuFhWlp6dbXJbucXdBMRXMVSlgAAEABJREFUtWKNSBjDho2YOnV6cHBwfHzCyJGjtmz5Gpnjuede0Ov1Op1u4sQ7d+783m63jR49dtKku1wux/jxdxQWFpaXl82c+dCJE8cMBoNAREStViOGpAYNGrxx44bCwoJXXsndt29PXFxcYmJSaGjo//7vq6tXr6yoqOjTpw+KjRqVlZf3BiIbN344efJU3zVkZ0/IyBgsEBFRK9SI2YgDB/aPGZOt1WrRpVi/fi0iKpXK4bDfeeddGHqKjo4+dOhQTEysx+NBUsGze/fmjxs3Xnr59OkzMFSVm/viZVeOV4WFhYkLNptNwQigA1Qbcdtsdv8jbrcHHSn/Iz5b6NHpwvyIKLNfzRdxu93SgKR/kRq73SHUnng4D/2IXFyzn5GaGjfO/9qIoNXqlIj4uV/NFampqXE4lI0EabUa/yNBQSqNRhtIkSCNRtxCl8PhDKRI/S1sRETSiISxYcP7RUVFM2bc+9RTC48cObxqVR7WW1lZ1b//AKfTKdaGUVFRWBbLWyzVGL8Sl6dMmYYeyaJFCxqcycBVdGlBVe+ppkQUp1J5FIl4fgqo/IkEMFWzRZTiUSgSaPulMJ+rSuVP5HIr9CuiHIXfQY9HmYhypFWrmhS59IT8H1BCekAja+7cx9atW4P7Dz74F2a8hwy5bcmSHDz74IOzMen9j3+se+GF3z3xxDxEkpOTZ8+e+/TTT+TkLI2I0OO1ublLysrKBCIiaoUaMYexZEnusGHDxWU05NFXcLmcISFqTGMItYMGeIjRErPZkpU1FgWysycWFJwSy+flLd+zZ/ecOfP5kVwiolaqEZ+SQucA0xWYpRgyZOixY0c3b95YXHw2JaUvgqNGjXG5atau/SuyyMmTxzHXjdkOjEetXLnC6XRkZo7cty9/y5avMjJu7dMnZdeunQIREbU2jf5N7wULnl2+/FWTqVqKIDEEBQUjMfgW02jU4rwZERFdGxqdMNRqjfiJDiIiuq40ekaB2YKI6PrEKWgiIpKFCYOIiGRhwiAiIlmYMIiISBYmDCIikoUJg4iIZGHCICIiWZgwiIhIFiYMIiKShQmDiIhkYcIgIiJZmDCIiEgWJgwiIpKFCYOIiGRhwiAiIlmYMIiISBYmDCIikoUJg4iIZGHCICIiWZgwiIhIFiYMIiKShQmDiIhkCRIaKSPjVoGIiK4/wWFhevml+/dPnT79boOhvLj4rG98+PCRSUnti4oKxYc9evRMTx9ksZhNJhMepqWlV1eb7Ha7QERErVYjEsasWXNSU9M0Gk23bt369r1xx47tYjwxMenXv/7vLl26fvHFZ3g4evTYSZPucrkc48ffUVhYWF5eNnPmQydOHDMYDAIREbVacoekVCoV+g2vvfby+fPnXn75d+gxICI+df/9M9HhqKqqFB+OGpWVl/fG6tUrN278cPLkqb4ryc6ekJExWCAiolZI7qS3x+MpKSmZNeuhNm3aWq2WP/95tRjPzByJzPHNN19nZo7Aw5iYWJQsLCzA8t69+ePGjZfWMH36DKSc3NwXf279YWE6cdlqtYkLOp1WwYjHI9hsikQ8Nps9cCJut2C325oj4vcWqnQ6jYIRt9sjDmzilNNq/Ym47XZHbUTQarV+RJTanrqRmhqPw6FAxGeblYoEabVq/yNBQUEaTdMjNTVuh0OMqDDmoUSk/poDIuJy1TidTv8jNTU1DocYCdZoQhsbkTRi0vu115bt3bsHC0uXvoxxJyxERkaOHZv9pz+txLUtlomKihI3FCyW6uDgYHF5ypRpAwakLlv2UoMzGdKqlFrwWbOgSKQZePyL+Pnyn41c7hg2KiK9F4LSEcGfiA+VfxGP0guX/oBKmYhSR0zxd9DPBR9+voN1t1Cpd1CpiDSQ42dEqSuuER+rRUWwadNHN93Ub/36tXPnPvbtt1umTZthNlf369cftzZt2mBK/NChH9VqtVg+IaGNlB4SEhLQTNDrw20262VXjj2UOgTKRgSfrkagRlQKRQJ/T5WJ4FQMsIigUCTQ9qv5Im5FIqhVFIp4FIq4r8mIRG4PIzY29uWX/4D5bSyL/YaaGtfx48dOnDgRFxcfEREheDscERi9MZstWVljUXFnZ08sKDglvjwvb/mePbvnzJkfEsL//CAiapXkfkrKarXqdLpp0+5GbrjllrRNmzYeO3b01KmT+/fvxc1kMqE/8fe//w0lT548jrnuMWOykVdWrlzhdDowz7FvX/6WLV9lZNzap0/Krl07BSIiam1U8fGJjXpBTs7SnJynGyyGmRZxnoqIiK4NjU4YarVG/CQGERFdVxo9o8BsQUR0feIUNBERycKEQUREsjBhEBGRLEwYREQkCxMGERHJwoRBRESyMGEQEZEsTBhERCQLEwYREcnChEFERLIwYRARkSxMGEREJAsTBhERycKEQUREsjBhEBGRLEwYREQkCxMGERHJwoRBRESyMGEQEZEsTBhERCQLEwYREcnChEFERLIECX7r3LlLYmKSQERE17TgsDC94If4+PiZM+ekpPQ9evSoxWIWgz169ExPH4SHJpMJD9PS0qurTXa7XSAiolbLr4SRnNxx/vwntVqtTqcbPHjI8ePHKiqMo0ePnTTpLpfLMX78HYWFheXlZTNnPnTixDGDwSAQEVGr5dccxsCB6cgEp0+fMhqNYWHh0dGxgnBy1KisN954rbCwIDNz5OTJU5cufV4qn509obzcsH37VoGIiFobvxLG3r17Zs16qFOnLtu2bd2w4X1EYmJiPR4PskXts/njxo2XCk+fPgNDVbm5L152VXhVeHhY7YJgtVrFYFiYTnzKarX5H3G7PTabApHLbWHTIoG1X4pHVCqVTqetjbhtNrv/kZoaj91u8z/is4UCOsd+RJTZr8vtqVscwm1qJEin09RGaux2hxKRi2sOCgrSapsecbncDocYUWFkoskRaQt9/lZgRVyuGocjECPBwUEaTaMjEr8SBroXr7/+6qOPPp6ZOeKmm25evvwPUVFRTqdTfNZiqQ4ODhaXp0yZFhcXt2jRgivMZODCFrznqEd8iJpRjGDRn4i0ZlyYCkU8ARXBLjdTxM8jptQ7KEU8HmnNgiIRnG7+RRQ/8h5lI0hyikR8jqFfEZ9zQ/AnIu2oUhHh0nvhs+9Niyj1Dip8LaNRUmffGxWRqOLjE4WmQvrCGrOyxlZVmVJT0zCzvW7dmhde+N0TT8wTvDMcybNnz3366SdycpZGROhRMjd3SVlZmUBERK2QXx+rfeCBWbNmzUE6QkJDZwKdF/TZzWYLUgi6ydnZEwsKTokl8/KW79mze86c+SEh/M8PIqJWya9PSRUWnh4xYlRKSt++fW9wuVxr1vwFI04nTx7HXPeYMdlIIStXrnA6HZj93rcvf8uWrzIybu3TJ2XXrp0CERG1Nn4NSYnuuONOo9GAfOAb1GjU4iwQERFdGxRIGBhlctcSiIjo2qXAjAIGowQiIrrWcQqaiIhkYcIgIiJZmDCIiEgWJgwiIpKFCYOIiGRhwiAiIlmYMIiISBYmDCIiksXfn2j1U+fOXbp161FSUlz/qUGDhjidDrO5WggA8fHxt956W3V1tdlsFlqJ/v1TBw5Mj4qKxuH1/brjQKZSqXr06HnrrUM0Gq3BUB7gXx9w++1ZKlWQ0ej9KcnwcP2wYcMLCk4H8qGOiYmdNeshvT4iMbEdTmabzSoEnivUCT8nLi5u4MAMHHwsR0ToBw++rWfP3nhfrFZrnz4pN988oGvX7uLNZKqWfknafzgBpDXrdGGlpRfqFOjdOyUhIaGsrLT+a7t379G+fYcLF85juV279kOGDEtMTDx37lxNTc2QIUOx/dKaz5wpvPKFkJo6MCXlBt9iw4ePTE7uIP4uUYOucPTatk0cNGiwtCWhoeoW7mFgV3v37nPZryMcP37iJ598fP78OSEAjBs3oV+//jiVV63KE1qDOXPmdezYqaSkBCdfZuaIZcuWCq3Bww8/2qFDR6PROHRoJrJzbu7i+t9IlpTU7uGH5z/zzJMtnk7Gjs3G/TPP/NZqtaBewMPvvvtWwfpIcahEcHg1Gk14ePjkyXf9+OO+t99eJQSYK9QJPyc5uSOu0K+//lKr1S1YkGOzWZxO1+23j1627MWuXbv16XODUPujQG3atK2qqiwtPS8oBO94ZWWF+INmOp3uwIH9dQrgNMbfPXToYP3XpqcPiouL379/LzLHgw8+VFxcjIp7xIjRixc/07fvDRERUSiD1I4afOvWb6QfGbqsMWPGoSmA9P/tt1vwsFevPuPH3+FwOMSHDbrC0cMRQ7oVi7Vt2/bgwR8DZUhqypT/2rNn9/Hjx/AG33JL2rvvrhcCSd++N2LbevbsFRwcjCZAt27dBwzARq4Tarc8P3/3iRN4tvdttw1DZq7CWVlZsXPn90ILQUOgS5euf/7zapyOOBtQNeBUcDjsI0aM6tat2+nTpz79dDNqW2w5mhU33niT2WzZvHljRYVRaFGZmSNRnb366jK0LtFgX7jwuSlTpq9d+5fIyMjhw29HnkAFh2vg3nvv12jUDzww629/+0uL1844GWbMuO+tt1b4BnGN4RxGD+mLLz4zmaruu+83n322GQ3A0NDQe+/99caNHzaq+aw48VcvcYbMnv0I+vHbtn2LI4xzAzXCDz/sFGvqOsdcaAnR0TGokWNiYlDhfvnl57jobrrp5vPnz6M+zc/f9cMPO6SSNpsNbwQWUHvgPH/hhefQz3vxxWXoZH/00Qbc8NTo0WNHjhyFS1VQFGoq33zQv/8tAwakYlzko48+QG9G8CaqkLvumqbX67/66otTp05KJe12m/hDkKhbjhw5tGrVmzjmzz23JDEx6c03/yiWmTfvMZw/aI40uBm4nNFHEd+pzMzhUlsKp9zo0WM6dep84cKFf//7/aAg1d1333fgwD40f6W/coWj9+mnm1CHCLVJ5dFHH8cu+PV7GArCgW7fPlmobQRhWQgkeEdDQkLWrv0rsgUqAqG2kSttJM6P9tj05I4PPjhbrQ5FJw5nOZK80HIwlFdZWTV58n9hkKSqquL113+P1sevfvUbdDVwvQ0bNuKee34l1B5znMoWiwVbO2/eE0JL69WrFxKYWJniktu9eyfSW1BQ0Pz5v73hhpvKyi7cccedSCpYQAF0ntzuGqGlffnlZ2gOY+RBimRkDL777nutVjOCTzyxAOcMTglctHjqllvQdk657ADF1YfK6+zZMykpKeIR7tGjV3l5+S9/eU9aWnr9Yy60hEceeQyXVWFhIdq/GRm34qJDdzktbaBWq50+fQYqVqlkeXnp7t0/YAFN4Jychajv0FpXq9VnzxaJBXD9YpTmm2++xqUhKAqdACQ23PBG463HAaysNHbp0u2xx54WCyAxR0ZG4Yb0HB+fIL3wyJEj+/fvw8IHH/wL2UKoHb9CRS+129B46tCh0z//+Y6czcCFgz4uRs7RWOzevac4vgRTp/4SYzoOJl8AAAcHSURBVOl4r/v1u/mee+7DSG9KSt8xYyYYDAbptQ0ePcHbLJ6KPhDWw0nvhg0dOgwjY+g2oJE4ePDQHTu21y+D8xh19IoVy7Gck9Py4z8vv7x04sRJWVnjcJ+f/8OaNX9F2kPzCoOkOA/QUhOL7dy5A/2k2NjYhQtzUK+17ABgdHSs7zlqMBgxLozrDb3yhQufQs5D+7eyshJdPYzYbty4IRC+9bKgoACXGRLw22+/JUbQy9y7d8/f/74G3aClS1/BgMN3332DIQJMz2A4+OjRI1ceXriacMaiphOP8GefbXK5vD9MjQkk9I3qHHOhJSxdmoPJDOQJvNEYDS4qOoOGMFo/eGrZstcwpH7uXIlYsqys7L33fqpYw8LC5817HLUb3hoxMmpUFrIgutGC0qZNu1tcWL9+7ejRWehVFBWdNRorxo0bj/EcwVsdl69e/Wbt7ryMdv3nn38ilhdb7hLsIFpvOKvF340XaocuiovPYjxAkAHTFcigSO2YFEGN/+OP+8X2NzroWHNSUnuLxYojKRZevToPVZn02gaPHga3kb3eeOM1oaU+JYWOOUZs0JXDVSQFMX8o3QcO9OmQsbHw+9//rxjBAf3PIt5dwBAKxv7Exy0+l6hWa9C9feedtbjdfHP/e+759dat3yGOnim6xh6P+/DhQ2JJDJ3V3ntrBEyPt2zCOHu2sEOHztLDLl26oDGOrUKzSzyk4sWDQy0EEnQ9MZKA3Cw+xPQA2piCd8zBgZouKipm27bvJkz4BVruycnJK1a8IQQMTGgcPHgARxjL6E/gvqioAFVJ/WN+FdSpE1C/P/vsYoznnDp1AhuDsRTB+8XYF/uUOLAhIcGXXQ/6H48/vgBT+nl5y8UILmHUpBijb45UjUlNaUhq6tTp2GxccVjGGLW4IxbLxY/t4HjiqrzsStCRQv/j+++3YeRNjKCOxliLWEfLhJcPHJheUVGBUUSp8/2b38zE+MHp0ydxDENDL9b2V/gkUf2jBxirKCoqEs+Elqmd0a7BBYZuWq9evcVGpdlsxggJDigaOEIgwTCC4G2wv/T884uWLn0ey4MH34YmGNqPmLTADQsIHj16GC10DFhhyg59Q6FFRUdHP/nk0ziS6InjIAvelOD9zANOYpwH+fn5UmJALYbsggku4SpWDT9n27Zt6FOjYZWQ0BZXOLoRqGrRn8BFiKF2dPnR8Bk1aow4qoChACEwoEn4r3+9i/Ff8eGZMwX9+6fhwsPJgON//Di6FI7jx4/+4hdTUBK7I7Q0XH2YD0BVEhERuX37VnGTtm3binMDHVCM9dU/5kLzq1MnIGmhZbB8+R/QV8PGyFwJTubHH/8tyq9cuSIsLEy8NsXtx3C80MzQDkNrHf2JDz/8N5oL4rBPu3bJGIlCNw57hORX/1Vo+D/yyKM45ps2fYT2HI658J91tExff/0F2rLt2rX/4ovPpSC6aJ999skf//iGy9Vwsrzs0UMHBQ0daWSsZXoYmIZCs/e5517AFDHmABHBwcK45KJFi9HxjIi4WBcEwicUMYyAwTup84srPz0946WXPkWdi0kLtNDFLiTGqTp16jJ58lRkPrHZ3oLQLd2y5atJk6Zge9CywDLOXTSFZs58CBkCkX/+8x9iSbSBXnrpZUTQF8Z8l9CikM/Qr8egOY65w+HAiY7BHMQ3bPhg0qTJGEXFFPeuXTuwL9jBRYueR/urxZOcCE1jTDniusIZiwpu/vwnMWeIo7p588eoQQTvVMcXDz7Yu86vUrYUHDpsG3pvb72Vh1pJqD3CmHfB7D3a4Dt2bMPoa51jLjS/OnUC7nHdof7CMBT6E/VrgstWDhkZg2JiYgXvR9dycI+Rmb/97W3M5GG2tplGAn23Yt26Ncivv/udd9AM48BoKGAjq6vNTz21ELXwkSOH9+zJr78GnPBIEkiTzz/vHcp+552/o7bBuSQOvslXVVWFfI/GYlFRYdeuXcXg9u3fZWWNxYic2Wxxu13iQfu5arX+0cNA66RJd+EkkT6hq8Av7jVZnZ9xVdVqRb/cJ35iSlxG8wGD1x9//GFQUPDixUvR/0UKFFoaemw4jXwjaLVJHVJUap988jFOKVxLAXXYNRqN3V43e2FUXfzYyaUyAf0bwFqtzm63tZZ/fxGheYuxCN9InWN+FdR5W2tHeq3SVdYqoHPpqiVFkC1CQkJbqkGGfgMG9KSpET+15KR3nQveU0toPXzPY0wMpKamoy2DkwNziWLTuMXVyRZCveFLHPD6VXOLu+wm1am5AvwX4wPzf+KurE62EOod86ugztsaIP+32yj1q2a0xlqw+67sn27JHsa1B+OwmG6qX00HJkwGIufxx9iJSCZ+rFZJLf6/b40SOJ/vJKJWgQmDiIhkYcIgIiJZmDCIiEiW/w8AAP//FoR1IgAAAAZJREFUAwCuPWPOBWmkSAAAAABJRU5ErkJggg=="
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "paddingX": "md",
+                "paddingY": "sm",
+                "sizing": {
+                  "width": "fill"
+                },
+                "fill": "foreground/4",
+                "stroke": "foreground/6",
+                "radius": "xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Sparkles",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "chart-5"
+                      },
+                      {
+                        "type": "text",
+                        "content": "+14.2% YoY",
+                        "textStyle": "sp-label",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "$149.5k",
+                        "textStyle": "sp-label",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "md",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 118,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:229"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Conversion Funnel",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Badge",
+                        "name": "Badge",
+                        "variants": {
+                          "Variant": "Success",
+                          "Type": "Badge",
+                          "Level": "Secondary",
+                          "Size": "SM"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "9.0% CVR"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "2xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:65"
+                    },
+                    "children": [
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Ghost",
+                          "Size": "Mini",
+                          "State": "Default",
+                          "Icon": "None"
+                        }
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Ghost",
+                          "Size": "Mini",
+                          "State": "Default",
+                          "Icon": "None"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "image",
+                "name": "Illustration",
+                "sizing": {
+                  "width": "fill",
+                  "height": "fixed:306"
+                },
+                "imageBase64": "data:image/png;base64,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"
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "sm",
+                "paddingTop": "sm",
+                "paddingBottom": "none",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:24"
+                        },
+                        "fill": "brand-subtle-foreground/8",
+                        "radius": "md",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "1",
+                            "textStyle": "sp-label",
+                            "fill": "brand-subtle-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Store Visits",
+                        "textStyle": "sp-body-medium",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "42,800",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:24"
+                        },
+                        "fill": "success-subtle-foreground/8",
+                        "radius": "md",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "2",
+                            "textStyle": "sp-label",
+                            "fill": "success-subtle-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Product Views",
+                        "textStyle": "sp-body-medium",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "28,400",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "34%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "destructive"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:24"
+                        },
+                        "fill": "warning-subtle-foreground/8",
+                        "radius": "md",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "3",
+                            "textStyle": "sp-label",
+                            "fill": "warning-subtle-foreground"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Add to Cart",
+                        "textStyle": "sp-body-medium",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "8,520",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "70%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "destructive"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:24"
+                        },
+                        "fill": "chart-4/8",
+                        "radius": "md",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "4",
+                            "textStyle": "sp-label",
+                            "fill": "chart-4"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Checkout",
+                        "textStyle": "sp-body-medium",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "5,112",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "40%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "destructive"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:24"
+                        },
+                        "fill": "chart-5/8",
+                        "radius": "md",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "5",
+                            "textStyle": "sp-label",
+                            "fill": "chart-5"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Purchase",
+                        "textStyle": "sp-body-medium",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "3,842",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "25%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "destructive"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "md",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 670,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "md",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:177"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Geography",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Badge",
+                        "name": "Badge",
+                        "variants": {
+                          "Variant": "Default",
+                          "Type": "Badge",
+                          "Level": "Secondary",
+                          "Size": "SM"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "8 Regions"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "paddingTop": "sm",
+                "paddingBottom": "none",
+                "name": "Grid (4-col)",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇯🇵",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Tokyo",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$22.1k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "23%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇺🇸",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "New York",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$18.4k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "19%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇬🇧",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "London",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$15.6k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "16%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇮🇳",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Mumbai",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$11.4k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "12%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇦🇪",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Dubai",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$8.9k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "9%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇿🇦",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Johannesburg",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$7.2k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "8%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇧🇷",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "São Paulo",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$6.5k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "7%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "paddingX": "sm",
+                    "paddingY": "xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "radius": "xl",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "🇳🇬",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "4xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Lagos",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "$4.8k",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "5%",
+                        "textStyle": "sp-mono-medium",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "sm",
+            "padding": "md",
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 226,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "icon",
+                    "name": "ChartColumn",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(162, 162, 170, 0.6)"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:53"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Friday",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Best Selling Day",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "189 avg orders",
+                    "textStyle": "sp-mono",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "sm",
+            "padding": "md",
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 231,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "icon",
+                    "name": "Eye",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(162, 162, 170, 0.6)"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:48"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "11:00 AM",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Peak Hour",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "740 visitors",
+                    "textStyle": "sp-mono",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "sm",
+            "padding": "md",
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 221,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "icon",
+                    "name": "ShoppingCart",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(162, 162, 170, 0.6)"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:58"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Online Store",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Top Channel",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "45% of revenue",
+                    "textStyle": "sp-mono",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "sm",
+            "padding": "md",
+            "sizing": {
+              "width": "fixed:329"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 227,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "icon",
+                    "name": "TrendingUp",
+                    "sizing": {
+                      "width": "fixed:24",
+                      "height": "fixed:24"
+                    },
+                    "fill": "rgba(162, 162, 170, 0.6)"
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "4xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:52"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "ArrowUpRight",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "success"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Q1 2026",
+                    "textStyle": "sp-h4",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Highest Growth",
+                    "textStyle": "sp-caption",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "32.1% QoQ",
+                    "textStyle": "sp-mono",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

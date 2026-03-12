@@ -47,10 +47,10 @@ export const SPACING_MAP: Record<number, string> = {
   40: "3xl", 48: "4xl", 56: "5xl", 64: "6xl",
 }
 
-// Border radius px → token name
+// Border radius px → token name (must match Figma "border radius" collection)
 export const RADIUS_MAP: Record<number, string> = {
-  0: "none", 2: "xs", 4: "sm", 6: "md", 8: "lg",
-  10: "10", 12: "xl", 16: "2xl", 24: "3xl", 32: "4xl", 9999: "full",
+  0: "none", 4: "sm", 6: "md", 8: "lg",
+  10: "10", 12: "xl", 16: "2xl", 24: "3xl", 9999: "full",
 }
 
 // Text style matching rules

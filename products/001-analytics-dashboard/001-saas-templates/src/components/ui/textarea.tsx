@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Textarea
@@ -16,6 +17,10 @@ function Textarea({
   return (
     <textarea
       data-slot="textarea"
+      {...figma("Textarea", {
+        State: props.disabled ? "Disabled" : props["aria-invalid"] ? "Error" : "Default",
+        Value: props.value || props.defaultValue ? "Filled" : "Placeholder",
+      })}
       className={cn(
         "flex min-h-[76px] w-full rounded-lg border border-border bg-input p-xs text-sm tracking-sm font-body font-normal text-foreground placeholder:text-muted-foreground transition-colors hover:border-border-strong focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:not-placeholder-shown:border-border-strong disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border aria-invalid:border-destructive-border aria-invalid:focus-visible:ring-ring-error aria-invalid:focus-visible:not-placeholder-shown:border-destructive-border",
         className

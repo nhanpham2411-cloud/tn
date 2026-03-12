@@ -10,7 +10,7 @@
   "counterAlign": "start",
   "width": 1440,
   "height": 1374,
-  "fillWidth": false,
+  "fillWidth": true,
   "fill": "rgb(12, 12, 16)",
   "children": [
     {
@@ -25,12 +25,12 @@
       "counterAlign": "start",
       "width": 1376,
       "height": 120,
-      "fillWidth": false,
+      "fillWidth": true,
       "children": [
         {
           "type": "frame",
           "layout": "horizontal",
-          "gap": 0,
+          "gap": 243,
           "paddingTop": 0,
           "paddingRight": 0,
           "paddingBottom": 0,
@@ -39,12 +39,12 @@
           "counterAlign": "center",
           "width": 1376,
           "height": 44,
-          "fillWidth": false,
+          "fillWidth": true,
           "children": [
             {
               "type": "frame",
               "layout": "horizontal",
-              "gap": 12,
+              "gap": 8,
               "paddingTop": 0,
               "paddingRight": 0,
               "paddingBottom": 0,
@@ -56,29 +56,47 @@
               "fillWidth": false,
               "children": [
                 {
-                  "type": "icon",
-                  "name": "Icon",
-                  "width": 28,
+                  "type": "frame",
+                  "layout": "horizontal",
+                  "gap": 12,
+                  "paddingTop": 0,
+                  "paddingRight": 0,
+                  "paddingBottom": 0,
+                  "paddingLeft": 0,
+                  "primaryAlign": "start",
+                  "counterAlign": "center",
+                  "width": 123,
                   "height": 28,
-                  "color": "rgb(250, 250, 250)",
-                  "tagName": "svg"
-                },
-                {
-                  "type": "text",
-                  "textContent": "ShopPulse",
-                  "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
-                  "fontWeight": 600,
-                  "fontSize": 16,
-                  "lineHeight": 24,
-                  "color": "rgb(250, 250, 250)",
-                  "width": 83,
-                  "height": 24,
                   "fillWidth": false,
-                  "tagName": "SPAN"
+                  "children": [
+                    {
+                      "type": "icon",
+                      "name": "Icon",
+                      "width": 28,
+                      "height": 28,
+                      "color": "rgb(250, 250, 250)",
+                      "tagName": "svg"
+                    },
+                    {
+                      "type": "text",
+                      "textContent": "ShopPulse",
+                      "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                      "fontWeight": 600,
+                      "fontSize": 16,
+                      "lineHeight": 24,
+                      "color": "rgb(250, 250, 250)",
+                      "width": 83,
+                      "height": 24,
+                      "fillWidth": false,
+                      "tagName": "SPAN"
+                    }
+                  ],
+                  "tagName": "A",
+                  "className": "flex items-center gap-sm"
                 }
               ],
-              "tagName": "A",
-              "className": "flex items-center gap-sm"
+              "tagName": "DIV",
+              "className": "flex items-center gap-xs"
             },
             {
               "type": "frame",
@@ -93,7 +111,7 @@
               "width": 567,
               "height": 44,
               "fillWidth": false,
-              "fill": "oklab(0.999994 0.0000455678 0.0000200868 / 0.04)",
+              "fill": "rgba(255, 255, 255, 0.04)",
               "radius": 9999,
               "children": [
                 {
@@ -275,7 +293,7 @@
           "counterAlign": "end",
           "width": 1376,
           "height": 56,
-          "fillWidth": false,
+          "fillWidth": true,
           "children": [
             {
               "type": "frame",
@@ -299,7 +317,7 @@
                   "color": "rgb(250, 250, 250)",
                   "width": 404,
                   "height": 32,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "tagName": "H1"
                 },
                 {
@@ -312,7 +330,7 @@
                   "color": "rgb(161, 161, 170)",
                   "width": 404,
                   "height": 20,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "tagName": "P"
                 }
               ],
@@ -356,6 +374,7 @@
       "width": 1376,
       "height": 1158,
       "fillWidth": true,
+      "fillHeight": true,
       "children": [
         {
           "type": "frame",
@@ -369,7 +388,7 @@
           "counterAlign": "center",
           "width": 1376,
           "height": 36,
-          "fillWidth": false,
+          "fillWidth": true,
           "children": [
             {
               "type": "frame",
@@ -491,7 +510,7 @@
                       "name": "ChevronDown",
                       "width": 24,
                       "height": 24,
-                      "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                      "color": "rgba(161, 161, 169, 0.5)",
                       "tagName": "svg"
                     }
                   ],
@@ -523,7 +542,7 @@
                   "height": 6,
                   "fill": "rgb(34, 197, 94)",
                   "radius": 9999,
-                  "opacity": 0.970037,
+                  "opacity": 0.970073,
                   "tagName": "DIV"
                 },
                 {
@@ -533,7 +552,7 @@
                   "fontWeight": 400,
                   "fontSize": 12,
                   "lineHeight": 16,
-                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                  "color": "rgba(161, 161, 169, 0.5)",
                   "width": 101,
                   "height": 16,
                   "fillWidth": false,
@@ -558,7 +577,7 @@
           "gridCols": 12,
           "width": 1376,
           "height": 736,
-          "fillWidth": false,
+          "fillWidth": true,
           "children": [
             {
               "type": "frame",
@@ -585,7 +604,7 @@
                   "gridCols": 2,
                   "width": 911,
                   "height": 276,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -609,7 +628,7 @@
                         {
                           "type": "frame",
                           "layout": "horizontal",
-                          "gap": 0,
+                          "gap": 78,
                           "paddingTop": 0,
                           "paddingRight": 0,
                           "paddingBottom": 0,
@@ -618,7 +637,7 @@
                           "counterAlign": "center",
                           "width": 284,
                           "height": 40,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -642,7 +661,7 @@
                                   "color": "rgb(250, 250, 250)",
                                   "width": 134,
                                   "height": 20,
-                                  "fillWidth": false,
+                                  "fillWidth": true,
                                   "tagName": "P"
                                 },
                                 {
@@ -655,7 +674,7 @@
                                   "color": "rgb(161, 161, 170)",
                                   "width": 134,
                                   "height": 16,
-                                  "fillWidth": false,
+                                  "fillWidth": true,
                                   "tagName": "P"
                                 }
                               ],
@@ -687,14 +706,14 @@
                         {
                           "type": "frame",
                           "layout": "vertical",
-                          "gap": 0,
+                          "gap": 8,
                           "paddingTop": 0,
                           "paddingRight": 0,
                           "paddingBottom": 0,
                           "paddingLeft": 0,
                           "width": 284,
                           "height": 78,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -708,7 +727,7 @@
                               "counterAlign": "start",
                               "width": 284,
                               "height": 32,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -765,7 +784,7 @@
                               "counterAlign": "center",
                               "width": 284,
                               "height": 16,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -781,12 +800,30 @@
                                   "tagName": "P"
                                 },
                                 {
-                                  "type": "icon",
-                                  "name": "ArrowUpRight",
-                                  "width": 24,
-                                  "height": 24,
-                                  "color": "rgb(34, 197, 94)",
-                                  "tagName": "svg"
+                                  "type": "frame",
+                                  "layout": "horizontal",
+                                  "gap": 2,
+                                  "paddingTop": 0,
+                                  "paddingRight": 0,
+                                  "paddingBottom": 0,
+                                  "paddingLeft": 0,
+                                  "primaryAlign": "start",
+                                  "counterAlign": "center",
+                                  "width": 50,
+                                  "height": 16,
+                                  "fillWidth": false,
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "name": "ArrowUpRight",
+                                      "width": 24,
+                                      "height": 24,
+                                      "color": "rgb(34, 197, 94)",
+                                      "tagName": "svg"
+                                    }
+                                  ],
+                                  "tagName": "SPAN",
+                                  "className": "sp-caption font-medium flex items-center gap-4xs text-success"
                                 }
                               ],
                               "tagName": "DIV",
@@ -799,10 +836,10 @@
                               "fontWeight": 400,
                               "fontSize": 12,
                               "lineHeight": 16,
-                              "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.6)",
+                              "color": "rgba(162, 162, 170, 0.6)",
                               "width": 284,
                               "height": 16,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             }
                           ],
@@ -821,7 +858,7 @@
                           "counterAlign": "center",
                           "width": 284,
                           "height": 68,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -837,7 +874,7 @@
                               "width": 87,
                               "height": 68,
                               "fillWidth": true,
-                              "fill": "oklab(0.999994 0.0000455678 0.0000200868 / 0.0196078)",
+                              "fill": "rgba(255, 255, 255, 0.02)",
                               "radius": 12,
                               "children": [
                                 {
@@ -927,7 +964,7 @@
                               "width": 87,
                               "height": 68,
                               "fillWidth": true,
-                              "fill": "oklab(0.999994 0.0000455678 0.0000200868 / 0.0196078)",
+                              "fill": "rgba(255, 255, 255, 0.02)",
                               "radius": 12,
                               "children": [
                                 {
@@ -1009,7 +1046,7 @@
                               "counterAlign": "center",
                               "width": 234,
                               "height": 28,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1076,7 +1113,7 @@
                             {
                               "type": "frame",
                               "layout": "horizontal",
-                              "gap": 0,
+                              "gap": 46,
                               "paddingTop": 0,
                               "paddingRight": 0,
                               "paddingBottom": 0,
@@ -1085,7 +1122,7 @@
                               "counterAlign": "end",
                               "width": 234,
                               "height": 42,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1111,7 +1148,7 @@
                                       "color": "rgb(250, 250, 250)",
                                       "width": 108,
                                       "height": 20,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "tagName": "SPAN"
                                     },
                                     {
@@ -1127,7 +1164,7 @@
                                       "counterAlign": "center",
                                       "width": 108,
                                       "height": 16,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "children": [
                                         {
                                           "type": "icon",
@@ -1152,7 +1189,8 @@
                                   "width": 80,
                                   "height": 32,
                                   "color": "rgb(250, 250, 250)",
-                                  "tagName": "svg"
+                                  "tagName": "svg",
+                                  "fillWidth": true
                                 }
                               ],
                               "tagName": "DIV",
@@ -1194,7 +1232,7 @@
                               "counterAlign": "center",
                               "width": 234,
                               "height": 28,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1261,7 +1299,7 @@
                             {
                               "type": "frame",
                               "layout": "horizontal",
-                              "gap": 0,
+                              "gap": 46,
                               "paddingTop": 0,
                               "paddingRight": 0,
                               "paddingBottom": 0,
@@ -1270,7 +1308,7 @@
                               "counterAlign": "end",
                               "width": 234,
                               "height": 42,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1296,7 +1334,7 @@
                                       "color": "rgb(250, 250, 250)",
                                       "width": 108,
                                       "height": 20,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "tagName": "SPAN"
                                     },
                                     {
@@ -1312,7 +1350,7 @@
                                       "counterAlign": "center",
                                       "width": 108,
                                       "height": 16,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "children": [
                                         {
                                           "type": "icon",
@@ -1337,7 +1375,8 @@
                                   "width": 80,
                                   "height": 32,
                                   "color": "rgb(250, 250, 250)",
-                                  "tagName": "svg"
+                                  "tagName": "svg",
+                                  "fillWidth": true
                                 }
                               ],
                               "tagName": "DIV",
@@ -1379,7 +1418,7 @@
                               "counterAlign": "center",
                               "width": 234,
                               "height": 28,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1446,7 +1485,7 @@
                             {
                               "type": "frame",
                               "layout": "horizontal",
-                              "gap": 0,
+                              "gap": 34,
                               "paddingTop": 0,
                               "paddingRight": 0,
                               "paddingBottom": 0,
@@ -1455,7 +1494,7 @@
                               "counterAlign": "end",
                               "width": 234,
                               "height": 42,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1481,7 +1520,7 @@
                                       "color": "rgb(250, 250, 250)",
                                       "width": 120,
                                       "height": 20,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "tagName": "SPAN"
                                     },
                                     {
@@ -1497,7 +1536,7 @@
                                       "counterAlign": "center",
                                       "width": 120,
                                       "height": 16,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "children": [
                                         {
                                           "type": "icon",
@@ -1522,7 +1561,8 @@
                                   "width": 80,
                                   "height": 32,
                                   "color": "rgb(250, 250, 250)",
-                                  "tagName": "svg"
+                                  "tagName": "svg",
+                                  "fillWidth": true
                                 }
                               ],
                               "tagName": "DIV",
@@ -1564,7 +1604,7 @@
                               "counterAlign": "center",
                               "width": 234,
                               "height": 28,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1631,7 +1671,7 @@
                             {
                               "type": "frame",
                               "layout": "horizontal",
-                              "gap": 0,
+                              "gap": 34,
                               "paddingTop": 0,
                               "paddingRight": 0,
                               "paddingBottom": 0,
@@ -1640,7 +1680,7 @@
                               "counterAlign": "end",
                               "width": 234,
                               "height": 42,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "frame",
@@ -1666,7 +1706,7 @@
                                       "color": "rgb(250, 250, 250)",
                                       "width": 120,
                                       "height": 20,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "tagName": "SPAN"
                                     },
                                     {
@@ -1682,7 +1722,7 @@
                                       "counterAlign": "center",
                                       "width": 120,
                                       "height": 16,
-                                      "fillWidth": false,
+                                      "fillWidth": true,
                                       "children": [
                                         {
                                           "type": "icon",
@@ -1707,7 +1747,8 @@
                                   "width": 80,
                                   "height": 32,
                                   "color": "rgb(250, 250, 250)",
-                                  "tagName": "svg"
+                                  "tagName": "svg",
+                                  "fillWidth": true
                                 }
                               ],
                               "tagName": "DIV",
@@ -1730,14 +1771,14 @@
                   "type": "frame",
                   "name": "card",
                   "layout": "vertical",
-                  "gap": 0,
+                  "gap": 20,
                   "paddingTop": 16,
                   "paddingRight": 16,
                   "paddingBottom": 16,
                   "paddingLeft": 16,
                   "width": 911,
                   "height": 440,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "fill": "rgb(20, 20, 24)",
                   "stroke": "rgba(255, 255, 255, 0.06)",
                   "strokeWidth": 1,
@@ -1746,7 +1787,7 @@
                     {
                       "type": "frame",
                       "layout": "horizontal",
-                      "gap": 0,
+                      "gap": 502,
                       "paddingTop": 0,
                       "paddingRight": 0,
                       "paddingBottom": 0,
@@ -1755,7 +1796,7 @@
                       "counterAlign": "center",
                       "width": 877,
                       "height": 36,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -1940,7 +1981,7 @@
                       "counterAlign": "center",
                       "width": 877,
                       "height": 72,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -2820,50 +2861,68 @@
                         },
                         {
                           "type": "frame",
-                          "layout": "vertical",
-                          "gap": 6,
+                          "layout": "horizontal",
+                          "gap": 0,
                           "paddingTop": 0,
                           "paddingRight": 0,
                           "paddingBottom": 0,
                           "paddingLeft": 0,
-                          "primaryAlign": "center",
+                          "primaryAlign": "start",
                           "counterAlign": "center",
                           "width": 48,
                           "height": 48,
                           "fillWidth": false,
-                          "radius": 16,
                           "children": [
                             {
-                              "type": "text",
-                              "textContent": "13",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 600,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "textAlign": "center",
-                              "width": 15,
-                              "height": 14,
+                              "type": "frame",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "paddingTop": 0,
+                              "paddingRight": 0,
+                              "paddingBottom": 0,
+                              "paddingLeft": 0,
+                              "primaryAlign": "center",
+                              "counterAlign": "center",
+                              "width": 48,
+                              "height": 48,
                               "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "Thu",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 600,
-                              "fontSize": 10,
-                              "lineHeight": 10,
-                              "color": "rgb(161, 161, 170)",
-                              "textAlign": "center",
-                              "width": 24,
-                              "height": 10,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
+                              "radius": 16,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "textContent": "13",
+                                  "fontFamily": "Inter, system-ui, sans-serif",
+                                  "fontWeight": 600,
+                                  "fontSize": 14,
+                                  "lineHeight": 14,
+                                  "color": "rgb(250, 250, 250)",
+                                  "textAlign": "center",
+                                  "width": 15,
+                                  "height": 14,
+                                  "fillWidth": false,
+                                  "tagName": "SPAN"
+                                },
+                                {
+                                  "type": "text",
+                                  "textContent": "Thu",
+                                  "fontFamily": "Inter, system-ui, sans-serif",
+                                  "fontWeight": 600,
+                                  "fontSize": 10,
+                                  "lineHeight": 10,
+                                  "color": "rgb(161, 161, 170)",
+                                  "textAlign": "center",
+                                  "width": 24,
+                                  "height": 10,
+                                  "fillWidth": false,
+                                  "tagName": "SPAN"
+                                }
+                              ],
+                              "tagName": "BUTTON",
+                              "className": "flex flex-col items-center justify-center gap-2xs size-[48px] rounded-2xl transition-all text-muted-foreground hover:bg-surface-raised hover:rounded-xl"
                             }
                           ],
-                          "tagName": "BUTTON",
-                          "className": "flex flex-col items-center justify-center gap-2xs size-[48px] rounded-2xl transition-all text-muted-foreground hover:bg-surface-raised hover:rounded-xl"
+                          "tagName": "DIV",
+                          "className": "flex items-center shrink-0"
                         }
                       ],
                       "tagName": "DIV",
@@ -2872,7 +2931,7 @@
                     {
                       "type": "frame",
                       "layout": "horizontal",
-                      "gap": 0,
+                      "gap": 363,
                       "paddingTop": 0,
                       "paddingRight": 0,
                       "paddingBottom": 0,
@@ -2881,7 +2940,7 @@
                       "counterAlign": "center",
                       "width": 877,
                       "height": 28,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -3128,9 +3187,10 @@
                       "type": "image",
                       "name": "Illustration",
                       "src": "",
-                      "selector": "#root > div > main > div:nth-of-type(2) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > div > div > svg",
+                      "selector": "#root > div > main > div:nth-of-type(2) > div > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(4) > div > div",
                       "width": 877,
                       "height": 230,
+                      "fillWidth": true,
                       "objectFit": "contain",
                       "tagName": "svg"
                     }
@@ -3170,7 +3230,7 @@
                   "counterAlign": "start",
                   "width": 445,
                   "height": 502,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "fill": "rgb(20, 20, 24)",
                   "stroke": "rgba(255, 255, 255, 0.06)",
                   "strokeWidth": 1,
@@ -3180,7 +3240,7 @@
                     {
                       "type": "frame",
                       "layout": "horizontal",
-                      "gap": 0,
+                      "gap": 204,
                       "paddingTop": 0,
                       "paddingRight": 0,
                       "paddingBottom": 0,
@@ -3189,7 +3249,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 24,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -3258,449 +3318,6 @@
                       ],
                       "tagName": "DIV",
                       "className": "flex items-center justify-between mb-sm shrink-0"
-                    },
-                    {
-                      "type": "frame",
-                      "layout": "vertical",
-                      "gap": 0,
-                      "paddingTop": 0,
-                      "paddingRight": 0,
-                      "paddingBottom": 0,
-                      "paddingLeft": 0,
-                      "width": 443,
-                      "height": 443,
-                      "fillWidth": true,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 141,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇺🇸",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "New York",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 57,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "18.4k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 32,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 128,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇬🇧",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "London",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 45,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "15.6k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 31,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 162,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇿🇦",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "Johannesburg",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 86,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "7.2k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 25,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 113,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇦🇪",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "Dubai",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 34,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "8.9k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 27,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 137,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇧🇷",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "São Paulo",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 59,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "6.5k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 26,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 130,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇮🇳",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "Mumbai",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 48,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "11.4k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 30,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        },
-                        {
-                          "type": "frame",
-                          "layout": "horizontal",
-                          "gap": 6,
-                          "paddingTop": 6,
-                          "paddingRight": 10,
-                          "paddingBottom": 6,
-                          "paddingLeft": 10,
-                          "primaryAlign": "start",
-                          "counterAlign": "center",
-                          "width": 115,
-                          "height": 28,
-                          "fillWidth": false,
-                          "fill": "rgb(24, 24, 27)",
-                          "stroke": "oklab(0.999994 0.0000455678 0.0000200868 / 0.1)",
-                          "strokeWidth": 1,
-                          "radius": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "textContent": "🇳🇬",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 400,
-                              "fontSize": 14,
-                              "lineHeight": 14,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 18,
-                              "height": 14,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "Lagos",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 500,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(250, 250, 250)",
-                              "width": 36,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            },
-                            {
-                              "type": "text",
-                              "textContent": "4.8k",
-                              "fontFamily": "Inter, system-ui, sans-serif",
-                              "fontWeight": 700,
-                              "fontSize": 12,
-                              "lineHeight": 12,
-                              "color": "rgb(124, 58, 237)",
-                              "width": 27,
-                              "height": 12,
-                              "fillWidth": false,
-                              "tagName": "SPAN"
-                            }
-                          ],
-                          "tagName": "DIV",
-                          "className": "whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg"
-                        }
-                      ],
-                      "tagName": "DIV",
-                      "className": "pointer-events-none absolute inset-0 z-10"
                     }
                   ],
                   "tagName": "DIV",
@@ -3719,7 +3336,7 @@
                   "counterAlign": "start",
                   "width": 445,
                   "height": 213,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -3733,7 +3350,7 @@
                       "counterAlign": "center",
                       "width": 397,
                       "height": 28,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "icon",
@@ -3745,15 +3362,16 @@
                         },
                         {
                           "type": "text",
-                          "textContent": "®",
+                          "textContent": "ShopPulse®",
                           "fontFamily": "Inter, system-ui, sans-serif",
                           "fontWeight": 600,
-                          "fontSize": 9,
-                          "color": "oklab(0.999994 0.0000455678 0.0000200868 / 0.5)",
-                          "width": 6,
-                          "height": 11,
+                          "fontSize": 14,
+                          "lineHeight": 20,
+                          "color": "rgb(255, 255, 255)",
+                          "width": 80,
+                          "height": 20,
                           "fillWidth": false,
-                          "tagName": "SUP"
+                          "tagName": "SPAN"
                         }
                       ],
                       "tagName": "DIV",
@@ -3769,7 +3387,7 @@
                       "paddingLeft": 0,
                       "width": 397,
                       "height": 53,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "text",
@@ -3781,7 +3399,7 @@
                           "color": "rgb(255, 255, 255)",
                           "width": 397,
                           "height": 25,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "tagName": "H3"
                         },
                         {
@@ -3791,7 +3409,7 @@
                           "fontWeight": 400,
                           "fontSize": 14,
                           "lineHeight": 20,
-                          "color": "oklab(0.999994 0.0000455677 0.0000200868 / 0.6)",
+                          "color": "rgba(255, 255, 255, 0.6)",
                           "width": 397,
                           "height": 20,
                           "fillWidth": false,
@@ -3813,7 +3431,7 @@
                       "counterAlign": "center",
                       "width": 397,
                       "height": 44,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "fill": "rgb(255, 255, 255)",
                       "radius": 12,
                       "children": [
@@ -3852,13 +3470,13 @@
           "gridCols": 12,
           "width": 1376,
           "height": 346,
-          "fillWidth": false,
+          "fillWidth": true,
           "children": [
             {
               "type": "frame",
               "name": "card",
               "layout": "vertical",
-              "gap": 0,
+              "gap": 24,
               "paddingTop": 16,
               "paddingRight": 16,
               "paddingBottom": 16,
@@ -3874,7 +3492,7 @@
                 {
                   "type": "frame",
                   "layout": "horizontal",
-                  "gap": 0,
+                  "gap": 138,
                   "paddingTop": 0,
                   "paddingRight": 0,
                   "paddingBottom": 0,
@@ -3883,7 +3501,7 @@
                   "counterAlign": "center",
                   "width": 411,
                   "height": 32,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -4001,7 +3619,7 @@
                   "counterAlign": "start",
                   "width": 411,
                   "height": 256,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -4016,7 +3634,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 64,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -4055,7 +3673,7 @@
                               "textAlign": "left",
                               "width": 255,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -4070,7 +3688,7 @@
                               "counterAlign": "center",
                               "width": 255,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -4093,7 +3711,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -4105,7 +3723,7 @@
                                   "name": "Clock",
                                   "width": 24,
                                   "height": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.6)",
+                                  "color": "rgba(162, 162, 170, 0.6)",
                                   "tagName": "svg"
                                 },
                                 {
@@ -4115,7 +3733,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 12,
                                   "lineHeight": 16,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 66,
                                   "height": 16,
@@ -4198,7 +3816,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 64,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -4237,7 +3855,7 @@
                               "textAlign": "left",
                               "width": 262,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -4252,7 +3870,7 @@
                               "counterAlign": "center",
                               "width": 262,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -4275,7 +3893,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -4287,7 +3905,7 @@
                                   "name": "Clock",
                                   "width": 24,
                                   "height": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.6)",
+                                  "color": "rgba(162, 162, 170, 0.6)",
                                   "tagName": "svg"
                                 },
                                 {
@@ -4297,7 +3915,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 12,
                                   "lineHeight": 16,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 73,
                                   "height": 16,
@@ -4380,7 +3998,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 64,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -4419,7 +4037,7 @@
                               "textAlign": "left",
                               "width": 245,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -4434,7 +4052,7 @@
                               "counterAlign": "center",
                               "width": 245,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -4457,7 +4075,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -4469,7 +4087,7 @@
                                   "name": "Clock",
                                   "width": 24,
                                   "height": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.6)",
+                                  "color": "rgba(162, 162, 170, 0.6)",
                                   "tagName": "svg"
                                 },
                                 {
@@ -4479,7 +4097,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 12,
                                   "lineHeight": 16,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 73,
                                   "height": 16,
@@ -4562,7 +4180,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 64,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -4601,7 +4219,7 @@
                               "textAlign": "left",
                               "width": 255,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -4616,7 +4234,7 @@
                               "counterAlign": "center",
                               "width": 255,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -4639,7 +4257,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -4651,7 +4269,7 @@
                                   "name": "Clock",
                                   "width": 24,
                                   "height": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.6)",
+                                  "color": "rgba(162, 162, 170, 0.6)",
                                   "tagName": "svg"
                                 },
                                 {
@@ -4661,7 +4279,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 12,
                                   "lineHeight": 16,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 44,
                                   "height": 16,
@@ -4744,7 +4362,7 @@
               "type": "frame",
               "name": "card",
               "layout": "vertical",
-              "gap": 0,
+              "gap": 20,
               "paddingTop": 16,
               "paddingRight": 16,
               "paddingBottom": 16,
@@ -4760,7 +4378,7 @@
                 {
                   "type": "frame",
                   "layout": "horizontal",
-                  "gap": 0,
+                  "gap": 164,
                   "paddingTop": 0,
                   "paddingRight": 0,
                   "paddingBottom": 0,
@@ -4769,7 +4387,7 @@
                   "counterAlign": "center",
                   "width": 411,
                   "height": 24,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -4872,7 +4490,7 @@
                   "counterAlign": "start",
                   "width": 411,
                   "height": 240,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
@@ -4887,7 +4505,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 60,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -4913,33 +4531,6 @@
                               "height": 40,
                               "objectFit": "cover",
                               "tagName": "IMG"
-                            },
-                            {
-                              "type": "frame",
-                              "layout": "horizontal",
-                              "gap": 0,
-                              "paddingTop": 0,
-                              "paddingRight": 0,
-                              "paddingBottom": 0,
-                              "paddingLeft": 0,
-                              "primaryAlign": "center",
-                              "counterAlign": "center",
-                              "width": 16,
-                              "height": 16,
-                              "fillWidth": false,
-                              "fill": "rgb(245, 158, 11)",
-                              "children": [
-                                {
-                                  "type": "icon",
-                                  "name": "Star",
-                                  "width": 24,
-                                  "height": 24,
-                                  "color": "rgb(255, 255, 255)",
-                                  "tagName": "svg"
-                                }
-                              ],
-                              "tagName": "DIV",
-                              "className": "absolute -top-[1px] -right-[1px] size-[16px] rounded-bl-md bg-warning flex items-center justify-center"
                             }
                           ],
                           "tagName": "DIV",
@@ -4968,7 +4559,7 @@
                               "textAlign": "left",
                               "width": 263,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -4983,7 +4574,7 @@
                               "counterAlign": "center",
                               "width": 263,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -5006,7 +4597,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -5093,7 +4684,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 60,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -5147,7 +4738,7 @@
                               "textAlign": "left",
                               "width": 263,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -5162,7 +4753,7 @@
                               "counterAlign": "center",
                               "width": 263,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -5185,7 +4776,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -5272,7 +4863,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 60,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -5326,7 +4917,7 @@
                               "textAlign": "left",
                               "width": 271,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -5341,7 +4932,7 @@
                               "counterAlign": "center",
                               "width": 271,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -5364,7 +4955,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -5451,7 +5042,7 @@
                       "counterAlign": "center",
                       "width": 411,
                       "height": 60,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "radius": 12,
                       "children": [
                         {
@@ -5505,7 +5096,7 @@
                               "textAlign": "left",
                               "width": 263,
                               "height": 20,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "tagName": "P"
                             },
                             {
@@ -5520,7 +5111,7 @@
                               "counterAlign": "center",
                               "width": 263,
                               "height": 24,
-                              "fillWidth": false,
+                              "fillWidth": true,
                               "children": [
                                 {
                                   "type": "text",
@@ -5543,7 +5134,7 @@
                                   "fontWeight": 400,
                                   "fontSize": 16,
                                   "lineHeight": 24,
-                                  "color": "oklab(0.71181 0.00361261 -0.0124171 / 0.5)",
+                                  "color": "rgba(161, 161, 169, 0.5)",
                                   "textAlign": "left",
                                   "width": 5,
                                   "height": 24,
@@ -5630,7 +5221,7 @@
               "type": "frame",
               "name": "card",
               "layout": "vertical",
-              "gap": 0,
+              "gap": 20,
               "paddingTop": 16,
               "paddingRight": 16,
               "paddingBottom": 16,
@@ -5646,7 +5237,7 @@
                 {
                   "type": "frame",
                   "layout": "horizontal",
-                  "gap": 0,
+                  "gap": 268,
                   "paddingTop": 0,
                   "paddingRight": 0,
                   "paddingBottom": 0,
@@ -5655,7 +5246,7 @@
                   "counterAlign": "center",
                   "width": 411,
                   "height": 24,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "text",
@@ -5701,19 +5292,19 @@
                   "counterAlign": "start",
                   "width": 411,
                   "height": 248,
-                  "fillWidth": false,
+                  "fillWidth": true,
                   "children": [
                     {
                       "type": "frame",
                       "layout": "vertical",
-                      "gap": 0,
+                      "gap": 8,
                       "paddingTop": 8,
                       "paddingRight": 0,
                       "paddingBottom": 8,
                       "paddingLeft": 0,
                       "width": 411,
                       "height": 62,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -5727,7 +5318,7 @@
                           "counterAlign": "center",
                           "width": 411,
                           "height": 28,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -5823,31 +5414,12 @@
                         {
                           "type": "frame",
                           "name": "tooltip-trigger",
-                          "layout": "vertical",
-                          "gap": 0,
-                          "paddingTop": 0,
-                          "paddingRight": 0,
-                          "paddingBottom": 0,
-                          "paddingLeft": 0,
                           "width": 411,
                           "height": 10,
-                          "fillWidth": false,
                           "fill": "rgba(255, 255, 255, 0.04)",
                           "radius": 4,
-                          "overflow": "hidden",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "width": 185,
-                              "height": 10,
-                              "fill": "rgb(167, 139, 250)",
-                              "radius": 4,
-                              "tagName": "DIV"
-                            }
-                          ],
                           "tagName": "DIV",
-                          "dataSlot": "tooltip-trigger",
-                          "className": "relative h-[10px] w-full rounded-sm bg-surface-inset overflow-hidden cursor-help"
+                          "dataSlot": "tooltip-trigger"
                         }
                       ],
                       "tagName": "DIV",
@@ -5856,14 +5428,14 @@
                     {
                       "type": "frame",
                       "layout": "vertical",
-                      "gap": 0,
+                      "gap": 8,
                       "paddingTop": 8,
                       "paddingRight": 0,
                       "paddingBottom": 8,
                       "paddingLeft": 0,
                       "width": 411,
                       "height": 62,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -5877,7 +5449,7 @@
                           "counterAlign": "center",
                           "width": 411,
                           "height": 28,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -5973,31 +5545,12 @@
                         {
                           "type": "frame",
                           "name": "tooltip-trigger",
-                          "layout": "vertical",
-                          "gap": 0,
-                          "paddingTop": 0,
-                          "paddingRight": 0,
-                          "paddingBottom": 0,
-                          "paddingLeft": 0,
                           "width": 411,
                           "height": 10,
-                          "fillWidth": false,
                           "fill": "rgba(255, 255, 255, 0.04)",
                           "radius": 4,
-                          "overflow": "hidden",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "width": 103,
-                              "height": 10,
-                              "fill": "rgb(74, 222, 128)",
-                              "radius": 4,
-                              "tagName": "DIV"
-                            }
-                          ],
                           "tagName": "DIV",
-                          "dataSlot": "tooltip-trigger",
-                          "className": "relative h-[10px] w-full rounded-sm bg-surface-inset overflow-hidden cursor-help"
+                          "dataSlot": "tooltip-trigger"
                         }
                       ],
                       "tagName": "DIV",
@@ -6006,14 +5559,14 @@
                     {
                       "type": "frame",
                       "layout": "vertical",
-                      "gap": 0,
+                      "gap": 8,
                       "paddingTop": 8,
                       "paddingRight": 0,
                       "paddingBottom": 8,
                       "paddingLeft": 0,
                       "width": 411,
                       "height": 62,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -6027,7 +5580,7 @@
                           "counterAlign": "center",
                           "width": 411,
                           "height": 28,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -6123,31 +5676,12 @@
                         {
                           "type": "frame",
                           "name": "tooltip-trigger",
-                          "layout": "vertical",
-                          "gap": 0,
-                          "paddingTop": 0,
-                          "paddingRight": 0,
-                          "paddingBottom": 0,
-                          "paddingLeft": 0,
                           "width": 411,
                           "height": 10,
-                          "fillWidth": false,
                           "fill": "rgba(255, 255, 255, 0.04)",
                           "radius": 4,
-                          "overflow": "hidden",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "width": 74,
-                              "height": 10,
-                              "fill": "rgb(251, 191, 36)",
-                              "radius": 4,
-                              "tagName": "DIV"
-                            }
-                          ],
                           "tagName": "DIV",
-                          "dataSlot": "tooltip-trigger",
-                          "className": "relative h-[10px] w-full rounded-sm bg-surface-inset overflow-hidden cursor-help"
+                          "dataSlot": "tooltip-trigger"
                         }
                       ],
                       "tagName": "DIV",
@@ -6156,14 +5690,14 @@
                     {
                       "type": "frame",
                       "layout": "vertical",
-                      "gap": 0,
+                      "gap": 8,
                       "paddingTop": 8,
                       "paddingRight": 0,
                       "paddingBottom": 8,
                       "paddingLeft": 0,
                       "width": 411,
                       "height": 62,
-                      "fillWidth": false,
+                      "fillWidth": true,
                       "children": [
                         {
                           "type": "frame",
@@ -6177,7 +5711,7 @@
                           "counterAlign": "center",
                           "width": 411,
                           "height": 28,
-                          "fillWidth": false,
+                          "fillWidth": true,
                           "children": [
                             {
                               "type": "frame",
@@ -6273,31 +5807,12 @@
                         {
                           "type": "frame",
                           "name": "tooltip-trigger",
-                          "layout": "vertical",
-                          "gap": 0,
-                          "paddingTop": 0,
-                          "paddingRight": 0,
-                          "paddingBottom": 0,
-                          "paddingLeft": 0,
                           "width": 411,
                           "height": 10,
-                          "fillWidth": false,
                           "fill": "rgba(255, 255, 255, 0.04)",
                           "radius": 4,
-                          "overflow": "hidden",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "width": 49,
-                              "height": 10,
-                              "fill": "rgb(221, 214, 254)",
-                              "radius": 4,
-                              "tagName": "DIV"
-                            }
-                          ],
                           "tagName": "DIV",
-                          "dataSlot": "tooltip-trigger",
-                          "className": "relative h-[10px] w-full rounded-sm bg-surface-inset overflow-hidden cursor-help"
+                          "dataSlot": "tooltip-trigger"
                         }
                       ],
                       "tagName": "DIV",

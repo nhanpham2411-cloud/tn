@@ -150,14 +150,28 @@ async function loadCaches() {
 // SECTION 2: VARIABLE & TEXT STYLE FINDERS
 // ============================================================
 
-function findVar(name) {
+function findVar(name, preferredPrefix) {
   if (!name) return null;
   var lower = name.toLowerCase();
-  if (varCache[lower]) return varCache[lower];
   var hyp = lower.replace(/ /g, "-");
   var spc = lower.replace(/-/g, " ");
+
+  // When preferredPrefix is given, ONLY search within those prefixes (skip unscoped lookup)
+  if (preferredPrefix) {
+    var ppArr = Array.isArray(preferredPrefix) ? preferredPrefix : [preferredPrefix];
+    for (var pp = 0; pp < ppArr.length; pp++) {
+      if (varCache[ppArr[pp] + lower]) return varCache[ppArr[pp] + lower];
+      if (varCache[ppArr[pp] + hyp]) return varCache[ppArr[pp] + hyp];
+      if (varCache[ppArr[pp] + spc]) return varCache[ppArr[pp] + spc];
+    }
+    return null; // Don't fall through to other prefixes when preferred is specified
+  }
+
+  // Unscoped: try exact match first
+  if (varCache[lower]) return varCache[lower];
   if (varCache[hyp]) return varCache[hyp];
   if (varCache[spc]) return varCache[spc];
+
   var prefixes = [
     "semantic/", "color/", "colours/", "colors/", "primitive/",
     "spacing/", "radius/", "size/", "space/", "foundation/",
@@ -169,6 +183,15 @@ function findVar(name) {
     if (varCache[prefixes[i] + spc]) return varCache[prefixes[i] + spc];
   }
   return null;
+}
+
+// Scoped variable finders — prevent spacing/radius cross-contamination
+function findSpacingVar(name) {
+  return findVar(name, ["spacing/", "space/", "size/"]);
+}
+
+function findRadiusVar(name) {
+  return findVar(name, ["border radius/", "radius/"]);
 }
 
 function findTextStyle(name) {
@@ -308,6 +331,24 @@ function bindFloat(node, field, varName, fallbackValue) {
       node.setBoundVariable(field, v);
       return; // CRITICAL: stop here, don't set raw value
     } catch (e) {}
+  }
+  try { node[field] = fallbackValue; } catch (e) {}
+}
+
+// Bind spacing variable (padding, gap) — only searches spacing/* collections
+function bindSpacing(node, field, varName, fallbackValue) {
+  var v = findSpacingVar(varName);
+  if (v) {
+    try { node.setBoundVariable(field, v); return; } catch (e) {}
+  }
+  try { node[field] = fallbackValue; } catch (e) {}
+}
+
+// Bind radius variable — only searches border radius/* collections
+function bindRadius(node, field, varName, fallbackValue) {
+  var v = findRadiusVar(varName);
+  if (v) {
+    try { node.setBoundVariable(field, v); return; } catch (e) {}
   }
   try { node[field] = fallbackValue; } catch (e) {}
 }
@@ -670,6 +711,9 @@ async function renderNode(spec, parent) {
       break;
     case "separator":
       node = await renderSeparator(spec, parent);
+      break;
+    case "image":
+      node = await renderPlaceholder(spec, parent);
       break;
     default:
       debugLog.push("Unknown node type: " + spec.type);
@@ -1088,8 +1132,33 @@ async function renderPlaceholder(spec, parent) {
   }
   frame.resize(w, h);
 
-  // Add label text
-  if (spec.label) {
+  // Image fill from URL (pre-fetched or runtime)
+  if (spec.imageUrl) {
+    try {
+      var _imgHash = await getImageHash(spec.imageUrl);
+      frame.fills = [{ type: "IMAGE", imageHash: _imgHash, scaleMode: spec.imageScaleMode || "FILL" }];
+    } catch (e) {
+      debugLog.push("renderPlaceholder imageUrl error: " + e.message);
+    }
+  }
+
+  // Image fill from embedded base64 data
+  if (spec.imageBase64) {
+    try {
+      var raw = spec.imageBase64;
+      if (raw.indexOf(",") !== -1) raw = raw.split(",")[1];
+      var binaryStr = atob(raw);
+      var bytes = new Uint8Array(binaryStr.length);
+      for (var bi = 0; bi < binaryStr.length; bi++) bytes[bi] = binaryStr.charCodeAt(bi);
+      var img = figma.createImage(bytes);
+      frame.fills = [{ type: "IMAGE", imageHash: img.hash, scaleMode: spec.imageScaleMode || "FILL" }];
+    } catch (e) {
+      debugLog.push("renderPlaceholder imageBase64 error: " + e.message);
+    }
+  }
+
+  // Add label text (only if no image)
+  if (spec.label && !spec.imageUrl && !spec.imageBase64) {
     await loadFontSafe("Inter", "Medium");
     var label = figma.createText();
     label.name = "Placeholder Label";
@@ -1217,10 +1286,10 @@ function applyPadding(frame, spec) {
     var val = typeof spec.padding === "number" ? spec.padding : getSpacingValue(spec.padding);
     var tokenName = typeof spec.padding === "string" ? spec.padding : null;
     if (tokenName) {
-      bindFloat(frame, "paddingTop", tokenName, val);
-      bindFloat(frame, "paddingRight", tokenName, val);
-      bindFloat(frame, "paddingBottom", tokenName, val);
-      bindFloat(frame, "paddingLeft", tokenName, val);
+      bindSpacing(frame, "paddingTop", tokenName, val);
+      bindSpacing(frame, "paddingRight", tokenName, val);
+      bindSpacing(frame, "paddingBottom", tokenName, val);
+      bindSpacing(frame, "paddingLeft", tokenName, val);
     } else {
       frame.paddingTop = val;
       frame.paddingRight = val;
@@ -1232,32 +1301,32 @@ function applyPadding(frame, spec) {
 
   if (spec.padding.all) {
     var allVal = getSpacingValue(spec.padding.all);
-    bindFloat(frame, "paddingTop", spec.padding.all, allVal);
-    bindFloat(frame, "paddingRight", spec.padding.all, allVal);
-    bindFloat(frame, "paddingBottom", spec.padding.all, allVal);
-    bindFloat(frame, "paddingLeft", spec.padding.all, allVal);
+    bindSpacing(frame, "paddingTop", spec.padding.all, allVal);
+    bindSpacing(frame, "paddingRight", spec.padding.all, allVal);
+    bindSpacing(frame, "paddingBottom", spec.padding.all, allVal);
+    bindSpacing(frame, "paddingLeft", spec.padding.all, allVal);
   }
   if (spec.padding.x) {
     var xVal = getSpacingValue(spec.padding.x);
-    bindFloat(frame, "paddingRight", spec.padding.x, xVal);
-    bindFloat(frame, "paddingLeft", spec.padding.x, xVal);
+    bindSpacing(frame, "paddingRight", spec.padding.x, xVal);
+    bindSpacing(frame, "paddingLeft", spec.padding.x, xVal);
   }
   if (spec.padding.y) {
     var yVal = getSpacingValue(spec.padding.y);
-    bindFloat(frame, "paddingTop", spec.padding.y, yVal);
-    bindFloat(frame, "paddingBottom", spec.padding.y, yVal);
+    bindSpacing(frame, "paddingTop", spec.padding.y, yVal);
+    bindSpacing(frame, "paddingBottom", spec.padding.y, yVal);
   }
   if (spec.padding.top) {
-    bindFloat(frame, "paddingTop", spec.padding.top, getSpacingValue(spec.padding.top));
+    bindSpacing(frame, "paddingTop", spec.padding.top, getSpacingValue(spec.padding.top));
   }
   if (spec.padding.right) {
-    bindFloat(frame, "paddingRight", spec.padding.right, getSpacingValue(spec.padding.right));
+    bindSpacing(frame, "paddingRight", spec.padding.right, getSpacingValue(spec.padding.right));
   }
   if (spec.padding.bottom) {
-    bindFloat(frame, "paddingBottom", spec.padding.bottom, getSpacingValue(spec.padding.bottom));
+    bindSpacing(frame, "paddingBottom", spec.padding.bottom, getSpacingValue(spec.padding.bottom));
   }
   if (spec.padding.left) {
-    bindFloat(frame, "paddingLeft", spec.padding.left, getSpacingValue(spec.padding.left));
+    bindSpacing(frame, "paddingLeft", spec.padding.left, getSpacingValue(spec.padding.left));
   }
 }
 
@@ -1269,7 +1338,7 @@ function applyGap(frame, spec) {
   }
   var gapVal = getSpacingValue(spec.gap);
   if (typeof spec.gap === "string") {
-    bindFloat(frame, "itemSpacing", spec.gap, gapVal);
+    bindSpacing(frame, "itemSpacing", spec.gap, gapVal);
   } else {
     frame.itemSpacing = gapVal;
   }
@@ -1305,10 +1374,10 @@ function applyRadius(frame, spec) {
     var val = typeof spec.radius === "number" ? spec.radius : getRadiusValue(spec.radius);
     var token = typeof spec.radius === "string" ? spec.radius : null;
     if (token) {
-      bindFloat(frame, "topLeftRadius", token, val);
-      bindFloat(frame, "topRightRadius", token, val);
-      bindFloat(frame, "bottomLeftRadius", token, val);
-      bindFloat(frame, "bottomRightRadius", token, val);
+      bindRadius(frame, "topLeftRadius", token, val);
+      bindRadius(frame, "topRightRadius", token, val);
+      bindRadius(frame, "bottomLeftRadius", token, val);
+      bindRadius(frame, "bottomRightRadius", token, val);
     } else {
       frame.topLeftRadius = val;
       frame.topRightRadius = val;
@@ -1405,16 +1474,12 @@ async function doGenerate(specInput) {
   var pageName = spec.pageName || "Generated Page";
   debugLog.push("Generating page: " + pageName + " (" + rootSpecs.length + " frame(s))");
 
-  // Create or find page
+  // Find or create page — NEVER clear existing content
   var page = null;
   var pages = figma.root.children;
   for (var p = 0; p < pages.length; p++) {
     if (pages[p].name === "[Gen] " + pageName) {
       page = pages[p];
-      // Clear existing content
-      while (page.children.length > 0) {
-        page.children[0].remove();
-      }
       break;
     }
   }
@@ -1429,7 +1494,48 @@ async function doGenerate(specInput) {
   var startTime = Date.now();
   var gap = (spec.layout && spec.layout.gap) || 100;
   var allNodes = [];
+
+  // Calculate starting X — place new frames after existing content
   var currentX = 0;
+  for (var ei = 0; ei < page.children.length; ei++) {
+    var existingChild = page.children[ei];
+    var rightEdge = existingChild.x + existingChild.width;
+    if (rightEdge + gap > currentX) {
+      currentX = rightEdge + gap;
+    }
+  }
+
+  // Build map of existing frames by name (for in-place upsert)
+  var _existingFrameMap = {};
+  for (var ri2 = 0; ri2 < rootSpecs.length; ri2++) {
+    var rootName = rootSpecs[ri2].name;
+    if (rootName) {
+      for (var ei2 = 0; ei2 < page.children.length; ei2++) {
+        if (page.children[ei2].name === rootName && page.children[ei2].type === "FRAME") {
+          _existingFrameMap[rootName] = page.children[ei2];
+          debugLog.push("  Upsert: found existing '" + rootName + "' — will update in place");
+          break;
+        }
+      }
+    }
+  }
+
+  // Apply dark mode to page (preserve/set on every generate)
+  try {
+    var _genCols = await figma.variables.getLocalVariableCollectionsAsync();
+    for (var _gci = 0; _gci < _genCols.length; _gci++) {
+      var _gc = _genCols[_gci];
+      for (var _gmi = 0; _gmi < _gc.modes.length; _gmi++) {
+        if (_gc.modes[_gmi].name.toLowerCase() === "dark") {
+          page.setExplicitVariableModeForCollection(_gc.id, _gc.modes[_gmi].modeId);
+          debugLog.push("  Dark mode set on page: " + _gc.name);
+          break;
+        }
+      }
+    }
+  } catch(e) {
+    debugLog.push("  WARN: Failed to set dark mode on page: " + e.message);
+  }
 
   // Render section label if provided
   if (spec.sectionLabel) {
@@ -1446,15 +1552,61 @@ async function doGenerate(specInput) {
     page.appendChild(label);
   }
 
-  // Render each root
+  // Render each root (upsert: reuse existing frame if found)
   for (var ri = 0; ri < rootSpecs.length; ri++) {
-    var rootNode = await renderNode(rootSpecs[ri], null);
-    if (rootNode) {
-      page.appendChild(rootNode);
-      rootNode.x = currentX;
-      rootNode.y = 0;
-      currentX += rootNode.width + gap;
-      allNodes.push(rootNode);
+    var rootSpec = rootSpecs[ri];
+    var existingRoot = rootSpec.name ? _existingFrameMap[rootSpec.name] : null;
+
+    if (existingRoot) {
+      // ── Upsert: build new children first, then remove old ──
+      var _oldGenChildren = [];
+      for (var _ogi = 0; _ogi < existingRoot.children.length; _ogi++) {
+        _oldGenChildren.push(existingRoot.children[_ogi]);
+      }
+
+      // Re-apply frame properties
+      applyLayout(existingRoot, rootSpec);
+      applyPadding(existingRoot, rootSpec);
+      applyGap(existingRoot, rootSpec);
+      applyFill(existingRoot, rootSpec);
+      applyStroke(existingRoot, rootSpec);
+      applyRadius(existingRoot, rootSpec);
+      applyAlignment(existingRoot, rootSpec);
+      if (rootSpec.clip === true || rootSpec.clipsContent === true) {
+        existingRoot.clipsContent = true;
+      } else {
+        existingRoot.clipsContent = false;
+      }
+      applySizing(existingRoot, rootSpec);
+
+      // Build new children into existing frame (appended after old)
+      if (rootSpec.children && rootSpec.children.length > 0) {
+        for (var uci = 0; uci < rootSpec.children.length; uci++) {
+          var uChild = await renderNode(rootSpec.children[uci], existingRoot);
+          if (uChild) {
+            applyChildSizing(uChild, rootSpec.children[uci], rootSpec);
+          }
+        }
+      }
+
+      // Remove old children (new ones are already in place)
+      for (var _ogi2 = 0; _ogi2 < _oldGenChildren.length; _ogi2++) {
+        try { _oldGenChildren[_ogi2].remove(); } catch (e) {}
+      }
+
+      // Keep original position — do NOT move
+      allNodes.push(existingRoot);
+      debugLog.push("  Upsert: updated '" + rootSpec.name + "' in place (" + _oldGenChildren.length + " old removed, at " + existingRoot.x + "," + existingRoot.y + ")");
+    } else {
+      // ── Create new ──
+      var rootNode = await renderNode(rootSpec, null);
+      if (rootNode) {
+        page.appendChild(rootNode);
+        rootNode.x = currentX;
+        rootNode.y = 0;
+        currentX += rootNode.width + gap;
+        allNodes.push(rootNode);
+      }
     }
   }
 
@@ -1951,16 +2103,19 @@ async function doCreateEffectStyles(spec) {
 }
 
 // ============================================================
-// SECTION 11A: FOUNDATION — CREATE ICONS
+// SECTION 11A: FOUNDATION — CREATE ICONS (UPSERT)
 // ============================================================
 
 /**
- * Create Lucide-style icon Components from SVG strings.
- * Each icon = standalone Component "Icon / {name}" with stroke bound to foreground variable.
- * Also creates a showcase frame with all icons in a grid + labels.
+ * Create/update icon Components from SVG strings (UPSERT).
+ * Detects existing "Icon / {name}" components → keeps them (preserves instances).
+ * Only creates NEW components for icons not yet on the canvas.
+ * Brand icons (brand: true) keep original multi-color fills — no variable binding.
+ * Showcase always uses instances — never moves component originals.
  *
- * JSON: { type: "foundation-icons", targetPage: "🧩 Components", size: 24,
- *         icons: [{ name: "Search", svg: "<svg ...>...</svg>" }, ...] }
+ * JSON: { type: "foundation-icons", targetPage: "🔣 Icons", size: 24,
+ *         icons: [{ name: "Search", svg: "<svg ...>...</svg>" },
+ *                 { name: "Google", svg: "...", brand: true }, ...] }
  */
 async function doCreateIcons(spec) {
   var log = [];
@@ -1973,111 +2128,230 @@ async function doCreateIcons(spec) {
 
   var targetPage = figma.currentPage;
   if (spec.targetPage) {
+    var spName = spec.targetPage.trim();
     for (var i = 0; i < figma.root.children.length; i++) {
-      if (figma.root.children[i].name === spec.targetPage) { targetPage = figma.root.children[i]; break; }
+      var pgName = figma.root.children[i].name.trim();
+      // Exact match or contains match (handle emoji encoding differences)
+      if (pgName === spName || pgName.indexOf(spName) >= 0 || spName.indexOf(pgName) >= 0) {
+        targetPage = figma.root.children[i];
+        break;
+      }
+    }
+    // Fallback: partial text match without emoji
+    if (targetPage === figma.currentPage && spName !== figma.currentPage.name) {
+      var spText = spName.replace(/[^\w\s]/g, "").trim().toLowerCase();
+      for (var i = 0; i < figma.root.children.length; i++) {
+        var pgText = figma.root.children[i].name.replace(/[^\w\s]/g, "").trim().toLowerCase();
+        if (pgText === spText || pgText.indexOf(spText) >= 0) {
+          targetPage = figma.root.children[i];
+          break;
+        }
+      }
     }
   }
+  log.push("Target page resolved: '" + targetPage.name + "' (requested: '" + (spec.targetPage || "current") + "')");
   await figma.setCurrentPageAsync(targetPage);
 
   var size = spec.size || 24;
-  var created = 0;
-  var iconComps = [];
 
-  for (var i = 0; i < icons.length; i++) {
-    var iconSpec = icons[i];
-    try {
-      var svgFrame = figma.createNodeFromSvg(iconSpec.svg);
-
-      // Create Component wrapper
-      var comp = figma.createComponent();
-      comp.name = "Icon / " + iconSpec.name;
-      comp.resize(size, size);
-      comp.clipsContent = false;
-      comp.fills = [];
-      comp.constraints = { horizontal: "SCALE", vertical: "SCALE" };
-
-      // Move SVG children into component
-      while (svgFrame.children.length > 0) {
-        comp.appendChild(svgFrame.children[0]);
-      }
-      svgFrame.remove();
-
-      // Bind all vector strokes to "foreground" variable
-      var fgVar = findVar("foreground");
-      if (fgVar) {
-        var vectors = comp.findAll(function(n) {
-          return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE"
-            || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR"
-            || n.type === "BOOLEAN_OPERATION";
-        });
-        for (var v = 0; v < vectors.length; v++) {
-          var vec = vectors[v];
-          // Stroke → foreground
-          if (vec.strokes && vec.strokes.length > 0) {
-            vec.strokes = [makeBoundPaint(fgVar)];
-          }
-          // Fill → foreground (for filled parts like circles)
-          if (vec.fills && vec.fills.length > 0) {
-            var hasFill = false;
-            for (var f = 0; f < vec.fills.length; f++) {
-              if (vec.fills[f].type === "SOLID" && vec.fills[f].opacity !== 0) hasFill = true;
-            }
-            if (hasFill) vec.fills = [makeBoundPaint(fgVar)];
-          }
-        }
-      }
-
-      targetPage.appendChild(comp);
-      iconComps.push(comp);
-      created++;
-    } catch (err) {
-      log.push("WARN: Icon '" + iconSpec.name + "' failed: " + err.message);
+  // --- Step 1: Find existing showcase (keep it, don't rebuild) ---
+  var oldShowcase = null;
+  var tpNodes = targetPage.children;
+  for (var si = 0; si < tpNodes.length; si++) {
+    if (tpNodes[si].type === "FRAME" && tpNodes[si].name === "Icons \u2014 Showcase") {
+      oldShowcase = tpNodes[si];
+      break;
     }
   }
 
-  log.push("Created " + created + "/" + icons.length + " icon components");
+  // --- Step 2: Build lookup map of ALL existing icon components ---
+  // Components live inside showcase cards OR loose on page. Scan everything.
+  var existingIconMap = {};
+  var tpComps = targetPage.findAll(function(n) {
+    return n.type === "COMPONENT";
+  });
+  for (var ci = 0; ci < tpComps.length; ci++) {
+    var cn = tpComps[ci].name;
+    existingIconMap[cn] = tpComps[ci];
+  }
+  var iconCount = 0;
+  var iconSample = [];
+  for (var ek in existingIconMap) {
+    if (ek.indexOf("Icon / ") === 0) {
+      iconCount++;
+      if (iconSample.length < 3) iconSample.push(ek);
+    }
+  }
+  log.push("Found " + iconCount + " icon components on '" + targetPage.name + "'");
+  if (iconSample.length > 0) log.push("Samples: " + iconSample.join(", "));
 
-  // --- Build Icon Showcase ---
-  var showcase = figma.createFrame();
-  showcase.name = "Icons \u2014 Showcase";
-  showcase.layoutMode = "VERTICAL";
-  showcase.resize(1440, 100);
-  showcase.layoutSizingHorizontal = "FIXED";
-  showcase.layoutSizingVertical = "HUG";
-  showcase.paddingTop = 80; showcase.paddingRight = 80;
-  showcase.paddingBottom = 80; showcase.paddingLeft = 80;
-  showcase.itemSpacing = 48;
-  setFill(showcase, "background");
-  showcase.clipsContent = false;
+  // --- Step 3: Upsert icons ---
+  // Uses SVG hash stored in component.description to detect changes.
+  // Format: "svg:{hash}" appended to description.
+  // If hash matches → skip (keep as-is). If hash differs → update SVG children.
+  var created = 0;
+  var kept = 0;
+  var updated = 0;
+  var iconComps = []; // parallel with icons[] array
 
-  // Header
-  var header = figma.createFrame();
-  header.name = "Header"; header.layoutMode = "VERTICAL"; header.itemSpacing = 12;
-  header.fills = []; header.clipsContent = false;
-  showcase.appendChild(header);
-  try { header.layoutSizingHorizontal = "FILL"; header.layoutSizingVertical = "HUG"; } catch (e) {}
-  await _makeLabel("Icons", "SP/H1", "foreground", header);
-  await _makeLabel("Lucide icon set — " + created + " icons, " + size + "×" + size + "px, stroke bound to foreground variable. Supports Light/Dark mode.", "SP/Body LG", "muted-foreground", header);
+  // Simple string hash (djb2)
+  function hashSvg(str) {
+    var h = 5381;
+    for (var i = 0; i < str.length; i++) {
+      h = ((h << 5) + h + str.charCodeAt(i)) & 0x7fffffff;
+    }
+    return "svg:" + h.toString(36);
+  }
 
-  // Separator
-  _makeSep(showcase);
+  // Helper: bind vector fills/strokes to foreground variable
+  var fgVar = findVar("foreground");
+  function bindForeground(parentNode) {
+    if (!fgVar) return;
+    var vectors = parentNode.findAll(function(n) {
+      return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE"
+        || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR"
+        || n.type === "BOOLEAN_OPERATION";
+    });
+    for (var v = 0; v < vectors.length; v++) {
+      var vec = vectors[v];
+      if (vec.strokes && vec.strokes.length > 0) {
+        vec.strokes = [makeBoundPaint(fgVar)];
+      }
+      if (vec.fills && vec.fills.length > 0) {
+        var hasFill = false;
+        for (var f = 0; f < vec.fills.length; f++) {
+          if (vec.fills[f].type === "SOLID" && vec.fills[f].opacity !== 0) hasFill = true;
+        }
+        if (hasFill) vec.fills = [makeBoundPaint(fgVar)];
+      }
+    }
+  }
 
-  // Icon grid: wrap in rows with labels
-  var gridFrame = figma.createFrame();
-  gridFrame.name = "Icon Grid";
-  gridFrame.layoutMode = "HORIZONTAL";
-  gridFrame.layoutWrap = "WRAP";
-  gridFrame.itemSpacing = 8;
-  gridFrame.counterAxisSpacing = 8;
-  gridFrame.fills = [];
-  gridFrame.clipsContent = false;
-  showcase.appendChild(gridFrame);
-  try { gridFrame.layoutSizingHorizontal = "FILL"; gridFrame.layoutSizingVertical = "HUG"; } catch (e) {}
+  // Helper: update SVG children of existing component
+  function replaceChildren(comp, svgStr, isBrand, sz) {
+    while (comp.children.length > 0) {
+      comp.children[0].remove();
+    }
+    var svgFrame = figma.createNodeFromSvg(svgStr);
+    while (svgFrame.children.length > 0) {
+      comp.appendChild(svgFrame.children[0]);
+    }
+    svgFrame.remove();
+    comp.resize(sz, sz);
+    if (!isBrand) bindForeground(comp);
+  }
 
-  for (var ic = 0; ic < iconComps.length; ic++) {
-    // Card: icon component (gốc) + label
+  // Helper: store hash in component description
+  function setHash(comp, hash) {
+    var desc = comp.description || "";
+    // Remove old hash if present
+    desc = desc.replace(/\nsvg:[a-z0-9]+$/, "").replace(/^svg:[a-z0-9]+$/, "").trim();
+    comp.description = desc ? desc + "\n" + hash : hash;
+  }
+
+  function getHash(comp) {
+    var desc = comp.description || "";
+    var match = desc.match(/svg:([a-z0-9]+)/);
+    return match ? "svg:" + match[1] : null;
+  }
+
+  // Log first 5 existing icon names for debugging
+  var existingNames = Object.keys(existingIconMap);
+  log.push("Sample existing: " + existingNames.slice(0, 5).join(", ") + (existingNames.length > 5 ? " ..." : ""));
+
+  for (var i = 0; i < icons.length; i++) {
+    var iconSpec = icons[i];
+    var compName = "Icon / " + iconSpec.name;
+    var isBrand = !!iconSpec.brand;
+    var newHash = hashSvg(iconSpec.svg);
+
+    try {
+      // Try exact match first, then without prefix fallback
+      var existing = existingIconMap[compName] || existingIconMap[iconSpec.name] || null;
+
+      if (existing) {
+        // Ensure correct name with "Icon / " prefix
+        if (existing.name !== compName) {
+          log.push("Renamed '" + existing.name + "' → '" + compName + "'");
+          existing.name = compName;
+        }
+        var oldHash = getHash(existing);
+        if (oldHash === newHash) {
+          // SVG unchanged — keep as-is
+          iconComps.push(existing);
+          kept++;
+        } else {
+          // SVG changed (or first run with hash) — update children, re-bind colors
+          replaceChildren(existing, iconSpec.svg, isBrand, size);
+          setHash(existing, newHash);
+          iconComps.push(existing);
+          updated++;
+        }
+      } else {
+        // CREATE new component
+        var svgFrame = figma.createNodeFromSvg(iconSpec.svg);
+        var comp = figma.createComponent();
+        comp.name = compName;
+        comp.resize(size, size);
+        comp.clipsContent = false;
+        comp.fills = [];
+        comp.constraints = { horizontal: "SCALE", vertical: "SCALE" };
+
+        while (svgFrame.children.length > 0) {
+          comp.appendChild(svgFrame.children[0]);
+        }
+        svgFrame.remove();
+
+        // Bind colors (skip for brand icons — keep original multi-color fills)
+        if (!isBrand) {
+          bindForeground(comp);
+        }
+
+        // Store hash for future change detection
+        setHash(comp, newHash);
+        targetPage.appendChild(comp);
+        iconComps.push(comp);
+        created++;
+      }
+    } catch (err) {
+      log.push("WARN: Icon '" + iconSpec.name + "' failed: " + err.message);
+      iconComps.push(null); // placeholder to keep parallel with icons[]
+    }
+  }
+
+  log.push("Kept " + kept + ", updated " + updated + ", created " + created + " / " + icons.length + " total");
+
+  // --- Step 3.5: Delete icon components NOT in JSON ---
+  var specIconNames = {};
+  for (var sni = 0; sni < icons.length; sni++) {
+    specIconNames["Icon / " + icons[sni].name] = true;
+  }
+  var deleted = 0;
+  var allPageComps = targetPage.findAll(function(n) { return n.type === "COMPONENT" && n.name.indexOf("Icon / ") === 0; });
+  for (var dci = 0; dci < allPageComps.length; dci++) {
+    if (!specIconNames[allPageComps[dci].name]) {
+      log.push("Deleted icon: " + allPageComps[dci].name);
+      // Remove parent card if inside showcase
+      var parentCard = allPageComps[dci].parent;
+      if (parentCard && parentCard.type === "FRAME" && parentCard.parent && parentCard.parent.type === "FRAME"
+          && (parentCard.parent.name === "Brand Grid" || parentCard.parent.name === "Icon Grid")) {
+        try { parentCard.remove(); } catch (e) {}
+      } else {
+        try { allPageComps[dci].remove(); } catch (e) {}
+      }
+      deleted++;
+    }
+  }
+  if (deleted > 0) log.push("Deleted " + deleted + " icons not in JSON");
+
+  // --- Step 4: Ensure showcase has ALL icons from JSON ---
+  // Check which icons are missing from showcase grids, add only those.
+  // Never move existing icons — they stay where they are.
+
+  // Helper: create icon card with ACTUAL component
+  function makeIconCard(comp, label, parent) {
     var card = figma.createFrame();
-    card.name = iconComps[ic].name.replace("Icon / ", "");
+    card.name = label;
     card.layoutMode = "VERTICAL";
     card.itemSpacing = 6;
     card.counterAxisAlignItems = "CENTER";
@@ -2090,23 +2364,182 @@ async function doCreateIcons(spec) {
     setFill(card, "card");
     card.topLeftRadius = 8; card.topRightRadius = 8;
     card.bottomLeftRadius = 8; card.bottomRightRadius = 8;
-    gridFrame.appendChild(card);
-
-    // Move the actual Component (gốc) into the card — NOT an instance
-    card.appendChild(iconComps[ic]);
-
-    // Label
-    await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+    parent.appendChild(card);
+    card.appendChild(comp);
+    return card;
   }
 
-  targetPage.appendChild(showcase);
-  showcase.x = 0; showcase.y = 0;
+  if (oldShowcase) {
+    // Build set of icon names already IN the showcase (component nodes inside cards)
+    var showcaseComps = oldShowcase.findAll(function(n) { return n.type === "COMPONENT"; });
+    log.push("Showcase has " + showcaseComps.length + " components");
 
-  // Never change viewport — user keeps their current view position
+    // Find existing grids
+    var brandGrid = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Brand Grid"; });
+    var iconGrid = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Icon Grid"; });
+
+    // Build set of names in Brand Grid and Icon Grid separately
+    var inBrandGridSet = {};
+    if (brandGrid) {
+      var bgComps = brandGrid.findAll(function(n) { return n.type === "COMPONENT"; });
+      for (var bgi = 0; bgi < bgComps.length; bgi++) inBrandGridSet[bgComps[bgi].name] = true;
+    }
+    var inIconGridSet = {};
+    if (iconGrid) {
+      var igComps = iconGrid.findAll(function(n) { return n.type === "COMPONENT"; });
+      for (var igi = 0; igi < igComps.length; igi++) inIconGridSet[igComps[igi].name] = true;
+    }
+
+    var added = 0;
+    for (var ic = 0; ic < icons.length; ic++) {
+      if (!iconComps[ic]) continue;
+      var compName = "Icon / " + icons[ic].name;
+
+      if (icons[ic].brand) {
+        // Brand icon belongs in Brand Grid — skip only if already there
+        if (inBrandGridSet[compName]) continue;
+        // If it's in Icon Grid, move its card to Brand Grid (or remove old card)
+        if (inIconGridSet[compName] && iconGrid) {
+          // Find and remove the old card containing this component from Icon Grid
+          var oldCard = null;
+          for (var oci = 0; oci < iconGrid.children.length; oci++) {
+            var cardChild = iconGrid.children[oci];
+            if (cardChild.type === "FRAME") {
+              var innerComp = cardChild.findOne(function(n) { return n.type === "COMPONENT" && n.name === compName; });
+              if (innerComp) { oldCard = cardChild; break; }
+            }
+          }
+          if (oldCard) {
+            // Move component out, remove old card
+            try { targetPage.appendChild(iconComps[ic]); } catch (e) {}
+            try { oldCard.remove(); } catch (e) {}
+          }
+        }
+        if (!brandGrid) {
+          // Create brand section if it doesn't exist yet
+          var sepIdx = -1;
+          for (var ci2 = 0; ci2 < oldShowcase.children.length; ci2++) {
+            if (oldShowcase.children[ci2].name === "Divider") { sepIdx = ci2; break; }
+          }
+          var brandHeader = figma.createFrame();
+          brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL"; brandHeader.itemSpacing = 12;
+          brandHeader.fills = []; brandHeader.clipsContent = false;
+          oldShowcase.insertChild(sepIdx + 1, brandHeader);
+          try { brandHeader.layoutSizingHorizontal = "FILL"; brandHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+          await _makeLabel("Brand Logos", "SP/H3", "foreground", brandHeader);
+
+          brandGrid = figma.createFrame();
+          brandGrid.name = "Brand Grid";
+          brandGrid.layoutMode = "HORIZONTAL"; brandGrid.layoutWrap = "WRAP";
+          brandGrid.itemSpacing = 8; brandGrid.counterAxisSpacing = 8;
+          brandGrid.fills = []; brandGrid.clipsContent = false;
+          oldShowcase.insertChild(sepIdx + 2, brandGrid);
+          try { brandGrid.layoutSizingHorizontal = "FILL"; brandGrid.layoutSizingVertical = "HUG"; } catch (e) {}
+
+          _makeSep(oldShowcase);
+        }
+        var card = makeIconCard(iconComps[ic], icons[ic].name, brandGrid);
+        await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+        added++;
+      } else {
+        // Regular icon belongs in Icon Grid — skip only if already there
+        if (inIconGridSet[compName]) continue;
+        if (iconGrid) {
+          var card = makeIconCard(iconComps[ic], icons[ic].name, iconGrid);
+          await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+          added++;
+        }
+      }
+    }
+    if (added > 0) log.push("Added " + added + " missing icons to showcase");
+    else log.push("Showcase already complete");
+  } else {
+    // No showcase exists — build from scratch
+    var showcase = figma.createFrame();
+    showcase.name = "Icons \u2014 Showcase";
+    showcase.layoutMode = "VERTICAL";
+    showcase.resize(1440, 100);
+    showcase.layoutSizingHorizontal = "FIXED";
+    showcase.layoutSizingVertical = "HUG";
+    showcase.paddingTop = 80; showcase.paddingRight = 80;
+    showcase.paddingBottom = 80; showcase.paddingLeft = 80;
+    showcase.itemSpacing = 48;
+    setFill(showcase, "background");
+    showcase.clipsContent = false;
+
+    var brandCount = 0;
+    for (var bi = 0; bi < icons.length; bi++) { if (icons[bi].brand) brandCount++; }
+    var regularCount = icons.length - brandCount;
+
+    // Header
+    var header = figma.createFrame();
+    header.name = "Header"; header.layoutMode = "VERTICAL"; header.itemSpacing = 12;
+    header.fills = []; header.clipsContent = false;
+    showcase.appendChild(header);
+    try { header.layoutSizingHorizontal = "FILL"; header.layoutSizingVertical = "HUG"; } catch (e) {}
+    await _makeLabel("Icons", "SP/H1", "foreground", header);
+    var descParts = [];
+    if (regularCount > 0) descParts.push("Lucide icon set \u2014 " + regularCount + " icons, " + size + "\u00d7" + size + "px, stroke bound to foreground variable");
+    if (brandCount > 0) descParts.push(brandCount + " brand logos with original colors");
+    descParts.push("Supports Light/Dark mode.");
+    await _makeLabel(descParts.join(". "), "SP/Body LG", "muted-foreground", header);
+
+    _makeSep(showcase);
+
+    // Brand section
+    if (brandCount > 0) {
+      var brandHeader = figma.createFrame();
+      brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL"; brandHeader.itemSpacing = 12;
+      brandHeader.fills = []; brandHeader.clipsContent = false;
+      showcase.appendChild(brandHeader);
+      try { brandHeader.layoutSizingHorizontal = "FILL"; brandHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+      await _makeLabel("Brand Logos", "SP/H3", "foreground", brandHeader);
+
+      var brandGrid = figma.createFrame();
+      brandGrid.name = "Brand Grid";
+      brandGrid.layoutMode = "HORIZONTAL"; brandGrid.layoutWrap = "WRAP";
+      brandGrid.itemSpacing = 8; brandGrid.counterAxisSpacing = 8;
+      brandGrid.fills = []; brandGrid.clipsContent = false;
+      showcase.appendChild(brandGrid);
+      try { brandGrid.layoutSizingHorizontal = "FILL"; brandGrid.layoutSizingVertical = "HUG"; } catch (e) {}
+
+      for (var ic = 0; ic < icons.length; ic++) {
+        if (!icons[ic].brand || !iconComps[ic]) continue;
+        var card = makeIconCard(iconComps[ic], icons[ic].name, brandGrid);
+        await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+      }
+      _makeSep(showcase);
+    }
+
+    // Regular icon grid
+    var iconHeader = figma.createFrame();
+    iconHeader.name = "Icons"; iconHeader.layoutMode = "VERTICAL"; iconHeader.itemSpacing = 12;
+    iconHeader.fills = []; iconHeader.clipsContent = false;
+    showcase.appendChild(iconHeader);
+    try { iconHeader.layoutSizingHorizontal = "FILL"; iconHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+    await _makeLabel("Icons", "SP/H3", "foreground", iconHeader);
+
+    var gridFrame = figma.createFrame();
+    gridFrame.name = "Icon Grid";
+    gridFrame.layoutMode = "HORIZONTAL"; gridFrame.layoutWrap = "WRAP";
+    gridFrame.itemSpacing = 8; gridFrame.counterAxisSpacing = 8;
+    gridFrame.fills = []; gridFrame.clipsContent = false;
+    showcase.appendChild(gridFrame);
+    try { gridFrame.layoutSizingHorizontal = "FILL"; gridFrame.layoutSizingVertical = "HUG"; } catch (e) {}
+
+    for (var ic = 0; ic < icons.length; ic++) {
+      if (icons[ic].brand || !iconComps[ic]) continue;
+      var card = makeIconCard(iconComps[ic], icons[ic].name, gridFrame);
+      await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+    }
+
+    targetPage.appendChild(showcase);
+    log.push("Created new showcase with " + icons.length + " icons");
+  }
 
   var elapsed = Date.now() - startTime;
-  log.push("Done! " + created + " icons + showcase in " + elapsed + "ms");
-  return { success: true, message: created + " icons + showcase created", elapsed: elapsed, log: log };
+  log.push("Done in " + elapsed + "ms");
+  return { success: true, message: kept + " kept, " + updated + " updated, " + created + " new", elapsed: elapsed, log: log };
 }
 
 // ============================================================

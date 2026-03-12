@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Input
@@ -54,9 +55,18 @@ function Input({
   const hasInner = !!(iconLeft || iconRight || prefix || suffix)
   const hasOuter = !!(textLeft || textRight)
 
+  const leftType = iconLeft ? "Icon" : prefix ? "Prefix" : textLeft ? "TextLeft" : "None"
+  const rightType = iconRight ? "Icon" : suffix ? "Suffix" : textRight ? "TextRight" : "None"
+
   const inputEl = (
     <input
       data-slot="input"
+      {...figma("Input", {
+        State: props.disabled ? "Disabled" : props["aria-invalid"] ? "Error" : "Default",
+        Value: props.value || props.defaultValue ? "Filled" : "Placeholder",
+        Left: leftType,
+        Right: rightType,
+      })}
       type={type}
       className={cn(
         inputVariants({ size, className }),

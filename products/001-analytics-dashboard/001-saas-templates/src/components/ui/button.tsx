@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
+import { figma, BUTTON_VARIANT, BUTTON_SIZE } from "@/lib/figma-dev"
 
 /**
  * SprouX Button
@@ -82,11 +83,18 @@ function Button({
   }) {
   const Comp = asChild ? Slot : "button"
 
+  const iconMode = typeof size === "string" && size.startsWith("icon")
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
+      {...figma("Button", {
+        Variant: BUTTON_VARIANT[variant ?? "default"],
+        Size: BUTTON_SIZE[size ?? "default"],
+        State: props.disabled ? "Disabled" : "Default",
+        Icon: iconMode ? "Icon Only" : "None",
+      })}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />

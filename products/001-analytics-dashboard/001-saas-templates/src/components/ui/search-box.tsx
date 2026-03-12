@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX SearchBox
@@ -43,7 +44,14 @@ function SearchBox({
   }
 
   return (
-    <div className={cn("relative flex items-center", className)}>
+    <div
+      {...figma("Search Box", {
+        State: props.disabled ? "Disabled" : "Default",
+        Value: hasValue ? "Filled" : "Placeholder",
+        Shortcut: shortcut && !hasValue ? "Yes" : "No",
+      })}
+      className={cn("relative flex items-center", className)}
+    >
       <Search className="absolute left-md pointer-events-none size-[16px] text-muted-foreground" />
       <input
         type="search"

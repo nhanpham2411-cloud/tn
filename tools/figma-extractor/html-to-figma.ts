@@ -157,6 +157,10 @@ async function extractURL(
   await page.goto(url, { waitUntil: "networkidle" })
   await page.waitForTimeout(1000) // Let animations settle
 
+  // Force all animations/transitions to finish → elements at final state
+  await page.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; transition-delay: 0s !important; }" })
+  await page.waitForTimeout(100) // Let forced styles apply
+
   // Extract CSS custom properties → build color token reverse-lookup
   console.log("   Extracting CSS tokens...")
   const cssVarMap = await page.evaluate(`(${CSS_VAR_NORMALIZE_SCRIPT})()`) as Record<string, string>
@@ -234,15 +238,56 @@ function mapShadowToken(shadow: string): string | undefined {
  * Adds fillToken, strokeToken, colorToken, gapToken, padding*Token, radiusToken, shadowToken, textStyle.
  * EVERY element must get foundation tokens — including 0px values → "none".
  */
+// Component slot → token overrides
+// When data-slot is detected, force correct semantic tokens instead of relying on RGB reverse-lookup
+const SLOT_TOKEN_MAP: Record<string, { fillToken?: string; strokeToken?: string; radiusToken?: string }> = {
+  "card":            { fillToken: "card", strokeToken: "border", radiusToken: "xl" },
+  "card-header":     { fillToken: "" },  // transparent (no fill)
+  "card-content":    { fillToken: "" },
+  "card-footer":     { fillToken: "" },
+  "dialog":          { fillToken: "card", strokeToken: "border", radiusToken: "xl" },
+  "dialog-header":   { fillToken: "" },
+  "dialog-content":  { fillToken: "" },
+  "dialog-footer":   { fillToken: "" },
+  "alert":           { fillToken: "card", strokeToken: "border", radiusToken: "lg" },
+  "alert-dialog":    { fillToken: "card", strokeToken: "border", radiusToken: "xl" },
+  "sheet-content":   { fillToken: "card", strokeToken: "border" },
+  "drawer-content":  { fillToken: "card", strokeToken: "border" },
+  "popover":         { fillToken: "popover", strokeToken: "border", radiusToken: "lg" },
+  "dropdown-menu":   { fillToken: "popover", strokeToken: "border", radiusToken: "lg" },
+  "select-content":  { fillToken: "popover", strokeToken: "border", radiusToken: "lg" },
+  "tooltip":         { fillToken: "primary", radiusToken: "md" },
+}
+
 function annotateTokens(node: RawExtractedNode) {
   const isLayoutFrame = node.type === "frame" && !!node.layout
 
-  // Color tokens
-  if (node.fill) {
+  // Component slot token overrides — force correct tokens for known components
+  const slotOverrides = node.name ? SLOT_TOKEN_MAP[node.name] : undefined
+  if (slotOverrides) {
+    if (slotOverrides.fillToken !== undefined) {
+      if (slotOverrides.fillToken === "") {
+        // Empty string = transparent, remove fill
+        delete node.fill
+        delete (node as any).fillToken
+      } else {
+        node.fillToken = slotOverrides.fillToken
+      }
+    }
+    if (slotOverrides.strokeToken !== undefined) {
+      node.strokeToken = slotOverrides.strokeToken
+    }
+    if (slotOverrides.radiusToken !== undefined) {
+      node.radiusToken = slotOverrides.radiusToken
+    }
+  }
+
+  // Color tokens (skip if already set by slot override)
+  if (node.fill && !node.fillToken) {
     const token = mapColor(node.fill)
     if (token && token !== node.fill) node.fillToken = token
   }
-  if (node.stroke) {
+  if (node.stroke && !node.strokeToken) {
     const token = mapColor(node.stroke)
     if (token && token !== node.stroke) node.strokeToken = token
   }

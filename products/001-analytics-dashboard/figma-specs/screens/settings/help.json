@@ -1,0 +1,1528 @@
+{
+  "pageName": "Settings — Help",
+  "root": {
+    "type": "frame",
+    "name": "Settings Help — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:280"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:146"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Settings",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Help & Support",
+                        "textStyle": "sp-h3",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "2xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:113"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:6",
+                          "height": "fixed:6"
+                        },
+                        "fill": "success",
+                        "radius": "full",
+                        "opacity": 0.631707
+                      },
+                      {
+                        "type": "text",
+                        "content": "Updated just now",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(161, 161, 169, 0.5)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Button",
+                "name": "Button",
+                "variants": {
+                  "Variant": "Ghost",
+                  "Size": "Mini",
+                  "State": "Default",
+                  "Icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "type": "component",
+            "componentSet": "Input",
+            "name": "Input",
+            "variants": {
+              "State": "Default",
+              "Value": "Placeholder",
+              "Left": "None",
+              "Right": "None"
+            },
+            "overrides": {
+              "text": {
+                "Label": "Search help articles, FAQs, and guides..."
+              }
+            },
+            "sizing": {
+              "width": "fill"
+            }
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "lg",
+            "name": "Grid (3-col)",
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "md",
+                "padding": "md",
+                "sizing": {
+                  "width": "fixed:445"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Book",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Documentation",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Browse our comprehensive guides and API docs",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "View Docs"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "md",
+                "padding": "md",
+                "sizing": {
+                  "width": "fixed:445"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Video",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Video Tutorials",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Watch step-by-step walkthroughs",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Watch Now"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "md",
+                "padding": "md",
+                "sizing": {
+                  "width": "fixed:445"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "success/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "MessageSquare",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "success"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Community Forum",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Connect with other ShopPulse users",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Join Forum"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "align": {
+                      "justify": "center",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:36"
+                    },
+                    "fill": "rgba(125, 60, 235, 0.2)",
+                    "radius": "lg",
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "CircleQuestionMark",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "brand"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:217"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Frequently Asked Questions",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "3 articles in Getting Started",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "wrap": true,
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Getting Started"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Billing"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Security"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Team Management"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Products"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Small",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Analytics"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Accordion",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Accordion Item",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Accordion Header",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Accordion Trigger",
+                            "gap": "xs",
+                            "paddingY": "sm",
+                            "align": {
+                              "justify": "space-between",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ChevronDown",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Accordion Item",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Accordion Header",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Accordion Trigger",
+                            "gap": "xs",
+                            "paddingY": "sm",
+                            "align": {
+                              "justify": "space-between",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ChevronDown",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Accordion Item",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Accordion Header",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Accordion Trigger",
+                            "gap": "xs",
+                            "paddingY": "sm",
+                            "align": {
+                              "justify": "space-between",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "icon",
+                                "name": "ChevronDown",
+                                "sizing": {
+                                  "width": "fixed:24",
+                                  "height": "fixed:24"
+                                },
+                                "fill": "muted-foreground"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "align": {
+                      "justify": "center",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:36"
+                    },
+                    "fill": "rgba(125, 60, 235, 0.2)",
+                    "radius": "lg",
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Mail",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "brand"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:407"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Contact Support",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Can't find what you need? Our team typically responds within 4 hours.",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "lg",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "lg",
+                    "name": "Grid (2-col)",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fixed:661"
+                        },
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Label",
+                            "name": "Label",
+                            "variants": {
+                              "Required": "No",
+                              "State": "Default"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Subject"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Input",
+                            "name": "Input",
+                            "variants": {
+                              "State": "Default",
+                              "Value": "Placeholder",
+                              "Left": "None",
+                              "Right": "None"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Brief description of your issue"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fixed:661"
+                        },
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Label",
+                            "name": "Label",
+                            "variants": {
+                              "Required": "No",
+                              "State": "Default"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Category"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Select",
+                            "name": "Select",
+                            "variants": {
+                              "State": "Default",
+                              "Value": "Placeholder"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Select a category"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "2xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "component",
+                        "componentSet": "Label",
+                        "name": "Label",
+                        "variants": {
+                          "Required": "No",
+                          "State": "Default"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Message"
+                          }
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Textarea",
+                        "name": "Textarea",
+                        "variants": {
+                          "State": "Default",
+                          "Value": "Placeholder"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Describe your issue in detail. Include steps to reproduce if reporting a bug..."
+                          }
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 866,
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "You can also email us directly at support@shoppulse.io",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(162, 162, 170, 0.6)"
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Default",
+                          "Size": "Default",
+                          "State": "Disabled",
+                          "Icon": "None"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Submit Ticket"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 1021,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:182"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "success/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "CircleCheck",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "success"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:134"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "System Status",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "All systems operational",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "View Status Page"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "sm",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 1239,
+                    "paddingY": "xs",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "API",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "Operational",
+                        "textStyle": "sp-caption",
+                        "fill": "success"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 1189,
+                    "paddingY": "xs",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Dashboard",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "Operational",
+                        "textStyle": "sp-caption",
+                        "fill": "success"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 1191,
+                    "paddingY": "xs",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Webhooks",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "Operational",
+                        "textStyle": "sp-caption",
+                        "fill": "success"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": 1126,
+                    "paddingY": "xs",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Payment Processing",
+                        "textStyle": "sp-body",
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "Operational",
+                        "textStyle": "sp-caption",
+                        "fill": "success"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Separator",
+                "name": "Separator",
+                "variants": {
+                  "Orientation": "Horizontal"
+                },
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "text",
+                "content": "Uptime: 99.98% over the last 90 days · Last incident: 14 days ago",
+                "textStyle": "sp-caption",
+                "fill": "rgba(162, 162, 170, 0.6)",
+                "textAlign": "center",
+                "sizing": {
+                  "width": "fill"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

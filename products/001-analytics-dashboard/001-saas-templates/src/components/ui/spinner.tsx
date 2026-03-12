@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Spinner
@@ -35,6 +36,9 @@ function Spinner({
   return (
     <svg
       data-slot="spinner"
+      {...figma("Spinner", {
+        Size: size === "sm" ? "SM" : size === "lg" ? "LG" : "Default",
+      })}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

@@ -1,21 +1,25 @@
+import { useId, useLayoutEffect } from "react"
 import { Outlet } from "react-router-dom"
 import { PageTransition } from "@/components/page-transition"
+import { figma } from "@/lib/figma-dev"
 
 /* ── ShopPulse diamond logo (matches header/sidebar branding) ── */
 export function ShopPulseLogo({ size = 32, className = "" }: { size?: number; className?: string }) {
+  const id = useId()
+  const grdId = `authGrd${id}`
   return (
     <svg viewBox="0 0 28 28" fill="none" className={className} width={size} height={size}>
       <path
         d="M14 3L24 10L14 25L4 10Z"
-        fill="url(#authGrd)"
+        fill={`url(#${grdId})`}
         fillOpacity="0.5"
-        stroke="url(#authGrd)"
+        stroke={`url(#${grdId})`}
         strokeWidth="1"
         strokeOpacity="0.7"
       />
-      <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#authGrd)" fillOpacity="0.85" />
+      <path d="M14 7L20 11.5L14 22L8 11.5Z" fill={`url(#${grdId})`} fillOpacity="0.85" />
       <defs>
-        <linearGradient id="authGrd" x1="4" y1="3" x2="24" y2="25">
+        <linearGradient id={grdId} x1="4" y1="3" x2="24" y2="25">
           <stop stopColor="#c4b5fd" />
           <stop offset="1" stopColor="#818cf8" />
         </linearGradient>
@@ -303,10 +307,20 @@ export function AuthIllustration() {
 }
 
 export function AuthLayout() {
+  // Force dark mode on auth pages — restore user preference on unmount
+  useLayoutEffect(() => {
+    const root = document.documentElement
+    const wasDark = root.classList.contains("dark")
+    if (!wasDark) root.classList.add("dark")
+    return () => {
+      if (!wasDark) root.classList.remove("dark")
+    }
+  }, [])
+
   return (
     <div className="flex min-h-svh">
       {/* Left — branding panel with animated dashboard illustration (hidden on mobile) */}
-      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-between bg-[#0c0a1a] p-2xl relative overflow-hidden">
+      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-center gap-4xl bg-[#0c0a1a] p-2xl relative overflow-hidden">
         {/* Gradient background */}
         <div className="absolute inset-0">
           <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
@@ -324,7 +338,7 @@ export function AuthLayout() {
         />
 
         {/* Logo */}
-        <div className="relative z-10 flex items-center gap-sm">
+        <div className="relative z-10 flex items-center gap-sm" {...figma("Logo", { Type: "Full", Size: "Default" })}>
           <ShopPulseLogo size={28} />
           <span className="text-white/90 font-heading text-lg font-bold tracking-tight">ShopPulse</span>
         </div>

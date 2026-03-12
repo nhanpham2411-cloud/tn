@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Select
@@ -46,6 +47,10 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
+      {...figma("Select", {
+        State: props.disabled ? "Disabled" : "Default",
+        Value: "Placeholder",
+      })}
       className={cn(selectTriggerVariants({ size, className }))}
       {...props}
     >

@@ -2,6 +2,7 @@ import * as React from "react"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
 
 import { cn } from "@/lib/utils"
+import { figma, SWITCH_VALUE } from "@/lib/figma-dev"
 
 /**
  * SprouX Switch
@@ -20,6 +21,10 @@ function Switch({
   return (
     <SwitchPrimitive.Root
       data-slot="switch"
+      {...figma("Switch", {
+        Value: SWITCH_VALUE[props.checked ? "checked" : "unchecked"] ?? "Off",
+        State: props.disabled ? "Disabled" : "Default",
+      })}
       className={cn(
         "peer inline-flex h-[18px] w-[33px] shrink-0 cursor-pointer items-center rounded-xl p-px transition-colors hover:opacity-90 disabled:hover:opacity-50 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-border",
         className
