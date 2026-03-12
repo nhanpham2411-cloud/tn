@@ -29,10 +29,16 @@
   input[type="text"] { width: 100%; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #e4e4e7; font-size: 12px; padding: 8px; outline: none; margin-bottom: 8px; }
   input[type="text"]:focus { border-color: #7c3aed; }
   .page-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 0; }
-  .page-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .page-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .page-item:hover { background: #27272a; }
   .page-item.selected { background: #7c3aed22; border: 1px solid #7c3aed44; }
-  .page-item.state { padding-left: 24px; color: #a1a1aa; font-size: 11px; }
+  .page-item .chevron { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #52525b; transition: transform 0.15s; font-size: 10px; }
+  .page-item .chevron.expanded { transform: rotate(90deg); }
+  .page-item .chevron:hover { color: #a1a1aa; }
+  .page-item .no-chevron { width: 16px; flex-shrink: 0; }
+  .state-group { overflow: hidden; display: none; }
+  .state-group.expanded { display: block; }
+  .page-item.state { padding-left: 30px; color: #a1a1aa; font-size: 11px; }
   .page-item.state::before { content: '↳'; margin-right: 4px; color: #52525b; }
   .page-category { color: #71717a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; flex-shrink: 0; }
   .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; color: #71717a; font-size: 11px; }
@@ -78,7 +84,7 @@
         <div class="dot" id="serverDot"></div>
         <span id="serverLabel">Checking server...</span>
       </div>
-      <input type="text" id="apiUrl" value="http://localhost:3456" placeholder="API server URL" />
+      <input type="text" id="apiUrl" value="http://localhost:3457" placeholder="API server URL" />
       <div class="page-list" id="pageList">
         <div style="color:#71717a; padding: 8px;">Loading pages...</div>
       </div>
@@ -189,16 +195,35 @@
         cat.textContent = p.category;
         pageListEl.appendChild(cat);
       }
-      // Default page item
+      const hasStates = p.states && p.states.length > 0;
+
+      // Page item
       const item = document.createElement('div');
       item.className = 'page-item';
-      item.textContent = p.name;
       item.dataset.name = p.name;
-      item.onclick = () => selectPage(p.name, null, item);
+
+      if (hasStates) {
+        const chevron = document.createElement('span');
+        chevron.className = 'chevron';
+        chevron.textContent = '▶';
+        item.appendChild(chevron);
+      } else {
+        const spacer = document.createElement('span');
+        spacer.className = 'no-chevron';
+        item.appendChild(spacer);
+      }
+
+      const label = document.createElement('span');
+      label.textContent = p.name;
+      item.appendChild(label);
+
       pageListEl.appendChild(item);
 
-      // State sub-items
-      if (p.states && p.states.length > 0) {
+      // State sub-items (collapsed by default)
+      let stateGroup = null;
+      if (hasStates) {
+        stateGroup = document.createElement('div');
+        stateGroup.className = 'state-group';
         for (const s of p.states) {
           const stateItem = document.createElement('div');
           stateItem.className = 'page-item state';
@@ -206,9 +231,20 @@
           stateItem.dataset.name = p.name;
           stateItem.dataset.state = s;
           stateItem.onclick = () => selectPage(p.name, s, stateItem);
-          pageListEl.appendChild(stateItem);
+          stateGroup.appendChild(stateItem);
         }
+        pageListEl.appendChild(stateGroup);
       }
+
+      // Click handler: select page + toggle expand if has states
+      item.onclick = () => {
+        selectPage(p.name, null, item);
+        if (hasStates) {
+          const chevron = item.querySelector('.chevron');
+          const expanded = chevron.classList.toggle('expanded');
+          stateGroup.classList.toggle('expanded', expanded);
+        }
+      };
     }
   }
 

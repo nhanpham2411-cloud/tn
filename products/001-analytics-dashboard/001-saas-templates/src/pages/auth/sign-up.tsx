@@ -131,26 +131,24 @@ export default function SignUpPage() {
           {/* Password */}
           <div className="flex flex-col gap-xs">
             <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                aria-invalid={!!errors.password}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0 h-full w-[40px] hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff className="size-md" /> : <Eye className="size-md" />}
-              </Button>
-            </div>
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              aria-invalid={!!errors.password}
+              iconRight={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="pointer-events-auto cursor-pointer"
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
+              }
+            />
             {errors.password && (
               <p className="sp-caption text-destructive">{errors.password}</p>
             )}

@@ -664,10 +664,41 @@ export const RAW_DOM_WALKER_SCRIPT = `
         if (inputEl.value) textOverrides["Label"] = inputEl.value;
       }
 
+      // For <input>/<textarea> data-figma elements: scan parent wrapper for sibling SVG icons
+      // Input component renders: <div class="relative"><input data-figma/><span>...<svg/></span></div>
+      // Only scan when parent is a relative/flex wrapper (not a form container)
+      const isNativeInput = el.tagName === "INPUT" || el.tagName === "TEXTAREA";
+      if (isNativeInput && svgIcons.length === 0 && el.parentElement) {
+        const wrapper = el.parentElement;
+        const wrapperStyle = getComputedStyle(wrapper);
+        const isInputWrapper = wrapperStyle.position === "relative" &&
+          (wrapperStyle.display === "flex" || wrapperStyle.display === "inline-flex");
+        const allSvgs = isInputWrapper ? wrapper.querySelectorAll("svg") : [];
+        for (const svg of allSvgs) {
+          const iconName = getIconName(svg);
+          const svgStr = serializeSVG(svg);
+          if (svgStr) {
+            const svgRect = svg.getBoundingClientRect();
+            svgIcons.push({
+              name: iconName || "Icon",
+              svgContent: svgStr,
+              width: Math.round(parseFloat(svg.getAttribute("width") || getComputedStyle(svg).width) || svgRect.width || 16),
+              height: Math.round(parseFloat(svg.getAttribute("height") || getComputedStyle(svg).height) || svgRect.height || 16),
+            });
+          }
+        }
+      }
+
       // Override Button Icon variant when SVG icons are present
       if (figmaComp === "Button" && svgIcons.length > 0 && variants.Icon === "None") {
         variants.Icon = "Left";
       }
+
+      // For native input/textarea inside a relative wrapper, use wrapper's dimensions and fillWidth
+      const hasWrapper = isNativeInput && el.parentElement &&
+        getComputedStyle(el.parentElement).position === "relative";
+      const sizeEl = hasWrapper ? el.parentElement : el;
+      const sizeRect = hasWrapper ? el.parentElement.getBoundingClientRect() : rect;
 
       return {
         type: "instance",
@@ -675,10 +706,10 @@ export const RAW_DOM_WALKER_SCRIPT = `
         variants,
         textOverrides: Object.keys(textOverrides).length > 0 ? textOverrides : undefined,
         svgIcons: svgIcons.length > 0 ? svgIcons : undefined,
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-        fillWidth: getFlexGrow(el) || undefined,
-        selfAlign: getSelfAlign(el) || undefined,
+        width: Math.round(sizeRect.width),
+        height: Math.round(sizeRect.height),
+        fillWidth: getFlexGrow(sizeEl) || undefined,
+        selfAlign: getSelfAlign(sizeEl) || undefined,
       };
     }
 

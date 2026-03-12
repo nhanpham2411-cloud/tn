@@ -21,6 +21,7 @@ import { createServer } from "http"
 import { execSync } from "child_process"
 
 import { PAGES, BREAKPOINTS, BASE_URL, type PageConfig } from "./config.js"
+import { PAGE_STATES } from "./states.js"
 import { RAW_DOM_WALKER_SCRIPT, type RawExtractedNode } from "./raw-dom-walker.js"
 import {
   buildColorTokenMap, mapColor, mapSpacing, mapRadius, mapTextStyle,
@@ -527,7 +528,7 @@ async function startServer() {
     if (url.pathname === "/api/pages") {
       res.writeHead(200, { "Content-Type": "application/json" })
       res.end(JSON.stringify({
-        pages: PAGES.map(p => ({ name: p.name, route: p.route, category: p.category })),
+        pages: PAGES.map(p => ({ name: p.name, route: p.route, category: p.category, states: (PAGE_STATES[p.name] || []).map(s => s.name) })),
       }))
       return
     }
@@ -601,7 +602,7 @@ async function startServer() {
       try {
         const result = await extractURL(context, targetUrl, bp.width, bp.height)
         res.writeHead(200, { "Content-Type": "application/json" })
-        res.end(JSON.stringify(result, null, 2))
+        res.end(JSON.stringify({ tree: result, pageName: displayName }, null, 2))
         console.log(`   ✅ Done`)
       } catch (err) {
         res.writeHead(500, { "Content-Type": "application/json" })

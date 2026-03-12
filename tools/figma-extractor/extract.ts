@@ -24,6 +24,8 @@ import { execSync } from "child_process"
 import { PAGES, BREAKPOINTS, BASE_URL, OUTPUT_DIR, type PageConfig, type Breakpoint } from "./config.js"
 import { DOM_WALKER_SCRIPT } from "./dom-walker.js"
 import type { ExtractedNode } from "./dom-walker.js"
+import { RAW_DOM_WALKER_SCRIPT } from "./raw-dom-walker.js"
+import type { RawExtractedNode } from "./raw-dom-walker.js"
 import { buildColorTokenMap, CSS_VAR_EXTRACTION_SCRIPT } from "./style-mapper.js"
 import { buildScreenJSON, formatJSON } from "./json-builder.js"
 import { PAGE_STATES, type ScreenState, type StateAction } from "./states.js"
@@ -392,6 +394,111 @@ function saveResult(screenJSON: any, page: PageConfig, bp: Breakpoint, state?: S
   console.log(`      → ${outPath.replace(resolve(__dirname, "../.."), "")}`)
 }
 
+// ── Raw extraction for serve mode (uses RAW_DOM_WALKER_SCRIPT) ──
+// Returns richer tree with SVG content, background selectors, mixed inline runs
+
+async function extractPageRaw(
+  context: any,
+  pageConfig: PageConfig,
+  bp: Breakpoint,
+  state?: ScreenState
+): Promise<RawExtractedNode | null> {
+  const page = await context.newPage()
+  await page.setViewportSize({ width: bp.width, height: bp.height })
+
+  const url = `${BASE_URL}${pageConfig.route}`
+  const waitUntil = state?.waitMode || "networkidle"
+  await page.goto(url, { waitUntil })
+
+  if (!state?.skipSettleWait) {
+    await page.waitForTimeout(1000)
+  }
+
+  // Run state setup actions
+  if (state?.actions) {
+    for (const action of state.actions) {
+      try {
+        await executeAction(page, action)
+      } catch (err) {
+        if (debug) console.log(`\n      ⚠️ Action ${action.action} failed: ${(err as Error).message}`)
+      }
+    }
+  }
+
+  // Extract DOM tree using RAW walker (SVG vectors, background selectors, mixed inline runs)
+  const rawTree = await page.evaluate(`(${RAW_DOM_WALKER_SCRIPT})()`) as RawExtractedNode | null
+  if (!rawTree) {
+    await page.close()
+    return null
+  }
+
+  // Screenshot image nodes (fallback for SVGs that couldn't be serialized)
+  await screenshotImages(page, rawTree as any)
+
+  // Screenshot background selectors (decorative glow/pattern effects)
+  await screenshotBackgrounds(page, rawTree)
+
+  await page.close()
+  return rawTree
+}
+
+/**
+ * Find nodes with backgroundSelector and screenshot them.
+ * Sets backgroundImage as base64 data URI on the node.
+ */
+async function screenshotBackgrounds(page: any, tree: RawExtractedNode) {
+  const bgNodes: RawExtractedNode[] = []
+  collectBgNodes(tree, bgNodes)
+
+  if (bgNodes.length === 0) return
+
+  for (const node of bgNodes) {
+    if (!node.backgroundSelector) continue
+    try {
+      if (debug) console.log(`   🎨 Background screenshot: ${node.backgroundSelector}`)
+      const el = page.locator(node.backgroundSelector).first()
+      const isVisible = await el.isVisible().catch(() => false)
+      if (!isVisible) continue
+
+      // Hide non-absolute children so screenshot only captures decorative effects
+      // (glow blurs, grid patterns are position:absolute; content children are not)
+      await el.evaluate((parent: HTMLElement) => {
+        for (const child of parent.children) {
+          const pos = getComputedStyle(child).position
+          if (pos !== "absolute" && pos !== "fixed") {
+            ;(child as HTMLElement).style.visibility = "hidden"
+          }
+        }
+      })
+
+      const buffer = await el.screenshot({ type: "png" })
+      node.backgroundImage = `data:image/png;base64,${buffer.toString("base64")}`
+
+      // Restore visibility
+      await el.evaluate((parent: HTMLElement) => {
+        for (const child of parent.children) {
+          ;(child as HTMLElement).style.visibility = ""
+        }
+      })
+
+      if (debug) console.log(`   ✅ Got ${buffer.length} bytes for background`)
+    } catch (e: any) {
+      if (debug) console.log(`   ❌ Background screenshot failed: ${e.message}`)
+    }
+  }
+}
+
+function collectBgNodes(node: RawExtractedNode, out: RawExtractedNode[]) {
+  if (node.backgroundSelector) {
+    out.push(node)
+  }
+  if (node.children) {
+    for (const child of node.children) {
+      collectBgNodes(child, out)
+    }
+  }
+}
+
 // ── Serve mode: HTTP API for Figma plugin ──
 
 async function startServer() {
@@ -488,28 +595,24 @@ async function startServer() {
       console.log(`   📄 Extracting ${pageName} (${bp.name})${stateLabel}...`)
 
       try {
-        const result = await extractPage(context, pageConfig, bp, state)
-        if (!result) {
+        // Use RAW walker for serve mode (SVG vectors, background effects, mixed inline runs)
+        const rawTree = await extractPageRaw(context, pageConfig, bp, state)
+        if (!rawTree) {
           res.writeHead(500, { "Content-Type": "application/json" })
           res.end(JSON.stringify({ error: "Empty tree" }))
           return
         }
 
-        // Save screen JSON to file
-        saveResult(result.screenJSON, pageConfig, bp, state)
-
         // Enrich raw tree with semantic token annotations (colorToken, fillToken, gapToken, etc.)
-        // Without this, plugin must resolve rgba→token at runtime which is less accurate
-        annotateTokens(result.rawTree as any)
+        annotateTokens(rawTree as any)
 
         // Return raw tree for HTML to Figma plugin (it has its own rendering engine)
-        // Plugin uses pageName for frame naming: "pageName — Breakpoint"
         const responsePageName = state
           ? `${pageName}/${state.name}`
           : pageName
 
         res.writeHead(200, { "Content-Type": "application/json" })
-        res.end(JSON.stringify({ pageName: responsePageName, tree: result.rawTree }))
+        res.end(JSON.stringify({ pageName: responsePageName, tree: rawTree }))
         console.log(`   ✅ Done`)
       } catch (err) {
         console.error(`   ❌ Error: ${(err as Error).message}`)
