@@ -1003,6 +1003,11 @@
     @apply font-heading;
   }
 
+  /* ── Dark mode: tell browser to use dark autofill colors ── */
+  .dark {
+    color-scheme: dark;
+  }
+
   /* ── Input autofill override — prevent browser bg + corner color bleed ── */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,

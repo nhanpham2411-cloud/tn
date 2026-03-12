@@ -2,6 +2,7 @@ import * as React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Slider
@@ -26,6 +27,10 @@ function Slider({
   return (
     <SliderPrimitive.Root
       data-slot="slider"
+      {...figma("Slider", {
+        Value: String(Math.round(((_value[0] ?? 0) - min) / (max - min) * 4) * 25),
+        State: props.disabled ? "Disabled" : "Default",
+      })}
       defaultValue={defaultValue}
       value={value}
       min={min}

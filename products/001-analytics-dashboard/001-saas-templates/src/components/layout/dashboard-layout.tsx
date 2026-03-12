@@ -7,7 +7,7 @@ export function DashboardLayout() {
   return (
     <div className="flex min-h-svh flex-col bg-background">
       <AppHeader />
-      <main className="relative flex-1 p-md sm:p-xl lg:p-2xl overflow-hidden">
+      <main className="relative flex-1 p-md sm:p-xl lg:p-2xl">
         {/* Ambient gradient orbs — visible in dark mode only */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden" aria-hidden="true">
           <div className="absolute -top-[300px] -right-[200px] size-[700px] rounded-full bg-primary/[0.03] blur-[200px]" />

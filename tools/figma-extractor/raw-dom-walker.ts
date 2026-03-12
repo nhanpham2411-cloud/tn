@@ -28,6 +28,8 @@ export interface RawExtractedNode {
   height?: number
   fillWidth?: boolean
   fillHeight?: boolean
+  hugWidth?: boolean
+  hugHeight?: boolean
   selfAlign?: "center" | "end"  // per-child cross-axis alignment (mx-auto → center)
   // Visual
   fill?: string          // raw rgba
@@ -159,7 +161,8 @@ export const RAW_DOM_WALKER_SCRIPT = `
     const style = getComputedStyle(el);
     if (style.display === "none") return true;
     if (style.visibility === "hidden") return true;
-    if (style.opacity === "0") return true;
+    // opacity 0 = hidden UNLESS element has animation (page-in starts at opacity 0)
+    if (style.opacity === "0" && (!style.animationName || style.animationName === "none")) return true;
     if (style.position === "absolute" && style.clip === "rect(0px, 0px, 0px, 0px)") return true;
     // Width/height 0 with overflow hidden
     if (style.width === "0px" && style.height === "0px" && style.overflow === "hidden") return true;
@@ -388,6 +391,78 @@ export const RAW_DOM_WALKER_SCRIPT = `
     return false;
   }
 
+  // Detect if element should HUG width (content-sized, no explicit width)
+  // Any element in a flex parent that sizes to its content → HUG
+  function getHugWidth(el) {
+    var style = getComputedStyle(el);
+    var display = style.display;
+    // inline-flex always sizes to content
+    if (display === "inline-flex") return true;
+    // If fills parent → FILL, not HUG
+    if (getFlexGrow(el)) return false;
+    // If has max-width → explicit sizing intent, not HUG
+    var maxW = style.maxWidth;
+    if (maxW && maxW !== "none") return false;
+    // Check parent context
+    var parent = el.parentElement;
+    if (!parent) return false;
+    var ps = getComputedStyle(parent);
+    var pd = ps.display;
+    if (pd === "flex" || pd === "inline-flex") {
+      var dir = ps.flexDirection || "row";
+      var isRow = dir === "row" || dir === "row-reverse";
+      if (isRow) {
+        // Row flex child: no grow + auto basis → sizes to content width
+        // Applies to ANY element (flex, block, etc.) in a row flex parent
+        var grow = parseFloat(style.flexGrow) || 0;
+        var basis = style.flexBasis;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+      } else {
+        // Column flex child: width is cross-axis
+        // If not stretch → sizes to content width
+        var alignSelf = style.alignSelf;
+        var alignItems = ps.alignItems;
+        var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
+        var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
+        if (selfIsContent) return true;
+        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
+      }
+    }
+    return false;
+  }
+
+  // Detect if element should HUG height (content-sized, no explicit height)
+  function getHugHeight(el) {
+    var style = getComputedStyle(el);
+    var display = style.display;
+    if (display === "inline-flex") return true;
+    if (getFillHeight(el)) return false;
+    var maxH = style.maxHeight;
+    if (maxH && maxH !== "none") return false;
+    var parent = el.parentElement;
+    if (!parent) return false;
+    var ps = getComputedStyle(parent);
+    var pd = ps.display;
+    if (pd === "flex" || pd === "inline-flex") {
+      var dir = ps.flexDirection || "row";
+      var isCol = dir === "column" || dir === "column-reverse";
+      if (isCol) {
+        var grow = parseFloat(style.flexGrow) || 0;
+        var basis = style.flexBasis;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+      } else {
+        // Row flex child: height is cross-axis
+        var alignSelf = style.alignSelf;
+        var alignItems = ps.alignItems;
+        var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
+        var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
+        if (selfIsContent) return true;
+        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
+      }
+    }
+    return false;
+  }
+
   function getIconName(svgEl) {
     // Check data-icon first (brand icons)
     const dataIcon = svgEl.getAttribute("data-icon");
@@ -589,10 +664,41 @@ export const RAW_DOM_WALKER_SCRIPT = `
         if (inputEl.value) textOverrides["Label"] = inputEl.value;
       }
 
+      // For <input>/<textarea> data-figma elements: scan parent wrapper for sibling SVG icons
+      // Input component renders: <div class="relative"><input data-figma/><span>...<svg/></span></div>
+      // Only scan when parent is a relative/flex wrapper (not a form container)
+      const isNativeInput = el.tagName === "INPUT" || el.tagName === "TEXTAREA";
+      if (isNativeInput && svgIcons.length === 0 && el.parentElement) {
+        const wrapper = el.parentElement;
+        const wrapperStyle = getComputedStyle(wrapper);
+        const isInputWrapper = wrapperStyle.position === "relative" &&
+          (wrapperStyle.display === "flex" || wrapperStyle.display === "inline-flex");
+        const allSvgs = isInputWrapper ? wrapper.querySelectorAll("svg") : [];
+        for (const svg of allSvgs) {
+          const iconName = getIconName(svg);
+          const svgStr = serializeSVG(svg);
+          if (svgStr) {
+            const svgRect = svg.getBoundingClientRect();
+            svgIcons.push({
+              name: iconName || "Icon",
+              svgContent: svgStr,
+              width: Math.round(parseFloat(svg.getAttribute("width") || getComputedStyle(svg).width) || svgRect.width || 16),
+              height: Math.round(parseFloat(svg.getAttribute("height") || getComputedStyle(svg).height) || svgRect.height || 16),
+            });
+          }
+        }
+      }
+
       // Override Button Icon variant when SVG icons are present
       if (figmaComp === "Button" && svgIcons.length > 0 && variants.Icon === "None") {
         variants.Icon = "Left";
       }
+
+      // For native input/textarea inside a relative wrapper, use wrapper's dimensions and fillWidth
+      const hasWrapper = isNativeInput && el.parentElement &&
+        getComputedStyle(el.parentElement).position === "relative";
+      const sizeEl = hasWrapper ? el.parentElement : el;
+      const sizeRect = hasWrapper ? el.parentElement.getBoundingClientRect() : rect;
 
       return {
         type: "instance",
@@ -600,10 +706,10 @@ export const RAW_DOM_WALKER_SCRIPT = `
         variants,
         textOverrides: Object.keys(textOverrides).length > 0 ? textOverrides : undefined,
         svgIcons: svgIcons.length > 0 ? svgIcons : undefined,
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-        fillWidth: getFlexGrow(el) || undefined,
-        selfAlign: getSelfAlign(el) || undefined,
+        width: Math.round(sizeRect.width),
+        height: Math.round(sizeRect.height),
+        fillWidth: getFlexGrow(sizeEl) || undefined,
+        selfAlign: getSelfAlign(sizeEl) || undefined,
       };
     }
 
@@ -896,6 +1002,8 @@ export const RAW_DOM_WALKER_SCRIPT = `
       height: h,
       fillWidth: getFlexGrow(el) || undefined,
       fillHeight: getFillHeight(el) || undefined,
+      hugWidth: getHugWidth(el) || undefined,
+      hugHeight: getHugHeight(el) || undefined,
       selfAlign: getSelfAlign(el) || undefined,
       fill: bg || undefined,
       stroke: strokeInfo ? strokeInfo.color : undefined,

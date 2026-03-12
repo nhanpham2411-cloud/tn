@@ -1,0 +1,846 @@
+{
+  "type": "frame",
+  "layout": "horizontal",
+  "gap": 0,
+  "paddingTop": 0,
+  "paddingRight": 0,
+  "paddingBottom": 0,
+  "paddingLeft": 0,
+  "primaryAlign": "start",
+  "counterAlign": "start",
+  "width": 1440,
+  "height": 900,
+  "fillWidth": true,
+  "children": [
+    {
+      "type": "frame",
+      "layout": "vertical",
+      "gap": 48,
+      "paddingTop": 32,
+      "paddingRight": 32,
+      "paddingBottom": 32,
+      "paddingLeft": 32,
+      "primaryAlign": "center",
+      "counterAlign": "center",
+      "width": 728,
+      "height": 900,
+      "fillWidth": true,
+      "fill": "rgb(12, 10, 26)",
+      "overflow": "hidden",
+      "children": [
+        {
+          "type": "instance",
+          "component": "Logo",
+          "variants": {
+            "Type": "Full",
+            "Size": "Default"
+          },
+          "textOverrides": {
+            "Label": "ShopPulse"
+          },
+          "width": 129,
+          "height": 28,
+          "fillWidth": false,
+          "selfAlign": "center",
+          "tagName": "DIV"
+        },
+        {
+          "type": "frame",
+          "layout": "vertical",
+          "gap": 20,
+          "paddingTop": 0,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "primaryAlign": "start",
+          "counterAlign": "center",
+          "width": 360,
+          "height": 456,
+          "fillWidth": false,
+          "selfAlign": "center",
+          "children": [
+            {
+              "type": "image",
+              "name": "Illustration",
+              "src": "",
+              "selector": "#root > div > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(1)",
+              "width": 360,
+              "height": 300,
+              "fillWidth": true,
+              "objectFit": "contain",
+              "tagName": "svg"
+            },
+            {
+              "type": "frame",
+              "layout": "vertical",
+              "gap": 8,
+              "paddingTop": 0,
+              "paddingRight": 0,
+              "paddingBottom": 0,
+              "paddingLeft": 0,
+              "width": 360,
+              "height": 136,
+              "fillWidth": false,
+              "children": [
+                {
+                  "type": "text",
+                  "textContent": "Powerful analytics for modern e-commerce",
+                  "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                  "fontWeight": 700,
+                  "fontSize": 24,
+                  "lineHeight": 30,
+                  "color": "rgba(255, 255, 255, 0.9)",
+                  "textAlign": "center",
+                  "width": 360,
+                  "height": 60,
+                  "fillWidth": true,
+                  "tagName": "H2"
+                },
+                {
+                  "type": "text",
+                  "textContent": "Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.",
+                  "fontFamily": "Inter, system-ui, sans-serif",
+                  "fontWeight": 400,
+                  "fontSize": 14,
+                  "lineHeight": 22.75,
+                  "color": "rgba(255, 255, 255, 0.35)",
+                  "textAlign": "center",
+                  "width": 360,
+                  "height": 68,
+                  "fillWidth": true,
+                  "tagName": "P"
+                }
+              ],
+              "tagName": "DIV",
+              "className": "text-center max-w-[360px]"
+            }
+          ],
+          "tagName": "DIV",
+          "className": "relative z-10 flex flex-col items-center gap-lg"
+        },
+        {
+          "type": "frame",
+          "layout": "vertical",
+          "gap": 16,
+          "paddingTop": 0,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "primaryAlign": "start",
+          "counterAlign": "center",
+          "width": 664,
+          "height": 76,
+          "fillWidth": false,
+          "children": [
+            {
+              "type": "frame",
+              "layout": "horizontal",
+              "gap": 24,
+              "paddingTop": 0,
+              "paddingRight": 0,
+              "paddingBottom": 0,
+              "paddingLeft": 0,
+              "primaryAlign": "start",
+              "counterAlign": "center",
+              "width": 277,
+              "height": 44,
+              "fillWidth": false,
+              "selfAlign": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 0,
+                  "paddingBottom": 0,
+                  "paddingLeft": 0,
+                  "width": 73,
+                  "height": 44,
+                  "fillWidth": false,
+                  "children": [
+                    {
+                      "type": "text",
+                      "textContent": "10K+",
+                      "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                      "fontWeight": 700,
+                      "fontSize": 18,
+                      "lineHeight": 28,
+                      "color": "rgba(255, 255, 255, 0.8)",
+                      "textAlign": "center",
+                      "width": 73,
+                      "height": 28,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    },
+                    {
+                      "type": "text",
+                      "textContent": "Active Users",
+                      "fontFamily": "Inter, system-ui, sans-serif",
+                      "fontWeight": 400,
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                      "color": "rgba(255, 255, 255, 0.25)",
+                      "textAlign": "center",
+                      "width": 73,
+                      "height": 16,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "className": "text-center"
+                },
+                {
+                  "type": "frame",
+                  "width": 1,
+                  "height": 20,
+                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "radius": 0,
+                  "tagName": "DIV"
+                },
+                {
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 0,
+                  "paddingBottom": 0,
+                  "paddingLeft": 0,
+                  "width": 58,
+                  "height": 44,
+                  "fillWidth": false,
+                  "children": [
+                    {
+                      "type": "text",
+                      "textContent": "99.9%",
+                      "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                      "fontWeight": 700,
+                      "fontSize": 18,
+                      "lineHeight": 28,
+                      "color": "rgba(255, 255, 255, 0.8)",
+                      "textAlign": "center",
+                      "width": 58,
+                      "height": 28,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    },
+                    {
+                      "type": "text",
+                      "textContent": "Uptime",
+                      "fontFamily": "Inter, system-ui, sans-serif",
+                      "fontWeight": 400,
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                      "color": "rgba(255, 255, 255, 0.25)",
+                      "textAlign": "center",
+                      "width": 58,
+                      "height": 16,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "className": "text-center"
+                },
+                {
+                  "type": "frame",
+                  "width": 1,
+                  "height": 20,
+                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "radius": 0,
+                  "tagName": "DIV"
+                },
+                {
+                  "type": "frame",
+                  "layout": "vertical",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 0,
+                  "paddingBottom": 0,
+                  "paddingLeft": 0,
+                  "width": 48,
+                  "height": 44,
+                  "fillWidth": false,
+                  "children": [
+                    {
+                      "type": "text",
+                      "textContent": "4.9★",
+                      "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                      "fontWeight": 700,
+                      "fontSize": 18,
+                      "lineHeight": 28,
+                      "color": "rgba(255, 255, 255, 0.8)",
+                      "textAlign": "center",
+                      "width": 48,
+                      "height": 28,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    },
+                    {
+                      "type": "text",
+                      "textContent": "Rating",
+                      "fontFamily": "Inter, system-ui, sans-serif",
+                      "fontWeight": 400,
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                      "color": "rgba(255, 255, 255, 0.25)",
+                      "textAlign": "center",
+                      "width": 48,
+                      "height": 16,
+                      "fillWidth": true,
+                      "tagName": "P"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "className": "text-center"
+                }
+              ],
+              "tagName": "DIV",
+              "className": "flex items-center gap-xl"
+            },
+            {
+              "type": "text",
+              "textContent": "© 2026 ShopPulse. All rights reserved.",
+              "fontFamily": "Inter, system-ui, sans-serif",
+              "fontWeight": 400,
+              "fontSize": 12,
+              "lineHeight": 16,
+              "color": "rgba(255, 255, 255, 0.15)",
+              "width": 226,
+              "height": 16,
+              "fillWidth": false,
+              "tagName": "P"
+            }
+          ],
+          "tagName": "DIV",
+          "className": "relative z-10 flex flex-col items-center gap-md w-full"
+        }
+      ],
+      "tagName": "DIV",
+      "className": "hidden lg:flex lg:flex-1 flex-col items-center justify-center gap-4xl bg-[#0c0a1a] p-2xl relative overflow-hidden"
+    },
+    {
+      "type": "frame",
+      "layout": "horizontal",
+      "gap": 0,
+      "paddingTop": 24,
+      "paddingRight": 24,
+      "paddingBottom": 24,
+      "paddingLeft": 24,
+      "primaryAlign": "center",
+      "counterAlign": "center",
+      "width": 712,
+      "height": 900,
+      "fillWidth": true,
+      "fill": "rgb(12, 12, 16)",
+      "overflow": "hidden",
+      "children": [
+        {
+          "type": "frame",
+          "layout": "horizontal",
+          "gap": 0,
+          "paddingTop": 0,
+          "paddingRight": 0,
+          "paddingBottom": 0,
+          "paddingLeft": 0,
+          "primaryAlign": "center",
+          "counterAlign": "center",
+          "width": 664,
+          "height": 482,
+          "fillWidth": false,
+          "children": [
+            {
+              "type": "frame",
+              "name": "card",
+              "layout": "vertical",
+              "gap": 0,
+              "paddingTop": 16,
+              "paddingRight": 16,
+              "paddingBottom": 16,
+              "paddingLeft": 16,
+              "width": 440,
+              "height": 482,
+              "fillWidth": false,
+              "fill": "rgb(20, 20, 24)",
+              "stroke": "rgba(255, 255, 255, 0.06)",
+              "strokeWidth": 1,
+              "radius": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "name": "card-header",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "paddingTop": 16,
+                  "paddingRight": 16,
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "primaryAlign": "start",
+                  "counterAlign": "start",
+                  "width": 406,
+                  "height": 80,
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "paddingTop": 0,
+                      "paddingRight": 0,
+                      "paddingBottom": 0,
+                      "paddingLeft": 0,
+                      "primaryAlign": "start",
+                      "counterAlign": "start",
+                      "width": 374,
+                      "height": 48,
+                      "fillWidth": true,
+                      "children": [
+                        {
+                          "type": "text",
+                          "textContent": "Welcome back",
+                          "fontFamily": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+                          "fontWeight": 600,
+                          "fontSize": 16,
+                          "lineHeight": 24,
+                          "color": "rgb(250, 250, 250)",
+                          "width": 374,
+                          "height": 24,
+                          "fillWidth": true,
+                          "tagName": "DIV",
+                          "dataSlot": "card-title"
+                        },
+                        {
+                          "type": "text",
+                          "textContent": "Sign in to your account to continue",
+                          "fontFamily": "Inter, system-ui, sans-serif",
+                          "fontWeight": 400,
+                          "fontSize": 14,
+                          "lineHeight": 20,
+                          "color": "rgb(161, 161, 170)",
+                          "width": 374,
+                          "height": 20,
+                          "fillWidth": true,
+                          "tagName": "DIV",
+                          "dataSlot": "card-description"
+                        }
+                      ],
+                      "tagName": "DIV",
+                      "className": "flex flex-col gap-3xs"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "dataSlot": "card-header",
+                  "className": "flex flex-col gap-2xs p-md gap-md"
+                },
+                {
+                  "type": "frame",
+                  "name": "card-content",
+                  "layout": "vertical",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 16,
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "width": 406,
+                  "height": 248,
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "layout": "vertical",
+                      "gap": 16,
+                      "paddingTop": 0,
+                      "paddingRight": 0,
+                      "paddingBottom": 0,
+                      "paddingLeft": 0,
+                      "primaryAlign": "start",
+                      "counterAlign": "start",
+                      "width": 374,
+                      "height": 232,
+                      "fillWidth": true,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "paddingTop": 0,
+                          "paddingRight": 0,
+                          "paddingBottom": 0,
+                          "paddingLeft": 0,
+                          "primaryAlign": "start",
+                          "counterAlign": "start",
+                          "width": 374,
+                          "height": 64,
+                          "fillWidth": true,
+                          "children": [
+                            {
+                              "type": "instance",
+                              "component": "Label",
+                              "variants": {
+                                "Required": "No",
+                                "State": "Default"
+                              },
+                              "textOverrides": {
+                                "Label": "Email"
+                              },
+                              "width": 374,
+                              "height": 20,
+                              "fillWidth": true,
+                              "tagName": "LABEL",
+                              "dataSlot": "label"
+                            },
+                            {
+                              "type": "instance",
+                              "component": "Input",
+                              "variants": {
+                                "State": "Default",
+                                "Value": "Filled",
+                                "Left": "None",
+                                "Right": "None"
+                              },
+                              "textOverrides": {
+                                "Label": "john@shoppulse.com"
+                              },
+                              "width": 374,
+                              "height": 36,
+                              "fillWidth": true,
+                              "tagName": "INPUT",
+                              "dataSlot": "input"
+                            }
+                          ],
+                          "tagName": "DIV",
+                          "className": "flex flex-col gap-xs"
+                        },
+                        {
+                          "type": "frame",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "paddingTop": 0,
+                          "paddingRight": 0,
+                          "paddingBottom": 0,
+                          "paddingLeft": 0,
+                          "primaryAlign": "start",
+                          "counterAlign": "start",
+                          "width": 374,
+                          "height": 64,
+                          "fillWidth": true,
+                          "children": [
+                            {
+                              "type": "instance",
+                              "component": "Label",
+                              "variants": {
+                                "Required": "No",
+                                "State": "Default"
+                              },
+                              "textOverrides": {
+                                "Label": "Password"
+                              },
+                              "width": 374,
+                              "height": 20,
+                              "fillWidth": true,
+                              "tagName": "LABEL",
+                              "dataSlot": "label"
+                            },
+                            {
+                              "type": "instance",
+                              "component": "Input",
+                              "variants": {
+                                "State": "Default",
+                                "Value": "Filled",
+                                "Left": "None",
+                                "Right": "None"
+                              },
+                              "textOverrides": {
+                                "Label": "SecureP@ss123"
+                              },
+                              "width": 374,
+                              "height": 36,
+                              "fillWidth": true,
+                              "tagName": "INPUT",
+                              "dataSlot": "input"
+                            }
+                          ],
+                          "tagName": "DIV",
+                          "className": "flex flex-col gap-xs"
+                        },
+                        {
+                          "type": "frame",
+                          "layout": "horizontal",
+                          "gap": 134,
+                          "paddingTop": 0,
+                          "paddingRight": 0,
+                          "paddingBottom": 0,
+                          "paddingLeft": 0,
+                          "primaryAlign": "space-between",
+                          "counterAlign": "center",
+                          "width": 374,
+                          "height": 20,
+                          "fillWidth": true,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "gap": 8,
+                              "paddingTop": 0,
+                              "paddingRight": 0,
+                              "paddingBottom": 0,
+                              "paddingLeft": 0,
+                              "primaryAlign": "start",
+                              "counterAlign": "center",
+                              "width": 122,
+                              "height": 20,
+                              "fillWidth": false,
+                              "children": [
+                                {
+                                  "type": "instance",
+                                  "component": "Checkbox",
+                                  "variants": {
+                                    "Value": "Unchecked",
+                                    "State": "Default"
+                                  },
+                                  "width": 16,
+                                  "height": 16,
+                                  "fillWidth": false,
+                                  "tagName": "BUTTON",
+                                  "dataSlot": "checkbox"
+                                },
+                                {
+                                  "type": "instance",
+                                  "component": "Label",
+                                  "variants": {
+                                    "Required": "No",
+                                    "State": "Default"
+                                  },
+                                  "textOverrides": {
+                                    "Label": "Remember me"
+                                  },
+                                  "width": 98,
+                                  "height": 20,
+                                  "fillWidth": false,
+                                  "tagName": "LABEL",
+                                  "dataSlot": "label"
+                                }
+                              ],
+                              "tagName": "DIV",
+                              "className": "flex items-center gap-xs"
+                            },
+                            {
+                              "type": "text",
+                              "textContent": "Forgot password?",
+                              "fontFamily": "Inter, system-ui, sans-serif",
+                              "fontWeight": 400,
+                              "fontSize": 14,
+                              "lineHeight": 20,
+                              "color": "rgb(124, 58, 237)",
+                              "width": 118,
+                              "height": 20,
+                              "fillWidth": false,
+                              "tagName": "A"
+                            }
+                          ],
+                          "tagName": "DIV",
+                          "className": "flex items-center justify-between"
+                        },
+                        {
+                          "type": "instance",
+                          "component": "Button",
+                          "variants": {
+                            "Variant": "Default",
+                            "Size": "Default",
+                            "State": "Disabled",
+                            "Icon": "None"
+                          },
+                          "width": 374,
+                          "height": 36,
+                          "fillWidth": true,
+                          "tagName": "BUTTON",
+                          "dataSlot": "button"
+                        }
+                      ],
+                      "tagName": "FORM",
+                      "className": "flex flex-col gap-md"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "dataSlot": "card-content",
+                  "className": "p-md pt-0"
+                },
+                {
+                  "type": "frame",
+                  "name": "card-content",
+                  "layout": "vertical",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 16,
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "width": 406,
+                  "height": 32,
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "layout": "horizontal",
+                      "gap": 16,
+                      "paddingTop": 0,
+                      "paddingRight": 0,
+                      "paddingBottom": 0,
+                      "paddingLeft": 0,
+                      "primaryAlign": "start",
+                      "counterAlign": "center",
+                      "width": 374,
+                      "height": 16,
+                      "fillWidth": true,
+                      "children": [
+                        {
+                          "type": "instance",
+                          "component": "Separator",
+                          "variants": {
+                            "Orientation": "Horizontal"
+                          },
+                          "width": 124,
+                          "height": 1,
+                          "fillWidth": true,
+                          "tagName": "DIV",
+                          "dataSlot": "separator"
+                        },
+                        {
+                          "type": "text",
+                          "textContent": "or continue with",
+                          "fontFamily": "Inter, system-ui, sans-serif",
+                          "fontWeight": 400,
+                          "fontSize": 12,
+                          "lineHeight": 16,
+                          "color": "rgb(161, 161, 170)",
+                          "width": 93,
+                          "height": 16,
+                          "fillWidth": false,
+                          "tagName": "SPAN"
+                        },
+                        {
+                          "type": "instance",
+                          "component": "Separator",
+                          "variants": {
+                            "Orientation": "Horizontal"
+                          },
+                          "width": 124,
+                          "height": 1,
+                          "fillWidth": true,
+                          "tagName": "DIV",
+                          "dataSlot": "separator"
+                        }
+                      ],
+                      "tagName": "DIV",
+                      "className": "flex items-center gap-md"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "dataSlot": "card-content",
+                  "className": "p-md pt-0"
+                },
+                {
+                  "type": "frame",
+                  "name": "card-content",
+                  "layout": "horizontal",
+                  "gap": 12,
+                  "paddingTop": 0,
+                  "paddingRight": 16,
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "gridCols": 2,
+                  "width": 406,
+                  "height": 52,
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "instance",
+                      "component": "Button",
+                      "variants": {
+                        "Variant": "Outline",
+                        "Size": "Default",
+                        "State": "Default",
+                        "Icon": "None"
+                      },
+                      "textOverrides": {
+                        "Label": "Google"
+                      },
+                      "width": 181,
+                      "height": 36,
+                      "fillWidth": false,
+                      "tagName": "BUTTON",
+                      "dataSlot": "button"
+                    },
+                    {
+                      "type": "instance",
+                      "component": "Button",
+                      "variants": {
+                        "Variant": "Outline",
+                        "Size": "Default",
+                        "State": "Default",
+                        "Icon": "None"
+                      },
+                      "textOverrides": {
+                        "Label": "Facebook"
+                      },
+                      "width": 181,
+                      "height": 36,
+                      "fillWidth": false,
+                      "tagName": "BUTTON",
+                      "dataSlot": "button"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "dataSlot": "card-content",
+                  "className": "p-md grid grid-cols-2 gap-sm pt-0"
+                },
+                {
+                  "type": "frame",
+                  "name": "card-footer",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "paddingTop": 0,
+                  "paddingRight": 16,
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "primaryAlign": "start",
+                  "counterAlign": "center",
+                  "width": 406,
+                  "height": 36,
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text",
+                      "textContent": "Don't have an account? Sign up",
+                      "fontFamily": "Inter, system-ui, sans-serif",
+                      "fontWeight": 400,
+                      "fontSize": 14,
+                      "lineHeight": 20,
+                      "color": "rgb(161, 161, 170)",
+                      "width": 210,
+                      "height": 20,
+                      "fillWidth": false,
+                      "tagName": "P"
+                    }
+                  ],
+                  "tagName": "DIV",
+                  "dataSlot": "card-footer",
+                  "className": "flex items-center p-md pt-0"
+                }
+              ],
+              "tagName": "DIV",
+              "dataSlot": "card",
+              "className": "rounded-2xl border-border/60 bg-card text-card-foreground dark:border-border-subtle p-md w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm"
+            }
+          ],
+          "tagName": "DIV",
+          "className": "animate-page-in w-full flex items-center justify-center"
+        }
+      ],
+      "tagName": "DIV",
+      "className": "flex flex-1 items-center justify-center bg-background p-lg sm:p-xl relative overflow-hidden"
+    }
+  ],
+  "tagName": "DIV",
+  "className": "flex min-h-svh"
+}

@@ -1,0 +1,3338 @@
+{
+  "pageName": "Management — Products",
+  "root": {
+    "type": "frame",
+    "name": "Management Products — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "background"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:221"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:88"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Management",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Products",
+                        "textStyle": "sp-h3",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "2xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:113"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:6",
+                          "height": "fixed:6"
+                        },
+                        "fill": "success",
+                        "radius": "full",
+                        "opacity": 0.668429
+                      },
+                      {
+                        "type": "text",
+                        "content": "Updated just now",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(161, 161, 169, 0.5)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Button",
+                "name": "Button",
+                "variants": {
+                  "Variant": "Default",
+                  "Size": "Default",
+                  "State": "Default",
+                  "Icon": "None"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Add Product"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "lg",
+            "name": "Grid (4-col)",
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Package",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:83"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "30",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Total Products",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "success/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Package",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "success"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "20",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Active",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "DollarSign",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:85"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$43.7M",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Total Revenue",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "warning/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "TrendingUp",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "warning"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:62"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "4.2",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Avg Rating",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "clipsContent": true,
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "md",
+                "padding": "xl",
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "md",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:151"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:107"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "All Products",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "30 products found",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Ghost",
+                          "Size": "Mini",
+                          "State": "Default",
+                          "Icon": "None"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "md",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:342"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "name": "Tabs",
+                        "sizing": {
+                          "width": "fixed:256"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Tabs List",
+                            "padding": "3xs",
+                            "align": {
+                              "justify": "center",
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:256"
+                            },
+                            "fill": "ring",
+                            "radius": "full",
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "All",
+                                "textStyle": "sp-body-medium",
+                                "fill": "card-foreground",
+                                "textAlign": "center"
+                              },
+                              {
+                                "type": "text",
+                                "content": "Active",
+                                "textStyle": "sp-body-medium",
+                                "fill": "muted-foreground",
+                                "textAlign": "center"
+                              },
+                              {
+                                "type": "text",
+                                "content": "Draft",
+                                "textStyle": "sp-body-medium",
+                                "fill": "muted-foreground",
+                                "textAlign": "center"
+                              },
+                              {
+                                "type": "text",
+                                "content": "Archived",
+                                "textStyle": "sp-body-medium",
+                                "fill": "muted-foreground",
+                                "textAlign": "center"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "3xs",
+                        "padding": "3xs",
+                        "align": {
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:70"
+                        },
+                        "stroke": "rgba(38, 38, 42, 0.6)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Button",
+                            "name": "Button",
+                            "variants": {
+                              "Variant": "Secondary",
+                              "Size": "Mini",
+                              "State": "Default",
+                              "Icon": "None"
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Button",
+                            "name": "Button",
+                            "variants": {
+                              "Variant": "Ghost",
+                              "Size": "Mini",
+                              "State": "Default",
+                              "Icon": "None"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "paddingTop": "lg",
+                "paddingBottom": "none",
+                "paddingX": "xl",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Search Box",
+                    "name": "Search Box",
+                    "variants": {
+                      "State": "Default",
+                      "Value": "Placeholder",
+                      "Shortcut": "Yes"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Search products..."
+                      }
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Select",
+                    "name": "Select",
+                    "variants": {
+                      "State": "Default",
+                      "Value": "Placeholder"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "All Categories"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "md",
+                "paddingTop": "md",
+                "paddingBottom": "xl",
+                "paddingX": "xl",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Table Container",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "name": "Table",
+                        "sizing": {
+                          "width": "fixed:1326"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "name": "Table Header",
+                            "sizing": {
+                              "width": "fixed:1326"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Head",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Product",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Category",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Price",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Status",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Sales",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Rating",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Stock",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Actions",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "name": "Table Body",
+                            "sizing": {
+                              "width": "fixed:1326"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAIAAAAnApehAAAFaklEQVR4nMSYW0tcVxTH95wZ7zfUODOaagOC4ATtGBAEm49QA8Vmkofm3RehkC9QSPAtad+T9i2U0CANJX3wwdr6pBVSSBFTLxVBvF/Gy9xn+puzZo5nZs4ZndQmi+Fwzt5rr/+6773HdeWKV+WS44zUpVAqxS9D5nGX+UPTHJqmgQ6/6KAuh1K6JCSnkkl+yXxsp1NzOLQs3mWh6rLSMjNiNS2tRyKRFF0E2GkC/h9JD6WGnUrs1rRLDe8F4NOYWgZbe2/ABjyYrmxyvX9yuBwfBDdtem6N2VFTU2NTU5PLVYyZ2sWTUsHxeHx/f39vb6+IR2F0Fc+yysrK+/e/6uvzAxyLxRgpKyujKBKJhIEkLxCFGw6HGYEZ+Ddv/nr06JtwOGIpmVXO2tp6O2wwHjz4+ubNT6PR6Obm5unp6cnJCU9E19TUlJeXl+nEJ6i7u7sbGxvHx8ehUAiBjY2N16593NXVNTX1W147O5NfBPvWrc+Ghz8nGVdXV3UvpTBXfCsOEDZsXV5aPg2dYitKMF5fX88TNo/HHQwG377921K+pmwIo+/eDfDEDgHmWVVV1dzcTOxra2vRKanT2tpaJBoRbzc0NHg8HthYKKtu3x42tMwj2/TRfZnOBrJGYlldXY1BuLqiooKnWIxmWAYDAG63u66uTqbQjEE8gQSmJFcuih2NxqTpE2zWA+zz+UCNRCISUaSjHMDIZba7u7ujo4NBcgJ1xWiI5SyxhLCNN8uOjo5INFZiTW9vLzm/uLgoVoIHMHKxCYaBgYH29nayYWdnBzbyMaETjnn69PuVlX9Kw4aWlpZbW1uvX/cRQiRub2+Pjo7Ozs6iU1tbG8CIBruzs5Mwz83NjY2NTUxMDA4OHhwcYD1sMzN/PH/+o7Ih21wT0x8//vbVq1/IHcnw/v5+LJueniYcjMzMzAAJPJ8Mop/f78ft6MTs5OTUkyff2RWYUuf1NUKLiDt3AsgFIBAIDA0NSbyxe2trC7XwP/k1MjLCILYSFBgYfP36T6kRO3J4vVfJm8KJ9vaP7t37sqqqsqamuqenB1nA4EkgUQJr5ufnGcRo/I+5FBXmwnB4eLiyshLRSdOckUh0fPwnmEuwm6wOBL6gSPAeYDQsySwwyDJeqHKQ8DAvWCxg0lbRhvREV1Tc290jNKVhUxp4kt4pWQOklKz0f174BEDpVS6NRenNzuv16suj7CX4n3rDdEsIW+xQKCz5b1RB4a4jeWTOJmPEPJVIxC0hbPOcWEpXUvZUeOwtnJVmUBq29DXxrSFLntLG0y3TEY44TrJT+dYbzFhhCWHr81gsnc+Gn8UCI9gy4lKVst7sHrO3s9il243P8waLeLiQZDvAQe+AHaG6lOmKpLJ2qFxDLZU7S7pk0m4vscXmhCJrzHleiFGEJEzxRDwYPCoNm5re2dk1YmyHV1hgypTheI7ipi+Vhh2Pxx4+HCNU5gOoJXDeHVNeJMXImBcvxukzlsst99AM5/r6On3K7/8EQUixrGbj+GaUmRxXpLdPTv46NfW7ZdQssXPk04rR4MaNPqrcOChaamB+x2Ja6bNnP7x8+XNeN5RWmXn3eK7mTeeGLd1DOB/6fN0tLS0ci+GkbEymKPnkRRzDgRx1FxYWDg+D+tHKmYOXfU+b4Xa36TdSC7eLGxEtI6qU+jbu8eaLplkJhLlEYF7EBULu7E5nyhgx5tV50IVgBfuQ4kpBx06ZFxSIdmSlGFPn3h/zGaw2wLTdSoc3T9vVlHq327LlMVjJXqLvGZr+j4wZPp/1grHODaoFpTIXx1RmH9NNp1Hb/QFhdvt/IsGV/3pcxhDVi+fJykv/jyvbdhx61SSzhaP+BQAA//8U5RuRAAAABklEQVQDAIA+AJyMd8qgAAAAAElFTkSuQmCC"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:123"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Apple AirPods Pro",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-001",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$249",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "1,553",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "356",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:116"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "MacBook Pro 14\"",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-002",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$1999",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "3,613",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4.5",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "17",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:91"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "iPhone 13 Pro",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-003",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$1199",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "1,301",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4.6",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "18",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAIAAAAnApehAAAEfUlEQVR4nKxYzXLTMBDWyk7skPLTTFpKYYYDR3rlFTjyslx5B+4cODDDMEOhTWn6kzjSstqVZDlpbEOipplYsvfbb/+0cj6dnqjmgHqovQxE+viRzufphdagtSZ0ul90kPkXJ9NXp9Msz9EGabTEgsI/faHyktEYe34++/7jZwBDlkSS0Vr62HXsLNMAOuDVlItieDx9djWbGXrIWEZOhselAcJPwCaTydWf8fV8rphEEEjcnB6G5egAnCXA6+Pp0ydOuA28+MIR4EkyBjFJgZ3GZZEPs01R7EpNPD1vrdvcywsOognMqBgfAQF2igQ/ZFpvE+gwtcfWrXFVR4jnicoyKiqVhg8ydy8qBsIWeMLMQ3C1DQw+vrq++fL1WwguD6h1RoFQDLPHz44OChiPSpLLMtvFOh+345KOmsEdfJYPBoNxWY5p4ujwlFBp+eDxhFh8eP/u7O3ZaHxAj1grD7SLbebYgyPLM6aHxppqucz0iq5GZTG/uxgOCDurlvNiOPj46fPRdEI2fFQOyaR0/2Ry+Ov35Tax5J+8u4iwSwmY/kjum9cvfagp9jz4CAe+UQMkEYCtvKGbtzEGnBmtT2dkPJZMHkMuM5wK3r0h7aErinrY3EpsG7I5erqxoknmEQpKdrlJ7SnTH+yKzZI4r4wNMYdW6oyUG4kqoYvKBDPYUIF3wHaAIFXNiWORUmHUZn6TFaziIMDZ7GpnbHBwhoONw8qCFAfQyHGgoo9ZHY2qO8P6YrMgh8HCCYOSfDQqy6Kg2bv7e9KjWq3uF8uqqpSqt7eyKPeBjRxxjrcTulgslsvFJaq1LRliveOl8Xi0M7bHsBFJtrT4OwJbjmyXkDy/WKx2xuYd349kN1Pp75BdKH7WQHfOefPeFdsG4lGVFDUoqGxQh8INukOtr7/TJgXXrB2xk59ow0a+OzZbO0KmvVn0d4gy3kg2NPtvbJuGdOyMMN3GVdpfcG3ZE++YXUJaypZXir64bIOs8AbjU6NLbL96bmufu8vod1lNPe32Fb+xdla2frxVSO6kFU92KYztke/sUam98U7FuKY1YoXUhlBIXZp7m3dK/Ycc29QmAIatA2K4728vSYnbZgHHaOdQz8UkiKrT4Vr1QQ7k6KNFNndE0unVCZ7oCY2pHbDrAY0+TOjqREoMQMnIdmE9bc7VSvmuIDoVeCHVDML3+tJDowdvSGV65nKkiK5Qm8eQHof3XIKio0WHeCT3hvS0cL0VbdBttbnrf1xDr9vPBrU4MYEYX2AiXUx+qM4wY5G6uwIJXPJSAJpVbON2nwLtCrgzEe2OWnfpCkCvBpDN448/0frxjULjdj5BtgG7oHVxzvCqxeXMw59Ysd4lICkgcjiCBB5aa4tbEmzLam6JOGdvekuRrbUrchLbqm59QNuQh/5k4/ObqbvGfhOesO5ubwlbjoNywxrLhI1PiKparqrVFmAr73ryOGWMs3x4ZYDxHRe14hez+fHzI7IL0fd7NIe6E0GhkIG0E3RJnjFmRULokfnNbRQe1ZJuV+b/AgAA//80VFEgAAAABklEQVQDAGZpjYyFChoTAAAAAElFTkSuQmCC"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:141"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Samsung Galaxy S10",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-004",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$899",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "1,815",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "3.6",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "307",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:98"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "iPad Mini 2021",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-005",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$599",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Draft",
+                                        "textStyle": "sp-label",
+                                        "fill": "warning-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "4,886",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "3.8",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "97",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:129"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Apple AirPods Max",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-006",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "electronics",
+                                        "textStyle": "sp-caption",
+                                        "fill": "brand"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$549",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Archived",
+                                        "textStyle": "sp-label",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "1,105",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "3.6",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "414",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:113"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Nike Air Jordan 1",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-007",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "fashion",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgb(34, 211, 238)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$179",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2,522",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "3.8",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "107",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:124"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Puma Future Rider",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-008",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "fashion",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgb(34, 211, 238)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$119",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "4,890",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4.5",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "214",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:112"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Sports Sneakers",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-009",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "fashion",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgb(34, 211, 238)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$89",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "500",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4.9",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "325",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:40"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:371"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "sm",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:339"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:40"
+                                            },
+                                            "fill": "foreground/2",
+                                            "radius": "lg",
+                                            "clipsContent": true,
+                                            "children": [
+                                              {
+                                                "type": "image",
+                                                "name": "Image",
+                                                "sizing": {
+                                                  "width": "fixed:40",
+                                                  "height": "fixed:40"
+                                                },
+                                                "imageBase64": "data:image/png;base64,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"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "frame",
+                                            "layout": "vertical",
+                                            "sizing": {
+                                              "width": "fixed:138"
+                                            },
+                                            "children": [
+                                              {
+                                                "type": "text",
+                                                "content": "Nike Baseball Cleats",
+                                                "textStyle": "sp-body-semibold",
+                                                "fill": "card-foreground"
+                                              },
+                                              {
+                                                "type": "text",
+                                                "content": "PRD-010",
+                                                "textStyle": "sp-caption",
+                                                "fill": "rgba(162, 162, 170, 0.6)",
+                                                "sizing": {
+                                                  "width": "fill"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:172"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "fashion",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgb(34, 211, 238)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$169",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Active",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "3,432",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:119"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "horizontal",
+                                        "gap": "3xs",
+                                        "align": {
+                                          "counter": "center"
+                                        },
+                                        "sizing": {
+                                          "width": "fixed:87"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "icon",
+                                            "name": "Star",
+                                            "sizing": {
+                                              "width": "fixed:24",
+                                              "height": "fixed:24"
+                                            },
+                                            "fill": "warning"
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "4.6",
+                                            "textStyle": "sp-caption",
+                                            "fill": "card-foreground"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "153",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:93"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "lg",
+                    "paddingTop": "lg",
+                    "paddingBottom": "none",
+                    "align": {
+                      "justify": "end",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "stroke": "rgba(40, 40, 42, 0.4)",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Showing 1–10 of 30",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Pagination",
+                        "align": {
+                          "justify": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:316"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Pagination Content",
+                            "gap": "3xs",
+                            "align": {
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:316"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:110"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "horizontal",
+                                    "name": "Pagination Previous",
+                                    "gap": "xs",
+                                    "paddingRight": "md",
+                                    "paddingLeft": "xs",
+                                    "align": {
+                                      "justify": "center",
+                                      "counter": "center"
+                                    },
+                                    "sizing": {
+                                      "width": "fixed:110"
+                                    },
+                                    "radius": "lg",
+                                    "opacity": 0.5,
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Previous",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "1",
+                                    "fill": "card-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "2",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "3",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:82"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "horizontal",
+                                    "name": "Pagination Next",
+                                    "gap": "xs",
+                                    "paddingRight": "xs",
+                                    "paddingLeft": "md",
+                                    "align": {
+                                      "justify": "center",
+                                      "counter": "center"
+                                    },
+                                    "sizing": {
+                                      "width": "fixed:82"
+                                    },
+                                    "radius": "lg",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Next",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

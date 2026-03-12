@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Skeleton
@@ -16,6 +17,7 @@ function Skeleton({
   return (
     <div
       data-slot="skeleton"
+      {...figma("Skeleton", { Shape: "Text" })}
       className={cn("animate-pulse rounded-lg bg-muted", className)}
       {...props}
     />

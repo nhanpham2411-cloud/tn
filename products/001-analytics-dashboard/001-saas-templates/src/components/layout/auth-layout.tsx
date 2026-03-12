@@ -1,21 +1,25 @@
+import { useId, useLayoutEffect } from "react"
 import { Outlet } from "react-router-dom"
 import { PageTransition } from "@/components/page-transition"
+import { figma } from "@/lib/figma-dev"
 
 /* ── ShopPulse diamond logo (matches header/sidebar branding) ── */
 export function ShopPulseLogo({ size = 32, className = "" }: { size?: number; className?: string }) {
+  const id = useId()
+  const grdId = `authGrd${id}`
   return (
     <svg viewBox="0 0 28 28" fill="none" className={className} width={size} height={size}>
       <path
         d="M14 3L24 10L14 25L4 10Z"
-        fill="url(#authGrd)"
+        fill={`url(#${grdId})`}
         fillOpacity="0.5"
-        stroke="url(#authGrd)"
+        stroke={`url(#${grdId})`}
         strokeWidth="1"
         strokeOpacity="0.7"
       />
-      <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#authGrd)" fillOpacity="0.85" />
+      <path d="M14 7L20 11.5L14 22L8 11.5Z" fill={`url(#${grdId})`} fillOpacity="0.85" />
       <defs>
-        <linearGradient id="authGrd" x1="4" y1="3" x2="24" y2="25">
+        <linearGradient id={grdId} x1="4" y1="3" x2="24" y2="25">
           <stop stopColor="#c4b5fd" />
           <stop offset="1" stopColor="#818cf8" />
         </linearGradient>
@@ -29,8 +33,8 @@ export function AuthIllustration() {
   return (
     <div className="relative w-full max-w-[440px]" style={{ aspectRatio: "11/9" }}>
       {/* Ambient glow layers */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full bg-primary/[0.12] blur-[80px]" />
-      <div className="absolute bottom-1/4 right-0 w-[200px] h-[160px] rounded-full bg-indigo-400/[0.08] blur-[60px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] rounded-full bg-primary-10 blur-[80px]" />
+      <div className="absolute bottom-1/4 right-0 w-[200px] h-[160px] rounded-full bg-primary-10 blur-[60px]" />
 
       <svg viewBox="0 0 480 400" fill="none" className="relative w-full h-full drop-shadow-2xl">
         <defs>
@@ -303,15 +307,25 @@ export function AuthIllustration() {
 }
 
 export function AuthLayout() {
+  // Force dark mode on auth pages — restore user preference on unmount
+  useLayoutEffect(() => {
+    const root = document.documentElement
+    const wasDark = root.classList.contains("dark")
+    if (!wasDark) root.classList.add("dark")
+    return () => {
+      if (!wasDark) root.classList.remove("dark")
+    }
+  }, [])
+
   return (
     <div className="flex min-h-svh">
       {/* Left — branding panel with animated dashboard illustration (hidden on mobile) */}
-      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-between bg-[#0c0a1a] p-2xl relative overflow-hidden">
+      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-center gap-4xl bg-[#0c0a1a] p-2xl relative overflow-hidden">
         {/* Gradient background */}
         <div className="absolute inset-0">
-          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
-          <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-indigo-500/[0.06] blur-[80px]" />
-          <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-purple-500/[0.04] blur-[60px]" />
+          <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary-10 blur-[100px]" />
+          <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-primary-10 blur-[80px]" />
+          <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-primary-10 blur-[60px]" />
         </div>
 
         {/* Grid pattern overlay */}
@@ -324,19 +338,19 @@ export function AuthLayout() {
         />
 
         {/* Logo */}
-        <div className="relative z-10 flex items-center gap-sm">
+        <div className="relative z-10 flex items-center gap-sm" {...figma("Logo", { Type: "Full", Size: "Default" })}>
           <ShopPulseLogo size={28} />
-          <span className="text-white/90 font-heading text-lg font-bold tracking-tight">ShopPulse</span>
+          <span className="text-foreground font-heading text-lg font-bold tracking-tight">ShopPulse</span>
         </div>
 
         {/* Center — illustration + tagline */}
         <div className="relative z-10 flex flex-col items-center gap-lg">
           <AuthIllustration />
           <div className="text-center max-w-[360px]">
-            <h2 className="text-[24px] font-heading font-bold text-white/90 leading-tight tracking-tight mb-xs">
+            <h2 className="text-[24px] font-heading font-bold text-foreground leading-tight tracking-tight mb-xs">
               Powerful analytics for<br />modern e-commerce
             </h2>
-            <p className="sp-body text-white/35 leading-relaxed">
+            <p className="sp-body text-muted-foreground leading-relaxed">
               Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.
             </p>
           </div>
@@ -346,29 +360,29 @@ export function AuthLayout() {
         <div className="relative z-10 flex flex-col items-center gap-md w-full">
           <div className="flex items-center gap-xl">
             <div className="text-center">
-              <p className="text-white/80 font-heading text-lg font-bold">10K+</p>
-              <p className="sp-caption text-white/25">Active Users</p>
+              <p className="text-foreground font-heading text-lg font-bold">10K+</p>
+              <p className="sp-caption text-foreground-subtle">Active Users</p>
             </div>
-            <div className="w-px h-lg bg-white/[0.08]" />
+            <div className="w-px h-lg bg-border-subtle" />
             <div className="text-center">
-              <p className="text-white/80 font-heading text-lg font-bold">99.9%</p>
-              <p className="sp-caption text-white/25">Uptime</p>
+              <p className="text-foreground font-heading text-lg font-bold">99.9%</p>
+              <p className="sp-caption text-foreground-subtle">Uptime</p>
             </div>
-            <div className="w-px h-lg bg-white/[0.08]" />
+            <div className="w-px h-lg bg-border-subtle" />
             <div className="text-center">
-              <p className="text-white/80 font-heading text-lg font-bold">4.9★</p>
-              <p className="sp-caption text-white/25">Rating</p>
+              <p className="text-foreground font-heading text-lg font-bold">4.9★</p>
+              <p className="sp-caption text-foreground-subtle">Rating</p>
             </div>
           </div>
-          <p className="sp-caption text-white/15">&copy; 2026 ShopPulse. All rights reserved.</p>
+          <p className="sp-caption text-foreground-subtle">&copy; 2026 ShopPulse. All rights reserved.</p>
         </div>
       </div>
 
       {/* Right — form area */}
       <div className="flex flex-1 items-center justify-center bg-background p-lg sm:p-xl relative overflow-hidden">
         {/* Subtle violet ambient glow — connects visually to left panel */}
-        <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-primary/[0.03] blur-[100px] dark:bg-primary/[0.04]" />
-        <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-indigo-500/[0.02] blur-[80px] dark:bg-indigo-500/[0.03]" />
+        <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-primary-10 blur-[100px]" />
+        <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-primary-10 blur-[80px]" />
         <PageTransition className="w-full flex items-center justify-center">
           <Outlet />
         </PageTransition>

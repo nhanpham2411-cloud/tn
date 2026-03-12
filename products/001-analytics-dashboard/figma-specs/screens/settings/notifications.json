@@ -1,0 +1,2690 @@
+{
+  "pageName": "Settings — Notifications",
+  "root": {
+    "type": "frame",
+    "name": "Settings Notifications — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:257"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Settings",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Notifications",
+                        "textStyle": "sp-h3",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "2xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:113"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:6",
+                          "height": "fixed:6"
+                        },
+                        "fill": "success",
+                        "radius": "full",
+                        "opacity": 0.630952
+                      },
+                      {
+                        "type": "text",
+                        "content": "Updated just now",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(161, 161, 169, 0.5)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:157"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Default",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Save All"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "align": {
+                      "justify": "center",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:36"
+                    },
+                    "fill": "ring",
+                    "radius": "lg",
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Clock",
+                        "sizing": {
+                          "width": "fixed:24",
+                          "height": "fixed:24"
+                        },
+                        "fill": "muted-foreground"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fixed:275"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Delivery Preferences",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Control when and how you receive notifications",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "name": "Grid (2-col)",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "2xs",
+                    "sizing": {
+                      "width": "fixed:661"
+                    },
+                    "children": [
+                      {
+                        "type": "component",
+                        "componentSet": "Label",
+                        "name": "Label",
+                        "variants": {
+                          "Required": "No",
+                          "State": "Default"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Email Digest"
+                          }
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Select",
+                        "name": "Select",
+                        "variants": {
+                          "State": "Default",
+                          "Value": "Placeholder"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Real-time (instant)"
+                          }
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "You'll receive emails immediately",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(162, 162, 170, 0.6)",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "2xs",
+                    "sizing": {
+                      "width": "fixed:661"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": 548,
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Label",
+                            "name": "Label",
+                            "variants": {
+                              "Required": "No",
+                              "State": "Default"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Quiet Hours"
+                              }
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "Off",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "content": "Push notifications sent 24/7",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(162, 162, 170, 0.6)",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 1056,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:192"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Mail",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:144"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Email Notifications",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "7 of 8 enabled",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Enable All"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New Sale",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a new order is placed",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New User Signup",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When someone creates an account",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Low Stock Alert",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When product inventory is below threshold",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Report Ready",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a scheduled report is generated",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Payment Failed",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a payment attempt fails",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Team Invitation",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a team member accepts an invite",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "Off",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Security Alerts",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "Login from new device or password changes",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "paddingY": "md",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Product Updates",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "New features and improvements",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Switch",
+                        "name": "Switch",
+                        "variants": {
+                          "Value": "On",
+                          "State": "Default"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 1061,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:187"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Bell",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:139"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Push Notifications",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "5 of 8 enabled",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Enable All"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New Sale",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a new order is placed",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New User Signup",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When someone creates an account",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "Off",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Low Stock Alert",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When product inventory is below threshold",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Report Ready",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a scheduled report is generated",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "Off",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Payment Failed",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a payment attempt fails",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Team Invitation",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a team member accepts an invite",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Security Alerts",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "Login from new device or password changes",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "paddingY": "md",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Product Updates",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "New features and improvements",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Switch",
+                        "name": "Switch",
+                        "variants": {
+                          "Value": "Off",
+                          "State": "Default"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "gap": "lg",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 1043,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:205"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "warning/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Smartphone",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "warning"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:157"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "In-App Notifications",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "6 of 8 enabled",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Mini",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Enable All"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New Sale",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a new order is placed",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "New User Signup",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When someone creates an account",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Low Stock Alert",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When product inventory is below threshold",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Report Ready",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a scheduled report is generated",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "Off",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Payment Failed",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a payment attempt fails",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Team Invitation",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "When a team member accepts an invite",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "paddingY": "md",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "gap": "2xs",
+                            "sizing": {
+                              "width": "fill"
+                            },
+                            "children": [
+                              {
+                                "type": "text",
+                                "content": "Security Alerts",
+                                "textStyle": "sp-body-semibold",
+                                "fill": "card-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              },
+                              {
+                                "type": "text",
+                                "content": "Login from new device or password changes",
+                                "textStyle": "sp-caption",
+                                "fill": "muted-foreground",
+                                "sizing": {
+                                  "width": "fill"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Switch",
+                            "name": "Switch",
+                            "variants": {
+                              "Value": "On",
+                              "State": "Default"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "paddingY": "md",
+                    "align": {
+                      "justify": "space-between",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "2xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Product Updates",
+                            "textStyle": "sp-body-semibold",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "New features and improvements",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Switch",
+                        "name": "Switch",
+                        "variants": {
+                          "Value": "Off",
+                          "State": "Default"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "padding": "md",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": 984,
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:325"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "success/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Webhook",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "success"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:277"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "Webhooks",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Send real-time notifications to external services",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Switch",
+                    "name": "Switch",
+                    "variants": {
+                      "Value": "Off",
+                      "State": "Default"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { figma, ALERT_TYPE } from "@/lib/figma-dev"
 
 /**
  * SprouX Alert
@@ -72,6 +73,10 @@ function Alert({
     <div
       data-slot="alert"
       role="alert"
+      {...figma("Alert", {
+        Type: ALERT_TYPE[variant ?? "default"] ?? "Neutral",
+        "In Card": inCard ? "True" : "False",
+      })}
       className={cn(
         alertVariants({ variant }),
         inCard && [

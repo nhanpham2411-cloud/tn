@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ShopPulseLogo } from "@/components/layout/auth-layout"
+import { figma } from "@/lib/figma-dev"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -42,8 +43,8 @@ export default function ForgotPasswordPage() {
   if (sent) {
     return (
       <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
-        <CardHeader className="text-center p-xl">
-          <div className="mx-auto mb-sm flex size-[48px] items-center justify-center rounded-full bg-success/10 dark:bg-success/20">
+        <CardHeader>
+          <div className="mx-auto mb-sm flex size-[48px] items-center justify-center rounded-full bg-success-subtle">
             <CheckCircle2 className="size-xl text-success" />
           </div>
           <CardTitle className="sp-h2">Check your email</CardTitle>
@@ -53,7 +54,7 @@ export default function ForgotPasswordPage() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-sm px-xl">
+        <CardContent className="flex flex-col gap-sm">
           <Button variant="outline" className="w-full" asChild>
             <a href={`mailto:${email}`}>
               <Mail className="mr-xs size-md" />
@@ -72,7 +73,7 @@ export default function ForgotPasswordPage() {
           </p>
         </CardContent>
 
-        <CardFooter className="justify-center px-xl pb-xl">
+        <CardFooter>
           <Link
             to="/auth/sign-in"
             className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
@@ -87,16 +88,18 @@ export default function ForgotPasswordPage() {
 
   return (
     <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
-      <CardHeader className="text-center p-xl pb-md">
-        <div className="mx-auto mb-md flex items-center gap-xs lg:hidden">
+      <CardHeader className="gap-md">
+        <div className="flex w-fit items-center gap-xs lg:hidden" {...figma("Logo", { Type: "Full", Size: "Default" })}>
           <ShopPulseLogo size={32} />
           <span className="font-heading text-lg font-bold text-foreground">ShopPulse</span>
         </div>
-        <CardTitle className="sp-h2">Forgot password?</CardTitle>
-        <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
+        <div className="flex flex-col gap-3xs">
+          <CardTitle className="sp-h2">Forgot password?</CardTitle>
+          <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
+        </div>
       </CardHeader>
 
-      <CardContent className="px-xl">
+      <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-md">
           <div className="flex flex-col gap-xs">
             <Label htmlFor="email">Email</Label>

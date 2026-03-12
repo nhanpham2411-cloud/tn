@@ -2,6 +2,7 @@ import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Progress
@@ -19,6 +20,9 @@ function Progress({
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      {...figma("Progress", {
+        Value: String(Math.round((value ?? 0) / 25) * 25),
+      })}
       className={cn(
         "relative h-1.5 w-full overflow-hidden rounded-full bg-muted",
         className

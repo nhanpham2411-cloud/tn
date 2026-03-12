@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { figma, BADGE_VARIANT, BADGE_LEVEL, BADGE_SIZE } from "@/lib/figma-dev"
 
 /**
  * SprouX Badge
@@ -81,6 +82,12 @@ function Badge({
   return (
     <span
       data-slot="badge"
+      {...figma("Badge", {
+        Variant: BADGE_VARIANT[variant ?? "default"],
+        Type: "Badge",
+        Level: BADGE_LEVEL[level ?? "primary"],
+        Size: BADGE_SIZE[size ?? "default"],
+      })}
       className={cn(badgeVariants({ variant, level, size }), className)}
       {...props}
     />

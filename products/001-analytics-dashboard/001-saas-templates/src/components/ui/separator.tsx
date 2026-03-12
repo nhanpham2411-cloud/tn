@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Separator
@@ -21,6 +22,9 @@ function Separator({
   return (
     <div
       data-slot="separator"
+      {...figma("Separator", {
+        Orientation: orientation === "vertical" ? "Vertical" : "Horizontal",
+      })}
       role={decorative ? "none" : "separator"}
       aria-orientation={decorative ? undefined : orientation}
       data-orientation={orientation}

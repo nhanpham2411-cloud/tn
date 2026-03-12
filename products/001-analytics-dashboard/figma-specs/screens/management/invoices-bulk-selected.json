@@ -1,0 +1,2763 @@
+{
+  "pageName": "Management — Invoices Bulk Selected",
+  "root": {
+    "type": "frame",
+    "name": "Management Invoices Bulk Selected — Desktop",
+    "layout": "vertical",
+    "sizing": {
+      "width": "fixed:1440",
+      "height": "fixed:900"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": 243,
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:123"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:123"
+                    },
+                    "children": [
+                      {
+                        "type": "icon",
+                        "name": "Icon",
+                        "sizing": {
+                          "width": "fixed:28",
+                          "height": "fixed:28"
+                        },
+                        "fill": "card-foreground"
+                      },
+                      {
+                        "type": "text",
+                        "content": "ShopPulse",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "3xs",
+                "padding": "2xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:567"
+                },
+                "fill": "foreground/4",
+                "radius": "full",
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Dashboard",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Analytics",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Reports",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Users",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Products",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  },
+                  {
+                    "type": "text",
+                    "content": "Orders",
+                    "textStyle": "sp-label",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "xs",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:200"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Icon Only",
+                      "State": "Default",
+                      "Icon": "Icon Only"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "3"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Ghost",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "end"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "3xs",
+                "sizing": {
+                  "width": "fixed:404"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Good morning, Linh",
+                    "textStyle": "sp-h2",
+                    "fill": "card-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "content": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground",
+                    "sizing": {
+                      "width": "fill"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search product"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "frame",
+        "layout": "vertical",
+        "gap": "lg",
+        "sizing": {
+          "width": "fill",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "sm",
+            "align": {
+              "justify": "space-between",
+              "counter": "center"
+            },
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "lg",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fixed:213"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "sizing": {
+                      "width": "fixed:80"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Management",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Invoices",
+                        "textStyle": "sp-h3",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "2xs",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:113"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:6",
+                          "height": "fixed:6"
+                        },
+                        "fill": "success",
+                        "radius": "full",
+                        "opacity": 0.501168
+                      },
+                      {
+                        "type": "text",
+                        "content": "Updated just now",
+                        "textStyle": "sp-caption",
+                        "fill": "rgba(161, 161, 169, 0.5)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "sm",
+                "sizing": {
+                  "width": "fixed:266"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Outline",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Export"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Default",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "New Invoice"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "horizontal",
+            "gap": "lg",
+            "name": "Grid (4-col)",
+            "sizing": {
+              "width": "fill"
+            },
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(125, 60, 235, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "FileText",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:80"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "50",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Total Invoices",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "success/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "CircleCheck",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "success"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:85"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$15.7K",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Paid",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "warning/10",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "Clock",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "warning"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:71"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$6.5K",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Pending",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card",
+                "gap": "xs",
+                "padding": "md",
+                "align": {
+                  "justify": "center"
+                },
+                "sizing": {
+                  "width": "fixed:329"
+                },
+                "fill": "card",
+                "stroke": "foreground/6",
+                "radius": "2xl",
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "sm",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:36"
+                        },
+                        "fill": "rgba(240, 70, 70, 0.2)",
+                        "radius": "lg",
+                        "children": [
+                          {
+                            "type": "icon",
+                            "name": "TriangleAlert",
+                            "sizing": {
+                              "width": "fixed:24",
+                              "height": "fixed:24"
+                            },
+                            "fill": "destructive"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "sizing": {
+                          "width": "fixed:71"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "$4.3K",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "Overdue",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "sizing": {
+              "width": "fill"
+            },
+            "fill": "card",
+            "stroke": "foreground/6",
+            "radius": "2xl",
+            "clipsContent": true,
+            "children": [
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "md",
+                "align": {
+                  "justify": "space-between",
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "md",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fixed:147"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "3xs",
+                        "sizing": {
+                          "width": "fixed:103"
+                        },
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "All Invoices",
+                            "textStyle": "sp-h4",
+                            "fill": "card-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "text",
+                            "content": "50 invoices found",
+                            "textStyle": "sp-caption",
+                            "fill": "muted-foreground",
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Ghost",
+                          "Size": "Mini",
+                          "State": "Default",
+                          "Icon": "None"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Tabs",
+                    "sizing": {
+                      "width": "fixed:353"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Tabs List",
+                        "padding": "3xs",
+                        "align": {
+                          "justify": "center",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:353"
+                        },
+                        "fill": "ring",
+                        "radius": "full",
+                        "children": [
+                          {
+                            "type": "text",
+                            "content": "All",
+                            "textStyle": "sp-body-medium",
+                            "fill": "card-foreground",
+                            "textAlign": "center"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Paid",
+                            "textStyle": "sp-body-medium",
+                            "fill": "muted-foreground",
+                            "textAlign": "center"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Pending",
+                            "textStyle": "sp-body-medium",
+                            "fill": "muted-foreground",
+                            "textAlign": "center"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Overdue",
+                            "textStyle": "sp-body-medium",
+                            "fill": "muted-foreground",
+                            "textAlign": "center"
+                          },
+                          {
+                            "type": "text",
+                            "content": "Cancelled",
+                            "textStyle": "sp-body-medium",
+                            "fill": "muted-foreground",
+                            "textAlign": "center"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "component",
+                "componentSet": "Search Box",
+                "name": "Search Box",
+                "variants": {
+                  "State": "Default",
+                  "Value": "Placeholder",
+                  "Shortcut": "Yes"
+                },
+                "overrides": {
+                  "text": {
+                    "Label": "Search by invoice ID, order ID, customer or email..."
+                  }
+                },
+                "sizing": {
+                  "width": "fill"
+                }
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "gap": "md",
+                "paddingTop": "md",
+                "paddingBottom": "xl",
+                "paddingX": "xl",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "name": "Table Container",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "name": "Table",
+                        "sizing": {
+                          "width": "fixed:1326"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "name": "Table Header",
+                            "sizing": {
+                              "width": "fixed:1326"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Head",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Invoice",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Customer",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Status",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Amount",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Total",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Issued",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Due",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "Actions",
+                                    "textStyle": "sp-label",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "frame",
+                            "layout": "vertical",
+                            "name": "Table Body",
+                            "sizing": {
+                              "width": "fixed:1326"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "fill": "ring",
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0001",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0001",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Alex Morgan",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "alex.morgan@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$397.88",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$429.71",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-28",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2026-01-27",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "fill": "ring",
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0002",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0002",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Sarah Chen",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "sarah.chen@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$596.12",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$643.81",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-29",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2026-01-28",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0003",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0003",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "James Wilson",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "james.wilson@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$78.90",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$85.21",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-31",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2026-01-30",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0004",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0004",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Maria Garcia",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "maria.garcia@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$425.70",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$459.76",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-11-29",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-29",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0005",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0005",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "David Kim",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "david.kim@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Pending",
+                                        "textStyle": "sp-label",
+                                        "fill": "warning-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$999.84",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$1079.83",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-11-19",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-19",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0006",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0006",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Emma Smith",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "emma.smith@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Pending",
+                                        "textStyle": "sp-label",
+                                        "fill": "warning-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$546.01",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$589.69",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-12-07",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2026-01-06",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0007",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0007",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Oliver Jones",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "oliver.jones@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Overdue",
+                                        "textStyle": "sp-label",
+                                        "fill": "destructive"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$505.66",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$546.11",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-07-20",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-08-19",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0008",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0008",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Sophia Brown",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "sophia.brown@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Cancelled",
+                                        "textStyle": "sp-label",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$459.78",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$496.56",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-06-14",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-07-14",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0009",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0009",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Liam Davis",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "liam.davis@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$591.34",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$638.65",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-10-22",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-11-21",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Table Row",
+                                "sizing": {
+                                  "width": "fixed:1326"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "sizing": {
+                                      "width": "fixed:53"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Checkbox",
+                                        "name": "Checkbox",
+                                        "variants": {
+                                          "Value": "Unchecked",
+                                          "State": "Default"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "INV-0010",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "brand"
+                                      },
+                                      {
+                                        "type": "text",
+                                        "content": "ORD-0010",
+                                        "textStyle": "sp-caption",
+                                        "fill": "rgba(162, 162, 170, 0.6)"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:292"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "frame",
+                                        "layout": "vertical",
+                                        "sizing": {
+                                          "width": "fixed:260"
+                                        },
+                                        "children": [
+                                          {
+                                            "type": "text",
+                                            "content": "Isabella Miller",
+                                            "textStyle": "sp-body-semibold",
+                                            "fill": "card-foreground",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          },
+                                          {
+                                            "type": "text",
+                                            "content": "isabella.miller@shoppulse.io",
+                                            "textStyle": "sp-caption",
+                                            "fill": "rgba(162, 162, 170, 0.6)",
+                                            "sizing": {
+                                              "width": "fill"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:159"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Paid",
+                                        "textStyle": "sp-label",
+                                        "fill": "success-subtle-foreground"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$657.53",
+                                    "textStyle": "sp-mono",
+                                    "fill": "muted-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "$710.13",
+                                    "textStyle": "sp-body-semibold",
+                                    "fill": "card-foreground",
+                                    "textAlign": "right"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-09-10",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "text",
+                                    "content": "2025-10-10",
+                                    "textStyle": "sp-caption",
+                                    "fill": "muted-foreground"
+                                  },
+                                  {
+                                    "type": "frame",
+                                    "layout": "vertical",
+                                    "name": "Table Cell",
+                                    "padding": "md",
+                                    "sizing": {
+                                      "width": "fixed:80"
+                                    },
+                                    "children": [
+                                      {
+                                        "type": "component",
+                                        "componentSet": "Button",
+                                        "name": "Button",
+                                        "variants": {
+                                          "Variant": "Ghost",
+                                          "Size": "Mini",
+                                          "State": "Default",
+                                          "Icon": "None"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "lg",
+                    "paddingTop": "lg",
+                    "paddingBottom": "none",
+                    "align": {
+                      "justify": "end",
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "stroke": "rgba(40, 40, 42, 0.4)",
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Showing 1–10 of 50",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "name": "Pagination",
+                        "align": {
+                          "justify": "center"
+                        },
+                        "sizing": {
+                          "width": "fixed:396"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "name": "Pagination Content",
+                            "gap": "3xs",
+                            "align": {
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:396"
+                            },
+                            "children": [
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:110"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "horizontal",
+                                    "name": "Pagination Previous",
+                                    "gap": "xs",
+                                    "paddingRight": "md",
+                                    "paddingLeft": "xs",
+                                    "align": {
+                                      "justify": "center",
+                                      "counter": "center"
+                                    },
+                                    "sizing": {
+                                      "width": "fixed:110"
+                                    },
+                                    "radius": "lg",
+                                    "opacity": 0.5,
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Previous",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "1",
+                                    "fill": "card-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "2",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "3",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "4",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:36"
+                                },
+                                "children": [
+                                  {
+                                    "type": "text",
+                                    "content": "5",
+                                    "fill": "muted-foreground"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "frame",
+                                "layout": "vertical",
+                                "name": "Pagination Item",
+                                "sizing": {
+                                  "width": "fixed:82"
+                                },
+                                "children": [
+                                  {
+                                    "type": "frame",
+                                    "layout": "horizontal",
+                                    "name": "Pagination Next",
+                                    "gap": "xs",
+                                    "paddingRight": "xs",
+                                    "paddingLeft": "md",
+                                    "align": {
+                                      "justify": "center",
+                                      "counter": "center"
+                                    },
+                                    "sizing": {
+                                      "width": "fixed:82"
+                                    },
+                                    "radius": "lg",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "content": "Next",
+                                        "textStyle": "sp-body-semibold",
+                                        "fill": "muted-foreground"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

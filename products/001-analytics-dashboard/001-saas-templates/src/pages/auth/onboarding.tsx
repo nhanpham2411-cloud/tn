@@ -196,7 +196,7 @@ export default function OnboardingPage() {
               </Select>
             </div>
 
-            <div className="rounded-xl border border-success/20 bg-success/5 dark:bg-success/10 p-lg">
+            <div className="rounded-xl border border-success-subtle bg-success-subtle p-lg">
               <h4 className="sp-body-semibold text-foreground mb-xs">You're all set!</h4>
               <p className="sp-body text-muted-foreground">
                 Click "Get Started" to access your ShopPulse dashboard. You can update these settings anytime from your profile.

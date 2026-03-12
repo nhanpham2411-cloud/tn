@@ -3,6 +3,7 @@ import * as TogglePrimitive from "@radix-ui/react-toggle"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { figma, TOGGLE_VARIANT, TOGGLE_SIZE, TOGGLE_VALUE } from "@/lib/figma-dev"
 
 /**
  * SprouX Toggle
@@ -46,6 +47,12 @@ function Toggle({
   return (
     <TogglePrimitive.Root
       data-slot="toggle"
+      {...figma("Toggle", {
+        Variant: TOGGLE_VARIANT[variant ?? "default"] ?? "Default",
+        Size: TOGGLE_SIZE[size ?? "default"] ?? "Default",
+        Value: props.pressed ? "Pressed" : "Unpressed",
+        State: props.disabled ? "Disabled" : "Default",
+      })}
       className={cn(toggleVariants({ variant, size, className }))}
       {...props}
     />

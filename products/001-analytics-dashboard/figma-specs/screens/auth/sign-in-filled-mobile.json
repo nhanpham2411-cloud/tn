@@ -1,0 +1,408 @@
+{
+  "pageName": "Auth — Sign In Filled",
+  "root": {
+    "type": "frame",
+    "name": "Auth Sign In Filled — Mobile",
+    "layout": "horizontal",
+    "sizing": {
+      "width": "fixed:375",
+      "height": "fixed:812"
+    },
+    "fill": "background",
+    "children": [
+      {
+        "type": "frame",
+        "layout": "horizontal",
+        "align": {
+          "justify": "center",
+          "counter": "center"
+        },
+        "sizing": {
+          "width": "fixed:335",
+          "height": "fill"
+        },
+        "children": [
+          {
+            "type": "frame",
+            "layout": "vertical",
+            "name": "Card",
+            "padding": "md",
+            "sizing": {
+              "width": "fixed:335"
+            },
+            "fill": "card",
+            "radius": "2xl",
+            "children": [
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card Header",
+                "gap": "md",
+                "padding": "md",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Logo",
+                    "name": "Logo",
+                    "variants": {
+                      "Type": "Full",
+                      "Size": "Default"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "ShopPulse"
+                      }
+                    }
+                  },
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "3xs",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "content": "Welcome back",
+                        "textStyle": "sp-h4",
+                        "fill": "card-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "Sign in to your account to continue",
+                        "textStyle": "sp-body",
+                        "fill": "muted-foreground",
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card Content",
+                "paddingTop": "none",
+                "paddingBottom": "md",
+                "paddingX": "md",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "vertical",
+                    "gap": "md",
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Label",
+                            "name": "Label",
+                            "variants": {
+                              "Required": "No",
+                              "State": "Default"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Email"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Input",
+                            "name": "Input",
+                            "variants": {
+                              "State": "Default",
+                              "Value": "Filled",
+                              "Left": "None",
+                              "Right": "None"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "john@shoppulse.com"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "vertical",
+                        "gap": "xs",
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "component",
+                            "componentSet": "Label",
+                            "name": "Label",
+                            "variants": {
+                              "Required": "No",
+                              "State": "Default"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "Password"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          },
+                          {
+                            "type": "component",
+                            "componentSet": "Input",
+                            "name": "Input",
+                            "variants": {
+                              "State": "Default",
+                              "Value": "Filled",
+                              "Left": "None",
+                              "Right": "None"
+                            },
+                            "overrides": {
+                              "text": {
+                                "Label": "SecureP@ss123"
+                              }
+                            },
+                            "sizing": {
+                              "width": "fill"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "frame",
+                        "layout": "horizontal",
+                        "gap": "2xl",
+                        "align": {
+                          "justify": "space-between",
+                          "counter": "center"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        },
+                        "children": [
+                          {
+                            "type": "frame",
+                            "layout": "horizontal",
+                            "gap": "xs",
+                            "align": {
+                              "counter": "center"
+                            },
+                            "sizing": {
+                              "width": "fixed:122"
+                            },
+                            "children": [
+                              {
+                                "type": "component",
+                                "componentSet": "Checkbox",
+                                "name": "Checkbox",
+                                "variants": {
+                                  "Value": "Unchecked",
+                                  "State": "Default"
+                                }
+                              },
+                              {
+                                "type": "component",
+                                "componentSet": "Label",
+                                "name": "Label",
+                                "variants": {
+                                  "Required": "No",
+                                  "State": "Default"
+                                },
+                                "overrides": {
+                                  "text": {
+                                    "Label": "Remember me"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "text",
+                            "content": "Forgot password?",
+                            "textStyle": "sp-body",
+                            "fill": "brand"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Button",
+                        "name": "Button",
+                        "variants": {
+                          "Variant": "Default",
+                          "Size": "Default",
+                          "State": "Default",
+                          "Icon": "None"
+                        },
+                        "overrides": {
+                          "text": {
+                            "Label": "Sign In"
+                          }
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "vertical",
+                "name": "Card Content",
+                "paddingTop": "none",
+                "paddingBottom": "md",
+                "paddingX": "md",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "frame",
+                    "layout": "horizontal",
+                    "gap": "md",
+                    "align": {
+                      "counter": "center"
+                    },
+                    "sizing": {
+                      "width": "fill"
+                    },
+                    "children": [
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "content": "or continue with",
+                        "textStyle": "sp-caption",
+                        "fill": "muted-foreground"
+                      },
+                      {
+                        "type": "component",
+                        "componentSet": "Separator",
+                        "name": "Separator",
+                        "variants": {
+                          "Orientation": "Horizontal"
+                        },
+                        "sizing": {
+                          "width": "fill"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "name": "Card Content (2-col)",
+                "gap": "sm",
+                "paddingTop": "none",
+                "paddingBottom": "md",
+                "paddingX": "md",
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Outline",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Google"
+                      }
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "componentSet": "Button",
+                    "name": "Button",
+                    "variants": {
+                      "Variant": "Outline",
+                      "Size": "Default",
+                      "State": "Default",
+                      "Icon": "None"
+                    },
+                    "overrides": {
+                      "text": {
+                        "Label": "Facebook"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "frame",
+                "layout": "horizontal",
+                "name": "Card Footer",
+                "paddingTop": "none",
+                "paddingBottom": "md",
+                "paddingX": "md",
+                "align": {
+                  "counter": "center"
+                },
+                "sizing": {
+                  "width": "fill"
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "content": "Don't have an account? Sign up",
+                    "textStyle": "sp-body",
+                    "fill": "muted-foreground"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

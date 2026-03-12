@@ -3,6 +3,7 @@ import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { Check, Minus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { figma, CHECK_VALUE } from "@/lib/figma-dev"
 
 /**
  * SprouX Checkbox
@@ -20,6 +21,10 @@ function Checkbox({
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
+      {...figma("Checkbox", {
+        Value: CHECK_VALUE[String(props.checked ?? "unchecked")] ?? "Unchecked",
+        State: props.disabled ? "Disabled" : "Default",
+      })}
       className={cn(
         "group peer size-md shrink-0 rounded-sm border border-border-strong bg-input transition-colors hover:border-primary/60 disabled:hover:border-border-strong focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground data-[state=indeterminate]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:text-primary-foreground aria-invalid:border-destructive-border aria-invalid:focus-visible:ring-ring-error aria-invalid:data-[state=checked]:bg-destructive aria-invalid:data-[state=checked]:border-destructive aria-invalid:data-[state=checked]:text-destructive-foreground aria-invalid:data-[state=indeterminate]:bg-destructive aria-invalid:data-[state=indeterminate]:border-destructive aria-invalid:data-[state=indeterminate]:text-destructive-foreground",
         className

@@ -2,85 +2,125 @@
 <head>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: Inter, system-ui, sans-serif; font-size: 12px; color: #e4e4e7; background: #18181b; padding: 12px; display: flex; flex-direction: column; height: 100vh; }
+  body { font-family: Inter, system-ui, sans-serif; font-size: 12px; color: #e4e4e7; background: #18181b; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+  /* ── Header (fixed) ── */
+  .header { padding: 12px 12px 0; flex-shrink: 0; }
   h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-  .desc { color: #71717a; margin-bottom: 12px; line-height: 1.5; }
-  .tabs { display: flex; gap: 0; margin-bottom: 12px; border-bottom: 1px solid #27272a; }
-  .tab { padding: 6px 12px; background: none; border: none; color: #71717a; cursor: pointer; font-size: 12px; border-bottom: 2px solid transparent; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #27272a; }
+  .tab { padding: 6px 12px; background: none; border: none; color: #71717a; cursor: pointer; font-size: 12px; border-bottom: 2px solid transparent; flex: none; }
   .tab.active { color: #e4e4e7; border-bottom-color: #7c3aed; }
-  .tab-content { display: none; flex: 1; flex-direction: column; }
+
+  /* ── Body (scrollable) ── */
+  .body { flex: 1; overflow-y: auto; padding: 12px; min-height: 0; }
+  .body::-webkit-scrollbar { width: 6px; }
+  .body::-webkit-scrollbar-track { background: transparent; }
+  .body::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+  .body::-webkit-scrollbar-thumb:hover { background: #52525b; }
+  .page-list::-webkit-scrollbar { width: 6px; }
+  .page-list::-webkit-scrollbar-track { background: transparent; }
+  .page-list::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+  .page-list::-webkit-scrollbar-thumb:hover { background: #52525b; }
+  .tab-content { display: none; flex-direction: column; height: 100%; }
   .tab-content.active { display: flex; }
+  .desc { color: #71717a; margin-bottom: 12px; line-height: 1.5; }
   textarea { flex: 1; width: 100%; background: #09090b; border: 1px solid #27272a; border-radius: 8px; color: #e4e4e7; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 8px; resize: none; outline: none; min-height: 200px; }
   textarea:focus { border-color: #7c3aed; }
   input[type="text"] { width: 100%; background: #09090b; border: 1px solid #27272a; border-radius: 6px; color: #e4e4e7; font-size: 12px; padding: 8px; outline: none; margin-bottom: 8px; }
   input[type="text"]:focus { border-color: #7c3aed; }
-  .page-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 150px; }
-  .page-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .page-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 0; }
+  .page-item { padding: 6px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .page-item:hover { background: #27272a; }
   .page-item.selected { background: #7c3aed22; border: 1px solid #7c3aed44; }
-  .page-category { color: #71717a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; }
-  .actions { display: flex; gap: 8px; margin-top: 8px; }
+  .page-item .chevron { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #52525b; transition: transform 0.15s; font-size: 10px; }
+  .page-item .chevron.expanded { transform: rotate(90deg); }
+  .page-item .chevron:hover { color: #a1a1aa; }
+  .page-item .no-chevron { width: 16px; flex-shrink: 0; }
+  .state-group { overflow: hidden; display: none; }
+  .state-group.expanded { display: block; }
+  .page-item.state { padding-left: 30px; color: #a1a1aa; font-size: 11px; }
+  .page-item.state::before { content: '↳'; margin-right: 4px; color: #52525b; }
+  .page-category { color: #71717a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; flex-shrink: 0; }
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; color: #71717a; font-size: 11px; }
+  .stats span { background: #27272a; padding: 2px 8px; border-radius: 4px; }
+  .server-status { font-size: 11px; color: #71717a; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ef4444; }
+  .dot.connected { background: #22c55e; }
+
+  /* ── Footer (fixed) ── */
+  .footer { padding: 0 12px 12px; flex-shrink: 0; border-top: 1px solid #27272a; }
+  .breakpoints { display: flex; gap: 12px; padding-top: 10px; margin-bottom: 8px; }
+  .breakpoints label { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #a1a1aa; cursor: pointer; }
+  .breakpoints input[type="checkbox"] { accent-color: #7c3aed; }
+  .actions { display: flex; gap: 8px; }
   button { flex: 1; padding: 8px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
   .btn-primary { background: #7c3aed; color: white; }
   .btn-primary:hover { background: #6d28d9; }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-secondary { background: #27272a; color: #e4e4e7; }
   .btn-secondary:hover { background: #3f3f46; }
-  .status { margin-top: 8px; padding: 8px; border-radius: 6px; font-size: 11px; display: none; }
-  .status.info { display: block; background: #172554; color: #93c5fd; }
-  .status.success { display: block; background: #14532d; color: #86efac; }
-  .status.error { display: block; background: #450a0a; color: #fca5a5; }
-  .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; color: #71717a; font-size: 11px; }
-  .stats span { background: #27272a; padding: 2px 8px; border-radius: 4px; }
-  .breakpoints { display: flex; gap: 12px; margin-bottom: 8px; }
-  .breakpoints label { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #a1a1aa; cursor: pointer; }
-  .breakpoints input[type="checkbox"] { accent-color: #7c3aed; }
-  .server-status { font-size: 11px; color: #71717a; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ef4444; }
-  .dot.connected { background: #22c55e; }
+  .status { padding: 6px 8px; border-radius: 6px; font-size: 11px; margin-top: 8px; height: 0; overflow: hidden; opacity: 0; transition: all 0.15s; }
+  .status.info { height: auto; opacity: 1; background: #172554; color: #93c5fd; }
+  .status.success { height: auto; opacity: 1; background: #14532d; color: #86efac; }
+  .status.error { height: auto; opacity: 1; background: #450a0a; color: #fca5a5; }
 </style>
 </head>
 <body>
-  <h2>HTML to Figma</h2>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="fetch">Fetch</button>
-    <button class="tab" data-tab="paste">Paste JSON</button>
-  </div>
-
-  <!-- Tab 1: Fetch from API -->
-  <div class="tab-content active" id="tab-fetch">
-    <div class="server-status">
-      <div class="dot" id="serverDot"></div>
-      <span id="serverLabel">Checking server...</span>
-    </div>
-    <input type="text" id="apiUrl" value="http://localhost:3457" placeholder="API server URL" />
-    <div class="page-list" id="pageList">
-      <div style="color:#71717a; padding: 8px;">Loading pages...</div>
-    </div>
-    <div class="breakpoints">
-      <label><input type="checkbox" value="Desktop" checked /> Desktop (1440)</label>
-      <label><input type="checkbox" value="Tablet" /> Tablet (768)</label>
-      <label><input type="checkbox" value="Mobile" /> Mobile (375)</label>
-    </div>
-    <div class="actions">
-      <button class="btn-secondary" id="btnRefresh">Refresh</button>
-      <button class="btn-primary" id="btnFetch" disabled>Extract & Generate</button>
+  <!-- ── Header ── -->
+  <div class="header">
+    <h2>HTML to Figma</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="fetch">Fetch</button>
+      <button class="tab" data-tab="paste">Paste JSON</button>
     </div>
   </div>
 
-  <!-- Tab 2: Paste JSON -->
-  <div class="tab-content" id="tab-paste">
-    <p class="desc">Paste raw DOM JSON from the CLI tool.</p>
-    <textarea id="json" placeholder='Paste extracted DOM JSON here...'></textarea>
-    <div class="stats" id="stats"></div>
-    <div class="actions">
-      <button class="btn-secondary" id="btnClear">Clear</button>
-      <button class="btn-primary" id="btnGenerate" disabled>Generate</button>
+  <!-- ── Scrollable Body ── -->
+  <div class="body">
+    <!-- Tab 1: Fetch from API -->
+    <div class="tab-content active" id="tab-fetch">
+      <div class="server-status">
+        <div class="dot" id="serverDot"></div>
+        <span id="serverLabel">Checking server...</span>
+      </div>
+      <input type="text" id="apiUrl" value="http://localhost:3457" placeholder="API server URL" />
+      <div class="page-list" id="pageList">
+        <div style="color:#71717a; padding: 8px;">Loading pages...</div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Paste JSON -->
+    <div class="tab-content" id="tab-paste">
+      <p class="desc">Paste raw DOM JSON from the CLI tool.</p>
+      <textarea id="json" placeholder='Paste extracted DOM JSON here...'></textarea>
+      <div class="stats" id="stats"></div>
     </div>
   </div>
 
-  <div class="status" id="status"></div>
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <!-- Fetch footer -->
+    <div id="footer-fetch">
+      <div class="breakpoints">
+        <label><input type="checkbox" value="Desktop" checked /> Desktop (1440)</label>
+        <label><input type="checkbox" value="Tablet" /> Tablet (768)</label>
+        <label><input type="checkbox" value="Mobile" /> Mobile (375)</label>
+      </div>
+      <div class="actions">
+        <button class="btn-secondary" id="btnRefresh">Refresh</button>
+        <button class="btn-primary" id="btnFetch" disabled>Extract & Generate</button>
+      </div>
+    </div>
+    <!-- Paste footer -->
+    <div id="footer-paste" style="display:none;">
+      <div class="actions" style="padding-top:10px;">
+        <button class="btn-secondary" id="btnClear">Clear</button>
+        <button class="btn-primary" id="btnGenerate" disabled>Generate</button>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
 
 <script>
   const API_URL_KEY = 'html-to-figma-api-url';
@@ -95,8 +135,11 @@
   const pageListEl = document.getElementById('pageList');
   const serverDot = document.getElementById('serverDot');
   const serverLabel = document.getElementById('serverLabel');
+  const footerFetch = document.getElementById('footer-fetch');
+  const footerPaste = document.getElementById('footer-paste');
 
   let selectedPage = null;
+  let selectedState = null;
   let serverConnected = false;
 
   // Restore API URL
@@ -112,6 +155,9 @@
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      // Switch footer
+      footerFetch.style.display = tab.dataset.tab === 'fetch' ? '' : 'none';
+      footerPaste.style.display = tab.dataset.tab === 'paste' ? '' : 'none';
     };
   });
 
@@ -149,18 +195,65 @@
         cat.textContent = p.category;
         pageListEl.appendChild(cat);
       }
+      const hasStates = p.states && p.states.length > 0;
+
+      // Page item
       const item = document.createElement('div');
       item.className = 'page-item';
-      item.textContent = p.name;
       item.dataset.name = p.name;
-      item.onclick = () => {
-        document.querySelectorAll('.page-item').forEach(i => i.classList.remove('selected'));
-        item.classList.add('selected');
-        selectedPage = p.name;
-        btnFetch.disabled = false;
-      };
+
+      if (hasStates) {
+        const chevron = document.createElement('span');
+        chevron.className = 'chevron';
+        chevron.textContent = '▶';
+        item.appendChild(chevron);
+      } else {
+        const spacer = document.createElement('span');
+        spacer.className = 'no-chevron';
+        item.appendChild(spacer);
+      }
+
+      const label = document.createElement('span');
+      label.textContent = p.name;
+      item.appendChild(label);
+
       pageListEl.appendChild(item);
+
+      // State sub-items (collapsed by default)
+      let stateGroup = null;
+      if (hasStates) {
+        stateGroup = document.createElement('div');
+        stateGroup.className = 'state-group';
+        for (const s of p.states) {
+          const stateItem = document.createElement('div');
+          stateItem.className = 'page-item state';
+          stateItem.textContent = s;
+          stateItem.dataset.name = p.name;
+          stateItem.dataset.state = s;
+          stateItem.onclick = () => selectPage(p.name, s, stateItem);
+          stateGroup.appendChild(stateItem);
+        }
+        pageListEl.appendChild(stateGroup);
+      }
+
+      // Click handler: select page + toggle expand if has states
+      item.onclick = () => {
+        selectPage(p.name, null, item);
+        if (hasStates) {
+          const chevron = item.querySelector('.chevron');
+          const expanded = chevron.classList.toggle('expanded');
+          stateGroup.classList.toggle('expanded', expanded);
+        }
+      };
     }
+  }
+
+  function selectPage(name, state, el) {
+    document.querySelectorAll('.page-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPage = name;
+    selectedState = state;
+    btnFetch.disabled = false;
   }
 
   apiUrlEl.addEventListener('change', checkServer);
@@ -189,7 +282,8 @@
     currentBPIndex = 0;
 
     // Tell plugin to start a responsive session (reset position tracking)
-    parent.postMessage({ pluginMessage: { type: 'responsive-start', pageName: selectedPage, total: bps.length } }, '*');
+    const startPageName = selectedState ? selectedPage + '/' + selectedState : selectedPage;
+    parent.postMessage({ pluginMessage: { type: 'responsive-start', pageName: startPageName, total: bps.length } }, '*');
 
     // Extract and send each breakpoint one at a time
     await extractNextBreakpoint();
@@ -205,16 +299,20 @@
     const bpName = pendingBPs[currentBPIndex];
     const base = apiUrlEl.value.trim();
     statusEl.className = 'status info';
-    statusEl.textContent = 'Extracting ' + bpName + ' (' + (currentBPIndex + 1) + '/' + pendingBPs.length + ')...';
+    const stateLabel = selectedState ? ' [' + selectedState + ']' : '';
+    statusEl.textContent = 'Extracting ' + bpName + stateLabel + ' (' + (currentBPIndex + 1) + '/' + pendingBPs.length + ')...';
 
     try {
-      const url = base + '/api/extract/' + selectedPage + '?breakpoint=' + bpName;
+      const stateParam = selectedState ? '&state=' + encodeURIComponent(selectedState) : '';
+      const url = base + '/api/extract/' + selectedPage + '?breakpoint=' + bpName + stateParam;
       const res = await fetch(url);
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || 'Server error');
       }
-      const tree = await res.json();
+      const data = await res.json();
+      const tree = data.tree;
+      const respPageName = data.pageName || selectedPage;
       const sizes = BP_SIZES[bpName] || { width: 1440, minHeight: 900 };
 
       statusEl.textContent = 'Generating ' + bpName + ' in Figma...';
@@ -224,7 +322,7 @@
         breakpoint: bpName,
         width: sizes.width,
         minHeight: sizes.minHeight,
-        pageName: selectedPage,
+        pageName: respPageName,
         index: currentBPIndex,
         total: pendingBPs.length,
       } }, '*');

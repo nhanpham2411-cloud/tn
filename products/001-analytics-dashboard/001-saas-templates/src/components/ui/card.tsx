@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Card
@@ -9,9 +10,9 @@ import { cn } from "@/lib/utils"
  *
  * Content container with Header, Title, Description, Content, Footer sub-components.
  *
- * default  — p-md (16px) flat container, no size prop needed
- * size="md" — p-xl (24px) flat container, no sub-components needed
- * size="lg" — p-2xl (32px) flat container, no sub-components needed
+ * (no size) — Flat container with sub-component layout (CardHeader p-md, CardContent p-md, etc.)
+ * size="md"   — p-xl (24px) flat container, no sub-components needed
+ * size="lg"   — p-2xl (32px) flat container, no sub-components needed
  */
 type CardSize = "md" | "lg"
 
@@ -24,6 +25,9 @@ function Card({
     <div
       data-slot="card"
       data-size={size}
+      {...figma("Card", {
+        Size: size === "lg" ? "Large" : size === "md" ? "Medium" : "Default",
+      })}
       className={cn(
         "rounded-2xl border border-border/60 bg-card text-card-foreground dark:border-border-subtle",
         !size && "p-md",

@@ -164,10 +164,10 @@ function convertImage(node: ExtractedNode): PluginNode {
   }
   imgSizing.height = `fixed:${node.height || 100}`
 
-  // Large SVG illustrations → placeholder (avoids base64 bloat)
+  // Large SVG illustrations: use screenshot if available, otherwise placeholder
   const isLargeIllustration = node.tagName === "svg" && ((node.width || 0) > 100 || (node.height || 0) > 100)
 
-  if (isLargeIllustration) {
+  if (isLargeIllustration && !(node.src && node.src.startsWith("data:image"))) {
     return {
       type: "placeholder",
       name: node.name || "Illustration",
