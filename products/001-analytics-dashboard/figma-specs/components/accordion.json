@@ -1,18 +1,14 @@
 {
   "components": [
     {
-      "name": "Accordion",
-      "description": "A single collapsible item with trigger label, chevron icon, and expandable content area. Bottom border separates stacked items (hidden on last via End Item). Built on @radix-ui/react-accordion.",
+      "name": "Accordion Item",
+      "description": "A single collapsible item with trigger label, chevron icon, and expandable content area. Bottom border separates stacked items (hidden on last via End Item).",
       "category": "Data Display",
-      "installation": {
-        "dependencies": "pnpm add @radix-ui/react-accordion",
-        "import": "import {\n  Accordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\""
-      },
 
       "properties": {
         "State": ["Default", "Hover", "Focus", "Disabled"],
         "Type": ["Open", "Closed"],
-        "End Item": ["False", "True"]
+        "End Item": ["No", "Yes"]
       },
 
       "base": {
@@ -25,6 +21,7 @@
         "width": 320,
         "heightMode": "hug",
         "hideLabel": true,
+        "clipsContent": true,
         "children": [
           {
             "name": "Trigger",
@@ -98,7 +95,7 @@
             "widthMode": "fill",
             "heightMode": "fixed",
             "fill": "border",
-            "showWhen": "End Item=False"
+            "showWhen": "End Item=No"
           }
         ]
       },
@@ -106,7 +103,8 @@
       "variantStyles": {
         "State=Focus": {
           "focusRing": "ring",
-          "radius": "lg"
+          "radius": "lg",
+          "fill": "ghost"
         },
         "State=Disabled": {
           "opacity": 0.5
@@ -119,10 +117,10 @@
           "description": "Default, hover (underline on trigger label), focus (ring), and disabled (50% opacity).",
           "layout": "vertical",
           "items": [
-            { "label": "Default", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
-            { "label": "Hover", "props": { "State": "Hover", "Type": "Closed", "End Item": "False" } },
-            { "label": "Focus", "props": { "State": "Focus", "Type": "Closed", "End Item": "False" } },
-            { "label": "Disabled", "props": { "State": "Disabled", "Type": "Closed", "End Item": "False" } }
+            { "label": "Default", "props": { "State": "Default", "Type": "Closed", "End Item": "No" } },
+            { "label": "Hover", "props": { "State": "Hover", "Type": "Closed", "End Item": "No" } },
+            { "label": "Focus", "props": { "State": "Focus", "Type": "Closed", "End Item": "No" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Type": "Closed", "End Item": "No" } }
           ]
         },
         {
@@ -130,8 +128,8 @@
           "description": "Closed shows only the trigger; open reveals the content below with the chevron rotated.",
           "layout": "vertical",
           "items": [
-            { "label": "Closed", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
-            { "label": "Open", "props": { "State": "Default", "Type": "Open", "End Item": "False" } }
+            { "label": "Closed", "props": { "State": "Default", "Type": "Closed", "End Item": "No" } },
+            { "label": "Open", "props": { "State": "Default", "Type": "Open", "End Item": "No" } }
           ]
         },
         {
@@ -139,11 +137,98 @@
           "description": "End Item=True removes the bottom border — use for the last item in a stacked group.",
           "layout": "vertical",
           "items": [
-            { "label": "With border", "props": { "State": "Default", "Type": "Closed", "End Item": "False" } },
-            { "label": "End item (no border)", "props": { "State": "Default", "Type": "Closed", "End Item": "True" } }
+            { "label": "With border", "props": { "State": "Default", "Type": "Closed", "End Item": "No" } },
+            { "label": "End item (no border)", "props": { "State": "Default", "Type": "Closed", "End Item": "Yes" } }
           ]
         }
-      ],
+      ]
+    },
+
+    {
+      "name": "Accordion",
+      "description": "A vertically stacked set of interactive headings that each reveal a section of content on click. Built on @radix-ui/react-accordion — supports single and multiple selection modes.",
+      "category": "Data Display",
+      "installation": {
+        "dependencies": "pnpm add @radix-ui/react-accordion",
+        "import": "import {\n  Accordion,\n  AccordionItem,\n  AccordionTrigger,\n  AccordionContent,\n} from \"@/components/ui/accordion\""
+      },
+
+      "properties": {
+        "Open": ["No", "Yes"],
+        "State": ["Default", "Hover", "Focus", "Disabled"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "min",
+        "counterAlign": "stretch",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "heightMode": "hug",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Item 1",
+            "type": "instance",
+            "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "No" },
+            "textOverrides": { "Label": "Is it accessible?" },
+            "fillWidth": true
+          },
+          {
+            "name": "Item 2",
+            "type": "instance",
+            "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "No" },
+            "textOverrides": { "Label": "Is it styled?" },
+            "fillWidth": true
+          },
+          {
+            "name": "Item 3",
+            "type": "instance",
+            "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "Yes" },
+            "textOverrides": { "Label": "Is it animated?" },
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Open=Yes": {
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Default", "Type": "Open", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Default", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Default", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "State=Disabled": {
+          "opacity": 0.5
+        }
+      },
 
       "props": [
         { "name": "type", "type": "\"single\" | \"multiple\"", "default": "--", "description": "Selection mode — required. single: one item open; multiple: several open simultaneously" },
@@ -169,14 +254,12 @@
       ],
 
       "figmaMapping": [
+        { "figma": "Open=No", "value": "All items closed", "code": "value / defaultValue", "codeValue": "No value match" },
+        { "figma": "Open=Yes", "value": "First item open", "code": "value / defaultValue", "codeValue": "item value string" },
         { "figma": "State=Default", "value": "No visual effects", "code": "--", "codeValue": "Default appearance" },
         { "figma": "State=Hover", "value": "Trigger label underline", "code": "--", "codeValue": "Auto via hover:underline" },
         { "figma": "State=Focus", "value": "Focus ring around item", "code": "--", "codeValue": "Auto via focus-visible:ring-focus" },
-        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true (root or item)" },
-        { "figma": "Type=Open", "value": "Content visible, chevron up", "code": "value / defaultValue", "codeValue": "item value string" },
-        { "figma": "Type=Closed", "value": "Content hidden, chevron down", "code": "--", "codeValue": "No value match" },
-        { "figma": "End Item=True", "value": "No bottom border", "code": "AccordionItem", "codeValue": "last item — last:border-b-0" },
-        { "figma": "End Item=False", "value": "1px bottom border", "code": "--", "codeValue": "Default border-b border-border" }
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true (root or item)" }
       ],
 
       "accessibility": {

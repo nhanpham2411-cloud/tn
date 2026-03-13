@@ -11,8 +11,8 @@
       "properties": {
         "State": ["Default", "Hover", "Focus", "Error", "Disabled"],
         "Value": ["Placeholder", "Filled", "Empty"],
-        "Left": ["None", "Icon", "Prefix", "TextLeft"],
-        "Right": ["None", "Icon", "Suffix", "TextRight"]
+        "Left": ["None", "Icon", "Prefix", "Text Left"],
+        "Right": ["None", "Icon", "Suffix", "Text Right"]
       },
 
       "base": {
@@ -65,7 +65,7 @@
         "Left=Prefix": {
           "prefix": "$"
         },
-        "Left=TextLeft": {
+        "Left=Text Left": {
           "textLeft": "https://"
         },
         "Right=Icon": {
@@ -75,7 +75,7 @@
         "Right=Suffix": {
           "suffix": "kg"
         },
-        "Right=TextRight": {
+        "Right=Text Right": {
           "textRight": ".com"
         }
       },
@@ -110,7 +110,7 @@
           "items": [
             { "label": "Icon Left", "props": { "State": "Default", "Value": "Placeholder", "Left": "Icon", "Right": "None" } },
             { "label": "Prefix", "props": { "State": "Default", "Value": "Placeholder", "Left": "Prefix", "Right": "None" } },
-            { "label": "Text Left", "props": { "State": "Default", "Value": "Placeholder", "Left": "TextLeft", "Right": "None" } }
+            { "label": "Text Left", "props": { "State": "Default", "Value": "Placeholder", "Left": "Text Left", "Right": "None" } }
           ]
         },
         {
@@ -120,7 +120,7 @@
           "items": [
             { "label": "Icon Right", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "Icon" } },
             { "label": "Suffix", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "Suffix" } },
-            { "label": "Text Right", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "TextRight" } }
+            { "label": "Text Right", "props": { "State": "Default", "Value": "Placeholder", "Left": "None", "Right": "Text Right" } }
           ]
         }
       ],
@@ -166,10 +166,10 @@
         { "figma": "Value=Empty", "value": "Empty input, no text visible", "code": "--", "codeValue": "No value or placeholder" },
         { "figma": "Left=Icon", "value": "Search icon at left-3", "code": "iconLeft", "codeValue": "<Search />" },
         { "figma": "Left=Prefix", "value": "$ text inside left", "code": "prefix", "codeValue": "\"$\"" },
-        { "figma": "Left=TextLeft", "value": "https:// addon outside left", "code": "textLeft", "codeValue": "\"https://\"" },
+        { "figma": "Left=Text Left", "value": "https:// addon outside left", "code": "textLeft", "codeValue": "\"https://\"" },
         { "figma": "Right=Icon", "value": "ArrowRight icon at right-3", "code": "iconRight", "codeValue": "<ArrowRight />" },
         { "figma": "Right=Suffix", "value": "kg text inside right", "code": "suffix", "codeValue": "\"kg\"" },
-        { "figma": "Right=TextRight", "value": ".com addon outside right", "code": "textRight", "codeValue": "\".com\"" }
+        { "figma": "Right=Text Right", "value": ".com addon outside right", "code": "textRight", "codeValue": "\".com\"" }
       ],
 
       "accessibility": {

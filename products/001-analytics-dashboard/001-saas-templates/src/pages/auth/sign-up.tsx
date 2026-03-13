@@ -72,14 +72,17 @@ export default function SignUpPage() {
 
     setErrors(newErrors)
 
-    if (Object.keys(newErrors).length === 0) {
-      setSubmitting(true)
-      setTimeout(() => {
-        setSubmitting(false)
-        toast.success("Account created successfully")
-        navigate("/auth/onboarding")
-      }, 1200)
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fix the errors below")
+      return
     }
+
+    setSubmitting(true)
+    setTimeout(() => {
+      setSubmitting(false)
+      toast.success("Account created successfully")
+      navigate("/auth/onboarding")
+    }, 1200)
   }
 
   return (
@@ -96,7 +99,7 @@ export default function SignUpPage() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-md">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
           {/* Name */}
           <div className="flex flex-col gap-xs">
             <Label htmlFor="name">Full Name</Label>

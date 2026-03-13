@@ -89,7 +89,7 @@
                   "fontWeight": 700,
                   "fontSize": 24,
                   "lineHeight": 30,
-                  "color": "rgba(255, 255, 255, 0.9)",
+                  "color": "rgb(250, 250, 250)",
                   "textAlign": "center",
                   "width": 360,
                   "height": 60,
@@ -103,7 +103,7 @@
                   "fontWeight": 400,
                   "fontSize": 14,
                   "lineHeight": 22.75,
-                  "color": "rgba(255, 255, 255, 0.35)",
+                  "color": "rgb(161, 161, 170)",
                   "textAlign": "center",
                   "width": 360,
                   "height": 68,
@@ -166,7 +166,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 73,
                       "height": 28,
@@ -180,7 +180,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 73,
                       "height": 16,
@@ -195,7 +195,7 @@
                   "type": "frame",
                   "width": 1,
                   "height": 20,
-                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "fill": "rgba(255, 255, 255, 0.06)",
                   "radius": 0,
                   "tagName": "DIV"
                 },
@@ -218,7 +218,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 58,
                       "height": 28,
@@ -232,7 +232,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 58,
                       "height": 16,
@@ -247,7 +247,7 @@
                   "type": "frame",
                   "width": 1,
                   "height": 20,
-                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "fill": "rgba(255, 255, 255, 0.06)",
                   "radius": 0,
                   "tagName": "DIV"
                 },
@@ -270,7 +270,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 48,
                       "height": 28,
@@ -284,7 +284,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 48,
                       "height": 16,
@@ -306,7 +306,7 @@
               "fontWeight": 400,
               "fontSize": 12,
               "lineHeight": 16,
-              "color": "rgba(255, 255, 255, 0.15)",
+              "color": "rgb(113, 113, 122)",
               "width": 226,
               "height": 16,
               "fillWidth": false,
@@ -347,7 +347,7 @@
           "primaryAlign": "center",
           "counterAlign": "center",
           "width": 664,
-          "height": 482,
+          "height": 530,
           "fillWidth": false,
           "children": [
             {
@@ -360,7 +360,7 @@
               "paddingBottom": 16,
               "paddingLeft": 16,
               "width": 440,
-              "height": 482,
+              "height": 530,
               "fillWidth": false,
               "fill": "rgb(20, 20, 24)",
               "stroke": "rgba(255, 255, 255, 0.06)",
@@ -443,7 +443,7 @@
                   "paddingBottom": 16,
                   "paddingLeft": 16,
                   "width": 406,
-                  "height": 248,
+                  "height": 296,
                   "fillWidth": true,
                   "children": [
                     {
@@ -457,7 +457,7 @@
                       "primaryAlign": "start",
                       "counterAlign": "start",
                       "width": 374,
-                      "height": 232,
+                      "height": 280,
                       "fillWidth": true,
                       "children": [
                         {
@@ -471,7 +471,7 @@
                           "primaryAlign": "start",
                           "counterAlign": "start",
                           "width": 374,
-                          "height": 64,
+                          "height": 88,
                           "fillWidth": true,
                           "children": [
                             {
@@ -494,7 +494,7 @@
                               "type": "instance",
                               "component": "Input",
                               "variants": {
-                                "State": "Default",
+                                "State": "Error",
                                 "Value": "Filled",
                                 "Left": "None",
                                 "Right": "None"
@@ -507,6 +507,19 @@
                               "fillWidth": true,
                               "tagName": "INPUT",
                               "dataSlot": "input"
+                            },
+                            {
+                              "type": "text",
+                              "textContent": "Please enter a valid email address",
+                              "fontFamily": "Inter, system-ui, sans-serif",
+                              "fontWeight": 400,
+                              "fontSize": 12,
+                              "lineHeight": 16,
+                              "color": "rgb(239, 68, 68)",
+                              "width": 374,
+                              "height": 16,
+                              "fillWidth": true,
+                              "tagName": "P"
                             }
                           ],
                           "tagName": "DIV",
@@ -523,7 +536,7 @@
                           "primaryAlign": "start",
                           "counterAlign": "start",
                           "width": 374,
-                          "height": 64,
+                          "height": 88,
                           "fillWidth": true,
                           "children": [
                             {
@@ -543,22 +556,53 @@
                               "dataSlot": "label"
                             },
                             {
-                              "type": "instance",
-                              "component": "Input",
-                              "variants": {
-                                "State": "Default",
-                                "Value": "Filled",
-                                "Left": "None",
-                                "Right": "None"
-                              },
-                              "textOverrides": {
-                                "Label": "short"
-                              },
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "gap": 0,
+                              "paddingTop": 0,
+                              "paddingRight": 0,
+                              "paddingBottom": 0,
+                              "paddingLeft": 0,
+                              "primaryAlign": "start",
+                              "counterAlign": "center",
                               "width": 374,
                               "height": 36,
                               "fillWidth": true,
-                              "tagName": "INPUT",
-                              "dataSlot": "input"
+                              "children": [
+                                {
+                                  "type": "instance",
+                                  "component": "Input",
+                                  "variants": {
+                                    "State": "Error",
+                                    "Value": "Filled",
+                                    "Left": "None",
+                                    "Right": "Icon"
+                                  },
+                                  "textOverrides": {
+                                    "Label": "short"
+                                  },
+                                  "width": 374,
+                                  "height": 36,
+                                  "fillWidth": false,
+                                  "tagName": "INPUT",
+                                  "dataSlot": "input"
+                                }
+                              ],
+                              "tagName": "DIV",
+                              "className": "relative flex items-center"
+                            },
+                            {
+                              "type": "text",
+                              "textContent": "Password must be at least 8 characters",
+                              "fontFamily": "Inter, system-ui, sans-serif",
+                              "fontWeight": 400,
+                              "fontSize": 12,
+                              "lineHeight": 16,
+                              "color": "rgb(239, 68, 68)",
+                              "width": 374,
+                              "height": 16,
+                              "fillWidth": true,
+                              "tagName": "P"
                             }
                           ],
                           "tagName": "DIV",
@@ -842,6 +886,23 @@
       ],
       "tagName": "DIV",
       "className": "flex flex-1 items-center justify-center bg-background p-lg sm:p-xl relative overflow-hidden"
+    },
+    {
+      "type": "instance",
+      "component": "Sonner",
+      "variants": {
+        "Type": "Error",
+        "Show Description": "False",
+        "Show Action": "False"
+      },
+      "textOverrides": {
+        "Title": "Please fix the errors below"
+      },
+      "width": 356,
+      "height": 54,
+      "fillWidth": true,
+      "tagName": "LI",
+      "dataSlot": "sonner-toast"
     }
   ],
   "tagName": "DIV",

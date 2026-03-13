@@ -234,7 +234,7 @@ function DropdownMenuShortcut({
   return (
     <span
       data-slot="dropdown-menu-shortcut"
-      className={cn("ml-auto typo-paragraph-mini tracking-widest opacity-60", className)}
+      className={cn("ml-auto typo-paragraph-mini tracking-widest text-muted-foreground", className)}
       {...props}
     />
   )

@@ -48,10 +48,13 @@ A Figma ComponentSet is a **flat matrix** of all property combinations. Each **F
 
 **Checklist for each component JSON:**
 - [ ] `properties` keys & values match web Explore controls exactly
+- [ ] Boolean-like properties use `"Yes"/"No"` (NEVER `"True"/"False"`) — includes Open, End Item, Show Label, Show Icon, etc.
+- [ ] All `showWhen`, `variantStyles` keys, instance `variants`, and `examples` props use matching `"Yes"/"No"` values
 - [ ] `base` specs match the web default state CSS (first value of each property)
 - [ ] Every `variantStyles` entry has specs extracted from the web CSS for that specific property value
 - [ ] Compound variants cover all cross-axis style differences (e.g. hover colors per variant)
 - [ ] No hardcoded colors — only semantic tokens that resolve via Figma variables
+- [ ] Group+Item: item at index 0, parent uses `"type": "instance"` referencing item, both in same JSON file
 
 ### Component Structure Rules
 
@@ -350,6 +353,7 @@ A Figma ComponentSet is a **flat matrix** of all property combinations. Each **F
 - **Must match web ExploreBehavior controls 100%** — same axes, same option count
 - Each key = Figma variant axis → creates ComponentSet property
 - Values use **Title Case**: `"Default"`, `"Ghost Muted"`, `"Icon Only"`
+- **Boolean-like properties MUST use `"Yes"/"No"`** — NEVER `"True"/"False"`. Applies to: Switch/toggle controls on web (Open, End Item, Show Label, Show Icon, etc.), any 2-value property that represents on/off, show/hide, or presence/absence. Example: `"End Item": ["No", "Yes"]`, `"Open": ["No", "Yes"]`, `"Show Label": ["No", "Yes"]`. This convention matches Figma's native boolean property format. Using `"True"/"False"` causes variant mismatch and fallback to wrong variant.
 - **Variant count** = product of all axis lengths. Target under 600 for performance.
 - Check web `*Docs()` function in `design-system/index.tsx` for exact controls
 
@@ -410,12 +414,14 @@ Use `variantRestrictions` to filter out invalid combinations from the full cross
   - Setting only `iconLeftName`/`iconRightName` WITHOUT `iconLeft: true`/`iconRight: true` will NOT render icons
 - `hideLabel: true` — hides the text node (for icon-only variants, or image-fill variants like Avatar). **Do NOT use** for form components (Input/Select/Textarea) — their label IS the placeholder/value text and must be visible.
 - `imageUrl: "https://..."` — fetches external image and sets as IMAGE fill on the component frame. URL must be **direct** (no redirects) — Figma plugin sandbox blocks cross-domain redirects. Pre-fetched by UI before sending to plugin.
-- `clipsContent: true` — clips content to frame shape (e.g. Avatar with `radius: "full"` needs clipping for circular image). Set in `base` or `variantStyles`. Plugin reads from spec (`!!merged.clipsContent`), defaults to `false`.
+- `clipsContent: true` — clips content to frame shape. **TWO use cases**: (1) Avatar/rounded cards with image — clip for circular/rounded shape. (2) **Components with `focusRing`** — Figma requires clip content enabled for DROP_SHADOW effect styles to render. Set in `base`. Plugin reads from spec (`!!merged.clipsContent`), defaults to `false`. **Rule: if component has ANY `focusRing` in variantStyles → `base` MUST have `"clipsContent": true`**.
 - `opacity: 0.5` — for disabled states
 - **Focus ring** — LUÔN dùng effect style (không manual DROP_SHADOW):
   - **`focusRing: "ring"`** — plugin map `"ring"` → effect style `Ring/default`, `"ring-error"` → `Ring/error`, etc. via `applyFocusRingEffect()`. Dùng cho TẤT CẢ components (form, indicator, standalone).
   - **`effectStyleName: "Ring/default"`** — cách thay thế, gắn trực tiếp effect style by name. Cả hai cách đều kết quả giống nhau.
   - Effect styles phải tồn tại trong Figma (tạo qua `foundation-effects.json`): `Ring/default`, `Ring/error`, `Ring/brand`, `Ring/success`, `Ring/warning`, `Ring/emphasis`
+  - **Ring colors bind variable (Light/Dark)**: `foundation-effects.json` có `"variable": "ring"` → plugin bind `boundVariables.color` vào semantic color variable → tự switch Light (zinc-200, red-200...) / Dark (zinc-800, red-900...). Hardcoded hex là fallback khi variable không tìm thấy.
+  - **`showShadowBehindNode: false`**: Ring effects PHẢI có `"showShadowBehindNode": false` — tắt "Show behind transparent areas". Nếu không, component có fill trong suốt/alpha (Button Outline, Ghost) hiển thị ring shadow xuyên qua fill → tạo vùng tối giả. Plugin đọc `e.showShadowBehindNode` từ JSON, default `true`.
   - Use instead of `stroke: "ring"` — stroke goes INSIDE and shrinks content; DROP_SHADOW matches web box-shadow behavior
   - Base stroke is preserved (e.g. Checkbox keeps `border-strong` while Focus adds ring effect)
   - Mapping: web `ring-[3px] ring-ring` → `"focusRing": "ring"`, web `ring-[3px] ring-ring-error` → `"focusRing": "ring-error"`
@@ -501,9 +507,53 @@ For components that need structured multi-section content (Card, Dialog, Alert D
 | `component` | Yes | Name of the existing ComponentSet to instantiate (e.g. `"Button"`) |
 | `variants` | No | Object mapping property names to values for the desired variant (e.g. `{ "Variant": "Outline", "Size": "Small" }`) |
 | `textOverrides` | No | Object mapping text node names inside the instance to new text content (e.g. `{ "Label": "Cancel" }`) |
+| `iconOverrides` | No | Object mapping icon node names to icon names (e.g. `{ "Icon Left": "Palette" }`) |
+| `overrides` | No | Deep override object for 2-level-deep nested instances (see below) |
 | `fillWidth` | No | `true` to set `layoutSizingHorizontal = "FILL"` (default: `"FIXED"`) |
 | `heightMode` | No | `"hug"` for HUG height (default: `"FIXED"`) |
 | `showWhen` | No | Same conditional visibility as other child types |
+
+#### Deep Overrides on Instance Children (`overrides`)
+
+When an instance contains **nested sub-instances** (2+ levels deep), use `overrides` to reach into them. This calls `applyComponentOverrides()` on the instance after creation.
+
+**Available override types**:
+
+| Key | Purpose | Format |
+|---|---|---|
+| `overrides.nested` | Change text inside nested child nodes | `{ "ChildNodeName": { "TextNodeName": "new value" } }` |
+| `overrides.nestedVariants` | Change variant of nested INSTANCE nodes | `{ "ChildNodeName": { "PropertyName": "Value" } }` |
+| `overrides.iconSwap` | Swap icon instances by name | `{ "IconNodeName": "NewIconName" }` |
+| `overrides.boolean` | Toggle boolean properties | `{ "PropertyName": true }` |
+| `overrides.text` | Change direct text nodes | `{ "TextNodeName": "new value" }` |
+
+**How it works**: Plugin uses `findAll()` (recursive) to locate nodes by name, then applies changes. `nestedVariants` finds INSTANCE nodes → calls `setProperties()`. `nested` finds parent nodes → finds TEXT nodes inside.
+
+**Example — App Header with Navigation Menu**:
+
+Navigation Menu contains Nav Menu Item instances. App Header needs to change which item is active per Page variant:
+
+```json
+{
+  "type": "instance", "name": "Nav",
+  "component": "Navigation Menu",
+  "variants": { "Items": "6" },
+  "widthMode": "hug",
+  "overrides": {
+    "nested": {
+      "Item 4": { "Label": "Users" },
+      "Item 5": { "Label": "Products" },
+      "Item 6": { "Label": "Orders" }
+    },
+    "nestedVariants": {
+      "Item 1": { "State": "Default" },
+      "Item 2": { "State": "Active" }
+    }
+  }
+}
+```
+
+**IMPORTANT**: `instanceOverrides` does NOT exist in the plugin. Always use `overrides` on instance children specs. See common-mistake #106.
 
 **How to determine variant property values**: Open the source ComponentSet in Figma (or read its JSON spec), look at its `properties` map, and use the exact values. Example — Button has `{ "Variant": [...], "Size": [...], "State": [...], "Icon": [...] }`.
 
@@ -592,7 +642,7 @@ Parent (`calendar.json`) references via `related` + `bestPractices`:
 - Example: `OTP Slot` ComponentSet sits directly below `Input OTP` ComponentSet; `Day Cell` sits directly below `Calendar`; `Table Row` sits directly below `Table`
 
 **Group+Item components in this project**:
-Table, Calendar, DatePicker, Tabs, Input OTP, Navigation Menu, Breadcrumb, Pagination — all follow the Group+Item pattern where item sub-components must be created before the group parent. When writing JSON for these components, always place items at lower indices in the `"components"` array.
+Table, Calendar, DatePicker, Tabs, Input OTP, Navigation Menu, Breadcrumb, Pagination, Accordion — all follow the Group+Item pattern where item sub-components must be created before the group parent. When writing JSON for these components, always place items at lower indices in the `"components"` array.
 
 **Examples in this project**:
 | Web Element | Figma Sub-component | JSON File | Used In |
@@ -602,6 +652,7 @@ Table, Calendar, DatePicker, Tabs, Input OTP, Navigation Menu, Breadcrumb, Pagin
 | Tab triggers (variant × state × icon) | `Tabs Item` | `tabs.json` (index 0, same file as Tabs) | Tabs |
 | Nav menu pills (type × state) | `Nav Menu Item` | `navigation-menu.json` (index 0, same file as Navigation Menu) | Navigation Menu |
 | Table rows (type × striped × state) | `Table Row` | `table.json` (index 0, same file as Table) | Table |
+| Accordion items (state × type × end item) | `Accordion Item` | `accordion.json` (index 0, same file as Accordion) | Accordion |
 | Alert Dialog icon circle | Icon instance (from Icons foundation) | — | Alert Dialog |
 
 ### Menu/Overlay Component Pattern (Dropdown, Context Menu, Command)
@@ -688,12 +739,15 @@ Components must be generated in **dependency order** — leaf components first, 
 | Ellipse `layoutPositioning` before appendChild | `layoutPositioning = "ABSOLUTE"` requires parent with `layoutMode !== NONE`. Must `comp.appendChild(ellipse)` FIRST, then set `layoutPositioning`. |
 | Ellipses deleted by cleanup whitelist | Cleanup removes children not in `_validTF`. Ellipse names must be added to whitelist via `if (merged.ellipses)` block. |
 | Element opacity vs fillOpacity for ellipses | React CSS `opacity-25` = element-level. Figma `fillOpacity` = paint-level. Use element `opacity` on ellipse node, NOT `fillOpacity` on paint. |
+| `instanceOverrides` ignored | `instanceOverrides` does NOT exist in plugin. Use `overrides` on instance children spec (see "Deep Overrides on Instance Children"). |
+| Button Icon Only shrinks to 16px | Don't use `widthMode: "hug"` on Icon Only button instances — omit it to keep FIXED 36×36. |
+| Nested instance variant not changing | `overrides.nestedVariants` needs exact child INSTANCE node name from parent component (e.g. `"Item 1"`, not `"Nav Menu Item"`). |
 | Checkbox just a box, no label | Component needs `indicator` pattern — set `base.indicator: { width, height, radius }` so comp becomes wrapper with indicator + label children |
 | Icon color vs label color | Use `iconFill` in variantStyles for icon color inside indicator, `textFill` for label color. Without `iconFill`, icons default to `textFill` |
 | Spacing not variable-bound | `paddingX: 16` → raw number, no variable. Use string token `"md"` → plugin calls `getSpacingValue()` + `bindFloat()` to bind Figma spacing variable. Same for `gap`, `paddingY`. String `"none"` preferred for zero values. Plugin now auto-binds `spacing/none` for number `0` as safety net. |
 | **Border radius not variable-bound** | `"radius": 9999` → raw number, Figma shows no variable binding. **MUST use string token**: `"radius": "full"`, `"radius": "lg"`, `"radius": "sm"`, `"radius": "none"` (for 0), etc. Plugin calls `bindFloat(node, "topLeftRadius", "border radius/full", value)` to bind Figma variable. This applies to `base.radius`, `variantStyles.radius`, children frame `radius`, and `indicator.radius`. **NEVER use raw numbers for radius** — always use token strings from `border radius/` collection (`"none"`, `"3xs"`, `"2xs"`, `"xs"`, `"sm"`, `"md"`, `"lg"`, `"xl"`, `"2xl"`, `"3xl"`, `"full"`). Plugin auto-binds `border radius/none` for number `0` as safety net, but string `"none"` is preferred. |
 | Image not loading in Figma | `imageUrl` with redirect (e.g. `github.com/shadcn.png` → `avatars.githubusercontent.com`) blocked by Figma sandbox. Use **direct URL** without redirects. Also ensure domain is in `manifest.json` `networkAccess.allowedDomains`. |
-| `clipsContent` not working | Was hardcoded `false`. Now reads from spec: `comp.clipsContent = !!merged.clipsContent`. Set `"clipsContent": true` in `base` for components needing content clipping (e.g. Avatar circular image). |
+| `clipsContent` not working | Was hardcoded `false`. Now reads from spec: `comp.clipsContent = !!merged.clipsContent`. Set `"clipsContent": true` in `base` for: (1) circular/rounded image clips (Avatar), (2) **any component with `focusRing`** — Figma requires clip content ON for DROP_SHADOW effect styles to render. |
 | Empty/wrong text on component | Plugin reads `merged.textContent`, NOT `merged.text`. Always use `"textContent"` in JSON base and variantStyles. |
 | Text style not applied | `textStyle` must be exact Figma text style name (`"SP/Body"`), not CSS class (`"sp-paragraph-sm"`, `"typo-paragraph-sm"`). Check `foundation-text-styles.json` for valid names. |
 | Form component shows no placeholder | `hideLabel: true` suppresses the label text node entirely. For Input/Select/Textarea the label IS the placeholder — never use `hideLabel` on form components. |
@@ -710,6 +764,598 @@ Components must be generated in **dependency order** — leaf components first, 
 | Addon path missing focus ring | Addon inner frame only checked `focusRing`, not `effectStyleName`. Fixed: addon path now checks `effectStyleName` first → falls back to `focusRing` → falls back to clear effects. |
 | Prefix/Suffix/TextLeft/TextRight wrong font | These nodes used hardcoded `Inter Regular 14px`. Fixed: now resolve `merged.textStyle` via `findTextStyle()` for proper Figma text style binding. |
 | Showcase crash on upsert | When variant keys change completely during upsert, Figma auto-deletes the ComponentSet → showcase node becomes stale. Fixed: try-catch safety check on `existingShowcase.x` before accessing. |
+
+### Established JSON Archetypes (Proven Structures)
+
+These are the **13 proven component archetypes** extracted from working JSON specs. When creating or updating a component JSON, identify which archetype(s) it matches and follow that pattern exactly. Each archetype includes a canonical example from the codebase.
+
+---
+
+#### Archetype 1: Simple Component (icon+label flow)
+
+**When**: Component has text label ± icons, no complex inner structure.
+**Files**: `button.json`, `badge.json`, `toggle.json`, `label.json`
+
+```json
+{
+  "name": "Button",
+  "properties": { "Variant": [...], "Size": [...], "State": [...], "Icon": [...] },
+  "base": {
+    "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center",
+    "width": 120, "height": 36, "gap": "xs",
+    "fill": "primary", "radius": "lg", "paddingX": "md", "paddingY": "none",
+    "textStyle": "SP/Body Semibold", "textContent": "Button", "textFill": "primary-foreground",
+    "iconSize": 16, "clipsContent": true
+  },
+  "variantStyles": {
+    "Icon=Left": { "iconLeft": true, "iconLeftName": "Plus" },
+    "Icon=Icon Only": { "hideLabel": true, "iconLeft": true, "iconLeftName": "Plus" },
+    "State=Focus": { "focusRing": "ring" },
+    "State=Disabled": { "opacity": 0.5 },
+    "Variant=Ghost,State=Hover": { "fill": "ghost-hover" }
+  }
+}
+```
+
+**Key rules**:
+- `textContent` + `textFill` + `textStyle` for label (NO `children` array)
+- `iconLeft`/`iconRight` boolean + name for icons
+- `hideLabel: true` for icon-only variants
+- `clipsContent: true` when ANY variant has `focusRing`
+- Compound keys for cross-axis overrides (`Variant=X,State=Y`)
+
+---
+
+#### Archetype 2: Indicator Compound (Checkbox/Switch/Radio)
+
+**When**: Component has a visual indicator element + separate label text.
+**Files**: `checkbox.json`, `switch.json`, `radio.json`
+
+```json
+{
+  "name": "Checkbox",
+  "properties": { "Value": ["Unchecked", "Checked", "Indeterminate"], "State": [...] },
+  "base": {
+    "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center",
+    "gap": "xs",
+    "indicator": {
+      "width": 16, "height": 16, "radius": "sm",
+      "clipsContent": true
+    },
+    "fill": "input", "stroke": "border-strong",
+    "textStyle": "SP/Body", "textContent": "Accept terms", "textFill": "foreground",
+    "iconSize": 14, "iconFill": "primary-foreground"
+  },
+  "variantStyles": {
+    "Value=Checked": { "fill": "primary", "stroke": "primary", "iconLeft": true, "iconLeftName": "Check" },
+    "State=Focus": { "focusRing": "ring" },
+    "State=Disabled": { "opacity": 0.5 },
+    "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary" }
+  }
+}
+```
+
+**Key rules**:
+- `base.indicator: { width, height, radius, clipsContent }` — **clipsContent goes INSIDE indicator, NOT base level** (common-mistake #121)
+- `fill`/`stroke` apply to the indicator frame (NOT the outer wrapper)
+- `iconLeft`/`iconRight` render INSIDE the indicator
+- `textContent`/`textFill` render OUTSIDE as label
+- `iconFill` for icon color (separate from `textFill`)
+- `opacity` on outer wrapper (affects whole row = disabled)
+- Compound keys needed for Value×State combinations
+
+---
+
+#### Archetype 3: Children Layout (structured sections)
+
+**When**: Component has multiple visual sections (header, body, footer, dividers).
+**Files**: `dialog.json`, `alert.json`, `card.json`, `collapsible.json`, `alert-dialog.json`
+
+```json
+{
+  "name": "Dialog",
+  "base": {
+    "layout": "vertical", "width": 512,
+    "fill": "card", "stroke": "border", "radius": "xl",
+    "paddingX": "none", "paddingY": "none", "gap": 0,
+    "hideLabel": true,
+    "children": [
+      {
+        "name": "Header", "type": "frame",
+        "layout": "horizontal", "counterAlign": "start", "gap": "xs",
+        "paddingX": "md", "paddingTop": "md", "paddingBottom": "md",
+        "fillWidth": true,
+        "children": [
+          { "name": "Text Group", "type": "frame", "layout": "vertical", "gap": "xs", "fillWidth": true,
+            "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/H4", "textContent": "Edit profile", "textFill": "foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "...", "textFill": "muted-foreground", "fillWidth": true, "showWhen": "Show Description=Yes" }
+            ]
+          },
+          { "name": "Close Icon", "type": "instance", "component": "Icon / X", "width": 16, "height": 16, "showWhen": "Show Close=Yes" }
+        ]
+      },
+      {
+        "name": "Body", "type": "frame", "layout": "vertical",
+        "paddingX": "md", "paddingBottom": "md", "fillWidth": true,
+        "children": [
+          { "name": "Slot", "type": "instance", "component": "Dialog Slot", "variants": { "Content": "Form" }, "fillWidth": true, "swapProperty": "Swap Slot" }
+        ]
+      },
+      {
+        "name": "Footer", "type": "frame", "layout": "horizontal",
+        "primaryAlign": "end", "counterAlign": "center", "gap": "xs",
+        "paddingX": "md", "paddingY": "md", "fillWidth": true,
+        "showWhen": "Show Footer=Yes",
+        "children": [
+          { "name": "Cancel", "type": "instance", "component": "Button", "variants": { "Variant": "Outline", "Size": "Default", "State": "Default", "Icon": "No Icon" }, "textOverrides": { "Label": "Cancel" }, "widthMode": "hug" },
+          { "name": "Save", "type": "instance", "component": "Button", "variants": { "Variant": "Primary", "Size": "Default", "State": "Default", "Icon": "No Icon" }, "textOverrides": { "Label": "Save changes" }, "widthMode": "hug" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Key rules**:
+- `hideLabel: true` required when using `children`
+- Text nodes: `textContent`/`textFill` (NOT `content`/`fill`)
+- Frame children: `counterAlign` defaults CENTER — set `"start"` for left-aligned text
+- `fillWidth: true` on frames that need to stretch
+- Button instances use `widthMode: "hug"` (NOT `fillWidth`)
+- `showWhen` for conditional sections
+- Edge-to-edge borders: parent `paddingX: "none"`, items set own padding
+- `strokeSides: "top,bottom"` for section dividers
+
+---
+
+#### Archetype 4: Menu Item (children with conditional icons)
+
+**When**: Item component needs different icons per variant type, controlled by `showWhen`.
+**Files**: `dropdown.json` (Dropdown Item)
+
+```json
+{
+  "name": "Dropdown Item",
+  "properties": { "Type": ["Default", "With Icon", "Destructive", "With Shortcut"], "State": [...] },
+  "base": {
+    "layout": "horizontal", "counterAlign": "center",
+    "paddingX": "xs", "paddingY": "2xs", "radius": "sm", "gap": "xs",
+    "hideLabel": true,
+    "children": [
+      { "name": "Icon", "type": "icon", "iconName": "User", "iconSize": 16, "iconFill": "foreground", "showWhen": "Type=With Icon" },
+      { "name": "Icon D", "type": "icon", "iconName": "Trash2", "iconSize": 16, "iconFill": "destructive", "showWhen": "Type=Destructive" },
+      { "name": "Label", "type": "text", "textStyle": "SP/Body", "textContent": "Profile", "textFill": "foreground", "fillWidth": true, "truncate": true },
+      { "name": "Shortcut", "type": "text", "textStyle": "SP/Mini", "textContent": "⌘,", "textFill": "muted-foreground", "showWhen": "Type=With Shortcut" }
+    ]
+  },
+  "variantStyles": {
+    "Type=Destructive": {
+      "children": [
+        { "name": "Icon", "type": "icon", "iconName": "User", "iconSize": 16, "iconFill": "foreground", "showWhen": "Type=With Icon" },
+        { "name": "Icon D", "type": "icon", "iconName": "Trash2", "iconSize": 16, "iconFill": "destructive", "showWhen": "Type=Destructive" },
+        { "name": "Label", "type": "text", "textStyle": "SP/Body", "textContent": "Delete Account", "textFill": "destructive", "fillWidth": true, "truncate": true },
+        { "name": "Shortcut", "type": "text", "textStyle": "SP/Mini", "textContent": "⌘,", "textFill": "muted-foreground", "showWhen": "Type=With Shortcut" }
+      ]
+    },
+    "State=Hover": { "fill": "muted" },
+    "State=Disabled": { "opacity": 0.5 }
+  }
+}
+```
+
+**Key rules**:
+- Uses `children` (NOT icon+label flow) because icons are conditional per variant
+- Each icon variant gets its own `"type": "icon"` child with `showWhen`
+- Label text MUST have `"truncate": true` + `"fillWidth": true`
+- **Shallow merge**: variantStyles that change `textFill` on Label MUST include the FULL `children` array
+- States (`Hover`, `Disabled`) only change frame-level properties (fill, opacity) — NO children override needed
+
+---
+
+#### Archetype 5: Menu Parent (instances of shared item)
+
+**When**: Parent component composes multiple instances of a shared item component.
+**Files**: `dropdown.json` (Dropdown Menu), `context-menu.json`, `command.json`
+
+```json
+{
+  "name": "Dropdown Menu",
+  "base": {
+    "layout": "vertical", "width": 224,
+    "fill": "popover", "stroke": "border", "radius": "lg",
+    "paddingX": "none", "paddingY": "none", "gap": "none",
+    "hideLabel": true,
+    "children": [
+      {
+        "name": "Group 1", "type": "frame", "layout": "vertical",
+        "paddingX": "3xs", "paddingY": "3xs", "fillWidth": true, "gap": "none",
+        "children": [
+          { "name": "Item Profile", "type": "instance", "component": "Dropdown Item",
+            "variants": { "Type": "With Icon", "State": "Default" },
+            "textOverrides": { "Label": "Profile" },
+            "iconOverrides": { "Icon": "User" },
+            "fillWidth": true },
+          { "name": "Item Settings", "type": "instance", "component": "Dropdown Item",
+            "variants": { "Type": "With Icon", "State": "Default" },
+            "textOverrides": { "Label": "Settings" },
+            "iconOverrides": { "Icon": "Settings" },
+            "fillWidth": true }
+        ]
+      },
+      { "name": "Sep 1", "type": "divider", "fill": "muted" },
+      {
+        "name": "Group 2", "type": "frame", "layout": "vertical",
+        "paddingX": "3xs", "paddingY": "3xs", "fillWidth": true, "gap": "none",
+        "children": [
+          { "name": "Item Delete", "type": "instance", "component": "Dropdown Item",
+            "variants": { "Type": "Destructive", "State": "Default" },
+            "textOverrides": { "Label": "Delete" },
+            "fillWidth": true }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Key rules**:
+- Parent `paddingX/Y: "none"` — groups handle their own padding (`"3xs"`)
+- Dividers at parent level for edge-to-edge separators
+- Each instance needs UNIQUE `name` (e.g. "Item Profile", "Item Settings" — NOT all "Dropdown Item")
+- `textOverrides` changes item label text
+- `iconOverrides` swaps icon instances inside the item
+- `fillWidth: true` on every instance
+- Check React source for divider fill: Dropdown = `"muted"`, Context/Command = `"border"`
+
+---
+
+#### Archetype 6: Swap Slot (swappable content)
+
+**When**: Component has a body area that users should be able to replace with custom content in Figma.
+**Files**: `dialog.json` (Dialog Slot), `sheet.json`, `drawer.json`, `card.json`, `alert-dialog.json`, `popover.json`
+
+```json
+{
+  "name": "Dialog Slot",
+  "description": "Swappable content slot for Dialog body.",
+  "properties": { "Content": ["Form", "Text"] },
+  "base": {
+    "layout": "vertical", "width": 240,
+    "paddingX": "none", "paddingY": "none", "gap": "md",
+    "hideLabel": true,
+    "children": [
+      {
+        "name": "Field Name", "type": "frame", "layout": "vertical",
+        "counterAlign": "start", "gap": "3xs", "fillWidth": true,
+        "showWhen": "Content=Form",
+        "children": [
+          { "name": "Label", "type": "instance", "component": "Label", "variants": { "Required": "No", "State": "Default" }, "textOverrides": { "Label": "Name" } },
+          { "name": "Input", "type": "instance", "component": "Input", "variants": { "State": "Default", "Value": "Filled", "Left": "None", "Right": "None" }, "textOverrides": { "Label": "Pedro Duarte" }, "fillWidth": true }
+        ]
+      },
+      { "name": "Body Text", "type": "text", "textStyle": "SP/Body", "textContent": "...", "textFill": "muted-foreground", "fillWidth": true, "showWhen": "Content=Text" }
+    ]
+  },
+  "showcase": { "sections": [] }
+}
+```
+
+**Used in parent via swapProperty**:
+```json
+{ "name": "Slot", "type": "instance", "component": "Dialog Slot",
+  "variants": { "Content": "Form" }, "fillWidth": true,
+  "swapProperty": "Swap Slot" }
+```
+
+**Key rules**:
+- Slot component `width: 240` (fixed base width)
+- Slot `showcase.sections: []` (no showcase — it's an internal sub-component)
+- Parent uses `swapProperty: "Swap Slot"` on the instance child
+- Plugin auto-creates INSTANCE_SWAP property on parent ComponentSet
+- Label-Input field gap = `"3xs"` (4px)
+- `showWhen` separates Content variants (Form vs Text)
+
+---
+
+#### Archetype 7: Group+Item (multi-component file)
+
+**When**: Parent component contains repeating instances of a sub-component (tabs, accordion items, OTP digits, table rows, nav items, breadcrumb items, pagination items).
+**Files**: `accordion.json`, `tabs.json`, `input-otp.json`, `navigation-menu.json`, `table.json`, `breadcrumb.json`, `pagination.json`, `date-picker.json`
+
+**5-point checklist** (common-mistake #122):
+1. Item at `components[0]`, parent at `components[1+]`
+2. Parent uses `"type": "instance"` children referencing item
+3. Item `variants` in parent instances use EXACT property values from item's `properties`
+4. Canvas order = web Explore tab order (top→bottom = left→right)
+5. Both in SAME JSON file (unless item shared across multiple parents)
+
+```json
+{
+  "components": [
+    {
+      "name": "Accordion Item",
+      "properties": { "State": [...], "Type": ["Open", "Closed"], "End Item": ["No", "Yes"] },
+      "base": {
+        "layout": "vertical", "hideLabel": true, "clipsContent": true,
+        "children": [
+          { "name": "Trigger", "type": "frame", ... },
+          { "name": "Content", "type": "frame", "showWhen": "Type=Open", ... },
+          { "name": "Border", "type": "frame", "fill": "border", "showWhen": "End Item=No", ... }
+        ]
+      }
+    },
+    {
+      "name": "Accordion",
+      "properties": { "Open": ["No", "Yes"], "State": [...] },
+      "base": {
+        "layout": "vertical", "hideLabel": true,
+        "children": [
+          { "name": "Item 1", "type": "instance", "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "No" },
+            "textOverrides": { "Label": "Is it accessible?" }, "fillWidth": true },
+          { "name": "Item 2", "type": "instance", "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "No" },
+            "textOverrides": { "Label": "Is it styled?" }, "fillWidth": true },
+          { "name": "Item 3", "type": "instance", "component": "Accordion Item",
+            "variants": { "State": "Default", "Type": "Closed", "End Item": "Yes" },
+            "textOverrides": { "Label": "Is it animated?" }, "fillWidth": true }
+        ]
+      },
+      "variantStyles": {
+        "Open=Yes": {
+          "children": [
+            { "name": "Item 1", "type": "instance", "component": "Accordion Item",
+              "variants": { "State": "Default", "Type": "Open", "End Item": "No" }, ... },
+            ...
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+**Key rules**:
+- Last item instance: `"End Item": "Yes"` (removes bottom border)
+- `variantStyles` with `children` override = FULL array (shallow merge)
+- Each instance needs unique `name` ("Item 1", "Item 2", "Item 3")
+- Boolean-like properties: `"No"/"Yes"` (NEVER `"False"/"True"`)
+
+---
+
+#### Archetype 8: Deep Overrides (nested instance control)
+
+**When**: Component contains an instance that itself contains sub-instances, and you need to change text/variants 2+ levels deep.
+**Files**: `app-header.json`
+
+```json
+{
+  "type": "instance", "name": "Nav",
+  "component": "Navigation Menu",
+  "variants": { "Items": "6" },
+  "widthMode": "hug",
+  "overrides": {
+    "nested": {
+      "Item 4": { "Label": "Users" },
+      "Item 5": { "Label": "Products" },
+      "Item 6": { "Label": "Orders" }
+    },
+    "nestedVariants": {
+      "Item 1": { "State": "Active" }
+    }
+  }
+}
+```
+
+**Key rules**:
+- Use `overrides` (NOT `instanceOverrides` — doesn't exist in plugin)
+- `nested`: `{ childNodeName: { textNodeName: "value" } }` — changes text 2 levels deep
+- `nestedVariants`: `{ childNodeName: { propertyName: "value" } }` — changes variant of nested instance
+- Node names must match EXACT Figma node names inside the instance (e.g. `"Item 1"`, not `"Nav Menu Item"`)
+- Also supports: `iconSwap`, `boolean`, `text` (direct text nodes)
+- Per-variant Page switching: each `Page=X` variantStyle overrides `nestedVariants` to set different item as Active
+
+---
+
+#### Archetype 9: Absolute Positioning (overlapping elements)
+
+**When**: Elements overlap or need pixel-precise placement (slider thumbs, notification dots, online indicators).
+**Files**: `slider.json`, `app-header.json`
+
+**Slider** (all children absolute):
+```json
+{
+  "base": {
+    "width": 320, "height": 16, "heightMode": "fixed",
+    "children": [
+      { "name": "Track", "type": "frame", "position": "absolute", "x": 0, "y": 5,
+        "width": 320, "height": 6, "widthMode": "fixed", "heightMode": "fixed",
+        "fill": "muted", "radius": "full" },
+      { "name": "Range 50", "type": "frame", "position": "absolute", "x": 0, "y": 5,
+        "width": 160, "height": 6, "widthMode": "fixed", "heightMode": "fixed",
+        "fill": "primary", "radius": "full", "showWhen": "Value=50" },
+      { "name": "Thumb 50", "type": "frame", "position": "absolute", "x": 152, "y": 0,
+        "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed",
+        "radius": "full", "fill": "background", "stroke": "primary", "strokeWidth": 2,
+        "showWhen": "Value=50" }
+    ]
+  }
+}
+```
+
+**Notification dot** (small overlay):
+```json
+{
+  "type": "frame", "name": "Notif Dot",
+  "width": 8, "height": 8, "widthMode": "fixed",
+  "radius": "full", "fill": "destructive",
+  "stroke": "background", "strokeWeight": 2,
+  "paddingX": "none", "paddingY": "none",
+  "position": "absolute", "x": 28, "y": 4,
+  "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+}
+```
+
+**Key rules**:
+- `position: "absolute"` + `x`/`y` coordinates
+- MUST set `widthMode: "fixed"` + `heightMode: "fixed"` (prevent auto-stretch)
+- `constraints`: `MIN` (pin to left/top), `MAX` (pin to right/bottom), `CENTER`, `STRETCH`
+- Parent MUST have `heightMode: "fixed"` for absolute children
+- variantStyles overrides need FULL children array (each value position has different thumb x)
+- Focus state adds `effectStyleName: "Ring/default"` to thumb elements
+
+---
+
+#### Archetype 10: Ellipse (donut/arc rendering)
+
+**When**: Component uses circular shapes with donut holes or partial arcs (spinners, progress rings).
+**Files**: `spinner.json`
+
+```json
+{
+  "name": "Spinner",
+  "base": {
+    "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center",
+    "gap": "none", "paddingX": "none", "paddingY": "none",
+    "width": 24, "height": 24, "hideLabel": true,
+    "ellipses": [
+      { "name": "Track", "fill": "muted-foreground", "opacity": 0.25, "innerRadius": 0.667 },
+      { "name": "Arc", "fill": "muted-foreground", "opacity": 0.75,
+        "arcStart": -90, "arcSweep": 90, "innerRadius": 0.667 }
+    ]
+  },
+  "variantStyles": {
+    "Color=Primary": {
+      "ellipses": [
+        { "name": "Track", "fill": "primary", "opacity": 0.25, "innerRadius": 0.667 },
+        { "name": "Arc", "fill": "primary", "opacity": 0.75, "arcStart": -90, "arcSweep": 90, "innerRadius": 0.667 }
+      ]
+    },
+    "Size=SM": { "width": 16, "height": 16 }
+  }
+}
+```
+
+**Key rules**:
+- `ellipses` array creates overlapping Figma ellipses with `arcData`
+- `innerRadius` (0-1): hole ratio (0.667 = standard donut ring)
+- `arcStart`/`arcSweep` (degrees): partial arc (-90 + 90 = quarter starting at top)
+- Use element `opacity` (NOT `fillOpacity`) to match React CSS
+- Color variants MUST override ENTIRE `ellipses` array (shallow merge)
+- Size variants only change `width`/`height` — ellipses auto-resize
+- Comp needs `paddingX/Y: "none"`, `gap: "none"`, `hideLabel: true`
+
+---
+
+#### Archetype 11: Per-Side Strokes
+
+**When**: Component needs border on specific sides only (table cells, OTP slots, scrollable sections).
+**Files**: `input-otp.json`, `dialog.json`, `sheet.json`, `command.json`, `table.json`
+
+```json
+{
+  "name": "OTP Slot",
+  "base": {
+    "stroke": "border-strong",
+    "strokeSides": "top,right,bottom",
+    ...
+  },
+  "variantStyles": {
+    "Position=First": { "strokeSides": "all", "radiusTopLeft": "md", "radiusBottomLeft": "md" },
+    "Position=Last": { "radiusTopRight": "md", "radiusBottomRight": "md" }
+  }
+}
+```
+
+**Scrollable section dividers**:
+```json
+{ "name": "Body Scrollable", "type": "frame",
+  "strokeSides": "top,bottom", "stroke": "border",
+  "height": 160, "clipsContent": true, ... }
+```
+
+**Key rules**:
+- `strokeSides`: comma-separated sides — `"top"`, `"right"`, `"bottom"`, `"left"`, or `"all"`
+- Omit `strokeSides` for uniform stroke on all sides
+- Match web CSS: `border-y border-r` → `"strokeSides": "top,right,bottom"`
+- Per-side radius: `radiusTopLeft`, `radiusBottomLeft`, `radiusTopRight`, `radiusBottomRight` (string tokens or numbers)
+
+---
+
+#### Archetype 12: Variant Restrictions
+
+**When**: Some property combinations are invalid (e.g. Tablet only shows Dashboard page, Ellipsis only has Default state).
+**Files**: `app-header.json`, `pagination.json`, `badge.json`, `table.json`, `breadcrumb.json`
+
+```json
+{
+  "properties": {
+    "Page": ["Dashboard", "Analytics", "Reports", "Users", "Products", "Orders"],
+    "Breakpoint": ["Desktop", "Tablet", "Mobile"]
+  },
+  "variantRestrictions": {
+    "Breakpoint=Tablet": { "Page": ["Dashboard"] },
+    "Breakpoint=Mobile": { "Page": ["Dashboard"] }
+  }
+}
+```
+
+**Key rules**:
+- Format: `{ "condition": { "property": ["allowed values"] } }` — OBJECT, not array
+- Condition key: same syntax as variantStyles (`Property=Value`, comma-separated for compound)
+- Plugin filters cross product AFTER building full combos
+- Reduces variant count (6×3=18 → 8 valid variants)
+- Web Explore: show restricted option list per condition, disable controls when not applicable
+- NEVER use array format `[{ if, then }]` — causes `.indexOf()` error
+
+---
+
+#### Archetype 13: Image Fill
+
+**When**: Component variant displays an image instead of text/icon (avatars, cards with cover).
+**Files**: `avatar.json`
+
+```json
+{
+  "variantStyles": {
+    "Type=Image": {
+      "imageUrl": "https://avatars.githubusercontent.com/u/124599?v=4",
+      "hideLabel": true,
+      "clipsContent": true
+    }
+  }
+}
+```
+
+**Key rules**:
+- `imageUrl` must be DIRECT URL (no redirects) — Figma sandbox blocks cross-domain redirect
+- Domain must be in `manifest.json` → `networkAccess.allowedDomains`
+- `hideLabel: true` suppresses text node for image variants
+- `clipsContent: true` clips image to rounded shape
+- UI pre-fetches image bytes before sending to plugin (`_prefetchedImages`)
+
+---
+
+#### Archetype Summary Table
+
+| # | Archetype | When to Use | Canonical Example |
+|---|-----------|-------------|-------------------|
+| 1 | Simple (icon+label) | Text ± icons, no structure | `button.json` |
+| 2 | Indicator | Checkbox/Switch/Radio compound | `checkbox.json` |
+| 3 | Children layout | Multi-section (header/body/footer) | `dialog.json` |
+| 4 | Menu item | Conditional icons per variant | `dropdown.json` (Item) |
+| 5 | Menu parent | Compose item instances | `dropdown.json` (Menu) |
+| 6 | Swap slot | Replaceable content area | `dialog.json` (Slot) |
+| 7 | Group+Item | Repeating sub-component instances | `accordion.json` |
+| 8 | Deep overrides | Control nested instances 2+ levels | `app-header.json` |
+| 9 | Absolute position | Overlapping/precise placement | `slider.json` |
+| 10 | Ellipse | Donut/arc shapes | `spinner.json` |
+| 11 | Per-side strokes | Borders on specific sides | `input-otp.json` |
+| 12 | Variant restrictions | Invalid property combinations | `app-header.json` |
+| 13 | Image fill | Image variant instead of text | `avatar.json` |
+
+**Combination rule**: Many components use MULTIPLE archetypes. Example: `dialog.json` = #3 (children layout) + #5 (instances) + #6 (swap slot) + #11 (per-side strokes). Identify ALL applicable archetypes before writing JSON.
 
 ---
 
@@ -822,8 +1468,10 @@ So sánh JSON spec với React source code. Đọc 3 file:
 | 7 | Colors match: hover → `border-strong`, focus → `ring`, error → `destructive-border` | Check component `.tsx` state classes |
 | 8 | Form components có `iconFill: "muted-foreground"` trong base | Web icon luôn `text-muted-foreground`, không đổi theo value |
 | 8b | Children icon instances có `iconFill` theo variant (Alert, Toast, Banner...) | Check web `[&>svg]:text-{color}` per variant → map sang `iconFill` |
+| 8c | KHÔNG dùng `iconOpacity` hay `opacity-*` trong JSON — plugin KHÔNG hỗ trợ per-icon opacity | Web `opacity-50` trên icon = vi phạm rule → fix web thành `text-muted-foreground` trước, JSON dùng `iconFill: "muted-foreground"` |
 | 9 | `gap` match web spacing (absolute pos icon = gap "xs" cho 8px visual offset) | Check web layout: autolayout vs absolute position |
 | 10 | `examples` match web Examples section (same groups, same items) | So sánh web Examples với JSON examples |
+| 11 | Property migration safe: default value (first in array) phải là giá trị "neutral" — existing instances sẽ nhận default khi property mới được thêm | VD: `"Show Label": ["Yes", "No"]` → existing variants nhận `Show Label=Yes` (giữ nguyên hành vi cũ). Nếu default = "No" → label biến mất trên tất cả existing instances |
 
 ### Bước 3: Visual Diff Prediction (Mental Render)
 
@@ -872,14 +1520,40 @@ Mỗi ComponentSet được tạo trên Figma PHẢI tuân theo các quy tắc v
 ### Border & Radius
 - **Border**: Inside, 1px, style **DASH**, stroke color = `foreground`
 - **Border radius**: 16px
-- Plugin PHẢI apply border + radius này lên node ComponentSet sau khi `combineAsVariants()`
+- Plugin PHẢI apply border + radius này lên node ComponentSet sau khi tạo/update
 
-### Variant Grid Layout
-- Variants trong ComponentSet PHẢI được sắp xếp theo **lưới gọn gàng** (grid):
-  - **Chiều ngang** (columns): values của 1 property axis (VD: State = Default | Hover | Focus | Disabled)
-  - **Chiều dọc** (rows): values của property axis khác (VD: Variant = Primary | Secondary | Outline)
-- Khoảng cách giữa variants: đều nhau, đủ để phân biệt mà không quá rộng
-- Thứ tự sắp xếp: theo thứ tự khai báo trong `properties` (top-to-bottom, left-to-right)
+### Upsert Behavior (Position Preservation + Property Migration)
+Plugin upsert xử lý 4 case khi ComponentSet (CS) đã tồn tại trên Figma:
+
+1. **Pure update** (không thêm/xóa variant): Update trực tiếp lên variant hiện tại — **KHÔNG chạm position** của CS hay bất kỳ variant nào. Không gọi `combineAsVariants()`.
+2. **Structural change** (thêm/xóa variant):
+   - Xóa variant thừa: `variant.remove()` trên CS children
+   - Thêm variant mới: `existingCS.appendChild(newVariant)` — thêm trực tiếp vào CS, KHÔNG gọi `combineAsVariants()`
+   - Sau đó gọi `_layoutVariantsInGrid(cs, propNames, properties)` để sắp xếp lại lưới
+   - Restore `cs.x`, `cs.y` về vị trí gốc (saved trước khi bắt đầu)
+3. **Property migration** (thêm/xóa property trong spec — Section 1.6):
+   - Plugin parse property names từ existing variant names, so sánh với spec `propNames`
+   - **Thêm property**: Rename variant cũ, append `NewProp=DefaultValue` (first value trong `properties` array). VD: `Value=Unchecked, State=Default` → `Value=Unchecked, State=Default, Show Label=Yes`
+   - **Xóa property**: Rename variant cũ, bỏ property pairs không còn trong spec. Nếu nhiều variant collapse cùng tên → giữ cái đầu, remove duplicate
+   - Rebuild `existingVarMap` với tên mới → matching logic tìm thấy và reuse → **preserve instances trên mọi page**
+   - Chỉ tạo variant MỚI cho combinations chưa tồn tại (VD: `Show Label=No`)
+4. **CS bị auto-delete** (Figma xóa CS khi variant cuối bị remove): Fallback `combineAsVariants()` + `_layoutVariantsInGrid()` + restore position
+
+**CRITICAL**: `combineAsVariants()` phá hủy toàn bộ layout — CHỈ gọi khi tạo mới hoặc CS bị auto-delete. Khi CS còn tồn tại → update in-place. **KHÔNG BAO GIỜ** xóa tất cả variant rồi tạo lại khi property keys thay đổi.
+
+### Variant Grid Layout (`_layoutVariantsInGrid`)
+Helper function sắp xếp variants theo lưới property-based:
+
+- **Axes**: Property cuối cùng trong `propNames` = **columns** (X axis), các property còn lại = **rows** (Y axis)
+- **Row key**: Cross product của tất cả properties trừ property cuối (VD: `Type=Error` hoặc `Variant=Outline,Size=Small`)
+- **Gap**: 20px giữa variants (cả horizontal và vertical)
+- **Column width**: Max width trong mỗi cột (tất cả variants cùng column value)
+- **Row height**: Max height trong mỗi hàng (tất cả variants cùng row key)
+- **Empty rows**: Tự động bỏ qua (do `variantRestrictions` filter)
+- **Single property**: Xếp 1 hàng ngang
+- **CS resize**: Tự động resize CS frame để vừa khít grid
+
+Thứ tự sắp xếp: theo thứ tự khai báo trong `properties` (top-to-bottom cho rows, left-to-right cho columns)
 
 ### Property 1:1 Match với React
 - Tên property trên Figma = tên control trên React Explore (Title Case)
@@ -1320,6 +1994,7 @@ React Page (.tsx) → Screen JSON (.json) → Figma Frame
 - [ ] `showcase.sections` set to `["header", "component", "installation"]` — plugin only generates these 3 sections (header, component grid from Explore, installation). All other sections (examples, props, designTokens, bestPractices, figmaMapping, accessibility, related) are **web-only** — NOT generated in Figma
 - [ ] Components with `imageUrl` use **direct URLs** (no redirects) and domain is in `manifest.json` `networkAccess.allowedDomains`
 - [ ] Components needing content clipping (circular Avatar, rounded cards with image) set `clipsContent: true` in `base`
+- [ ] **Components with `focusRing`** in variantStyles MUST have `clipsContent: true` in `base` — Figma requires clip content ON for effect style DROP_SHADOW to render
 - [ ] `textContent` used for all text values (NOT `text` — plugin reads `merged.textContent`)
 - [ ] `textStyle` uses Figma text style names (`"SP/Body"`, NOT CSS class names like `"sp-paragraph-sm"`)
 - [ ] `gap` explicitly set (omitting defaults to hardcoded `8` without variable binding — use `"none"` for zero gap, `"auto"` for space-between auto)
@@ -1349,3 +2024,39 @@ React Page (.tsx) → Screen JSON (.json) → Figma Frame
 - [ ] Mock data is realistic (from `src/data/*.ts`)
 - [ ] `pageName` format: `"{Category} — {Screen}"`
 - [ ] Root frame `name` format: `"{Screen} / {State} — {Theme}"`
+
+---
+
+## HTML to Figma Pipeline (DOM Extraction)
+
+### Architecture
+- **Server**: `tools/figma-extractor/html-to-figma.ts` — Playwright-based HTTP API (port 3457)
+- **DOM Walker**: `tools/figma-extractor/raw-dom-walker.ts` — browser-side DOM extraction script
+- **Token Mapper**: `tools/figma-extractor/style-mapper.ts` — CSS computed values → semantic token names
+- **States**: `tools/figma-extractor/states.ts` — Playwright actions for edge case states (filled, validation-error, submitting, etc.)
+- **Config**: `tools/figma-extractor/config.ts` — page routes, breakpoints, token maps
+- **Plugin UI**: `plugins/HTML to Figma/ui.html` — Figma plugin frontend, connects to server API
+
+### API Endpoints
+- `GET /api/pages` — List pages with states: `{ pages: [{ name, route, category, states: string[] }] }`
+- `GET /api/extract/{page}?breakpoint=Desktop&state=filled` — Extract single breakpoint: `{ tree, pageName }`
+- `GET /api/extract/{page}?breakpoints=Desktop,Tablet,Mobile` — Multi-breakpoint: `{ pageName, roots: [{ breakpoint, width, minHeight, tree }] }`
+
+### State Execution Flow
+1. Plugin UI sends `?state=filled` param
+2. Server looks up `PAGE_STATES[pageName]` → finds `ScreenState` with matching name
+3. Playwright navigates to page, applies `waitMode` and `skipSettleWait` from state config
+4. Executes state actions in order: fill, click, wait, waitFor, evaluate, press, hover
+5. DOM walker extracts post-action DOM tree
+6. Response includes `pageName: "{page}-{state}"` for Figma frame naming
+
+### DOM Walker Key Patterns
+- **Input icon extraction**: Native `<input>` has no children — walker scans parent wrapper (`position:relative` + flex) for sibling `<svg>` elements
+- **Input width from wrapper**: Use parent wrapper dimensions for sizing, not the `<input>` element itself
+- **Single-child flattening**: Skip wrapper divs with no visual properties (but preserve if has bg/stroke/data-slot)
+- **Background screenshots**: Decorative elements (gradients, glow, grid) captured as base64 images
+
+### Plugin UI Patterns
+- **Collapsible states**: State items rendered flat in page list with `style.display` toggle (no wrapper div — Figma sandbox CSS limitations)
+- **Port sync**: Plugin UI default URL must match server `SERVE_PORT` (currently 3457)
+- **Responsive flow**: UI sends `responsive-start` → `responsive-frame` (per breakpoint) → `responsive-end` to plugin code

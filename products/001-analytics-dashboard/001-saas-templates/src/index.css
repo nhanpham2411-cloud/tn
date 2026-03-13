@@ -704,7 +704,7 @@
     --input-readonly: var(--color-zinc-100);
     --ring: var(--color-zinc-200);
 
-    --ghost: transparent;                      /* raw: null */
+    --ghost: rgba(255,255,255,0.01);            /* near-invisible for Figma focus ring rendering */
     --ghost-foreground: var(--color-zinc-500);
     --ghost-hover: rgba(0,0,0,0.05);          /* raw: null */
 
@@ -905,7 +905,7 @@
     --input-readonly: var(--color-zinc-800);
     --ring: var(--color-zinc-800);
 
-    --ghost: transparent;                      /* raw: null */
+    --ghost: rgba(0,0,0,0.01);                  /* near-invisible for Figma focus ring rendering */
     --ghost-foreground: var(--color-zinc-400);
     --ghost-hover: rgba(255,255,255,0.06);     /* raw: null */
 

@@ -47,14 +47,17 @@ export default function SignInPage() {
       setPasswordError("")
     }
 
-    if (valid) {
-      setSubmitting(true)
-      setTimeout(() => {
-        setSubmitting(false)
-        toast.success("Signed in successfully")
-        navigate("/dashboard")
-      }, 1200)
+    if (!valid) {
+      toast.error("Please fix the errors below")
+      return
     }
+
+    setSubmitting(true)
+    setTimeout(() => {
+      setSubmitting(false)
+      toast.success("Signed in successfully")
+      navigate("/dashboard")
+    }, 1200)
   }
 
   return (
@@ -72,7 +75,7 @@ export default function SignInPage() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-md">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
           {/* Email */}
           <div className="flex flex-col gap-xs">
             <Label htmlFor="email">Email</Label>

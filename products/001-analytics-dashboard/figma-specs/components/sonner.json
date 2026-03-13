@@ -1,0 +1,361 @@
+{
+  "components": [
+    {
+      "name": "Sonner",
+      "description": "Auto-dismissing toast notification for transient feedback. Inverted colors: bg-foreground text-background. Container: rounded-lg, border 1px foreground/10, py-sm px-md, shadow-lg. Icon (16px instance, semantic color) + Title (SP/Body Medium) + Description (SP/Caption) + Action button.",
+      "category": "Feedback",
+      "installation": {
+        "dependencies": "pnpm add sonner",
+        "import": "import { toast } from \"sonner\"\nimport { Toaster } from \"@/components/ui/sonner\"\n\n// Mount once at root:\n<Toaster />\n\n// Trigger anywhere:\ntoast(\"Event created\")\ntoast.success(\"Saved\")\ntoast.error(\"Failed\")"
+      },
+
+      "properties": {
+        "Type": ["Default", "Success", "Error", "Warning", "Info"],
+        "Show Description": ["Yes", "No"],
+        "Show Action": ["Yes", "No"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "2xs",
+        "width": 356,
+        "heightMode": "hug",
+        "radius": "lg",
+        "fill": "foreground",
+        "stroke": "foreground",
+        "strokeWidth": 1,
+        "strokeOpacity": 0.1,
+        "paddingX": "md",
+        "paddingY": "sm",
+        "effectStyleName": "Shadows/lg",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "primaryAlign": "start",
+            "counterAlign": "start",
+            "gap": "none",
+            "paddingX": "none",
+            "paddingY": "none",
+            "heightMode": "hug",
+            "fillWidth": true,
+            "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Event created", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Monday, January 3rd at 6:00 PM", "textFill": "background", "fillWidth": true }
+            ]
+          },
+          {
+            "name": "Action",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "center",
+            "counterAlign": "center",
+            "paddingX": "sm",
+            "paddingY": "2xs",
+            "radius": "md",
+            "fill": "background",
+            "heightMode": "hug",
+            "widthMode": "hug",
+            "gap": "none",
+            "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Show Action=No": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Event created", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Monday, January 3rd at 6:00 PM", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+        "Show Description=No": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Event created", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Show Description=No,Show Action=No": {
+          "children": [
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Event created", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+
+        "Type=Success": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Changes saved", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Your settings have been updated successfully.", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Changes saved", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Your settings have been updated successfully.", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+        "Type=Success,Show Description=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Changes saved", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Success,Show Description=No,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Changes saved", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+
+        "Type=Error": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Something went wrong", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Please try again or contact support.", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Something went wrong", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Please try again or contact support.", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+        "Type=Error,Show Description=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Something went wrong", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Error,Show Description=No,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Something went wrong", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+
+        "Type=Warning": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Storage almost full", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "You have used 90% of your storage quota.", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Storage almost full", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "You have used 90% of your storage quota.", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Description=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Storage almost full", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Warning,Show Description=No,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Storage almost full", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+
+        "Type=Info": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "primary", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "New update available", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Version 2.4 is ready to install.", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Info,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "primary", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "New update available", "textFill": "background", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Caption", "textContent": "Version 2.4 is ready to install.", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        },
+        "Type=Info,Show Description=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "primary", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "New update available", "textFill": "background", "fillWidth": true }
+            ]},
+            { "name": "Action", "type": "frame", "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center", "paddingX": "sm", "paddingY": "2xs", "radius": "md", "fill": "background", "heightMode": "hug", "widthMode": "hug", "gap": "none", "children": [
+              { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Undo", "textFill": "foreground" }
+            ]}
+          ]
+        },
+        "Type=Info,Show Description=No,Show Action=No": {
+          "children": [
+            { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "primary", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
+            { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "fillWidth": true, "children": [
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Medium", "textContent": "New update available", "textFill": "background", "fillWidth": true }
+            ]}
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "All Types",
+          "description": "Five semantic types for different feedback contexts.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "Type": "Default", "Show Description": "Yes", "Show Action": "No" } },
+            { "label": "Success", "props": { "Type": "Success", "Show Description": "Yes", "Show Action": "No" } },
+            { "label": "Error", "props": { "Type": "Error", "Show Description": "Yes", "Show Action": "No" } },
+            { "label": "Warning", "props": { "Type": "Warning", "Show Description": "Yes", "Show Action": "No" } },
+            { "label": "Info", "props": { "Type": "Info", "Show Description": "Yes", "Show Action": "No" } }
+          ]
+        },
+        {
+          "name": "With Action",
+          "description": "Action button for quick undo or follow-up.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default + Action", "props": { "Type": "Default", "Show Description": "Yes", "Show Action": "Yes" } },
+            { "label": "Success + Action", "props": { "Type": "Success", "Show Description": "No", "Show Action": "Yes" } }
+          ]
+        },
+        {
+          "name": "Title Only",
+          "description": "Minimal toast with title only, no description or action.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Success", "props": { "Type": "Success", "Show Description": "No", "Show Action": "No" } },
+            { "label": "Error", "props": { "Type": "Error", "Show Description": "No", "Show Action": "No" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "toast()", "type": "function", "default": "—", "description": "Default toast — neutral feedback with no icon" },
+        { "name": "toast.success()", "type": "function", "default": "—", "description": "Success feedback with CircleCheck icon" },
+        { "name": "toast.error()", "type": "function", "default": "—", "description": "Error feedback with CircleAlert icon" },
+        { "name": "toast.warning()", "type": "function", "default": "—", "description": "Warning feedback with TriangleAlert icon" },
+        { "name": "toast.info()", "type": "function", "default": "—", "description": "Informational feedback with Info icon" },
+        { "name": "description", "type": "string", "default": "undefined", "description": "Secondary line of text below the title" },
+        { "name": "action", "type": "{ label: string; onClick: () => void }", "default": "undefined", "description": "Action button with label and click handler" },
+        { "name": "duration", "type": "number", "default": "4000", "description": "Auto-dismiss duration in milliseconds" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-foreground", "value": "zinc-950 / zinc-50", "description": "Toast background (inverted: dark on light, white on dark)" },
+        { "token": "--color-background", "value": "white / zinc-950", "description": "Toast text color (inverted)" },
+        { "token": "--color-success", "value": "green-600 / green-500", "description": "Success icon color" },
+        { "token": "--color-destructive", "value": "red-600 / red-500", "description": "Error icon color" },
+        { "token": "--color-warning", "value": "amber-600 / amber-500", "description": "Warning icon color" },
+        { "token": "--color-primary", "value": "violet-600 / violet-500", "description": "Info icon color" },
+        { "token": "--spacing-sm", "value": "12px", "description": "Vertical padding (py-sm)" },
+        { "token": "--spacing-md", "value": "16px", "description": "Horizontal padding (px-md)" },
+        { "token": "--spacing-2xs", "value": "6px", "description": "Gap between icon, content, and action" },
+        { "token": "--radius-lg", "value": "8px", "description": "Border radius (rounded-lg)" },
+        { "token": "Shadows/lg", "value": "0 10px 15px -3px rgba(0,0,0,0.1)", "description": "Shadow effect style" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use toast for transient feedback after user actions (save, delete, send). It auto-dismisses.", "dont": "Use toast for persistent messages that require attention — use Alert instead." },
+        { "do": "Keep toast content to 1-2 short lines. Title is mandatory, description is optional.", "dont": "Put paragraphs or complex instructions in a toast — use a Dialog or Sheet instead." },
+        { "do": "Attach a single action (e.g. Undo) only when the action is immediately reversible.", "dont": "Put multiple actions or navigation links in a toast — it disappears too quickly." },
+        { "do": "Match toast type to action result: success for completed, error for failed, warning for caution, info for neutral updates.", "dont": "Use default type for error feedback — users rely on semantic color + icon to quickly assess severity." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Default", "value": "bg-foreground, no icon", "code": "toast()", "codeValue": "toast(\"message\")" },
+        { "figma": "Type=Success", "value": "bg-foreground, CircleCheck text-success", "code": "toast.success()", "codeValue": "toast.success(\"message\")" },
+        { "figma": "Type=Error", "value": "bg-foreground, CircleAlert text-destructive", "code": "toast.error()", "codeValue": "toast.error(\"message\")" },
+        { "figma": "Type=Warning", "value": "bg-foreground, TriangleAlert text-warning", "code": "toast.warning()", "codeValue": "toast.warning(\"message\")" },
+        { "figma": "Type=Info", "value": "bg-foreground, Info text-primary", "code": "toast.info()", "codeValue": "toast.info(\"message\")" },
+        { "figma": "Show Description=Yes", "value": "Description text visible", "code": "description", "codeValue": "{ description: \"...\" }" },
+        { "figma": "Show Action=Yes", "value": "Action button visible", "code": "action", "codeValue": "{ action: { label: \"Undo\", onClick: fn } }" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Toast is non-interactive — auto-dismisses after duration" }
+        ],
+        "notes": [
+          "Sonner uses role=\"status\" with aria-live=\"polite\" — screen readers announce toast content without interrupting.",
+          "Action button is focusable via Tab while toast is visible.",
+          "Keep toast duration long enough (4s+) for screen reader users to perceive and act.",
+          "Do not put critical information only in toasts — they disappear. Use Alert for persistent messages."
+        ]
+      },
+
+      "related": [
+        { "name": "Alert", "desc": "Persistent inline feedback message. Use Alert when the message should stay visible until dismissed." },
+        { "name": "Alert Dialog", "desc": "Blocking modal confirmation. Use when user must explicitly confirm before proceeding." },
+        { "name": "Progress", "desc": "Visual progress indicator. Combine with toast.promise() for async operation feedback." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

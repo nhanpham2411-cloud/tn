@@ -456,6 +456,9 @@ Extract → So sánh visual (web vs Figma) → Identify gaps → Fix mapper/walk
 | Animated elements (AuthIllustration SVG) | Open | Skip — placeholder frame, replace manual |
 | Grid layout detection | **Fixed v0.2** | `getGridCols()` + annotated names, column-span chưa support |
 | Overlay components (open state) | Open | Cần trigger state trước khi extract (Playwright click) |
+| Portal components (Sonner, Dialog) | **Fixed v0.3** | Portal traversal after main walkDOM |
+| ComponentSet missing in Figma | **Fixed v0.3** | `createManualInstance()` draws UI manually |
+| Screenshot/rasterized images | **Removed v0.3** | Zero screenshots — all vector/frame/text |
 | Icon name resolution | **Mostly fixed v0.2** | Lucide class/data-lucide/aria-label, 80% accuracy |
 | `fillHeight` detection limited | Open | Plugin doesn't fully support anyway |
 | Nav text concatenation | **Fixed v0.2** | `isTextOnly()` only leaf elements |
@@ -482,6 +485,7 @@ Extract → So sánh visual (web vs Figma) → Identify gaps → Fix mapper/walk
 |------|-----------|----------|---------|
 | 2026-03-11 | v0.1 | Initial extraction — basic DOM walker, style mapper, JSON builder | 68 nodes, nhiều noise (gradient orbs, concatenated nav text, huge radius) |
 | 2026-03-11 | v0.2 | 6 fixes: (1) `isDecorative()` filter aria-hidden+pointer-events-none & blur>50px, (2) `isTextOnly()` chỉ match leaf elements (childElementCount===0), (3) Grid detection `getGridCols()` + annotated `Grid (N-col)`, (4) Lucide icon name extraction từ SVG class/data-lucide/aria-label, (5) Radius cap 9999, (6) Removed class-name-based `isHidden()` | 85 nodes, 15 instances, 10 icons (8 named), 0 gradient orb noise, grid detected |
+| 2026-03-12 | v0.3 | 6 fixes: (1) Portal traversal cho Sonner toast ngoài #root, (2) toast.custom() type detection via data-toast-type, (3) Plugin field name compatibility (component/instance), (4) createManualInstance() fallback khi ComponentSet thiếu, (5) State actions waitFor toast, (6) Remove ALL screenshot functions | Sonner detected as instance, manual UI fallback, zero rasterized images |
 
 ### v0.2 Chi tiết fixes
 
@@ -523,3 +527,80 @@ Extract → So sánh visual (web vs Figma) → Identify gaps → Fix mapper/walk
 | Grid children don't replicate grid column spans | Medium | Manual adjustment — need column-span detection |
 | Single-child flattening may lose some wrapper semantics | Low | Check data-slot preservation |
 | `fillHeight` detection limited | Low | Plugin doesn't fully support anyway |
+
+### v0.3 Portal traversal & Manual fallback
+
+**1. Portal component detection (Sonner)**
+- Problem: Sonner `<ol data-sonner-toaster>` renders via React portal OUTSIDE `#root` → walker starting from `#root` never sees it
+- Fix: After `walkDOM(root)`, traverse portal roots: `document.querySelector("[data-sonner-toaster]")` → walk each `[data-sonner-toast]` → push to `result.children`
+- Applied to: Both `raw-dom-walker.ts` AND `dom-walker.ts`
+
+**2. toast.custom() type detection**
+- Problem: `toast.custom()` sets `data-type="custom"` on wrapper `<li>`, not the real type
+- Fix: When `data-type === "custom"`, check inner `[data-toast-type]` attribute. React: add `data-toast-type={type}` to root div inside `toast.custom()` callback
+- Result: Correct Sonner variant detection (Error/Success/Warning/Info/Default)
+
+**3. Plugin field name compatibility**
+- Problem: json-builder outputs `type: "component"` + `componentSet` + `overrides.text`, plugin expected `type: "instance"` + `component` + `textOverrides`
+- Fix: Plugin switch has both `case "component":` and `case "instance":`. `createInstance()` accepts both field formats.
+
+**4. Manual UI fallback (createManualInstance)**
+- Problem: When ComponentSet not found in Figma (e.g. "Sonner" not yet created), plugin showed empty placeholder
+- Fix: `createManualInstance()` draws full UI manually using Figma API:
+  - **Sonner**: frame with foreground fill, border 10% opacity, shadow, type-specific icon (CircleCheck/CircleAlert/TriangleAlert/Info), title text, optional description + action button — all using Figma variables
+  - **Generic**: card frame with component name + variant values as text label
+- No screenshots/rasterized images — everything is vector/frame/text
+
+**5. State actions for toast visibility**
+- Problem: Toast dismissed before walker runs → not captured
+- Fix: Added `waitFor: "[data-sonner-toast]"` + `wait: 500ms` to validation-error states in `states.ts`
+
+**6. Screenshot removal**
+- Removed ALL screenshot functions from pipeline: `screenshotImages()`, `collectImageNodes()`, `screenshotBackgrounds()`, `collectBgNodes()`
+- Policy: NO rasterized images in Figma output — everything must be component instances, manual frames, or SVG vectors
+
+### v0.4 Absolute positioning & Decorative backgrounds
+
+**1. Decorative background screenshots (`captureDecorativeBackgrounds()`)**
+- Problem: Auth layout has complex decorative backgrounds (gradient orbs, glow effects) that can't be replicated with Figma primitives
+- Fix: `hasDecorativeBackground(el)` detects ≥2 absolute children with blur/bg-image → sets `backgroundSelector` → server captures screenshot with Playwright `el.screenshot()`
+- Content isolation: Before screenshot, hide flow children (`visibility: hidden`) + portal overlays (Sonner, dialogs `display: none`), keep only absolute/fixed decorative elements
+- Result: `backgroundImage` = base64 PNG of just decorative effects (gradient orbs, glow, grid pattern)
+
+**2. Sonner toast absolute positioning**
+- Problem: Sonner toast is a portal overlay that should float on top of UI at exact web position
+- Fix: Walker returns `position: "absolute"` + `rightMargin`/`bottomMargin` + `constraints` (NOT viewport x/y — see common-mistake #102)
+- Plugin: calculates x/y from parent frame dimensions: `x = parent.width - nodeWidth - rightMargin` (MAX), `x = (parent.width - nodeWidth) / 2` (CENTER)
+- Breakpoint logic: Desktop/Tablet (>480px) = MAX/MAX (right-bottom), Mobile (≤480px) = CENTER/MAX (center-bottom, width = viewport - 32px)
+
+**3. `insertChild()` reorder fix (common-mistake #101)**
+- Problem: `reconcileChildren()` sets absolute positioning, then `insertChild()` reorder resets `layoutPositioning` back to AUTO
+- Fix: Post-reorder loop re-applies absolute positioning (resize + x/y + constraints) for all `position: "absolute"` specs
+
+**4. Instance `resize()` for absolute nodes**
+- Problem: Component instances keep default size after creation; `applySizing()` doesn't call `resize()`
+- Fix: Explicit `node.resize(spec.width, spec.height)` before setting x/y coordinates for absolute-positioned instances
+
+### v0.5 Mixed-color text, partial variant matching, icon conflicts
+
+**1. Mixed-color inline text (links in labels)**
+- Problem: `<Label>I agree to the <span class="text-primary">Terms of Service</span></Label>` — Label has `data-figma` → extracted as instance → text flattened, link color lost
+- Fix: When Label element has `hasColoredInlineChildren()` (child spans with different color) → skip instance extraction → fall through to mixed-inline logic → creates frame with per-run text nodes preserving colorToken
+- Frame gets `wrap: true` + `fillWidth: true` for mobile text wrapping
+- Checkbox/Radio adjacent to mixed-color label → `textOverrides.Label = " "` (hide default label text)
+
+**2. Partial variant matching in HTML-to-Figma plugin**
+- Problem: `getVariantKey()` creates exact key like `"Value=75"` but Figma ComponentSet variant names include ALL properties like `"Show Label=No, Value=75"` — no match
+- Fix: Plugin fallback iterates ComponentSet children, checking if variant name contains ALL specified `key=value` pairs via `indexOf()`. Falls back to first child if still no match.
+
+**3. Brand icon name conflict (common-mistake #109)**
+- Problem: Brand "X" (Twitter logo, fill) same name as Lucide "X" (close icon, stroke) → walker extracts `name="X"` → plugin finds brand icon → shows Twitter logo on close buttons
+- Fix: Rename brand to "X Twitter" in foundation-icons.json + brand-icons.tsx + design-system page. Add separate Lucide "X" close icon to foundation.
+
+**4. Button `asChild` + `<Link>` not detected (common-mistake #111)**
+- Problem: `<Button asChild><Link>text</Link></Button>` renders `<a>` tag with `data-figma` attribute. But `<a>` is in `INLINE_TAGS` → parent mixed-inline logic treats it as text run, not component.
+- Fix: Use `<Button onClick={() => navigate("...")}>` directly (no `asChild`) → renders `<button>` tag → walker detects `data-figma`.
+
+**5. Playwright `force: true` unreliable on Mobile**
+- Problem: Decorative blur div intercepts pointer events on Mobile viewport. `force: true` clicks don't trigger form validation reliably.
+- Fix: Use `evaluate` action with `document.querySelector().click()` to bypass Playwright event dispatch entirely.

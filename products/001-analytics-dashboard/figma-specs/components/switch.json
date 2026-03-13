@@ -23,6 +23,7 @@
           "width": 33,
           "height": 18,
           "radius": "xl",
+          "clipsContent": true,
           "paddingX": 1,
           "paddingY": 1,
           "thumb": {

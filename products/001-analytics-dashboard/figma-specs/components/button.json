@@ -30,17 +30,18 @@
         "textStyle": "SP/Body Semibold",
         "textContent": "Button",
         "textFill": "primary-foreground",
-        "iconSize": 16
+        "iconSize": 16,
+        "clipsContent": true
       },
 
       "variantStyles": {
         "Variant=Default": {},
-        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground" },
-        "Variant=Outline": { "fill": "outline", "stroke": "border", "textFill": "foreground" },
-        "Variant=Ghost": { "fill": "ghost", "textFill": "ghost-foreground" },
-        "Variant=Ghost Muted": { "fill": "ghost", "textFill": "ghost-foreground" },
-        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground" },
-        "Variant=Destructive Secondary": { "fill": "destructive-subtle", "stroke": "destructive-border", "textFill": "destructive-subtle-foreground" },
+        "Variant=Secondary": { "fill": "secondary", "textFill": "secondary-foreground", "iconFill": "secondary-foreground" },
+        "Variant=Outline": { "fill": "outline", "stroke": "border", "textFill": "foreground", "iconFill": "foreground" },
+        "Variant=Ghost": { "fill": "ghost", "textFill": "ghost-foreground", "iconFill": "ghost-foreground" },
+        "Variant=Ghost Muted": { "fill": "ghost", "textFill": "ghost-foreground", "iconFill": "ghost-foreground" },
+        "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground", "iconFill": "destructive-foreground" },
+        "Variant=Destructive Secondary": { "fill": "destructive-subtle", "stroke": "destructive-border", "textFill": "destructive-subtle-foreground", "iconFill": "destructive-subtle-foreground" },
 
         "Size=Large": { "height": 40, "paddingX": "xl", "gap": "xs" },
         "Size=Default": {},
@@ -61,16 +62,16 @@
         "Variant=Default,State=Hover": { "fill": "primary-hover" },
         "Variant=Secondary,State=Hover": { "fill": "secondary-hover" },
         "Variant=Outline,State=Hover": { "fill": "outline-hover" },
-        "Variant=Ghost,State=Hover": { "fill": "ghost-hover", "textFill": "foreground" },
-        "Variant=Ghost Muted,State=Hover": { "fill": "ghost-hover", "textFill": "foreground" },
+        "Variant=Ghost,State=Hover": { "fill": "ghost-hover", "textFill": "foreground", "iconFill": "foreground" },
+        "Variant=Ghost Muted,State=Hover": { "fill": "ghost-hover", "textFill": "foreground", "iconFill": "foreground" },
         "Variant=Destructive,State=Hover": {},
         "Variant=Destructive Secondary,State=Hover": {},
 
         "Variant=Default,State=Focus": { "focusRing": "ring" },
         "Variant=Secondary,State=Focus": { "focusRing": "ring" },
         "Variant=Outline,State=Focus": { "focusRing": "ring", "stroke": "border-strong" },
-        "Variant=Ghost,State=Focus": { "focusRing": "ring" },
-        "Variant=Ghost Muted,State=Focus": { "focusRing": "ring" },
+        "Variant=Ghost,State=Focus": { "focusRing": "ring", "fill": "ghost" },
+        "Variant=Ghost Muted,State=Focus": { "focusRing": "ring", "fill": "ghost" },
         "Variant=Destructive,State=Focus": { "focusRing": "ring-error" },
         "Variant=Destructive Secondary,State=Focus": { "focusRing": "ring-error" },
 

@@ -95,6 +95,7 @@ import {
   NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink,
   NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { toast } from "sonner"
 
 // ============================================================
 // HELPERS
@@ -906,6 +907,7 @@ function BadgeDocs() {
 function CheckboxDocs() {
   const [checked, setChecked] = useState<boolean | "indeterminate">(false)
   const [state, setState] = useState("default")
+  const [showLabel, setShowLabel] = useState(true)
   const isDisabled = state === "disabled"
   const isHover = state === "hover"
   const isFocus = state === "focus"
@@ -920,6 +922,7 @@ function CheckboxDocs() {
       <ExploreBehavior controls={[
         { label: "Value", type: "select", options: ["unchecked","checked","indeterminate"], value: checked === true ? "checked" : checked === "indeterminate" ? "indeterminate" : "unchecked", onChange: (v: string) => setChecked(v === "checked" ? true : v === "indeterminate" ? "indeterminate" : false) },
         { label: "State", type: "select", options: ["default","hover","focus","disabled"], value: state, onChange: setState },
+        { label: "Show Label", type: "toggle", value: showLabel, onChange: setShowLabel },
       ]}>
         <div className="flex items-center gap-xs">
           <Checkbox
@@ -932,7 +935,7 @@ function CheckboxDocs() {
               isFocus && "ring-[3px] ring-ring outline-none",
             )}
           />
-          <Label htmlFor="exp-cb">Accept terms</Label>
+          {showLabel && <Label htmlFor="exp-cb">Accept terms</Label>}
         </div>
       </ExploreBehavior>
 
@@ -1558,6 +1561,235 @@ function AlertDocs() {
         { name: "AlertDialog", desc: "Blocking modal confirmation for irreversible actions. Use when the user must explicitly confirm before proceeding." },
         { name: "Badge", desc: "Inline status indicator. Use Badge for short labels in tables or lists, Alert for paragraph-length feedback." },
         { name: "Sonner", desc: "Auto-dismissing toast notification. Use Sonner for transient feedback after actions, Alert for persistent inline messages." },
+      ]} />
+    </div>
+  )
+}
+
+function SonnerDocs() {
+  const [variant, setVariant] = useState<"default" | "success" | "error" | "warning" | "info">("default")
+  const [showDesc, setShowDesc] = useState(true)
+  const [showAction, setShowAction] = useState(false)
+
+  const toastIcons: Record<string, { icon: ReactNode; iconColor: string }> = {
+    default: { icon: null, iconColor: "" },
+    success: { icon: <CheckCircle2 className="size-4 shrink-0" />, iconColor: "text-success" },
+    error: { icon: <AlertCircle className="size-4 shrink-0" />, iconColor: "text-destructive" },
+    warning: { icon: <AlertTriangle className="size-4 shrink-0" />, iconColor: "text-warning" },
+    info: { icon: <Info className="size-4 shrink-0" />, iconColor: "text-primary" },
+  }
+
+  function showToast(title: string, type: string = "default", opts?: { description?: string; action?: { label: string; onClick: () => void } }) {
+    const cfg = toastIcons[type] || toastIcons.default
+    toast.custom((id) => (
+      <div data-toast-type={type} className="w-[356px] rounded-lg border border-foreground/10 bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
+        {cfg.icon && <div className={cfg.iconColor}>{cfg.icon}</div>}
+        <div className="flex-1 min-w-0">
+          <p data-title="" className="text-sm font-medium text-background">{title}</p>
+          {opts?.description && <p data-description="" className="text-xs text-background/70 mt-0.5">{opts.description}</p>}
+        </div>
+        {opts?.action && (
+          <button data-action="" className="shrink-0 rounded-md bg-background px-sm py-2xs text-xs font-medium text-foreground" onClick={() => { opts.action!.onClick(); toast.dismiss(id) }}>
+            {opts.action.label}
+          </button>
+        )}
+      </div>
+    ))
+  }
+
+  const toastConfig: Record<string, { icon: ReactNode; title: string; desc: string; iconColor: string }> = {
+    default: { icon: null, title: "Event created", desc: "Monday, January 3rd at 6:00 PM", iconColor: "" },
+    success: { icon: <CheckCircle2 className="size-4 shrink-0" />, title: "Changes saved", desc: "Your settings have been updated successfully.", iconColor: "text-success" },
+    error: { icon: <AlertCircle className="size-4 shrink-0" />, title: "Something went wrong", desc: "Please try again or contact support.", iconColor: "text-destructive" },
+    warning: { icon: <AlertTriangle className="size-4 shrink-0" />, title: "Storage almost full", desc: "You have used 90% of your storage quota.", iconColor: "text-warning" },
+    info: { icon: <Info className="size-4 shrink-0" />, title: "New update available", desc: "Version 2.4 is ready to install.", iconColor: "text-primary" },
+  }
+
+  const cfg = toastConfig[variant]
+
+  return (
+    <div className="space-y-3xl">
+
+      {/* 1. Header */}
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Feedback</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Sonner</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">
+          Auto-dismissing toast notification for transient feedback after user actions. Built on the sonner library — fires via <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">toast()</code> function, renders from a single root-level <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">{"<Toaster />"}</code>.
+        </p>
+      </header>
+
+      {/* 2. ExploreBehavior — static toast mock (always visible like Tooltip) */}
+      <ExploreBehavior controls={[
+        { label: "Type", type: "select", options: ["default", "success", "error", "warning", "info"], value: variant, onChange: (v: string) => setVariant(v as any) },
+        { label: "Show Description", type: "toggle", value: showDesc, onChange: setShowDesc },
+        { label: "Show Action", type: "toggle", value: showAction, onChange: setShowAction },
+      ]}>
+        <div className="flex items-center justify-center">
+          {/* Static toast mock matching sonner's rendered output */}
+          <div className="w-[356px] rounded-lg border border-foreground/10 bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
+            {cfg.icon && <div className={cfg.iconColor}>{cfg.icon}</div>}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-background">{cfg.title}</p>
+              {showDesc && <p className="text-xs text-background/70 mt-0.5">{cfg.desc}</p>}
+            </div>
+            {showAction && (
+              <button className="shrink-0 rounded-md bg-background px-sm py-2xs text-xs font-medium text-foreground">Undo</button>
+            )}
+          </div>
+        </div>
+      </ExploreBehavior>
+
+      {/* 3. Installation */}
+      <InstallationSection
+        pkg={["sonner"]}
+        importCode={`import { toast } from "sonner"\nimport { Toaster } from "@/components/ui/sonner"\n\n// Mount once at root:\n<Toaster />\n\n// Trigger anywhere:\ntoast("Event created")\ntoast.success("Saved")\ntoast.error("Failed")`}
+      />
+
+      {/* 4. Examples */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+          <Example
+            title="All Types"
+            description="Five semantic types for different feedback contexts. Default for neutral info, success/error/warning/info for semantic feedback."
+            code={`toast("Event created")\ntoast.success("Changes saved")\ntoast.error("Something went wrong")\ntoast.warning("Storage almost full")\ntoast.info("New update available")`}
+          >
+            <div className="flex flex-wrap gap-xs">
+              <Button variant="outline" size="sm" onClick={() => showToast("Event created")}>Default</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("Changes saved", "success")}>Success</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("Something went wrong", "error")}>Error</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("Storage almost full", "warning")}>Warning</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("New update available", "info")}>Info</Button>
+            </div>
+          </Example>
+
+          <Example
+            title="With Description"
+            description="Add a secondary line for additional context. Keep it brief — one sentence max."
+            code={`toast.success("Order shipped", {\n  description: "Tracking number: 1Z999AA10123456784"\n})`}
+          >
+            <Button variant="outline" size="sm" onClick={() => showToast("Order shipped", "success", { description: "Tracking number: 1Z999AA10123456784" })}>
+              With Description
+            </Button>
+          </Example>
+
+          <Example
+            title="With Action"
+            description="Attach a single action button for quick undo or follow-up. Action auto-dismisses the toast."
+            code={`toast("File deleted", {\n  action: {\n    label: "Undo",\n    onClick: () => console.log("Undo")\n  },\n})`}
+          >
+            <Button variant="outline" size="sm" onClick={() => showToast("File deleted", "default", { action: { label: "Undo", onClick: () => showToast("File restored", "success") } })}>
+              With Action
+            </Button>
+          </Example>
+
+          <Example
+            title="Promise"
+            description="Show loading → success/error lifecycle for async operations. Keeps users informed during network requests."
+            code={`toast.promise(\n  fetch("/api/save"),\n  {\n    loading: "Saving...",\n    success: "Settings saved",\n    error: "Could not save",\n  }\n)`}
+          >
+            <Button variant="outline" size="sm" onClick={() => {
+              toast.promise(
+                new Promise((resolve) => setTimeout(resolve, 1500)),
+                { loading: "Saving changes...", success: "Settings saved successfully", error: "Could not save" },
+              )
+            }}>
+              Promise Toast
+            </Button>
+          </Example>
+        </div>
+      </section>
+
+      {/* 5. Props */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground font-body">
+          <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">{"<Toaster />"}</code> is mounted once at root. Toasts are triggered imperatively via <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">toast()</code>.
+        </p>
+        <h3 className="font-semibold text-sm">Toaster</h3>
+        <PropsTable rows={[
+          ["position", '"top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-center" | "bottom-center"', '"bottom-right"', "Where toasts appear on screen"],
+          ["expand", "boolean", "false", "Expand toasts by default instead of stacking"],
+          ["richColors", "boolean", "false", "Use rich, saturated colors for semantic types"],
+          ["closeButton", "boolean", "false", "Show close button on each toast"],
+          ["duration", "number", "4000", "Auto-dismiss duration in ms"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">toast() Options</h3>
+        <PropsTable rows={[
+          ["description", "string | ReactNode", "—", "Secondary text below the title"],
+          ["action", "{ label: string; onClick: () => void }", "—", "Action button inside the toast"],
+          ["duration", "number", "4000", "Override auto-dismiss for this toast"],
+          ["icon", "ReactNode", "—", "Custom icon — overrides default semantic icon"],
+          ["id", "string | number", "—", "Unique ID to prevent duplicates or update existing"],
+        ]} />
+      </section>
+
+      {/* 6. Design Tokens */}
+      <DesignTokensTable rows={[
+        ["--color-foreground", "zinc-900 / zinc-50", "Toast background — inverted (bg-foreground: dark on light, white on dark)"],
+        ["--color-background", "white / zinc-950", "Toast text — inverted (text-background)"],
+        ["foreground/10", "10% opacity border", "Toast border (border-foreground/10)"],
+        ["background/70", "70% opacity text", "Description text (text-background/70)"],
+        ["--color-background", "white / zinc-950", "Action button background (bg-background)"],
+        ["--color-foreground", "zinc-900 / zinc-50", "Action button text (text-foreground)"],
+        ["--spacing-sm", "12px", "Vertical padding (py-sm)"],
+        ["--spacing-md", "16px", "Horizontal padding (px-md)"],
+      ]} />
+
+      {/* 7. Best Practices */}
+      <BestPractices items={[
+        {
+          title: "Toast vs Alert",
+          do: "Use toast for transient, auto-dismissing feedback after actions (saved, deleted, sent). Use Alert for persistent inline messages that stay visible.",
+          dont: "Use toast for critical errors that require user action — they auto-dismiss and users may miss them. Use Alert or AlertDialog instead.",
+        },
+        {
+          title: "Content",
+          do: "Keep toast messages under 10 words. Lead with the outcome: 'Changes saved', 'Email sent', 'Item deleted'.",
+          dont: "Write long explanations in toast messages — they disappear before users finish reading. Use description for one extra sentence max.",
+        },
+        {
+          title: "Actions",
+          do: "Provide an Undo action for destructive operations (delete, archive, remove). Limit to one action per toast.",
+          dont: "Add multiple actions or complex interactions to toasts — they're ephemeral. Use Dialog for multi-step confirmations.",
+        },
+        {
+          title: "Frequency",
+          do: "Show one toast per action. Debounce rapid-fire operations (bulk actions) into a single summary toast.",
+          dont: "Fire a toast for every item in a batch operation — 50 toasts stacking up is unusable.",
+        },
+      ]} />
+
+      {/* 8. Figma Mapping */}
+      <FigmaMapping rows={[
+        ["Type: Default", "bg-card, border-border, text-foreground", "toast()", '"Default"'],
+        ["Type: Success", "bg-card, icon: CheckCircle2 text-success", "toast.success()", '"Success"'],
+        ["Type: Error", "bg-card, icon: AlertCircle text-destructive", "toast.error()", '"Error"'],
+        ["Type: Warning", "bg-card, icon: AlertTriangle text-warning", "toast.warning()", '"Warning"'],
+        ["Type: Info", "bg-card, icon: Info text-primary", "toast.info()", '"Info"'],
+        ["With Description", "text-muted-foreground sp-caption below title", "description option", "Show Description: True"],
+        ["With Action", "bg-primary text-primary-foreground button", "action option", "Show Action: True"],
+      ]} />
+
+      {/* 9. Accessibility */}
+      <AccessibilityInfo
+        keyboard={[
+          ["—", "Toasts are non-interactive by default; action buttons are focusable"],
+        ]}
+        notes={[
+          "Sonner uses role=\"status\" with aria-live=\"polite\" — screen readers announce toasts without interrupting",
+          "Error toasts use aria-live=\"assertive\" for immediate announcement",
+          "Action buttons receive focus when toast expands — keyboard users can Tab to Undo",
+          "Auto-dismiss pauses on hover and focus — users have time to read or interact",
+        ]}
+      />
+
+      {/* 10. Related Components */}
+      <RelatedComponents items={[
+        { name: "Alert", desc: "Persistent inline feedback message. Use Alert when the message must stay visible, Toast when it can auto-dismiss." },
+        { name: "AlertDialog", desc: "Blocking modal confirmation. Use AlertDialog for irreversible actions that require explicit user consent before proceeding." },
+        { name: "Progress", desc: "Visual progress indicator. Use Progress for long-running operations; pair with toast.promise() for async feedback." },
       ]} />
     </div>
   )
@@ -2555,8 +2787,8 @@ function TabsDocs() {
         <Tabs defaultValue="tabs-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
           <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-            <TabsTrigger value="tabs-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Tabs</span></TabsTrigger>
-            <TabsTrigger value="tabs-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Tabs Item</span></TabsTrigger>
+            <TabsTrigger value="tabs-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Tabs</TabsTrigger>
+            <TabsTrigger value="tabs-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Tabs Item</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Tabs Group */}
@@ -4248,8 +4480,8 @@ function DropdownDocs() {
         <Tabs defaultValue="dropdown-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="dropdown-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Dropdown Menu</span></TabsTrigger>
-              <TabsTrigger value="dropdown-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Dropdown Item</span></TabsTrigger>
+              <TabsTrigger value="dropdown-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Dropdown Menu</TabsTrigger>
+              <TabsTrigger value="dropdown-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Dropdown Item</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Dropdown Menu */}
@@ -4761,11 +4993,20 @@ function PopoverDocs() {
 }
 
 function AccordionDocs() {
+  // Accordion group controls
   const [open, setOpen] = useState(false)
   const [state, setState] = useState("default")
   const isDisabled = state === "disabled"
   const isHover = state === "hover"
   const isFocus = state === "focus"
+  // Accordion Item explore state
+  const [itemState, setItemState] = useState("default")
+  const [itemType, setItemType] = useState("closed")
+  const [itemEndItem, setItemEndItem] = useState(false)
+  const isItemOpen = itemType === "open"
+  const isItemHover = itemState === "hover"
+  const isItemFocus = itemState === "focus"
+  const isItemDisabled = itemState === "disabled"
   return (
     <div className="space-y-3xl">
       <header>
@@ -4773,21 +5014,102 @@ function AccordionDocs() {
         <h1 className="text-2xl font-bold font-heading mt-xs">Accordion</h1>
         <p className="text-muted-foreground mt-xs max-w-2xl font-body">A vertically stacked set of interactive headings that each reveal a section of content on click. Built on @radix-ui/react-accordion — supports single (one open at a time) and multiple (several open simultaneously) selection modes.</p>
       </header>
-      <ExploreBehavior controls={[
-        { label: "Open", type: "toggle", value: open, onChange: setOpen },
-        { label: "State", type: "select", options: ["default","hover","focus","disabled"], value: state, onChange: setState },
-      ]}>
-        <div className={cn(
-          "w-full max-w-md",
-          state !== "default" && "pointer-events-none",
-          isHover && "[&_[data-slot=accordion-trigger]]:underline",
-          isFocus && "[&_[data-slot=accordion-trigger]]:ring-2 [&_[data-slot=accordion-trigger]]:ring-ring [&_[data-slot=accordion-trigger]]:rounded-lg",
-        )}>
-          <Accordion type="single" collapsible value={open ? "item-1" : ""} onValueChange={(v) => setOpen(!!v)} disabled={isDisabled}>
-            <AccordionItem value="item-1"><AccordionTrigger>Is it accessible?</AccordionTrigger><AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent></AccordionItem>
-          </Accordion>
-        </div>
-      </ExploreBehavior>
+
+      {/* 2. Explore Behavior — tabbed: Accordion | Accordion Item */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Explore Behavior</h2>
+        <Tabs defaultValue="accordion-group" className="w-full">
+          <div className="border border-border rounded-xl overflow-hidden">
+          <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
+            <TabsTrigger value="accordion-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Accordion</TabsTrigger>
+            <TabsTrigger value="accordion-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Accordion Item</TabsTrigger>
+          </TabsList>
+
+          {/* Tab 1: Accordion Group */}
+          <TabsContent value="accordion-group" className="mt-0">
+            <div>
+              <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                <div className={cn(
+                  "w-full max-w-md",
+                  state !== "default" && "pointer-events-none",
+                  isHover && "[&_[data-slot=accordion-trigger]]:underline",
+                  isFocus && "[&_[data-slot=accordion-trigger]]:ring-2 [&_[data-slot=accordion-trigger]]:ring-ring [&_[data-slot=accordion-trigger]]:rounded-lg",
+                )}>
+                  <Accordion type="single" collapsible value={open ? "item-1" : ""} onValueChange={(v) => setOpen(!!v)} disabled={isDisabled}>
+                    <AccordionItem value="item-1"><AccordionTrigger>Is it accessible?</AccordionTrigger><AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent></AccordionItem>
+                    <AccordionItem value="item-2"><AccordionTrigger>Is it styled?</AccordionTrigger><AccordionContent>Yes. It comes with default styles matching the design system.</AccordionContent></AccordionItem>
+                    <AccordionItem value="item-3"><AccordionTrigger>Is it animated?</AccordionTrigger><AccordionContent>Yes. It uses CSS animations for smooth open/close transitions.</AccordionContent></AccordionItem>
+                  </Accordion>
+                </div>
+              </div>
+              <div className="border-t border-border p-md bg-muted/10">
+                <div className="flex flex-wrap gap-x-lg gap-y-xs">
+                  <div className="flex flex-col gap-xs">
+                    <Label className="text-xs text-muted-foreground font-body">Open</Label>
+                    <Switch checked={open} onCheckedChange={setOpen} />
+                  </div>
+                  <div className="flex flex-col gap-xs">
+                    <Label className="text-xs text-muted-foreground font-body">State</Label>
+                    <div className="flex flex-wrap gap-xs">
+                      {["default", "hover", "focus", "disabled"].map(s => (
+                        <button key={s} onClick={() => setState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", state === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Tab 2: Accordion Item */}
+          <TabsContent value="accordion-item" className="mt-0">
+            <div>
+              <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                <div className={cn(
+                  "w-full max-w-md",
+                  itemState !== "default" && "pointer-events-none",
+                  isItemHover && "[&_[data-slot=accordion-trigger]]:underline",
+                  isItemFocus && "[&_[data-slot=accordion-trigger]]:ring-2 [&_[data-slot=accordion-trigger]]:ring-ring [&_[data-slot=accordion-trigger]]:rounded-lg",
+                )}>
+                  <Accordion type="single" collapsible value={isItemOpen ? "item-1" : ""} onValueChange={() => {}} disabled={isItemDisabled}>
+                    <AccordionItem value="item-1" className={cn(!itemEndItem && "border-b border-border", itemEndItem && "border-b-0")}>
+                      <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                      {isItemOpen && <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>}
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </div>
+              <div className="border-t border-border p-md bg-muted/10">
+                <div className="flex flex-col gap-md">
+                  <div className="space-y-xs">
+                    <Label className="text-xs text-muted-foreground font-body">State</Label>
+                    <div className="flex flex-wrap gap-xs">
+                      {["default", "hover", "focus", "disabled"].map(s => (
+                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-xs">
+                    <Label className="text-xs text-muted-foreground font-body">Type</Label>
+                    <div className="flex flex-wrap gap-xs">
+                      {["open", "closed"].map(t => (
+                        <button key={t} onClick={() => setItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-x-lg gap-y-xs">
+                    <div className="flex flex-col gap-xs">
+                      <Label className="text-xs text-muted-foreground font-body">End Item</Label>
+                      <Switch checked={itemEndItem} onCheckedChange={setItemEndItem} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+          </div>
+        </Tabs>
+      </section>
 
       <InstallationSection pkg={["@radix-ui/react-accordion"]} importCode={`import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"`} />
 
@@ -5053,11 +5375,11 @@ function TableDocs() {
         <Tabs defaultValue="table-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
           <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-            <TabsTrigger value="table-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Table</span></TabsTrigger>
-            <TabsTrigger value="table-header" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Table Header</span></TabsTrigger>
-            <TabsTrigger value="table-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Table Row</span></TabsTrigger>
-            <TabsTrigger value="cell-header" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Cell Header</span></TabsTrigger>
-            <TabsTrigger value="cell-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Cell Row</span></TabsTrigger>
+            <TabsTrigger value="table-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table</TabsTrigger>
+            <TabsTrigger value="table-header" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table Header</TabsTrigger>
+            <TabsTrigger value="table-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table Row</TabsTrigger>
+            <TabsTrigger value="cell-header" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Cell Header</TabsTrigger>
+            <TabsTrigger value="cell-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Cell Row</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Table */}
@@ -5454,8 +5776,8 @@ function BreadcrumbDocs() {
         <Tabs defaultValue="breadcrumb-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="breadcrumb-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Breadcrumb</span></TabsTrigger>
-              <TabsTrigger value="breadcrumb-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Breadcrumb Item</span></TabsTrigger>
+              <TabsTrigger value="breadcrumb-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Breadcrumb</TabsTrigger>
+              <TabsTrigger value="breadcrumb-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Breadcrumb Item</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Breadcrumb */}
@@ -5705,8 +6027,8 @@ function PaginationDocs() {
         <Tabs defaultValue="pagination-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="pagination-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Pagination</span></TabsTrigger>
-              <TabsTrigger value="pagination-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Pagination Item</span></TabsTrigger>
+              <TabsTrigger value="pagination-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Pagination</TabsTrigger>
+              <TabsTrigger value="pagination-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Pagination Item</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Pagination Group */}
@@ -6958,10 +7280,10 @@ function DatePickerDocs() {
         <Tabs defaultValue="date-picker" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="date-picker" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Date Picker</span></TabsTrigger>
-              <TabsTrigger value="date-picker-trigger" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Date Picker Trigger</span></TabsTrigger>
-              <TabsTrigger value="day-cell" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Day Cell</span></TabsTrigger>
-              <TabsTrigger value="preset-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Preset Item</span></TabsTrigger>
+              <TabsTrigger value="date-picker" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Date Picker</TabsTrigger>
+              <TabsTrigger value="date-picker-trigger" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Date Picker Trigger</TabsTrigger>
+              <TabsTrigger value="day-cell" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Day Cell</TabsTrigger>
+              <TabsTrigger value="preset-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Preset Item</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Date Picker — shows popover content (calendar panel) */}
@@ -6977,7 +7299,7 @@ function DatePickerDocs() {
                         ))}
                       </div>
                       <div className="flex flex-col">
-                        <Calendar mode="range" numberOfMonths={2} selected={{ from: new Date(2026, 2, 18), to: new Date(2026, 3, 8) }} components={calendarDayCellComponents} />
+                        <Calendar mode="range" numberOfMonths={2} selected={{ from: new Date(2026, 2, 18), to: new Date(2026, 3, 8) }} />
                         <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
                           <p className="sp-caption text-muted-foreground">Mar 18 – Apr 8, 2026</p>
                           <div className="flex items-center gap-sm">
@@ -6989,7 +7311,7 @@ function DatePickerDocs() {
                     </div>
                   ) : (
                     <div className="rounded-lg border border-border bg-card shadow-md overflow-hidden">
-                      <Calendar mode="single" selected={new Date(2026, 2, 18)} components={calendarDayCellComponents} />
+                      <Calendar mode="single" selected={new Date(2026, 2, 18)} />
                     </div>
                   )}
                 </div>
@@ -7454,8 +7776,8 @@ function InputOTPDocs() {
         <Tabs defaultValue="otp-group">
           <div className="rounded-lg border border-border overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="otp-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Input OTP</span></TabsTrigger>
-              <TabsTrigger value="otp-slot" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">OTP Slot</span></TabsTrigger>
+              <TabsTrigger value="otp-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Input OTP</TabsTrigger>
+              <TabsTrigger value="otp-slot" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">OTP Slot</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Input OTP Group — uses OTPSlotMock, synced slot reflects Tab 2 state */}
@@ -8093,8 +8415,8 @@ function CalendarDocs() {
         <Tabs defaultValue="calendar-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
           <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-            <TabsTrigger value="calendar-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Calendar</span></TabsTrigger>
-            <TabsTrigger value="day-cell" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Day Cell</span></TabsTrigger>
+            <TabsTrigger value="calendar-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Calendar</TabsTrigger>
+            <TabsTrigger value="day-cell" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Day Cell</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Calendar */}
@@ -8234,8 +8556,8 @@ function ContextMenuDocs() {
         <Tabs defaultValue="context-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
           <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-            <TabsTrigger value="context-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Context Menu</span></TabsTrigger>
-            <TabsTrigger value="context-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Context Menu Item</span></TabsTrigger>
+            <TabsTrigger value="context-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Context Menu</TabsTrigger>
+            <TabsTrigger value="context-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Context Menu Item</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Context Menu */}
@@ -8992,7 +9314,7 @@ function IconsDocs() {
   const [iconSearch, setIconSearch] = useState("")
   // Get all icon components from lucide-react
   const allIcons = Object.entries(LucideIcons)
-    .filter(([name, comp]: [string, any]) => /^[A-Z]/.test(name) && !name.endsWith("Icon") && comp && typeof comp === "object" && comp.render)
+    .filter(([name, comp]: [string, any]) => /^[A-Z]/.test(name) && !name.endsWith("Icon") && !name.startsWith("Lucide") && comp && typeof comp === "object" && comp.render)
     .map(([name, comp]) => ({ name, Icon: comp as ComponentType<{ className?: string }> }))
   const filteredIcons = iconSearch
     ? allIcons.filter(i => i.name.toLowerCase().includes(iconSearch.toLowerCase()))
@@ -9002,7 +9324,7 @@ function IconsDocs() {
     { name: "Google", Icon: GoogleIcon },
     { name: "GitHub", Icon: GitHubIcon },
     { name: "Apple", Icon: AppleIcon },
-    { name: "X", Icon: XIcon },
+    { name: "X Twitter", Icon: XIcon },
     { name: "Facebook", Icon: FacebookIcon },
     { name: "LinkedIn", Icon: LinkedInIcon },
     { name: "Discord", Icon: DiscordIcon },
@@ -9160,8 +9482,8 @@ function CommandDocs() {
         <Tabs defaultValue="command-group" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
             <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-              <TabsTrigger value="command-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Command</span></TabsTrigger>
-              <TabsTrigger value="command-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Command Item</span></TabsTrigger>
+              <TabsTrigger value="command-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Command</TabsTrigger>
+              <TabsTrigger value="command-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Command Item</TabsTrigger>
             </TabsList>
 
             {/* Tab 1: Command */}
@@ -9491,8 +9813,8 @@ function NavigationMenuDocs() {
         <Tabs defaultValue="nav-menu" className="w-full">
           <div className="border border-border rounded-xl overflow-hidden">
           <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border">
-            <TabsTrigger value="nav-menu" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Navigation Menu</span></TabsTrigger>
-            <TabsTrigger value="menu-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none px-lg py-sm text-sm"><span className="relative pb-sm -mb-sm after:absolute after:bottom-0 after:inset-x-0 after:h-[2px] after:rounded-full [[data-state=active]>&]:after:bg-primary">Menu Item</span></TabsTrigger>
+            <TabsTrigger value="nav-menu" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Navigation Menu</TabsTrigger>
+            <TabsTrigger value="menu-item" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Menu Item</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Navigation Menu */}
@@ -10098,7 +10420,7 @@ function TopHeaderDocs() {
     <div className="space-y-3xl">
       <header>
         <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
-        <h1 className="text-2xl font-bold font-heading mt-xs">Top Header</h1>
+        <h1 className="text-2xl font-bold font-heading mt-xs">App Header</h1>
         <p className="text-muted-foreground mt-xs max-w-2xl font-body">The main application header bar. Contains the ShopPulse logo, horizontal navigation tabs, search, notifications, theme toggle, and user avatar. Two rows: top bar (branding + nav + actions) and greeting row (welcome message + search box).</p>
       </header>
 
@@ -10106,7 +10428,7 @@ function TopHeaderDocs() {
         { label: "Breakpoint", type: "select", options: ["desktop", "tablet", "mobile"], value: breakpoint, onChange: (v: string) => setBreakpoint(v as "desktop" | "tablet" | "mobile") },
       ]}>
         <div className={cn(containerWidth, "overflow-hidden bg-background", !isDesktop && "mx-auto")}>
-          <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-2xl gap-lg" : "px-md pt-md gap-sm")}>
+          <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-md gap-lg" : "px-md pt-md gap-sm")}>
             {/* Row 1: Logo + Nav + Actions — 3-column justify-between */}
             <div className="flex items-center justify-between">
               {/* Left: hamburger + logo */}
@@ -10170,7 +10492,7 @@ function TopHeaderDocs() {
         <div className="grid grid-cols-1 gap-md">
           <Example flush title="Desktop (≥1024px)" description="3-column layout: Logo+text | Nav tabs (bg-muted container, active=bg-foreground) | Actions (Palette, Theme, Bell+dot, Avatar+online). Greeting row: sp-h2 + subtitle + SearchBox ⌘K." code={`<AppHeader />\n\n// Inside DashboardLayout:\n// <div className="min-h-svh flex flex-col bg-background">\n//   <AppHeader />\n//   <main className="flex-1">...</main>\n// </div>`}>
             <div className="w-full overflow-hidden bg-background">
-              <div className="flex flex-col px-2xl pt-2xl gap-lg">
+              <div className="flex flex-col px-2xl pt-md gap-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-xs">
                     <div className="flex items-center gap-sm">
@@ -10342,7 +10664,7 @@ function TopHeaderDocs() {
       <RelatedComponents items={[
         { name: "Logo", desc: "The ShopPulse brand logo rendered in the header — diamond mark + wordmark." },
         { name: "Search Box", desc: "SearchBox instance in the greeting row — pill-shaped search with ⌘K shortcut badge." },
-        { name: "Screen", desc: "The full-page layout wrapper that contains Top Header as part of the Dashboard layout." },
+        { name: "Screen", desc: "The full-page layout wrapper that contains App Header as part of the Dashboard layout." },
         { name: "Avatar", desc: "User avatar in the header actions — triggers the profile dropdown menu." },
       ]} />
     </div>
@@ -10375,7 +10697,7 @@ function ScreenDocs() {
           /* ── Dashboard Layout: AppHeader + content area ── */
           <div className={cn(containerWidth, "overflow-hidden bg-background flex flex-col", !isDesktop && "mx-auto")}>
             {/* Top Header instance */}
-            <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-2xl gap-lg" : "px-md pt-md gap-sm")}>
+            <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-md gap-lg" : "px-md pt-md gap-sm")}>
               {/* Row 1: Logo + Nav + Actions */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-xs">
@@ -10677,7 +10999,7 @@ function ScreenDocs() {
       <FigmaMapping rows={[
         ["Type", "Dashboard", "component", "DashboardLayout — header + content area"],
         ["Type", "Auth", "component", "AuthLayout — split-screen branding + form"],
-        ["Content", "Header", "instance", "Top Header component (Dashboard type only)"],
+        ["Content", "Header", "instance", "App Header component (Dashboard type only)"],
         ["Content", "Logo", "instance", "ShopPulseLogo in both layout types"],
         ["Dimensions", "1440 × 900", "root frame", "Desktop viewport size for Figma frames"],
       ]} />
@@ -10696,7 +11018,7 @@ function ScreenDocs() {
       />
 
       <RelatedComponents items={[
-        { name: "Top Header", desc: "The application header bar — rendered as part of Dashboard layout." },
+        { name: "App Header", desc: "The application header bar — rendered as part of Dashboard layout." },
         { name: "Logo", desc: "ShopPulse brand logo — appears in both layout types." },
         { name: "Separator", desc: "Used as visual dividers between layout sections." },
       ]} />
@@ -10715,7 +11037,7 @@ const componentGroups = [
     label: "Branding",
     items: [
       { id: "logo", label: "Logo" },
-      { id: "top-header", label: "Top Header" },
+      { id: "app-header", label: "App Header" },
       { id: "screen", label: "Screen" },
     ],
   },
@@ -10767,6 +11089,7 @@ const componentGroups = [
     label: "Feedback",
     items: [
       { id: "alert", label: "Alert" },
+      { id: "sonner", label: "Sonner" },
       { id: "progress", label: "Progress" },
       { id: "spinner", label: "Spinner" },
       { id: "skeleton", label: "Skeleton" },
@@ -10806,7 +11129,7 @@ const componentGroups = [
 
 const componentDocs: Record<string, () => ReactNode> = {
   logo: LogoDocs,
-  "top-header": TopHeaderDocs,
+  "app-header": TopHeaderDocs,
   screen: ScreenDocs,
   colors: ColorsDocs,
   typography: TypographyDocs,
@@ -10832,6 +11155,7 @@ const componentDocs: Record<string, () => ReactNode> = {
   table: TableDocs,
   card: CardDocs,
   alert: AlertDocs,
+  sonner: SonnerDocs,
   progress: ProgressDocs,
   spinner: SpinnerDocs,
   skeleton: SkeletonDocs,

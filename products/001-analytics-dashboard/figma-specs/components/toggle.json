@@ -12,8 +12,7 @@
       "properties": {
         "Variant": ["Default", "Outline"],
         "Size": ["Small", "Default", "Large"],
-        "Value": ["Unpressed", "Pressed"],
-        "State": ["Default", "Hover", "Focus", "Disabled"]
+        "State": ["Default", "Hover", "Pressed", "Focus", "Disabled"]
       },
 
       "base": {
@@ -30,7 +29,8 @@
         "iconLeft": true,
         "iconLeftName": "Bold",
         "iconSize": 16,
-        "iconFill": "muted-foreground"
+        "iconFill": "muted-foreground",
+        "clipsContent": true
       },
 
       "variantStyles": {
@@ -41,12 +41,10 @@
         "Size=Default": {},
         "Size=Large": { "width": 40, "height": 40, "paddingX": "md" },
 
-        "Value=Unpressed": {},
-        "Value=Pressed": { "fill": "muted", "iconFill": "foreground" },
-
         "State=Default": {},
         "State=Hover": { "fill": "muted", "iconFill": "foreground" },
-        "State=Focus": { "focusRing": "ring" },
+        "State=Pressed": { "fill": "muted", "iconFill": "foreground" },
+        "State=Focus": { "focusRing": "ring", "fill": "ghost" },
         "State=Disabled": { "opacity": 0.5 }
       },
 
@@ -56,9 +54,9 @@
           "description": "Unpressed and pressed states — transparent background until activated.",
           "layout": "horizontal",
           "items": [
-            { "label": "Unpressed", "props": { "Variant": "Default", "Size": "Default", "Value": "Unpressed", "State": "Default" } },
-            { "label": "Pressed", "props": { "Variant": "Default", "Size": "Default", "Value": "Pressed", "State": "Default" } },
-            { "label": "Hover", "props": { "Variant": "Default", "Size": "Default", "Value": "Unpressed", "State": "Hover" } }
+            { "label": "Unpressed", "props": { "Variant": "Default", "Size": "Default", "State": "Default" } },
+            { "label": "Pressed", "props": { "Variant": "Default", "Size": "Default", "State": "Pressed" } },
+            { "label": "Hover", "props": { "Variant": "Default", "Size": "Default", "State": "Hover" } }
           ]
         },
         {
@@ -66,9 +64,9 @@
           "description": "Bordered variant makes the toggle boundary visible at all times.",
           "layout": "horizontal",
           "items": [
-            { "label": "Unpressed", "props": { "Variant": "Outline", "Size": "Default", "Value": "Unpressed", "State": "Default" } },
-            { "label": "Pressed", "props": { "Variant": "Outline", "Size": "Default", "Value": "Pressed", "State": "Default" } },
-            { "label": "Hover", "props": { "Variant": "Outline", "Size": "Default", "Value": "Unpressed", "State": "Hover" } }
+            { "label": "Unpressed", "props": { "Variant": "Outline", "Size": "Default", "State": "Default" } },
+            { "label": "Pressed", "props": { "Variant": "Outline", "Size": "Default", "State": "Pressed" } },
+            { "label": "Hover", "props": { "Variant": "Outline", "Size": "Default", "State": "Hover" } }
           ]
         },
         {
@@ -76,9 +74,9 @@
           "description": "Three size options — Small (32px), Default (36px), Large (40px).",
           "layout": "horizontal",
           "items": [
-            { "label": "Small", "props": { "Variant": "Default", "Size": "Small", "Value": "Pressed", "State": "Default" } },
-            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "Value": "Pressed", "State": "Default" } },
-            { "label": "Large", "props": { "Variant": "Default", "Size": "Large", "Value": "Pressed", "State": "Default" } }
+            { "label": "Small", "props": { "Variant": "Default", "Size": "Small", "State": "Pressed" } },
+            { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Pressed" } },
+            { "label": "Large", "props": { "Variant": "Default", "Size": "Large", "State": "Pressed" } }
           ]
         }
       ],
@@ -111,8 +109,7 @@
         { "figma": "Size=Small", "value": "32x32, px-xs", "code": "size=\"sm\"", "codeValue": "h-2xl px-xs min-w-8" },
         { "figma": "Size=Default", "value": "36x36, px-sm", "code": "size=\"default\"", "codeValue": "h-9 px-sm min-w-9" },
         { "figma": "Size=Large", "value": "40x40, px-md", "code": "size=\"lg\"", "codeValue": "h-3xl px-md min-w-10" },
-        { "figma": "Value=Unpressed", "value": "no fill, muted-foreground", "code": "pressed={false}", "codeValue": "bg-transparent text-muted-foreground" },
-        { "figma": "Value=Pressed", "value": "bg-muted, foreground", "code": "pressed={true}", "codeValue": "data-[state=on]:bg-muted data-[state=on]:text-foreground" },
+        { "figma": "State=Pressed", "value": "bg-muted, foreground", "code": "pressed={true}", "codeValue": "data-[state=on]:bg-muted data-[state=on]:text-foreground" },
         { "figma": "State=Hover", "value": "bg-muted, foreground", "code": "hover:", "codeValue": "hover:bg-muted hover:text-foreground" },
         { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
         { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }

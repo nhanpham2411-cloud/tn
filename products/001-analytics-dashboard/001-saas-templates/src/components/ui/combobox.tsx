@@ -98,12 +98,12 @@ function Combobox({
             <span className="flex items-center gap-xs min-w-0 truncate">
               {iconLeft && <span className="shrink-0 text-muted-foreground [&>svg]:size-md">{iconLeft}</span>}
               {prefix && <span className="shrink-0 text-muted-foreground">{prefix}</span>}
-              <span className="truncate">{selectedLabel ?? placeholder}</span>
+              <span className={cn("truncate", !selectedLabel && "text-muted-foreground")}>{selectedLabel ?? placeholder}</span>
               {suffix && <span className="shrink-0 text-muted-foreground">{suffix}</span>}
             </span>
             <span className="flex items-center gap-xs shrink-0 ml-xs">
               {iconRight && <span className="text-muted-foreground [&>svg]:size-md">{iconRight}</span>}
-              <ChevronsUpDown className="size-md opacity-50" />
+              <ChevronsUpDown className="size-md text-muted-foreground" />
             </span>
           </Button>
         </PopoverTrigger>

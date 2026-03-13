@@ -228,6 +228,8 @@ Execute Phase 6: Review & Iterate.
    - **Instance icon accuracy check (common-mistake #74)**: Khi JSON dùng `"type": "instance"` → verify icon hiển thị trên Figma khớp icon trên web. Plugin KHÔNG hỗ trợ `iconOverrides` — instance luôn hiện default icon của variant đó. Nếu cần icon khác → PHẢI dùng `"type": "frame"` + `"type": "icon"` thay thế. VD: Collapsible trigger cần ChevronsUpDown nhưng Button Icon Only default = Plus → dùng frame + icon
    - **Icon name verification (common-mistake #81)**: Mọi `"component": "Icon / X"` trong JSON → verify tên X tồn tại trong `foundation-icons.json`. Lucide rename icons giữa versions (AlertCircle→CircleAlert, CheckCircle2→CircleCheck, AlertTriangle→TriangleAlert). KHÔNG tin trí nhớ.
    - **Children icon `iconFill` check (common-mistake #82)**: Mọi icon instance trong `children` array CÓ variant-specific color trên web → PHẢI có `iconFill` trong JSON. Check React CSS `[&>svg]:text-{color}` → map sang `iconFill`. Thiếu → icon kế thừa default color.
+   - **Deep override correctness (common-mistake #106)**: Instance children dùng `overrides` (KHÔNG phải `instanceOverrides`). Verify: `overrides.nested` cho text swap 2-level deep, `overrides.nestedVariants` cho variant swap 2-level deep. `instanceOverrides` không tồn tại trong plugin → bị ignore hoàn toàn.
+   - **Button Icon Only sizing (common-mistake #107)**: Button Icon Only instances KHÔNG dùng `widthMode: "hug"` (shrink 16px). Omit widthMode → FIXED 36×36 giữ đúng component size.
    - **ComponentSet visual standard**: Mỗi ComponentSet trên Figma PHẢI có: border inside 1px, style DASH, stroke color = foreground, border radius = 16px. Variants trong ComponentSet phải được sắp xếp theo lưới gọn gàng (property values chiều ngang × chiều dọc). Tham chiếu: `_refs/plugin-json-pattern.md` → "ComponentSet Visual Standard"
 5. **Animation & transition review**:
    - `PageTransition` wraps `<Outlet />` in both layouts (not `<Routes>`)
@@ -260,11 +262,14 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
    **A0. Group+Item Instance Connection (BẮT BUỘC cho compound components)**
    - [ ] Component cha (Table, Tabs, Calendar, DatePicker, Input OTP, Navigation Menu, Breadcrumb, Pagination) render sub-component con đúng cách trên web React
    - [ ] Figma JSON: parent dùng `"type": "instance"` với `component`/`variants` để móc child ComponentSet — KHÔNG tạo manual frame
+   - [ ] Figma JSON: item spec ở index 0, parent spec ở index 1+ trong `"components"` array (common-mistake #122)
+   - [ ] Indicator components (Radio, Checkbox, Switch): `clipsContent` nằm trong `indicator` object, KHÔNG ở `base` level (common-mistake #121)
    - [ ] Design System page: parent component có tab riêng cho mỗi sub-component (Group+Item tabbed pattern)
 
    **A1. Figma Property & ComponentSet Quality (BẮT BUỘC cho JSON spec và Figma output)**
    - [ ] Mỗi ComponentSet có đầy đủ properties như React Explore controls — không thừa, không thiếu
    - [ ] Tên property và tên value giống 100% React (Title Case, cùng số values). VD: React có `State: [Default, Hover, Focus, Disabled]` → Figma phải có đúng 4 values đó
+   - [ ] Boolean-like properties dùng `"Yes"/"No"` — KHÔNG BAO GIỜ `"True"/"False"`. Áp dụng: Open, End Item, Show Label, Show Icon, v.v. Check toàn bộ: properties, variantStyles keys, showWhen, instance variants, examples props (common-mistake #120)
    - [ ] ComponentSet visual: border inside 1px, style DASH, stroke = foreground, radius = 16px
    - [ ] Variants xếp lưới gọn gàng: 1 property axis chiều ngang, property khác chiều dọc
    - [ ] Tham chiếu: `_refs/plugin-json-pattern.md` → "Golden Rule", "Figma Component = Web Variant 1:1 Principle", "ComponentSet Visual Standard"
@@ -275,10 +280,15 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
    - [ ] Instance icon accuracy: mỗi `"type": "instance"` verify icon Figma = icon web. Plugin không có iconOverrides → nếu cần icon khác default → dùng frame + icon (common-mistake #74)
    - [ ] Icon name match foundation: mọi `"component": "Icon / X"` → verify X tồn tại trong `foundation-icons.json`. Lucide rename icons giữa versions (common-mistake #81)
    - [ ] Children icon `iconFill`: icon instance trong `children` có variant-specific color → PHẢI có `iconFill`. Check web `[&>svg]:text-{color}` per variant (common-mistake #82)
+   - [ ] Deep overrides: instance children dùng `overrides` (KHÔNG phải `instanceOverrides`). Nested text = `overrides.nested`, nested variants = `overrides.nestedVariants` (common-mistake #106)
+   - [ ] Button Icon Only sizing: KHÔNG có `widthMode: "hug"` → phải FIXED 36×36 (common-mistake #107)
+   - [ ] **Archetype match**: mỗi component JSON match ≥1 trong 13 archetype chuẩn (`_refs/plugin-json-pattern.md` → "Established JSON Archetypes"). Verify structure theo canonical example. Combination rule: nhiều component dùng NHIỀU archetypes (VD: Dialog = #3 + #5 + #6 + #11)
+   - [ ] **Property migration safety**: Khi thêm/xóa property so với Figma hiện tại → plugin tự migrate variant names (rename, KHÔNG xóa tạo lại). Verify: default value của property mới = first value trong `properties` array (common-mistake #126)
 
    **A. Code Quality Scan**
    - [ ] No `text-*` custom typography (must use `sp-*` or project prefix)
    - [ ] No hardcoded colors (hex/rgb in className — must use tokens)
+   - [ ] No `opacity-*` to dim individual element colors — use semantic token (`text-muted-foreground`) or `color-mix()`. OK: `disabled:opacity-50`, `opacity-0/100` toggle
    - [ ] No hardcoded spacing (`px-[17px]` — must use tokens `px-sm`, `gap-md`)
    - [ ] No `console.log` / `console.error` left in code
    - [ ] No `TODO` / `FIXME` / `HACK` comments

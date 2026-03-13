@@ -697,7 +697,7 @@ export default function DashboardOverviewPage() {
           <div className="lg:col-span-8 flex flex-col gap-lg">
             <div className="grid grid-cols-1 md:grid-cols-[3fr_5fr] gap-lg">
               {/* Total Revenue */}
-              <div className="rounded-2xl border border-border/60 dark:border-border-subtle bg-card p-xl relative overflow-hidden flex flex-col gap-lg">
+              <div className="rounded-2xl border border-border/60 dark:border-border-subtle bg-card p-lg relative overflow-hidden flex flex-col gap-md">
                 <div className="pointer-events-none absolute -top-[60px] -right-[40px] size-[160px] rounded-full blur-[80px] opacity-15 dark:opacity-[0.06]" style={{ backgroundColor: accent }} />
                 <div className="relative flex items-center justify-between">
                   <div className="min-w-0">
@@ -841,7 +841,7 @@ export default function DashboardOverviewPage() {
 
           {/* ── RIGHT col-span-4: Globe → Upgrade ── */}
           <div className="lg:col-span-4 flex flex-col gap-lg">
-            <DCard className="h-[502px] flex flex-col overflow-hidden">
+            <DCard className="h-[487px] flex flex-col overflow-hidden">
               <div className="flex items-center justify-between mb-sm shrink-0">
                 <div className="flex items-center gap-sm">
                   <h3 className="sp-h4 text-foreground">Global Sales</h3>

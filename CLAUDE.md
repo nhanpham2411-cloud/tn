@@ -16,8 +16,9 @@ tn/
 │       ├── STATUS.md       ← Current phase & progress
 │       ├── saas-app/       ← React app (Phase 5)
 │       └── figma-specs/    ← JSON specs for Figma plugin (Phase 7)
-├── plugins/                ← Figma plugin: Generate SaaS Template
-└── common-mistakes.md      ← 91 lessons, read before every session
+├── plugins/                ← Figma plugins: Generate SaaS Template + HTML to Figma
+├── tools/                  ← DOM extraction pipeline (figma-extractor)
+└── common-mistakes.md      ← 96 lessons, read before every session
 ```
 
 ## Pipeline (11 phases)
@@ -53,7 +54,7 @@ tn/
 ## Critical Rules
 1. **SprouX Independence**: Each product forks SprouX — NEVER modify the source SprouX repo
 2. **Typography**: Use product prefix (`sp-*`) — `text-*` gets stripped by tailwind-merge
-3. **Tokens only**: No hardcoded hex/rgb **or color scale names** (violet-*, amber-*, zinc-*) in className — use semantic tokens (`text-primary`, `text-warning`, `bg-primary/10`)
+3. **Tokens only**: No hardcoded hex/rgb **or color scale names** (violet-*, amber-*, zinc-*) in className — use semantic tokens (`text-primary`, `text-warning`, `bg-primary/10`). No `opacity-*` to dim individual element colors — use semantic token (`text-muted-foreground`) or `color-mix()` instead. Exception: `disabled:opacity-50` (whole component) and `opacity-0/100` (visibility toggle) are OK.
 4. **DS components only**: `<Button>` not `<button>`, `<Input>` not `<input>`
 5. **Management pages**: Must have loading skeleton, offline banner, bulk select, empty state, save guard
 6. **Read `common-mistakes.md`** before touching React app code
@@ -74,7 +75,7 @@ tn/
 ## References
 All general reference files are in `_refs/`:
 - `_refs/process.md` — full 11-phase pipeline detail
-- `_refs/common-mistakes.md` — 91 recurring mistakes to avoid
+- `_refs/common-mistakes.md` — 96 recurring mistakes to avoid
 - `_refs/component-docs-pattern.md` — 10-section standard for Figma component docs
 - `_refs/plugin-json-pattern.md` — 8-type pattern doc for Figma plugin JSON specs (variables, text styles, effects, icons, components, showcase, foundation docs)
 

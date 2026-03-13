@@ -716,6 +716,7 @@ async function createNode(node, parentLayout) {
     case "svg":
       return await createSVG(node);
     case "instance":
+    case "component":
       return await createInstance(node);
     case "separator":
       return await createSeparator(node);
@@ -922,8 +923,12 @@ async function reconcileChildren(parent, childSpecs, parentLayout) {
         await reconcileChildren(matched, spec.children || [], spec.layout);
       } else if (matched.type === "TEXT") {
         await updateTextProps(matched, spec);
+      } else if (matched.type === "INSTANCE" && spec.type === "icon") {
+        // Update icon instance color
+        applyIconColor(matched, spec.colorToken, spec.color);
       }
       applySizing(matched, spec, parentLayout);
+      // Absolute positioning — will be re-applied after reorder (see post-reorder block)
       resultOrder.push(matched);
     } else {
       // ── Create new (no match or incompatible type) ──
@@ -931,6 +936,7 @@ async function reconcileChildren(parent, childSpecs, parentLayout) {
       if (newNode) {
         parent.appendChild(newNode);
         applySizing(newNode, spec, parentLayout);
+        // Absolute positioning — will be re-applied after reorder (see post-reorder block)
         resultOrder.push(newNode);
       }
     }
@@ -946,6 +952,40 @@ async function reconcileChildren(parent, childSpecs, parentLayout) {
   // Reorder children to match spec order
   for (var oi = 0; oi < resultOrder.length; oi++) {
     try { parent.insertChild(oi, resultOrder[oi]); } catch (e) {}
+  }
+
+  // Re-apply absolute positioning after reorder (insertChild resets layoutPositioning)
+  for (var ai = 0; ai < childSpecs.length; ai++) {
+    var absSpec = childSpecs[ai];
+    if (absSpec.position === "absolute" && resultOrder[ai]) {
+      var absNode = resultOrder[ai];
+      absNode.layoutPositioning = "ABSOLUTE";
+      var absW = absSpec.width || absNode.width;
+      var absH = absSpec.height || absNode.height;
+      if (absSpec.width) absNode.resize(absW, absH);
+
+      // Calculate x/y from parent frame dimensions + margins
+      var parentW = parent.width;
+      var parentH = parent.height;
+      var constraints = absSpec.constraints || { horizontal: "MIN", vertical: "MIN" };
+
+      if (constraints.horizontal === "MAX" && typeof absSpec.rightMargin === "number") {
+        absNode.x = parentW - absW - absSpec.rightMargin;
+      } else if (constraints.horizontal === "CENTER") {
+        absNode.x = Math.round((parentW - absW) / 2);
+      } else if (typeof absSpec.x === "number") {
+        absNode.x = absSpec.x;
+      }
+
+      if (constraints.vertical === "MAX" && typeof absSpec.bottomMargin === "number") {
+        absNode.y = parentH - absH - absSpec.bottomMargin;
+      } else if (typeof absSpec.y === "number") {
+        absNode.y = absSpec.y;
+      }
+
+      absNode.constraints = constraints;
+      console.log("[HTML→Figma] ABSOLUTE (post-reorder): " + absNode.name + " x=" + absNode.x + " y=" + absNode.y + " parentW=" + parentW + " parentH=" + parentH + " constraints=" + JSON.stringify(constraints));
+    }
   }
 }
 
@@ -1062,6 +1102,31 @@ async function createFrame(node) {
       if (childNode) {
         frame.appendChild(childNode);
         applySizing(childNode, child, node.layout);
+        // Absolute positioning (modal overlays like Sonner toast)
+        if (child.position === "absolute") {
+          childNode.layoutPositioning = "ABSOLUTE";
+          var cAbsW = child.width || childNode.width;
+          var cAbsH = child.height || childNode.height;
+          if (child.width) childNode.resize(cAbsW, cAbsH);
+          var cConstraints = child.constraints || { horizontal: "MIN", vertical: "MIN" };
+
+          if (cConstraints.horizontal === "MAX" && typeof child.rightMargin === "number") {
+            childNode.x = frame.width - cAbsW - child.rightMargin;
+          } else if (cConstraints.horizontal === "CENTER") {
+            childNode.x = Math.round((frame.width - cAbsW) / 2);
+          } else if (typeof child.x === "number") {
+            childNode.x = child.x;
+          }
+
+          if (cConstraints.vertical === "MAX" && typeof child.bottomMargin === "number") {
+            childNode.y = frame.height - cAbsH - child.bottomMargin;
+          } else if (typeof child.y === "number") {
+            childNode.y = child.y;
+          }
+
+          childNode.constraints = cConstraints;
+          console.log("[HTML→Figma] ABSOLUTE (createFrame): " + childNode.name + " x=" + childNode.x + " y=" + childNode.y + " constraints=" + JSON.stringify(cConstraints));
+        }
       }
     }
   }
@@ -1229,20 +1294,55 @@ async function createIcon(node) {
   if (iconComp) {
     const inst = iconComp.createInstance();
     inst.resize(node.width || 16, node.height || 16);
+    applyIconColor(inst, node.colorToken, node.color);
     return inst;
   }
-  // Fallback: create a small rectangle placeholder
+  // Fallback: create from SVG content if available
+  if (node.svgContent) {
+    try {
+      var svgFrame = figma.createNodeFromSvg(node.svgContent);
+      svgFrame.name = name;
+      svgFrame.resize(node.width || 16, node.height || 16);
+      applyIconColor(svgFrame, node.colorToken, node.color);
+      return svgFrame;
+    } catch (e) {}
+  }
+  // Ultimate fallback: rectangle placeholder
   const frame = figma.createFrame();
   frame.name = name;
   frame.resize(node.width || 16, node.height || 16);
   frame.fills = [];
-  if (node.color) {
+  var iconColorToken = node.colorToken || resolveColorToken(node.color);
+  if (iconColorToken) {
+    setFillToken(frame, iconColorToken, node.color);
+    frame.opacity = 0.3;
+  } else if (node.color) {
     const paint = makeSolidPaint(node.color);
     if (paint) frame.fills = [paint];
     frame.opacity = 0.3;
   }
   frame.cornerRadius = 2;
   return frame;
+}
+
+// Apply color to all vector/line/ellipse children inside an icon instance
+function applyIconColor(inst, colorToken, fallbackRGBA) {
+  var token = colorToken || resolveColorToken(fallbackRGBA);
+  if (!token && !fallbackRGBA) return;
+  // Skip if token is "foreground" — that's the default icon color
+  if (token === "foreground") return;
+  var vectors = inst.findAll(function(n) {
+    return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "STAR" || n.type === "BOOLEAN_OPERATION";
+  });
+  for (var vi = 0; vi < vectors.length; vi++) {
+    var v = vectors[vi];
+    if (v.fills && v.fills.length > 0) {
+      setFillToken(v, token, fallbackRGBA);
+    }
+    if (v.strokes && v.strokes.length > 0) {
+      setStrokeToken(v, token, fallbackRGBA);
+    }
+  }
 }
 
 // ── SVG ──
@@ -1305,18 +1405,14 @@ async function createImage(node) {
 // ── Instance (DS Component) ──
 
 async function createInstance(node) {
-  const csName = node.component;
+  // Support both "component" (instance path) and "componentSet" (json-builder path)
+  const csName = node.component || node.componentSet;
   if (!csName) return null;
 
   const cs = await findComponentSet(csName);
   if (!cs) {
-    // Fallback: create frame with text
-    const frame = figma.createFrame();
-    frame.name = csName + " (not found)";
-    frame.resize(node.width || 100, node.height || 36);
-    frame.fills = [{ type: "SOLID", color: { r: 0.15, g: 0.15, b: 0.18 } }];
-    frame.cornerRadius = 8;
-    return frame;
+    // Fallback: draw manual UI based on component name + variants + text
+    return await createManualInstance(node, csName);
   }
 
   // Find matching variant
@@ -1326,17 +1422,35 @@ async function createInstance(node) {
 
   let targetComponent = variantMap.get(variantKey);
   if (!targetComponent && cs.children.length > 0) {
-    // Try partial match or use first variant as default
-    targetComponent = cs.children[0];
+    // Partial match: find first variant whose name contains ALL specified properties
+    var entries = Object.entries(variants);
+    if (entries.length > 0) {
+      for (var vi = 0; vi < cs.children.length; vi++) {
+        var v = cs.children[vi];
+        if (v.type !== "COMPONENT") continue;
+        var vName = v.name;
+        var allMatch = true;
+        for (var ei = 0; ei < entries.length; ei++) {
+          if (vName.indexOf(entries[ei][0] + "=" + entries[ei][1]) === -1) {
+            allMatch = false;
+            break;
+          }
+        }
+        if (allMatch) { targetComponent = v; break; }
+      }
+    }
+    // Ultimate fallback: first variant
+    if (!targetComponent) targetComponent = cs.children[0];
   }
 
   if (!targetComponent) return null;
 
   const instance = targetComponent.createInstance();
 
-  // Apply text overrides
-  if (node.textOverrides) {
-    for (const [childName, text] of Object.entries(node.textOverrides)) {
+  // Apply text overrides — support both "textOverrides" and "overrides.text" formats
+  const textOverrides = node.textOverrides || (node.overrides && node.overrides.text) || null;
+  if (textOverrides) {
+    for (const [childName, text] of Object.entries(textOverrides)) {
       const textNode = instance.findOne(n => n.type === "TEXT" && n.name === childName);
       if (textNode) {
         try {
@@ -1402,6 +1516,232 @@ async function createInstance(node) {
   }
 
   return instance;
+}
+
+// ── Manual Instance Fallback ──
+// When ComponentSet is not found in Figma, draw UI manually
+
+async function createManualInstance(node, csName) {
+  var variants = node.variants || {};
+  var textOverrides = node.textOverrides || (node.overrides && node.overrides.text) || {};
+  var w = node.width || 200;
+  var h = node.height || 40;
+
+  // ── Sonner Toast ──
+  if (csName === "Sonner") {
+    var toastType = (variants["Type"] || "default").toLowerCase();
+    var hasDesc = variants["Show Description"] === "True";
+    var hasAction = variants["Show Action"] === "True";
+    var title = textOverrides["Title"] || "Notification";
+    var desc = textOverrides["Description"] || "";
+    var actionLabel = textOverrides["Action"] || "Undo";
+
+    // Outer frame: horizontal layout, bg=foreground, border, rounded-lg, shadow
+    var frame = figma.createFrame();
+    frame.name = "Sonner";
+    frame.layoutMode = "HORIZONTAL";
+    frame.counterAxisAlignItems = "CENTER";
+    frame.primaryAxisAlignItems = "MIN";
+    frame.itemSpacing = 6;
+    frame.paddingTop = 12; frame.paddingBottom = 12;
+    frame.paddingLeft = 16; frame.paddingRight = 16;
+    frame.cornerRadius = 8;
+    frame.resize(w > 50 ? w : 356, h > 20 ? h : 48);
+    frame.layoutSizingHorizontal = "HUG";
+    frame.layoutSizingVertical = "HUG";
+
+    // Fill with foreground variable (dark = white-ish)
+    var fgVar = findVar("foreground");
+    if (fgVar) {
+      frame.fills = [makeBoundPaint(fgVar)];
+    } else {
+      frame.fills = [{ type: "SOLID", color: { r: 0.96, g: 0.96, b: 0.96 } }];
+    }
+
+    // Stroke: foreground at 10% opacity
+    if (fgVar) {
+      frame.strokes = [makeBoundPaint(fgVar, 0.1)];
+    } else {
+      frame.strokes = [{ type: "SOLID", color: { r: 0.96, g: 0.96, b: 0.96 }, opacity: 0.1 }];
+    }
+    frame.strokeWeight = 1;
+
+    // Shadow
+    var shadowStyle = findEffectStyle("Shadows/lg");
+    if (shadowStyle) {
+      try { await frame.setEffectStyleIdAsync(shadowStyle.id); } catch (e) {}
+    }
+
+    // Icon (for non-default types)
+    var iconColorMap = {
+      success: "success",
+      error: "destructive",
+      warning: "warning",
+      info: "primary",
+    };
+    if (toastType !== "default" && iconColorMap[toastType]) {
+      var iconNameMap = {
+        success: "CircleCheck",
+        error: "CircleAlert",
+        warning: "TriangleAlert",
+        info: "Info",
+      };
+      var iconName = iconNameMap[toastType] || "Info";
+      var iconComp = await findComponent("Icon / " + iconName);
+      if (iconComp) {
+        var iconInst = iconComp.createInstance();
+        iconInst.resize(16, 16);
+        // Color the icon
+        var iconColorVar = findVar(iconColorMap[toastType]);
+        if (iconColorVar) {
+          try {
+            var iconVec = iconInst.findOne(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION"; });
+            if (iconVec) iconVec.fills = [makeBoundPaint(iconColorVar)];
+          } catch (e) {}
+        }
+        frame.appendChild(iconInst);
+        iconInst.layoutSizingHorizontal = "FIXED";
+        iconInst.layoutSizingVertical = "FIXED";
+      }
+    }
+
+    // Content frame (title + optional description)
+    var content = figma.createFrame();
+    content.name = "Content";
+    content.layoutMode = "VERTICAL";
+    content.itemSpacing = 2;
+    content.fills = [];
+    content.paddingTop = 0; content.paddingBottom = 0;
+    content.paddingLeft = 0; content.paddingRight = 0;
+
+    // Title text
+    var titleText = figma.createText();
+    var bodyMediumStyle = findTextStyleByName("SP/Body Medium");
+    if (bodyMediumStyle) {
+      await figma.loadFontAsync(bodyMediumStyle.fontName);
+      await titleText.setTextStyleIdAsync(bodyMediumStyle.id);
+    } else {
+      await figma.loadFontAsync({ family: "Inter", style: "Medium" });
+      titleText.fontName = { family: "Inter", style: "Medium" };
+      titleText.fontSize = 14;
+      titleText.lineHeight = { value: 20, unit: "PIXELS" };
+    }
+    titleText.characters = title;
+    titleText.name = "Title";
+    var bgVar = findVar("background");
+    if (bgVar) {
+      titleText.fills = [makeBoundPaint(bgVar)];
+    } else {
+      titleText.fills = [{ type: "SOLID", color: { r: 0.04, g: 0.04, b: 0.04 } }];
+    }
+    titleText.textAutoResize = "WIDTH_AND_HEIGHT";
+    content.appendChild(titleText);
+
+    // Description text (optional)
+    if (hasDesc && desc) {
+      var descText = figma.createText();
+      var captionStyle = findTextStyleByName("SP/Caption");
+      if (captionStyle) {
+        await figma.loadFontAsync(captionStyle.fontName);
+        await descText.setTextStyleIdAsync(captionStyle.id);
+      } else {
+        await figma.loadFontAsync({ family: "Inter", style: "Regular" });
+        descText.fontName = { family: "Inter", style: "Regular" };
+        descText.fontSize = 12;
+        descText.lineHeight = { value: 16, unit: "PIXELS" };
+      }
+      descText.characters = desc;
+      descText.name = "Description";
+      if (bgVar) {
+        descText.fills = [makeBoundPaint(bgVar, 0.7)];
+      } else {
+        descText.fills = [{ type: "SOLID", color: { r: 0.04, g: 0.04, b: 0.04 }, opacity: 0.7 }];
+      }
+      descText.textAutoResize = "WIDTH_AND_HEIGHT";
+      content.appendChild(descText);
+    }
+
+    frame.appendChild(content);
+    content.layoutSizingHorizontal = "HUG";
+    content.layoutSizingVertical = "HUG";
+
+    // Action button (optional)
+    if (hasAction) {
+      var btn = figma.createFrame();
+      btn.name = "Action";
+      btn.layoutMode = "HORIZONTAL";
+      btn.counterAxisAlignItems = "CENTER";
+      btn.primaryAxisAlignItems = "CENTER";
+      btn.paddingTop = 6; btn.paddingBottom = 6;
+      btn.paddingLeft = 12; btn.paddingRight = 12;
+      btn.cornerRadius = 6;
+      if (bgVar) {
+        btn.fills = [makeBoundPaint(bgVar)];
+      } else {
+        btn.fills = [{ type: "SOLID", color: { r: 0.04, g: 0.04, b: 0.04 } }];
+      }
+
+      var btnText = figma.createText();
+      var labelStyle = findTextStyleByName("SP/Label");
+      if (labelStyle) {
+        await figma.loadFontAsync(labelStyle.fontName);
+        await btnText.setTextStyleIdAsync(labelStyle.id);
+      } else {
+        await figma.loadFontAsync({ family: "Inter", style: "Medium" });
+        btnText.fontName = { family: "Inter", style: "Medium" };
+        btnText.fontSize = 12;
+      }
+      btnText.characters = actionLabel;
+      btnText.name = "Label";
+      if (fgVar) {
+        btnText.fills = [makeBoundPaint(fgVar)];
+      } else {
+        btnText.fills = [{ type: "SOLID", color: { r: 0.96, g: 0.96, b: 0.96 } }];
+      }
+      btnText.textAutoResize = "WIDTH_AND_HEIGHT";
+      btn.appendChild(btnText);
+      btn.layoutSizingHorizontal = "HUG";
+      btn.layoutSizingVertical = "HUG";
+
+      frame.appendChild(btn);
+    }
+
+    return frame;
+  }
+
+  // ── Generic fallback: dark frame with label ──
+  var fallback = figma.createFrame();
+  fallback.name = csName + " (not found)";
+  fallback.resize(w, h);
+  fallback.layoutMode = "HORIZONTAL";
+  fallback.counterAxisAlignItems = "CENTER";
+  fallback.primaryAxisAlignItems = "CENTER";
+  fallback.paddingLeft = 8; fallback.paddingRight = 8;
+  fallback.cornerRadius = 8;
+  var cardVar = findVar("card");
+  if (cardVar) {
+    fallback.fills = [makeBoundPaint(cardVar)];
+  } else {
+    fallback.fills = [{ type: "SOLID", color: { r: 0.15, g: 0.15, b: 0.18 } }];
+  }
+  // Add component name as text label
+  var labelFont = await loadFont("Inter", 500);
+  var label = figma.createText();
+  label.fontName = labelFont;
+  label.fontSize = 12;
+  label.characters = csName + " (" + Object.entries(variants).map(function(e) { return e[1]; }).join(", ") + ")";
+  label.name = "Label";
+  var mutedVar = findVar("muted-foreground");
+  if (mutedVar) {
+    label.fills = [makeBoundPaint(mutedVar)];
+  } else {
+    label.fills = [{ type: "SOLID", color: { r: 0.6, g: 0.6, b: 0.6 } }];
+  }
+  label.textAutoResize = "WIDTH_AND_HEIGHT";
+  fallback.appendChild(label);
+  fallback.layoutSizingHorizontal = "HUG";
+  fallback.layoutSizingVertical = "HUG";
+  return fallback;
 }
 
 // ── Separator ──
@@ -1654,7 +1994,18 @@ figma.ui.onmessage = async (msg) => {
     // Check if first breakpoint frame already exists — use its position
     var firstBPName = msg.pageName + " \u2014 Desktop";
     var firstExisting = findExistingFrame(firstBPName);
-    _responsiveX = firstExisting ? firstExisting.x : Math.round(figma.viewport.center.x - 720);
+    if (firstExisting) {
+      _responsiveX = firstExisting.x;
+    } else {
+      // Find rightmost frame on current page, place 300px to the right
+      var maxRight = 0;
+      var kids = figma.currentPage.children;
+      for (var ki = 0; ki < kids.length; ki++) {
+        var r = kids[ki].x + kids[ki].width;
+        if (r > maxRight) maxRight = r;
+      }
+      _responsiveX = maxRight > 0 ? maxRight + 200 : Math.round(figma.viewport.center.x - 720);
+    }
     return;
   }
 
@@ -1723,7 +2074,7 @@ figma.ui.onmessage = async (msg) => {
         rootNode.x = _responsiveX;
         rootNode.y = 0;
       }
-      _responsiveX = rootNode.x + bpWidth + 100;
+      _responsiveX = rootNode.x + bpWidth + 40;
 
       // Apply dark mode to frame
       await applyDarkMode(rootNode);

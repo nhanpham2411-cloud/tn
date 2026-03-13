@@ -40,7 +40,12 @@ export interface RawExtractedNode {
   overflow?: string
   clipsContent?: boolean
   shadow?: string        // raw CSS box-shadow value
-  position?: "absolute"  // absolute positioned overlay (decorative background, etc.)
+  position?: "absolute"  // absolute positioned overlay (modal, toast, decorative background)
+  x?: number             // absolute x position (viewport-relative)
+  y?: number             // absolute y position (viewport-relative)
+  rightMargin?: number   // margin from right edge (for MAX constraint positioning)
+  bottomMargin?: number  // margin from bottom edge (for MAX constraint positioning)
+  constraints?: { horizontal: string; vertical: string }  // Figma constraints for absolute elements
   backgroundSelector?: string  // CSS selector for background screenshot (decorative effects)
   backgroundImage?: string     // base64 screenshot of decorative background (filled by extractor)
   // Text
@@ -618,9 +623,64 @@ export const RAW_DOM_WALKER_SCRIPT = `
 
     const style = getComputedStyle(el);
 
+    // 0. Sonner toast detection (portal-rendered, no data-figma)
+    if (el.hasAttribute("data-sonner-toast")) {
+      const typeMap = { default: "Default", success: "Success", error: "Error", warning: "Warning", info: "Info" };
+      let dataType = el.getAttribute("data-type") || "default";
+      // toast.custom() sets data-type="custom" — check inner element for actual type
+      if (dataType === "custom") {
+        const inner = el.querySelector("[data-toast-type]");
+        if (inner) dataType = inner.getAttribute("data-toast-type") || "default";
+      }
+      const variants = { "Type": typeMap[dataType] || "Default" };
+
+      // Detect description
+      const hasDesc = !!el.querySelector("[data-description]");
+      variants["Show Description"] = hasDesc ? "True" : "False";
+
+      // Detect action button
+      const hasAction = !!el.querySelector("[data-button]") || !!el.querySelector("button[data-action]") || !!el.querySelector("[data-action]");
+      variants["Show Action"] = hasAction ? "True" : "False";
+
+      // Extract text overrides
+      const textOverrides = {};
+      const titleEl = el.querySelector("[data-title]");
+      if (titleEl) textOverrides["Title"] = titleEl.textContent.trim();
+      const descEl = el.querySelector("[data-description]");
+      if (descEl) textOverrides["Description"] = descEl.textContent.trim();
+
+      const vw = window.innerWidth;
+      const isMobile = vw <= 480;
+
+      // Fixed margins per breakpoint (design spec)
+      // Desktop/Tablet: 24px right, 24px bottom
+      // Mobile: 16px left/right (width = viewport - 32), 16px bottom
+      const sonnerWidth = isMobile ? (vw - 32) : Math.round(rect.width);
+      const rightMargin = isMobile ? 16 : 24;
+      const bottomMargin = isMobile ? 16 : 24;
+
+      return {
+        type: "instance",
+        component: "Sonner",
+        variants,
+        textOverrides: Object.keys(textOverrides).length > 0 ? textOverrides : undefined,
+        width: sonnerWidth,
+        height: Math.round(rect.height),
+        position: "absolute",
+        rightMargin,
+        bottomMargin,
+        constraints: isMobile
+          ? { horizontal: "CENTER", vertical: "MAX" }
+          : { horizontal: "MAX", vertical: "MAX" },
+      };
+    }
+
     // 1. DS component instance (data-figma attribute)
+    // Skip instance extraction for Label with mixed-color inline children (e.g. link text)
+    // so it falls through to mixed inline logic preserving per-run color tokens
     const figmaComp = el.getAttribute("data-figma");
-    if (figmaComp && !CONTAINER_COMPONENTS.has(figmaComp)) {
+    const skipInstanceForMixedLabel = figmaComp === "Label" && hasColoredInlineChildren(el);
+    if (figmaComp && !CONTAINER_COMPONENTS.has(figmaComp) && !skipInstanceForMixedLabel) {
       const variantsStr = el.getAttribute("data-figma-variants");
       const variants = variantsStr ? JSON.parse(variantsStr) : {};
       const textOverrides = {};
@@ -642,8 +702,8 @@ export const RAW_DOM_WALKER_SCRIPT = `
               svgIcons.push({
                 name: iconName || "Icon",
                 svgContent: svgStr,
-                width: Math.round(parseFloat(child.getAttribute("width") || getComputedStyle(child).width) || svgRect.width || 16),
-                height: Math.round(parseFloat(child.getAttribute("height") || getComputedStyle(child).height) || svgRect.height || 16),
+                width: Math.round(svgRect.width || parseFloat(getComputedStyle(child).width) || parseFloat(child.getAttribute("width") || "16")),
+                height: Math.round(svgRect.height || parseFloat(getComputedStyle(child).height) || parseFloat(child.getAttribute("height") || "16")),
               });
             }
             continue;
@@ -655,13 +715,19 @@ export const RAW_DOM_WALKER_SCRIPT = `
       }
       if (directText.length > 0) textOverrides["Label"] = directText.join(" ");
 
-      // Extract placeholder
+      // Extract placeholder / value
       const inputEl = el.tagName === "INPUT" || el.tagName === "TEXTAREA"
         ? el : el.querySelector("input, textarea");
       if (inputEl) {
         const placeholder = inputEl.getAttribute("placeholder");
         if (placeholder) textOverrides["Label"] = placeholder;
-        if (inputEl.value) textOverrides["Label"] = inputEl.value;
+        if (inputEl.value) {
+          // Mask password fields with bullet characters
+          const inputType = inputEl.getAttribute("type");
+          textOverrides["Label"] = inputType === "password"
+            ? "•".repeat(inputEl.value.length)
+            : inputEl.value;
+        }
       }
 
       // For <input>/<textarea> data-figma elements: scan parent wrapper for sibling SVG icons
@@ -715,20 +781,25 @@ export const RAW_DOM_WALKER_SCRIPT = `
 
     // 2. SVG element
     if (el.tagName === "svg" || el.tagName === "SVG") {
-      const w = Math.round(parseFloat(el.getAttribute("width") || style.width) || rect.width);
-      const h = Math.round(parseFloat(el.getAttribute("height") || style.height) || rect.height);
+      // Prefer CSS computed size (handles size-sm, size-md classes) over SVG attribute (always 24)
+      const w = Math.round(rect.width || parseFloat(style.width) || parseFloat(el.getAttribute("width") || "16"));
+      const h = Math.round(rect.height || parseFloat(style.height) || parseFloat(el.getAttribute("height") || "16"));
 
       // Small SVG = icon
       if (w <= 100 && h <= 100) {
         const iconName = getIconName(el);
         if (iconName) {
-          return {
+          var iconNode = {
             type: "icon",
             name: iconName,
             width: w,
             height: h,
             color: normalizeColor(style.color),
           };
+          // Include SVG content so plugin can create from source when foundation icon doesn't match
+          var iconSvg = serializeSVG(el);
+          if (iconSvg) iconNode.svgContent = iconSvg;
+          return iconNode;
         }
       }
 
@@ -812,10 +883,11 @@ export const RAW_DOM_WALKER_SCRIPT = `
           return {
             type: "frame",
             layout: "horizontal",
+            wrap: true,
             gap: roundPx(style.fontSize) * 0.25 || 4,
             width: Math.round(rect.width),
             height: Math.round(rect.height),
-            fillWidth: getFlexGrow(el) || undefined,
+            fillWidth: getFlexGrow(el) || true,
             children: runs,
           };
         }
@@ -869,16 +941,23 @@ export const RAW_DOM_WALKER_SCRIPT = `
 
     // Merge adjacent Checkbox/Radio + Label pairs
     // When Checkbox is followed by Label, merge label text into checkbox textOverrides
+    // When Label was converted to frame (mixed colors), hide checkbox default label text
     for (var ci = 0; ci < children.length - 1; ci++) {
       var curr = children[ci];
       var next = children[ci + 1];
-      if (curr.type === "instance" && (curr.component === "Checkbox" || curr.component === "Radio") &&
-          next.type === "instance" && next.component === "Label") {
-        var labelText = next.textOverrides && next.textOverrides.Label;
-        if (labelText) {
+      if (curr.type === "instance" && (curr.component === "Checkbox" || curr.component === "Radio")) {
+        if (next.type === "instance" && next.component === "Label") {
+          var labelText = next.textOverrides && next.textOverrides.Label;
+          if (labelText) {
+            if (!curr.textOverrides) curr.textOverrides = {};
+            curr.textOverrides["Label"] = labelText;
+            children.splice(ci + 1, 1);
+          }
+        } else if (next.type === "frame" && next.children && next.children.length > 1 &&
+                   next.children.every(function(c) { return c.type === "text"; })) {
+          // Mixed-color label (e.g. text + link spans) — hide checkbox default label
           if (!curr.textOverrides) curr.textOverrides = {};
-          curr.textOverrides["Label"] = labelText;
-          children.splice(ci + 1, 1);
+          curr.textOverrides["Label"] = " ";
         }
       }
     }
@@ -1039,6 +1118,19 @@ export const RAW_DOM_WALKER_SCRIPT = `
 
   const root = document.getElementById("root") || document.body;
   const result = walkDOM(root, 0);
+
+  // Sonner toasts render in a portal outside #root — walk them separately
+  const sonnerToaster = document.querySelector("[data-sonner-toaster]");
+  if (sonnerToaster && result && result.children) {
+    const toasts = sonnerToaster.querySelectorAll("[data-sonner-toast]");
+    for (const toast of toasts) {
+      const toastNode = walkDOM(toast, 1);
+      if (toastNode) {
+        result.children.push(toastNode);
+      }
+    }
+  }
+
   return result;
 }
 `

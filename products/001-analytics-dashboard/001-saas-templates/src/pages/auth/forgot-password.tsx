@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ArrowLeft, CheckCircle2, Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 
@@ -18,6 +18,7 @@ import { ShopPulseLogo } from "@/components/layout/auth-layout"
 import { figma } from "@/lib/figma-dev"
 
 export default function ForgotPasswordPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [sent, setSent] = useState(false)
@@ -28,6 +29,7 @@ export default function ForgotPasswordPage() {
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address")
+      toast.error("Please enter a valid email address")
       return
     }
 
@@ -74,13 +76,10 @@ export default function ForgotPasswordPage() {
         </CardContent>
 
         <CardFooter>
-          <Link
-            to="/auth/sign-in"
-            className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
-          >
-            <ArrowLeft className="size-md" />
+          <Button variant="ghost" onClick={() => navigate("/auth/sign-in")}>
+            <ArrowLeft />
             Back to sign in
-          </Link>
+          </Button>
         </CardFooter>
       </Card>
     )
@@ -100,7 +99,7 @@ export default function ForgotPasswordPage() {
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-md">
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
           <div className="flex flex-col gap-xs">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -117,21 +116,17 @@ export default function ForgotPasswordPage() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={!email || submitting}>
-            {submitting ? <Loader2 className="size-md animate-spin" /> : "Send Reset Link"}
-          </Button>
+          <div className="flex flex-col gap-xs">
+            <Button type="submit" className="w-full" disabled={!email || submitting}>
+              {submitting ? <Loader2 className="size-md animate-spin" /> : "Send Reset Link"}
+            </Button>
+            <Button variant="ghost" className="w-full" onClick={() => navigate("/auth/sign-in")}>
+              <ArrowLeft />
+              Back to sign in
+            </Button>
+          </div>
         </form>
       </CardContent>
-
-      <CardFooter className="justify-center">
-        <Link
-          to="/auth/sign-in"
-          className="sp-body text-muted-foreground hover:text-foreground inline-flex items-center gap-xs transition-colors"
-        >
-          <ArrowLeft className="size-md" />
-          Back to sign in
-        </Link>
-      </CardFooter>
     </Card>
   )
 }

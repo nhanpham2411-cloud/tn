@@ -23,6 +23,7 @@
           "width": 16,
           "height": 16,
           "radius": "full",
+          "clipsContent": true,
           "thumb": {
             "width": 6,
             "height": 6,

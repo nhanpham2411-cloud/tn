@@ -1227,6 +1227,7 @@
         "gap": "none",
         "hideLabel": true,
         "effectStyleName": "Elevation/shadow-md",
+        "clipsContent": true,
         "children": [
           {
             "name": "Calendar",

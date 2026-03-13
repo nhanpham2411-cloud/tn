@@ -1,0 +1,1206 @@
+{
+  "components": [
+    {
+      "name": "App Header",
+      "description": "Main application header bar. Contains ShopPulse logo, Navigation Menu instance (6-item pill tab bar, desktop only), action buttons (palette, theme, bell with notification dot, user avatar with online indicator), and greeting row with search box. Responsive across Desktop (1440), Tablet (768), and Mobile (375) breakpoints. Page property changes which nav tab is active.",
+      "category": "Layout",
+      "installation": {
+        "import": "import { AppHeader } from \"@/components/layout/app-header\""
+      },
+
+      "properties": {
+        "Page": ["Dashboard", "Analytics", "Reports", "Users", "Products", "Orders"],
+        "Breakpoint": ["Desktop", "Tablet", "Mobile"]
+      },
+
+      "variantRestrictions": {
+        "Breakpoint=Tablet": { "Page": ["Dashboard"] },
+        "Breakpoint=Mobile": { "Page": ["Dashboard"] }
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 1440,
+        "heightMode": "hug",
+        "fill": "background",
+        "paddingX": "2xl",
+        "paddingY": "none",
+        "paddingTop": "md",
+        "paddingBottom": "lg",
+        "gap": "lg",
+        "hideLabel": true,
+        "counterAlign": "start",
+        "children": [
+          {
+            "type": "frame", "name": "Top Bar",
+            "layout": "horizontal", "fillWidth": true,
+            "primaryAlign": "space-between", "counterAlign": "center",
+            "paddingX": "none", "paddingY": "none", "gap": "auto",
+            "children": [
+              {
+                "type": "instance", "name": "Logo",
+                "component": "Logo",
+                "variants": { "Type": "Full", "Size": "Default" },
+                "widthMode": "hug"
+              },
+              {
+                "type": "instance", "name": "Nav",
+                "component": "Navigation Menu",
+                "variants": { "Items": "6" },
+                "widthMode": "hug",
+                "overrides": {
+                  "nested": {
+                    "Item 4": { "Label": "Users" },
+                    "Item 5": { "Label": "Products" },
+                    "Item 6": { "Label": "Orders" }
+                  },
+                  "nestedVariants": {
+                    "Item 1": { "State": "Active" }
+                  }
+                }
+              },
+              {
+                "type": "frame", "name": "Actions",
+                "layout": "horizontal",
+                "counterAlign": "center", "gap": "3xs",
+                "paddingX": "none", "paddingY": "none",
+                "widthMode": "hug", "heightMode": "hug",
+                "children": [
+                  {
+                    "type": "instance", "name": "Btn Palette",
+                    "component": "Button",
+                    "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                    "iconOverrides": { "Icon Left": "Palette" }
+                  },
+                  {
+                    "type": "instance", "name": "Btn Theme",
+                    "component": "Button",
+                    "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                    "iconOverrides": { "Icon Left": "Sun" }
+                  },
+                  {
+                    "type": "frame", "name": "Bell Wrap",
+                    "layout": "horizontal",
+                    "widthMode": "hug", "heightMode": "hug",
+                    "paddingX": "none", "paddingY": "none",
+                    "children": [
+                      {
+                        "type": "instance", "name": "Btn Bell",
+                        "component": "Button",
+                        "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                        "iconOverrides": { "Icon Left": "Bell" }
+                      },
+                      {
+                        "type": "frame", "name": "Notif Dot",
+                        "width": 8, "height": 8,
+                        "widthMode": "fixed",
+                        "radius": "full",
+                        "fill": "destructive",
+                        "stroke": "background",
+                        "strokeWeight": 2,
+                        "paddingX": "none", "paddingY": "none",
+                        "position": "absolute",
+                        "x": 28, "y": 4,
+                        "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "frame", "name": "Avatar Wrap",
+                    "layout": "horizontal",
+                    "widthMode": "hug", "heightMode": "hug",
+                    "paddingX": "none", "paddingY": "none",
+                    "children": [
+                      {
+                        "type": "instance", "name": "User Avatar",
+                        "component": "Avatar",
+                        "variants": { "Type": "Image", "Size": "SM" }
+                      },
+                      {
+                        "type": "frame", "name": "Online Dot",
+                        "width": 10, "height": 10,
+                        "widthMode": "fixed",
+                        "radius": "full",
+                        "fill": "success",
+                        "stroke": "background",
+                        "strokeWeight": 1.5,
+                        "paddingX": "none", "paddingY": "none",
+                        "position": "absolute",
+                        "x": 22, "y": 22,
+                        "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "Greeting Row",
+            "layout": "horizontal", "fillWidth": true,
+            "primaryAlign": "space-between", "counterAlign": "end",
+            "paddingX": "none", "paddingY": "none", "gap": "sm",
+            "children": [
+              {
+                "type": "frame", "name": "Greeting",
+                "layout": "vertical",
+                "counterAlign": "start",
+                "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                "fillWidth": true,
+                "children": [
+                  {
+                    "type": "text", "name": "Title",
+                    "textContent": "Good morning, Linh",
+                    "textStyle": "SP/H2",
+                    "textFill": "foreground"
+                  },
+                  {
+                    "type": "text", "name": "Subtitle",
+                    "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                    "textStyle": "SP/Body",
+                    "textFill": "muted-foreground"
+                  }
+                ]
+              },
+              {
+                "type": "instance", "name": "Search",
+                "component": "Search Box",
+                "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                "width": 280
+              }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Page=Dashboard": {},
+        "Page=Analytics": {
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo",
+                  "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" },
+                  "widthMode": "hug"
+                },
+                {
+                  "type": "instance", "name": "Nav",
+                  "component": "Navigation Menu",
+                  "variants": { "Items": "6" },
+                  "widthMode": "hug",
+                  "overrides": {
+                    "nested": {
+                      "Item 4": { "Label": "Users" },
+                      "Item 5": { "Label": "Products" },
+                      "Item 6": { "Label": "Orders" }
+                    },
+                    "nestedVariants": {
+                      "Item 1": { "State": "Default" },
+                      "Item 2": { "State": "Active" }
+                    }
+                  }
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Body",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+        "Page=Reports": {
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo",
+                  "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" },
+                  "widthMode": "hug"
+                },
+                {
+                  "type": "instance", "name": "Nav",
+                  "component": "Navigation Menu",
+                  "variants": { "Items": "6" },
+                  "widthMode": "hug",
+                  "overrides": {
+                    "nested": {
+                      "Item 4": { "Label": "Users" },
+                      "Item 5": { "Label": "Products" },
+                      "Item 6": { "Label": "Orders" }
+                    },
+                    "nestedVariants": {
+                      "Item 1": { "State": "Default" },
+                      "Item 3": { "State": "Active" }
+                    }
+                  }
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Body",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+        "Page=Users": {
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo",
+                  "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" },
+                  "widthMode": "hug"
+                },
+                {
+                  "type": "instance", "name": "Nav",
+                  "component": "Navigation Menu",
+                  "variants": { "Items": "6" },
+                  "widthMode": "hug",
+                  "overrides": {
+                    "nested": {
+                      "Item 4": { "Label": "Users" },
+                      "Item 5": { "Label": "Products" },
+                      "Item 6": { "Label": "Orders" }
+                    },
+                    "nestedVariants": {
+                      "Item 1": { "State": "Default" },
+                      "Item 4": { "State": "Active" }
+                    }
+                  }
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Body",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+        "Page=Products": {
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo",
+                  "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" },
+                  "widthMode": "hug"
+                },
+                {
+                  "type": "instance", "name": "Nav",
+                  "component": "Navigation Menu",
+                  "variants": { "Items": "6" },
+                  "widthMode": "hug",
+                  "overrides": {
+                    "nested": {
+                      "Item 4": { "Label": "Users" },
+                      "Item 5": { "Label": "Products" },
+                      "Item 6": { "Label": "Orders" }
+                    },
+                    "nestedVariants": {
+                      "Item 1": { "State": "Default" },
+                      "Item 5": { "State": "Active" }
+                    }
+                  }
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Body",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+        "Page=Orders": {
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "instance", "name": "Logo",
+                  "component": "Logo",
+                  "variants": { "Type": "Full", "Size": "Default" },
+                  "widthMode": "hug"
+                },
+                {
+                  "type": "instance", "name": "Nav",
+                  "component": "Navigation Menu",
+                  "variants": { "Items": "6" },
+                  "widthMode": "hug",
+                  "overrides": {
+                    "nested": {
+                      "Item 4": { "Label": "Users" },
+                      "Item 5": { "Label": "Products" },
+                      "Item 6": { "Label": "Orders" }
+                    },
+                    "nestedVariants": {
+                      "Item 1": { "State": "Default" },
+                      "Item 6": { "State": "Active" }
+                    }
+                  }
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Body",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+
+        "Breakpoint=Tablet": {
+          "width": 768,
+          "paddingX": "md",
+          "paddingBottom": "sm",
+          "gap": "sm",
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "frame", "name": "Left",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "xs",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Hamburger",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Menu" }
+                    },
+                    {
+                      "type": "instance", "name": "Logo",
+                      "component": "Logo",
+                      "variants": { "Type": "Full", "Size": "Default" },
+                      "widthMode": "hug"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "end",
+              "paddingX": "none", "paddingY": "none", "gap": "sm",
+              "children": [
+                {
+                  "type": "frame", "name": "Greeting",
+                  "layout": "vertical",
+                  "counterAlign": "start",
+                  "paddingX": "none", "paddingY": "none", "gap": "3xs",
+                  "fillWidth": true,
+                  "children": [
+                    {
+                      "type": "text", "name": "Title",
+                      "textContent": "Good morning, Linh",
+                      "textStyle": "SP/H2",
+                      "textFill": "foreground"
+                    },
+                    {
+                      "type": "text", "name": "Subtitle",
+                      "textContent": "Stay on top of your tasks, monitor progress, and track status.",
+                      "textStyle": "SP/Caption",
+                      "textFill": "muted-foreground"
+                    }
+                  ]
+                },
+                {
+                  "type": "instance", "name": "Search",
+                  "component": "Search Box",
+                  "variants": { "State": "Default", "Value": "Placeholder", "Shortcut": "Yes" },
+                  "width": 280
+                }
+              ]
+            }
+          ]
+        },
+
+        "Breakpoint=Mobile": {
+          "width": 375,
+          "paddingX": "md",
+          "paddingBottom": "sm",
+          "gap": "sm",
+          "children": [
+            {
+              "type": "frame", "name": "Top Bar",
+              "layout": "horizontal", "fillWidth": true,
+              "primaryAlign": "space-between", "counterAlign": "center",
+              "paddingX": "none", "paddingY": "none", "gap": "auto",
+              "children": [
+                {
+                  "type": "frame", "name": "Left",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "xs",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "paddingX": "none", "paddingY": "none",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Hamburger",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Menu" }
+                    },
+                    {
+                      "type": "instance", "name": "Logo",
+                      "component": "Logo",
+                      "variants": { "Type": "Icon", "Size": "Small" },
+                      "widthMode": "hug"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame", "name": "Actions",
+                  "layout": "horizontal",
+                  "counterAlign": "center", "gap": "3xs",
+                  "paddingX": "none", "paddingY": "none",
+                  "widthMode": "hug", "heightMode": "hug",
+                  "children": [
+                    {
+                      "type": "instance", "name": "Btn Search",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Search" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Palette",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Palette" }
+                    },
+                    {
+                      "type": "instance", "name": "Btn Theme",
+                      "component": "Button",
+                      "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                      "iconOverrides": { "Icon Left": "Sun" }
+                    },
+                    {
+                      "type": "frame", "name": "Bell Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "Btn Bell",
+                          "component": "Button",
+                          "variants": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "Icon Only" },
+                          "iconOverrides": { "Icon Left": "Bell" }
+                        },
+                        {
+                          "type": "frame", "name": "Notif Dot",
+                          "width": 8, "height": 8,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "destructive",
+                          "stroke": "background",
+                          "strokeWeight": 2,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 28, "y": 4,
+                          "constraints": { "horizontal": "MAX", "vertical": "MIN" }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame", "name": "Avatar Wrap",
+                      "layout": "horizontal",
+                      "widthMode": "hug", "heightMode": "hug",
+                      "paddingX": "none", "paddingY": "none",
+                      "children": [
+                        {
+                          "type": "instance", "name": "User Avatar",
+                          "component": "Avatar",
+                          "variants": { "Type": "Image", "Size": "SM" }
+                        },
+                        {
+                          "type": "frame", "name": "Online Dot",
+                          "width": 10, "height": 10,
+                          "widthMode": "fixed",
+                          "radius": "full",
+                          "fill": "success",
+                          "stroke": "background",
+                          "strokeWeight": 1.5,
+                          "paddingX": "none", "paddingY": "none",
+                          "position": "absolute",
+                          "x": 22, "y": 22,
+                          "constraints": { "horizontal": "MAX", "vertical": "MAX" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame", "name": "Greeting Row",
+              "layout": "vertical", "fillWidth": true,
+              "counterAlign": "start",
+              "paddingX": "none", "paddingY": "none", "gap": "none",
+              "children": [
+                {
+                  "type": "text", "name": "Title",
+                  "textContent": "Good morning, Linh",
+                  "textStyle": "SP/H3",
+                  "textFill": "foreground"
+                }
+              ]
+            }
+          ]
+        }
+      },
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      },
+
+      "examples": [
+        {
+          "name": "Desktop — All Pages",
+          "description": "Desktop layout showing active nav tab per page.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Dashboard", "props": { "Page": "Dashboard", "Breakpoint": "Desktop" } },
+            { "label": "Analytics", "props": { "Page": "Analytics", "Breakpoint": "Desktop" } }
+          ]
+        },
+        {
+          "name": "Responsive",
+          "description": "Desktop (1440), Tablet (768), and Mobile (375) breakpoints.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Desktop", "props": { "Page": "Dashboard", "Breakpoint": "Desktop" } },
+            { "label": "Tablet", "props": { "Page": "Dashboard", "Breakpoint": "Tablet" } },
+            { "label": "Mobile", "props": { "Page": "Dashboard", "Breakpoint": "Mobile" } }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -305,18 +305,6 @@ async function extractPage(
     )
   }
 
-  // Screenshot image elements (SVG illustrations, IMG tags)
-  await screenshotImages(page, rawTree)
-
-  if (debug) {
-    // Verify screenshot data persisted on tree
-    const verify: ExtractedNode[] = []
-    collectImageNodes(rawTree, verify)
-    for (const v of verify) {
-      console.log(`   🔍 Post-screenshot: ${v.name} src=${v.src ? v.src.substring(0, 40) + '...' : 'EMPTY'}`)
-    }
-  }
-
   // Build screen JSON
   const screenJSON = buildScreenJSON(rawTree, effectivePageConfig, bp)
 
@@ -328,47 +316,6 @@ async function extractPage(
   return { screenJSON, rawTree }
 }
 
-/**
- * Find all image nodes in tree and screenshot them via Playwright.
- * Mutates nodes in-place: adds `imageBase64` field.
- */
-async function screenshotImages(page: any, tree: ExtractedNode) {
-  const imageNodes: ExtractedNode[] = []
-  collectImageNodes(tree, imageNodes)
-
-  if (imageNodes.length === 0) return
-
-  for (const node of imageNodes) {
-    if (!node.selector) continue
-    try {
-      if (debug) console.log(`   📸 Screenshot: ${node.name} → ${node.selector}`)
-      const el = page.locator(node.selector).first()
-      const isVisible = await el.isVisible().catch(() => false)
-      if (!isVisible) {
-        if (debug) console.log(`   ⚠️ Not visible, skipping`)
-        continue
-      }
-
-      const buffer = await el.screenshot({ type: "png" })
-      // Store as base64 data URI
-      node.src = `data:image/png;base64,${buffer.toString("base64")}`
-      if (debug) console.log(`   ✅ Got ${buffer.length} bytes`)
-    } catch (e: any) {
-      if (debug) console.log(`   ❌ Screenshot failed: ${e.message}`)
-    }
-  }
-}
-
-function collectImageNodes(node: ExtractedNode, out: ExtractedNode[]) {
-  if (node.type === "image" && node.selector) {
-    out.push(node)
-  }
-  if (node.children) {
-    for (const child of node.children) {
-      collectImageNodes(child, out)
-    }
-  }
-}
 
 function countNodes(children: any[]): number {
   let count = children.length
@@ -432,72 +379,10 @@ async function extractPageRaw(
     return null
   }
 
-  // Screenshot image nodes (fallback for SVGs that couldn't be serialized)
-  await screenshotImages(page, rawTree as any)
-
-  // Screenshot background selectors (decorative glow/pattern effects)
-  await screenshotBackgrounds(page, rawTree)
-
   await page.close()
   return rawTree
 }
 
-/**
- * Find nodes with backgroundSelector and screenshot them.
- * Sets backgroundImage as base64 data URI on the node.
- */
-async function screenshotBackgrounds(page: any, tree: RawExtractedNode) {
-  const bgNodes: RawExtractedNode[] = []
-  collectBgNodes(tree, bgNodes)
-
-  if (bgNodes.length === 0) return
-
-  for (const node of bgNodes) {
-    if (!node.backgroundSelector) continue
-    try {
-      if (debug) console.log(`   🎨 Background screenshot: ${node.backgroundSelector}`)
-      const el = page.locator(node.backgroundSelector).first()
-      const isVisible = await el.isVisible().catch(() => false)
-      if (!isVisible) continue
-
-      // Hide non-absolute children so screenshot only captures decorative effects
-      // (glow blurs, grid patterns are position:absolute; content children are not)
-      await el.evaluate((parent: HTMLElement) => {
-        for (const child of parent.children) {
-          const pos = getComputedStyle(child).position
-          if (pos !== "absolute" && pos !== "fixed") {
-            ;(child as HTMLElement).style.visibility = "hidden"
-          }
-        }
-      })
-
-      const buffer = await el.screenshot({ type: "png" })
-      node.backgroundImage = `data:image/png;base64,${buffer.toString("base64")}`
-
-      // Restore visibility
-      await el.evaluate((parent: HTMLElement) => {
-        for (const child of parent.children) {
-          ;(child as HTMLElement).style.visibility = ""
-        }
-      })
-
-      if (debug) console.log(`   ✅ Got ${buffer.length} bytes for background`)
-    } catch (e: any) {
-      if (debug) console.log(`   ❌ Background screenshot failed: ${e.message}`)
-    }
-  }
-}
-
-function collectBgNodes(node: RawExtractedNode, out: RawExtractedNode[]) {
-  if (node.backgroundSelector) {
-    out.push(node)
-  }
-  if (node.children) {
-    for (const child of node.children) {
-      collectBgNodes(child, out)
-    }
-  }
-}
 
 // ── Serve mode: HTTP API for Figma plugin ──
 

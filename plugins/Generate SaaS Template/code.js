@@ -2014,6 +2014,9 @@ async function doCreateEffectStyles(spec) {
     return { success: false, error: "No styles found in spec" };
   }
 
+  // Load variable caches so findVar() can resolve ring tokens
+  await loadCaches();
+
   // --- Load existing effect styles for upsert ---
   var existingStyles = [];
   try { existingStyles = await figma.getLocalEffectStylesAsync(); } catch (e) {}
@@ -2056,7 +2059,8 @@ async function doCreateEffectStyles(spec) {
           color: color,
           offset: { x: e.x || 0, y: e.y || 0 },
           radius: e.radius || 0,
-          spread: e.spread || 0
+          spread: e.spread || 0,
+          showShadowBehindNode: e.showShadowBehindNode !== undefined ? e.showShadowBehindNode : true
         };
       }
 
@@ -2075,8 +2079,32 @@ async function doCreateEffectStyles(spec) {
       log.push("Created effect style: " + s.name + " (" + layers.length + " layers)");
     }
 
-    // Apply effects (always overwrite to sync)
+    // Apply effects first (raw values)
     effectStyle.effects = effects;
+
+    // Bind variable to effect color using setBoundVariableForEffect (for Light/Dark mode switching)
+    // WORKAROUND: setBoundVariableForEffect resets spread to 0 (known Figma bug)
+    // Fix: use result from API but restore spread from original effect
+    if (s.variable) {
+      var effVar = findVar(s.variable);
+      if (effVar) {
+        var boundEffects = [];
+        var srcEffects = effectStyle.effects;
+        for (var bei = 0; bei < srcEffects.length; bei++) {
+          var origSpread = srcEffects[bei].spread;
+          var origShowBehind = srcEffects[bei].showShadowBehindNode;
+          var bound = figma.variables.setBoundVariableForEffect(srcEffects[bei], "color", effVar);
+          // Restore spread (bug: API resets to 0)
+          bound = Object.assign({}, bound, { spread: origSpread });
+          if (origShowBehind !== undefined) bound.showShadowBehindNode = origShowBehind;
+          boundEffects.push(bound);
+        }
+        effectStyle.effects = boundEffects;
+        log.push("  Bound variable '" + s.variable + "' to " + s.name);
+      } else {
+        log.push("  WARN: variable '" + s.variable + "' not found for " + s.name);
+      }
+    }
   }
 
   // Delete effect styles that exist in Figma but NOT in spec
@@ -2899,20 +2927,37 @@ async function _processChildren(childrenSpec, parent, combo) {
       for (var _ii = 0; _ii < parent.children.length; _ii++) {
         if (parent.children[_ii].name === name) { iconExist = parent.children[_ii]; break; }
       }
+      var _resolvedIconName = cs.iconNameFromProp ? (combo[cs.iconNameFromProp] || cs.iconName || "Circle") : (cs.iconName || "Circle");
       if (iconExist && iconExist.type === "INSTANCE") {
+        // Upsert: check if icon needs swap, then always update size + fill
+        var _existMainComp = null;
+        try { _existMainComp = await iconExist.getMainComponentAsync(); } catch(e) {}
+        var _wantIconComp = findIconComponent(_resolvedIconName);
+        if (_wantIconComp && _existMainComp && _wantIconComp.id !== _existMainComp.id) {
+          iconExist.swapComponent(_wantIconComp);
+        }
         iconExist.resize(iconSize, iconSize);
+        // Always re-apply iconFill on upsert
+        var _uIconVecs = iconExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
+        var _uIconVar = findVar(cs.iconFill || "foreground");
+        if (_uIconVar) {
+          for (var _uiv = 0; _uiv < _uIconVecs.length; _uiv++) {
+            if (_uIconVecs[_uiv].strokes && _uIconVecs[_uiv].strokes.length > 0) _uIconVecs[_uiv].strokes = [makeBoundPaint(_uIconVar)];
+            if (_uIconVecs[_uiv].fills && _uIconVecs[_uiv].fills.length > 0) _uIconVecs[_uiv].fills = [makeBoundPaint(_uIconVar)];
+          }
+        }
       } else {
         if (iconExist) iconExist.remove();
-        var _resolvedIconName = cs.iconNameFromProp ? (combo[cs.iconNameFromProp] || cs.iconName || "Circle") : (cs.iconName || "Circle");
         var iconComp = findIconComponent(_resolvedIconName);
         if (iconComp) {
           var iconInst = iconComp.createInstance();
           iconInst.name = name; iconInst.resize(iconSize, iconSize);
-          var iconVecs = iconInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+          var iconVecs = iconInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
           var iconFgVar = findVar(cs.iconFill || "foreground");
           if (iconFgVar) {
             for (var iv = 0; iv < iconVecs.length; iv++) {
               if (iconVecs[iv].strokes && iconVecs[iv].strokes.length > 0) iconVecs[iv].strokes = [makeBoundPaint(iconFgVar)];
+              if (iconVecs[iv].fills && iconVecs[iv].fills.length > 0) iconVecs[iv].fills = [makeBoundPaint(iconFgVar)];
             }
           }
           parent.appendChild(iconInst);
@@ -2990,6 +3035,8 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_inst);
             try { _inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _inst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // Apply overrides (nested text, nested variants, icon swap, boolean) on instance children
+            if (cs.overrides) { await applyComponentOverrides(_inst, cs); }
             // swapProperty handled in post-build phase after combineAsVariants
         }
       } else {
@@ -3030,6 +3077,8 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_swapInst);
             try { _swapInst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _swapInst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // Apply overrides (nested text, nested variants, icon swap, boolean) on swapped instance
+            if (cs.overrides) { await applyComponentOverrides(_swapInst, cs); }
             // swapProperty handled in post-build phase after combineAsVariants
           }
         } else {
@@ -3065,6 +3114,8 @@ async function _processChildren(childrenSpec, parent, combo) {
               }
             }
           }
+          // Apply overrides on existing instance (nested text, nested variants, icon swap, boolean)
+          if (cs.overrides) { await applyComponentOverrides(existNode, cs); }
           try { existNode.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
           try { existNode.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
         }
@@ -3206,6 +3257,63 @@ async function doCreateComponents(spec) {
       var _exVars = existingCS.children.slice();
       for (var xv = 0; xv < _exVars.length; xv++) existingVarMap[_normalizeVarName(_exVars[xv].name)] = _exVars[xv];
       log.push("  Found existing ComponentSet (" + _exVars.length + " variants) \u2014 upserting in place");
+
+      // --- 1.6. Detect NEW properties added to spec → migrate existing variants ---
+      // Parse property names from existing variant names (e.g. "Value=Unchecked, State=Default" → ["Value","State"])
+      var _existingPropNames = [];
+      if (_exVars.length > 0) {
+        var _sampleParts = _exVars[0].name.split(", ");
+        for (var _sp = 0; _sp < _sampleParts.length; _sp++) {
+          var _eqIdx = _sampleParts[_sp].indexOf("=");
+          if (_eqIdx > 0) _existingPropNames.push(_sampleParts[_sp].substring(0, _eqIdx).trim());
+        }
+      }
+      // Find new properties (in spec but not in existing CS)
+      var _newProps = [];
+      for (var _npi = 0; _npi < propNames.length; _npi++) {
+        if (_existingPropNames.indexOf(propNames[_npi]) < 0) _newProps.push(propNames[_npi]);
+      }
+      // Find removed properties (in existing CS but not in spec)
+      var _removedProps = [];
+      for (var _rpi = 0; _rpi < _existingPropNames.length; _rpi++) {
+        if (propNames.indexOf(_existingPropNames[_rpi]) < 0) _removedProps.push(_existingPropNames[_rpi]);
+      }
+      if (_newProps.length > 0 || _removedProps.length > 0) {
+        if (_newProps.length > 0) log.push("  [migrate] New properties: " + _newProps.join(", "));
+        if (_removedProps.length > 0) log.push("  [migrate] Removed properties: " + _removedProps.join(", "));
+        // Rebuild existingVarMap with migrated names
+        var _migratedMap = {};
+        var _migKeys = Object.keys(existingVarMap);
+        for (var _mi = 0; _mi < _migKeys.length; _mi++) {
+          var _oldNode = existingVarMap[_migKeys[_mi]];
+          // Parse existing variant name into property pairs
+          var _pairs = _oldNode.name.split(", ");
+          var _keptPairs = [];
+          for (var _pp = 0; _pp < _pairs.length; _pp++) {
+            var _pName = _pairs[_pp].substring(0, _pairs[_pp].indexOf("=")).trim();
+            // Keep only properties that still exist in spec
+            if (_removedProps.indexOf(_pName) < 0) _keptPairs.push(_pairs[_pp]);
+          }
+          // Append new properties with default values
+          for (var _ns = 0; _ns < _newProps.length; _ns++) {
+            var _defaultVal = properties[_newProps[_ns]][0];
+            _keptPairs.push(_newProps[_ns] + "=" + _defaultVal);
+          }
+          var _newName = _keptPairs.join(", ");
+          _oldNode.name = _newName;
+          var _normNew = _normalizeVarName(_newName);
+          // If multiple old variants collapse to same name (removed prop was the only diff), keep first
+          if (!_migratedMap[_normNew]) {
+            _migratedMap[_normNew] = _oldNode;
+          } else {
+            // Duplicate after removing property — remove the extra variant
+            try { _oldNode.remove(); } catch(e) {}
+            log.push("  [migrate] Removed duplicate: " + _newName.substring(0, 50));
+          }
+          log.push("  [migrate] " + _migKeys[_mi].substring(0, 40) + " → " + _newName.substring(0, 50));
+        }
+        existingVarMap = _migratedMap;
+      }
     }
 
     // --- 2. Create / upsert each Component variant ---
@@ -3377,6 +3485,8 @@ async function doCreateComponents(spec) {
           var _irVar = findVar(_irVarName);
           if (_irVar) { try { indicatorF.setBoundVariable("topLeftRadius",_irVar); indicatorF.setBoundVariable("topRightRadius",_irVar); indicatorF.setBoundVariable("bottomLeftRadius",_irVar); indicatorF.setBoundVariable("bottomRightRadius",_irVar); } catch(e){} }
         } else { indicatorF.topLeftRadius = _indRad; indicatorF.topRightRadius = _indRad; indicatorF.bottomLeftRadius = _indRad; indicatorF.bottomRightRadius = _indRad; }
+        // Clip content on indicator (needed for focus ring DROP_SHADOW to render correctly)
+        indicatorF.clipsContent = !!(_indSpec.clipsContent);
         // Fill & Stroke from merged (comes from base + variantStyles)
         if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(indicatorF, merged.fill, merged.fillOpacity); else setFill(indicatorF, merged.fill); } else indicatorF.fills = [];
         if (merged.stroke) { if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(indicatorF, merged.stroke, merged.strokeOpacity); else setStroke(indicatorF, merged.stroke); indicatorF.strokeWeight = merged.strokeWeight || 1; indicatorF.strokeAlign = "INSIDE"; if (merged.strokeSides) _applyStrokeSides(indicatorF, merged.strokeSides, merged.strokeWeight || 1); } else indicatorF.strokes = [];
@@ -3651,34 +3761,45 @@ async function doCreateComponents(spec) {
       var _showIconRight = merged.iconRight || combo["IconRight"] === "true" || combo["Show Right Icon"] === "true" || combo["Show right icon"] === "true";
       var _iconLeftName = merged.iconLeftName || "Search";
       var _iconRightName = merged.iconRightName || "ArrowRight";
-      if (!_showIconLeft) {
-        // Remove stale icon if variant no longer shows it (e.g. Radio unchecked)
-        var _staleLeft = _findKid(iconTarget, "Icon Left");
-        if (_staleLeft) _staleLeft.remove();
-      }
-      if (_showIconLeft) {
+      // --- Icon Left: always ensure instance exists, toggle visibility ---
+      {
         var leftExist = _findKid(iconTarget, "Icon Left");
-        if (leftExist && leftExist.type === "INSTANCE") {
-          // Reuse existing instance — update size + strokes only
-          leftExist.resize(icoSize, icoSize);
-          var leftVecs = leftExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-          var icoFgVar = findVar(_iconColor);
-          if (icoFgVar) { for (var lv = 0; lv < leftVecs.length; lv++) { if (leftVecs[lv].strokes && leftVecs[lv].strokes.length > 0) leftVecs[lv].strokes = [makeBoundPaint(icoFgVar)]; } }
-        } else {
-          if (leftExist) leftExist.remove(); // remove stale placeholder
-          var leftIconComp = findIconComponent(_iconLeftName) || findIconComponent("Search") || findIconComponent("ChevronLeft") || findIconComponent("Plus");
-          if (leftIconComp) {
-            var leftInst = leftIconComp.createInstance();
-            leftInst.name = "Icon Left"; leftInst.resize(icoSize, icoSize);
-            var leftVecs2 = leftInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-            var icoFgVar2 = findVar(_iconColor);
-            if (icoFgVar2) { for (var lv2 = 0; lv2 < leftVecs2.length; lv2++) { if (leftVecs2[lv2].strokes && leftVecs2[lv2].strokes.length > 0) leftVecs2[lv2].strokes = [makeBoundPaint(icoFgVar2)]; } }
-            iconTarget.appendChild(leftInst);
+        if (_showIconLeft) {
+          if (leftExist && leftExist.type === "INSTANCE") {
+            leftExist.visible = true;
+            leftExist.resize(icoSize, icoSize);
+            var leftVecs = leftExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+            var icoFgVar = findVar(_iconColor);
+            if (icoFgVar) { for (var lv = 0; lv < leftVecs.length; lv++) { if (leftVecs[lv].strokes && leftVecs[lv].strokes.length > 0) leftVecs[lv].strokes = [makeBoundPaint(icoFgVar)]; } }
           } else {
-            var icoL = figma.createFrame(); icoL.name = "Icon Left"; icoL.resize(icoSize, icoSize); icoL.fills = [];
-            setStroke(icoL, _iconColor); icoL.strokeWeight = 1.5;
-            icoL.topLeftRadius = 3; icoL.topRightRadius = 3; icoL.bottomLeftRadius = 3; icoL.bottomRightRadius = 3;
-            iconTarget.appendChild(icoL);
+            if (leftExist) leftExist.remove();
+            var leftIconComp = findIconComponent(_iconLeftName) || findIconComponent("Search") || findIconComponent("ChevronLeft") || findIconComponent("Plus");
+            if (leftIconComp) {
+              var leftInst = leftIconComp.createInstance();
+              leftInst.name = "Icon Left"; leftInst.resize(icoSize, icoSize); leftInst.visible = true;
+              var leftVecs2 = leftInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+              var icoFgVar2 = findVar(_iconColor);
+              if (icoFgVar2) { for (var lv2 = 0; lv2 < leftVecs2.length; lv2++) { if (leftVecs2[lv2].strokes && leftVecs2[lv2].strokes.length > 0) leftVecs2[lv2].strokes = [makeBoundPaint(icoFgVar2)]; } }
+              iconTarget.appendChild(leftInst);
+            } else {
+              var icoL = figma.createFrame(); icoL.name = "Icon Left"; icoL.resize(icoSize, icoSize); icoL.fills = [];
+              setStroke(icoL, _iconColor); icoL.strokeWeight = 1.5;
+              icoL.topLeftRadius = 3; icoL.topRightRadius = 3; icoL.bottomLeftRadius = 3; icoL.bottomRightRadius = 3;
+              iconTarget.appendChild(icoL);
+            }
+          }
+        } else {
+          // Not showing — hide but keep instance for swap property consistency
+          if (leftExist) {
+            leftExist.visible = false;
+          } else {
+            // Create hidden instance so swap property exists on all variants
+            var _hiddenLeftComp = findIconComponent(_iconLeftName) || findIconComponent("Search");
+            if (_hiddenLeftComp) {
+              var _hiddenLeft = _hiddenLeftComp.createInstance();
+              _hiddenLeft.name = "Icon Left"; _hiddenLeft.resize(icoSize, icoSize); _hiddenLeft.visible = false;
+              iconTarget.appendChild(_hiddenLeft);
+            }
           }
         }
       }
@@ -3721,29 +3842,44 @@ async function doCreateComponents(spec) {
         try { sfxN.textAutoResize = "TRUNCATE"; } catch(e){} try { sfxN.maxLines = 1; } catch(e){} try { sfxN.textTruncation = "ENDING"; } catch(e){}
       }
 
-      // Icon Right — reuse instance if exists, otherwise create
-      if (_showIconRight) {
+      // --- Icon Right: always ensure instance exists, toggle visibility ---
+      {
         var rightExist = _findKid(iconTarget, "Icon Right");
-        if (rightExist && rightExist.type === "INSTANCE") {
-          rightExist.resize(icoSize, icoSize);
-          var rightVecs = rightExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-          var icoFgVar3 = findVar(_iconColor);
-          if (icoFgVar3) { for (var rv2 = 0; rv2 < rightVecs.length; rv2++) { if (rightVecs[rv2].strokes && rightVecs[rv2].strokes.length > 0) rightVecs[rv2].strokes = [makeBoundPaint(icoFgVar3)]; } }
-        } else {
-          if (rightExist) rightExist.remove();
-          var rightIconComp = findIconComponent(_iconRightName) || findIconComponent("ArrowRight") || findIconComponent("ChevronRight") || findIconComponent("ArrowLeft");
-          if (rightIconComp) {
-            var rightInst = rightIconComp.createInstance();
-            rightInst.name = "Icon Right"; rightInst.resize(icoSize, icoSize);
-            var rightVecs2 = rightInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
-            var icoFgVar4 = findVar(_iconColor);
-            if (icoFgVar4) { for (var rv3 = 0; rv3 < rightVecs2.length; rv3++) { if (rightVecs2[rv3].strokes && rightVecs2[rv3].strokes.length > 0) rightVecs2[rv3].strokes = [makeBoundPaint(icoFgVar4)]; } }
-            iconTarget.appendChild(rightInst);
+        if (_showIconRight) {
+          if (rightExist && rightExist.type === "INSTANCE") {
+            rightExist.visible = true;
+            rightExist.resize(icoSize, icoSize);
+            var rightVecs = rightExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+            var icoFgVar3 = findVar(_iconColor);
+            if (icoFgVar3) { for (var rv2 = 0; rv2 < rightVecs.length; rv2++) { if (rightVecs[rv2].strokes && rightVecs[rv2].strokes.length > 0) rightVecs[rv2].strokes = [makeBoundPaint(icoFgVar3)]; } }
           } else {
-            var icoR = figma.createFrame(); icoR.name = "Icon Right"; icoR.resize(icoSize, icoSize); icoR.fills = [];
-            setStroke(icoR, _iconColor); icoR.strokeWeight = 1.5;
-            icoR.topLeftRadius = 3; icoR.topRightRadius = 3; icoR.bottomLeftRadius = 3; icoR.bottomRightRadius = 3;
-            iconTarget.appendChild(icoR);
+            if (rightExist) rightExist.remove();
+            var rightIconComp = findIconComponent(_iconRightName) || findIconComponent("ArrowRight") || findIconComponent("ChevronRight") || findIconComponent("ArrowLeft");
+            if (rightIconComp) {
+              var rightInst = rightIconComp.createInstance();
+              rightInst.name = "Icon Right"; rightInst.resize(icoSize, icoSize); rightInst.visible = true;
+              var rightVecs2 = rightInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
+              var icoFgVar4 = findVar(_iconColor);
+              if (icoFgVar4) { for (var rv3 = 0; rv3 < rightVecs2.length; rv3++) { if (rightVecs2[rv3].strokes && rightVecs2[rv3].strokes.length > 0) rightVecs2[rv3].strokes = [makeBoundPaint(icoFgVar4)]; } }
+              iconTarget.appendChild(rightInst);
+            } else {
+              var icoR = figma.createFrame(); icoR.name = "Icon Right"; icoR.resize(icoSize, icoSize); icoR.fills = [];
+              setStroke(icoR, _iconColor); icoR.strokeWeight = 1.5;
+              icoR.topLeftRadius = 3; icoR.topRightRadius = 3; icoR.bottomLeftRadius = 3; icoR.bottomRightRadius = 3;
+              iconTarget.appendChild(icoR);
+            }
+          }
+        } else {
+          // Not showing — hide but keep instance for swap property consistency
+          if (rightExist) {
+            rightExist.visible = false;
+          } else {
+            var _hiddenRightComp = findIconComponent(_iconRightName) || findIconComponent("ArrowRight");
+            if (_hiddenRightComp) {
+              var _hiddenRight = _hiddenRightComp.createInstance();
+              _hiddenRight.name = "Icon Right"; _hiddenRight.resize(icoSize, icoSize); _hiddenRight.visible = false;
+              iconTarget.appendChild(_hiddenRight);
+            }
           }
         }
       }
@@ -3785,6 +3921,11 @@ async function doCreateComponents(spec) {
       if (_hasIndicator) {
         // Indicator pattern: icons in indicatorF, label in comp
         var _validInd = {};
+        // Always keep icon instances to preserve swap property across variants
+        if (merged.iconLeft !== undefined || merged.iconRight !== undefined || merged.iconLeftName || merged.iconRightName) {
+          _validInd["Icon Left"] = true;
+          _validInd["Icon Right"] = true;
+        }
         if (_showIconLeft) _validInd["Icon Left"] = true;
         if (_showIconRight) _validInd["Icon Right"] = true;
         // Preserve Thumb child when showThumb !== false
@@ -3800,6 +3941,11 @@ async function doCreateComponents(spec) {
       } else {
         // targetFrame (innerF for addon, comp otherwise)
         var _validTF = {};
+        // Always keep icon instances (hide instead of remove) to preserve swap property across variants
+        if (merged.iconLeft !== undefined || merged.iconRight !== undefined || merged.iconLeftName || merged.iconRightName) {
+          _validTF["Icon Left"] = true;
+          _validTF["Icon Right"] = true;
+        }
         if (_showIconLeft) _validTF["Icon Left"] = true;
         if (_prefix) _validTF["Prefix"] = true;
         if (!merged.hideLabel) _validTF["Label"] = true;
@@ -3868,7 +4014,7 @@ async function doCreateComponents(spec) {
     var cs;
     var _managedIds = {};
     if (_isUpdate) {
-      // Save position BEFORE removing variants (Figma auto-deletes CS when all children removed)
+      // Save position BEFORE any mutations
       var _savedCSX = existingCS.x; var _savedCSY = existingCS.y;
       // Remove variants no longer in spec
       var _emKeys = Object.keys(existingVarMap);
@@ -3879,37 +4025,45 @@ async function doCreateComponents(spec) {
       // Check if existingCS was auto-deleted by Figma (happens when all children removed)
       var _csStillExists = false;
       try { var _testX = existingCS.x; _csStillExists = true; } catch(e) { _csStillExists = false; }
-      if (varComps.length > 0) {
-        // New variants exist — rebuild ComponentSet with combineAsVariants to ensure correct layout
-        if (_csStillExists) {
-          // 1. Move all existing variants to page level temporarily
-          var _existingVars = existingCS.children.slice();
-          // Save original names BEFORE moving — Figma renames variants when removed from CS
-          var _origVarNames = {};
-          for (var _evi = 0; _evi < _existingVars.length; _evi++) { _origVarNames[_existingVars[_evi].id] = _existingVars[_evi].name; }
-          for (var _evi = 0; _evi < _existingVars.length; _evi++) { targetPage.appendChild(_existingVars[_evi]); _managedIds[_existingVars[_evi].id] = true; }
-          // Restore original names after moving (Figma may have renamed e.g. "Items=3" → "Navigation Menu/3")
-          for (var _evi = 0; _evi < _existingVars.length; _evi++) { _existingVars[_evi].name = _origVarNames[_existingVars[_evi].id]; }
-          try { existingCS.remove(); } catch(e) { log.push("  WARN: existingCS.remove failed: " + e.message); }
-          // 2. Combine all (existing + new) into a fresh ComponentSet
-          var _allVars = _existingVars.concat(varComps);
-        } else {
-          var _allVars = varComps;
+      var _structuralChange = (varComps.length > 0 || _removedCount > 0);
+
+      if (_csStillExists) {
+        // CS still exists — update IN PLACE (no combineAsVariants, no position change)
+        // Add new variants directly to existing CS
+        for (var _nai = 0; _nai < varComps.length; _nai++) {
+          existingCS.appendChild(varComps[_nai]);
+          _managedIds[varComps[_nai].id] = true;
+          log.push("  [upsert-add] " + varComps[_nai].name.substring(0, 60));
         }
+        cs = existingCS;
+        // Re-layout grid ONLY when structure changed (add/remove) — pure updates keep positions
+        if (_structuralChange) {
+          _layoutVariantsInGrid(cs, propNames, properties);
+          log.push("  [upsert] Grid re-layout applied (" + varComps.length + " added, " + _removedCount + " removed)");
+        }
+      } else if (varComps.length > 0) {
+        // CS was auto-deleted (all old variants removed) — must use combineAsVariants for new ones
         for (var _nvi = 0; _nvi < varComps.length; _nvi++) _managedIds[varComps[_nvi].id] = true;
-        for (var _avl = 0; _avl < _allVars.length; _avl++) log.push("  [upsert-combine " + _avl + "] type=" + _allVars[_avl].type + " name='" + _allVars[_avl].name + "'");
-        cs = figma.combineAsVariants(_allVars, targetPage);
+        cs = figma.combineAsVariants(varComps, targetPage);
+        _layoutVariantsInGrid(cs, propNames, properties);
         cs.x = _savedCSX; cs.y = _savedCSY;
       } else {
-        cs = _csStillExists ? existingCS : null;
-        if (!cs) continue;
+        // No CS, no new variants — skip
+        continue;
       }
       cs.name = compName;
       if (compSpec.description) cs.description = compSpec.description;
       cs.layoutMode = "NONE"; cs.fills = [];
+      // ComponentSet visual: dashed border, radius 16, foreground color
+      cs.cornerRadius = 16;
+      cs.dashPattern = [10, 5];
+      cs.strokeWeight = 1;
+      cs.strokeAlign = "INSIDE";
+      var _csFgVar = findVar("foreground");
+      if (_csFgVar) { cs.strokes = [makeBoundPaint(_csFgVar)]; } else { cs.strokes = [{ type: "SOLID", color: { r: 0.04, g: 0.04, b: 0.04 }, opacity: 1 }]; }
       componentSetCache[compName] = cs;
       _anyUpsert = true;
-      log.push("  Upserted: " + (combos.length - varComps.length) + " updated, " + varComps.length + " added, " + _removedCount + " removed (always rebuild)");
+      log.push("  Upserted: " + (combos.length - varComps.length) + " updated, " + varComps.length + " added, " + _removedCount + " removed" + (_structuralChange ? " (grid re-layout)" : " (positions preserved)"));
     } else {
       if (varComps.length === 0) continue;
       for (var _nvi2 = 0; _nvi2 < varComps.length; _nvi2++) {
@@ -3917,10 +4071,19 @@ async function doCreateComponents(spec) {
         log.push("  [pre-combine " + _nvi2 + "] type=" + varComps[_nvi2].type + " name='" + varComps[_nvi2].name + "' children=" + varComps[_nvi2].children.length);
       }
       cs = figma.combineAsVariants(varComps, targetPage);
+      // Apply property-based grid layout (neat rows/columns by property)
+      _layoutVariantsInGrid(cs, propNames, properties);
       cs.name = compName;
       if (compSpec.description) cs.description = compSpec.description;
       cs.layoutMode = "NONE";
       cs.fills = []; // transparent — showcase frame provides bg
+      // ComponentSet visual: dashed border, radius 16, foreground color
+      cs.cornerRadius = 16;
+      cs.dashPattern = [10, 5];
+      cs.strokeWeight = 1;
+      cs.strokeAlign = "INSIDE";
+      var _csFgVar2 = findVar("foreground");
+      if (_csFgVar2) { cs.strokes = [makeBoundPaint(_csFgVar2)]; } else { cs.strokes = [{ type: "SOLID", color: { r: 0.04, g: 0.04, b: 0.04 }, opacity: 1 }]; }
       componentSetCache[compName] = cs;
       createdSets++;
       log.push("  ComponentSet: " + varComps.length + " in, " + cs.children.length + " in CS");
@@ -4033,6 +4196,46 @@ async function doCreateComponents(spec) {
             } catch(e) {}
           }
           log.push("  [swap] Linked " + _ssInstances.length + " instances + exposed nested properties");
+        }
+      }
+    }
+
+    // --- 3c. Post-build: Link Icon Left / Icon Right swap properties ---
+    // Ensure all icon instances across variants are linked to a single INSTANCE_SWAP property on ComponentSet
+    if (cs && cs.type === "COMPONENT_SET") {
+      var _iconSwapNames = ["Icon Left", "Icon Right"];
+      for (var _isn = 0; _isn < _iconSwapNames.length; _isn++) {
+        var _isName = _iconSwapNames[_isn];
+        var _isInstances = [];
+        for (var _isv = 0; _isv < cs.children.length; _isv++) {
+          var _isFound = cs.children[_isv].findAll(function(n) { return n.type === "INSTANCE" && n.name === _isName; });
+          for (var _isf = 0; _isf < _isFound.length; _isf++) _isInstances.push(_isFound[_isf]);
+        }
+        if (_isInstances.length === 0) continue;
+        // Find existing INSTANCE_SWAP property
+        var _isKey = null;
+        var _isDefs = cs.componentPropertyDefinitions || {};
+        for (var _idk in _isDefs) {
+          if ((_idk === _isName || _idk.indexOf(_isName + "#") === 0) && _isDefs[_idk].type === "INSTANCE_SWAP") {
+            _isKey = _idk; break;
+          }
+        }
+        // Create if not exists
+        if (!_isKey) {
+          try {
+            var _isMainComp = await _isInstances[0].getMainComponentAsync();
+            if (_isMainComp) {
+              _isKey = cs.addComponentProperty(_isName, "INSTANCE_SWAP", _isMainComp.id);
+              log.push("  [icon-swap] Created '" + _isName + "' key=" + _isKey);
+            }
+          } catch(e) { log.push("  [icon-swap] Failed to create '" + _isName + "': " + e.message); }
+        }
+        // Link all instances
+        if (_isKey) {
+          for (var _isl = 0; _isl < _isInstances.length; _isl++) {
+            try { _isInstances[_isl].componentPropertyReferences = { mainComponent: _isKey }; } catch(e) {}
+          }
+          log.push("  [icon-swap] Linked " + _isInstances.length + " '" + _isName + "' instances to key=" + _isKey);
         }
       }
     }
@@ -4966,6 +5169,137 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
 
   log.push("  Showcase built: " + (_scSections ? _scSections.join(", ") : "all sections"));
   return main;
+}
+
+// --- Grid layout for variants inside ComponentSet ---
+// Arranges variants in a property-based grid: last property = columns (X), rest = rows (Y)
+function _layoutVariantsInGrid(cs, propNames, properties) {
+  var variants = cs.children.slice();
+  if (variants.length === 0) return;
+  var gap = 20;
+
+  // Parse variant name → { PropName: "Value", ... }
+  function _vp(name) {
+    var r = {};
+    var parts = name.split(", ");
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].trim().split("=");
+      if (kv.length === 2) r[kv[0].trim()] = kv[1].trim();
+    }
+    return r;
+  }
+
+  // Single property or no property: arrange in one row
+  if (propNames.length <= 1) {
+    var vals = propNames.length === 1 ? properties[propNames[0]] : [];
+    var x = gap;
+    for (var c = 0; c < vals.length; c++) {
+      for (var v = 0; v < variants.length; v++) {
+        var vp = _vp(variants[v].name);
+        if (vp[propNames[0]] === vals[c]) {
+          variants[v].x = x;
+          variants[v].y = gap;
+          x += variants[v].width + gap;
+          break;
+        }
+      }
+    }
+    // Handle any unmatched variants (shouldn't happen, but safety)
+    if (propNames.length === 0) {
+      for (var v2 = 0; v2 < variants.length; v2++) {
+        variants[v2].x = gap + v2 * (variants[v2].width + gap);
+        variants[v2].y = gap;
+      }
+    }
+    var maxH = 0;
+    for (var mh = 0; mh < variants.length; mh++) { if (variants[mh].height > maxH) maxH = variants[mh].height; }
+    cs.resize(Math.max(x, 100), Math.max(gap + maxH + gap, 100));
+    return;
+  }
+
+  // Multi-property: last prop = columns (X), remaining = rows (Y)
+  var colProp = propNames[propNames.length - 1];
+  var colVals = properties[colProp];
+  var rowProps = propNames.slice(0, propNames.length - 1);
+
+  // Build expected row keys from cross product of non-last properties (in property order)
+  var rowCombos = [[]];
+  for (var rp = 0; rp < rowProps.length; rp++) {
+    var rpVals = properties[rowProps[rp]];
+    var nxt = [];
+    for (var rc = 0; rc < rowCombos.length; rc++) {
+      for (var rv = 0; rv < rpVals.length; rv++) {
+        nxt.push(rowCombos[rc].concat(rowProps[rp] + "=" + rpVals[rv]));
+      }
+    }
+    rowCombos = nxt;
+  }
+  var allRowKeys = [];
+  for (var rk = 0; rk < rowCombos.length; rk++) allRowKeys.push(rowCombos[rk].join(", "));
+
+  // Build grid: rowKey → colVal → variant
+  var grid = {};
+  for (var v3 = 0; v3 < variants.length; v3++) {
+    var vp3 = _vp(variants[v3].name);
+    var rowParts = [];
+    for (var rp2 = 0; rp2 < rowProps.length; rp2++) {
+      rowParts.push(rowProps[rp2] + "=" + (vp3[rowProps[rp2]] || "?"));
+    }
+    var rowKey = rowParts.join(", ");
+    if (!grid[rowKey]) grid[rowKey] = {};
+    grid[rowKey][vp3[colProp] || "?"] = variants[v3];
+  }
+
+  // Filter to only rows that have at least one variant (handles variantRestrictions)
+  var activeRows = [];
+  for (var ar = 0; ar < allRowKeys.length; ar++) {
+    if (grid[allRowKeys[ar]]) {
+      var hasAny = false;
+      for (var ac = 0; ac < colVals.length; ac++) {
+        if (grid[allRowKeys[ar]][colVals[ac]]) { hasAny = true; break; }
+      }
+      if (hasAny) activeRows.push(allRowKeys[ar]);
+    }
+  }
+
+  // Calculate column widths (max width per column across all rows)
+  var colWidths = [];
+  for (var cw = 0; cw < colVals.length; cw++) {
+    var maxW = 0;
+    for (var cr = 0; cr < activeRows.length; cr++) {
+      var cv = grid[activeRows[cr]] && grid[activeRows[cr]][colVals[cw]];
+      if (cv && cv.width > maxW) maxW = cv.width;
+    }
+    colWidths.push(maxW || 100);
+  }
+
+  // Calculate row heights (max height per row across all columns)
+  var rowHeights = [];
+  for (var rh = 0; rh < activeRows.length; rh++) {
+    var maxRH = 0;
+    for (var rhc = 0; rhc < colVals.length; rhc++) {
+      var rhv = grid[activeRows[rh]] && grid[activeRows[rh]][colVals[rhc]];
+      if (rhv && rhv.height > maxRH) maxRH = rhv.height;
+    }
+    rowHeights.push(maxRH || 40);
+  }
+
+  // Position each variant in the grid
+  var y = gap;
+  for (var gr = 0; gr < activeRows.length; gr++) {
+    var x2 = gap;
+    for (var gc = 0; gc < colVals.length; gc++) {
+      var gv = grid[activeRows[gr]] && grid[activeRows[gr]][colVals[gc]];
+      if (gv) { gv.x = x2; gv.y = y; }
+      x2 += colWidths[gc] + gap;
+    }
+    y += rowHeights[gr] + gap;
+  }
+
+  // Resize CS to fit all variants + padding
+  var totalW = gap;
+  for (var tw = 0; tw < colVals.length; tw++) totalW += colWidths[tw] + gap;
+  cs.resize(Math.max(totalW, 100), Math.max(y, 100));
 }
 
 // --- Style merge (supports compound keys) ---

@@ -21,7 +21,7 @@ import { createServer } from "http"
 import { execSync } from "child_process"
 
 import { PAGES, BREAKPOINTS, BASE_URL, type PageConfig } from "./config.js"
-import { PAGE_STATES } from "./states.js"
+import { PAGE_STATES, type ScreenState, type StateAction } from "./states.js"
 import { RAW_DOM_WALKER_SCRIPT, type RawExtractedNode } from "./raw-dom-walker.js"
 import {
   buildColorTokenMap, mapColor, mapSpacing, mapRadius, mapTextStyle,
@@ -147,16 +147,132 @@ const CSS_VAR_NORMALIZE_SCRIPT = `
 }
 `
 
+async function executeAction(page: any, action: StateAction): Promise<void> {
+  switch (action.action) {
+    case "fill":
+      await page.fill(action.selector, action.text)
+      break
+    case "click":
+      await page.click(action.selector, { timeout: 5000, force: (action as any).force })
+      break
+    case "wait":
+      await page.waitForTimeout(action.ms)
+      break
+    case "waitFor":
+      await page.waitForSelector(action.selector, { timeout: action.timeout || 5000 })
+      break
+    case "evaluate":
+      await page.evaluate(action.script)
+      break
+    case "press":
+      await page.keyboard.press(action.key)
+      break
+    case "hover":
+      await page.hover(action.selector)
+      break
+  }
+}
+
+/**
+ * Walk tree to find nodes with backgroundSelector, capture screenshot of each,
+ * and embed as base64 backgroundImage. Used for decorative effects (gradient orbs,
+ * glow, grid patterns) that can't be drawn as vectors.
+ */
+async function captureDecorativeBackgrounds(page: any, tree: RawExtractedNode) {
+  const nodes: RawExtractedNode[] = []
+  function collect(n: RawExtractedNode) {
+    if (n.backgroundSelector) nodes.push(n)
+    if (n.children) n.children.forEach(collect)
+  }
+  collect(tree)
+
+  if (nodes.length === 0) return
+  console.log(`   Capturing ${nodes.length} decorative background(s)...`)
+
+  // Hide overlays (sonner toasts, modals) so they don't appear in bg screenshots
+  await page.evaluate(() => {
+    const sel = "[data-sonner-toaster], [role='dialog'], [data-state='open']"
+    document.querySelectorAll(sel).forEach((el: any) => {
+      el.setAttribute("data-bg-hidden", el.style.display || "")
+      el.style.display = "none"
+    })
+  })
+
+  for (const node of nodes) {
+    try {
+      const el = await page.$(node.backgroundSelector!)
+      if (!el) continue
+
+      // Hide non-decorative (flow) children so screenshot only captures bg + decorative effects
+      await page.evaluate((selector: string) => {
+        const target = document.querySelector(selector)
+        if (!target) return
+        for (const child of target.children) {
+          const pos = getComputedStyle(child).position
+          // Keep absolute/fixed children (gradient orbs, glow, grid pattern)
+          // Hide flow children (content: illustration, card, text)
+          if (pos !== "absolute" && pos !== "fixed") {
+            ;(child as any).setAttribute("data-content-hidden", (child as any).style.visibility || "")
+            ;(child as any).style.visibility = "hidden"
+          }
+        }
+      }, node.backgroundSelector!)
+
+      const buf = await el.screenshot({ type: "png" }) as Buffer
+      node.backgroundImage = "data:image/png;base64," + buf.toString("base64")
+
+      // Restore hidden content children
+      await page.evaluate((selector: string) => {
+        const target = document.querySelector(selector)
+        if (!target) return
+        for (const child of target.children) {
+          if ((child as any).hasAttribute("data-content-hidden")) {
+            ;(child as any).style.visibility = (child as any).getAttribute("data-content-hidden") || ""
+            ;(child as any).removeAttribute("data-content-hidden")
+          }
+        }
+      }, node.backgroundSelector!)
+
+      delete node.backgroundSelector // consumed
+      console.log(`      ✅ ${node.name || "bg"}`)
+    } catch (e) {
+      console.log(`      ⚠️ Failed: ${node.backgroundSelector} — ${(e as Error).message}`)
+    }
+  }
+
+  // Restore hidden overlays
+  await page.evaluate(() => {
+    document.querySelectorAll("[data-bg-hidden]").forEach((el: any) => {
+      el.style.display = el.getAttribute("data-bg-hidden") || ""
+      el.removeAttribute("data-bg-hidden")
+    })
+  })
+}
+
 async function extractURL(
   context: any,
   url: string,
   width: number,
-  height: number
+  height: number,
+  state?: ScreenState
 ): Promise<RawExtractedNode> {
   const page = await context.newPage()
   await page.setViewportSize({ width, height })
-  await page.goto(url, { waitUntil: "networkidle" })
-  await page.waitForTimeout(1000) // Let animations settle
+  const waitUntil = state?.waitMode || "networkidle"
+  await page.goto(url, { waitUntil })
+
+  // Let animations settle (unless state says skip)
+  if (!state?.skipSettleWait) {
+    await page.waitForTimeout(1000)
+  }
+
+  // Run state setup actions
+  if (state?.actions) {
+    console.log(`   Running ${state.actions.length} state actions for "${state.name}"...`)
+    for (const action of state.actions) {
+      await executeAction(page, action)
+    }
+  }
 
   // Force all animations/transitions to finish → elements at final state
   await page.addStyleTag({ content: "*, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition-duration: 0s !important; transition-delay: 0s !important; }" })
@@ -185,11 +301,9 @@ async function extractURL(
   countAll(rawTree)
   console.log(`   Extracted ${nodeCount} nodes`)
 
-  // Screenshot images (SVG illustrations that couldn't be serialized, IMG tags)
-  await screenshotImages(page, rawTree)
-
-  // Screenshot decorative backgrounds (glow effects, grid patterns, etc.)
-  await screenshotBackgrounds(page, rawTree)
+  // Screenshot decorative backgrounds (gradient orbs, glow effects, complex visuals)
+  // Only used for elements with backgroundSelector — these can't be drawn as vectors
+  await captureDecorativeBackgrounds(page, rawTree)
 
   // Annotate tree with token mappings (color, spacing, radius, text style)
   annotateTokens(rawTree)
@@ -379,98 +493,6 @@ function annotateTokens(node: RawExtractedNode) {
   }
 }
 
-/**
- * Screenshot image nodes that don't have inline data.
- * Captures SVG illustrations and IMG elements as PNG base64.
- */
-async function screenshotImages(page: any, tree: RawExtractedNode) {
-  const imageNodes: RawExtractedNode[] = []
-  collectImageNodes(tree, imageNodes)
-
-  if (imageNodes.length === 0) return
-  console.log(`   Screenshotting ${imageNodes.length} image(s)...`)
-
-  for (const node of imageNodes) {
-    if (!node.selector) continue
-    // Skip if already has SVG content or base64
-    if (node.svgContent || (node.src && node.src.startsWith("data:"))) continue
-    try {
-      const el = page.locator(node.selector).first()
-      const isVisible = await el.isVisible().catch(() => false)
-      if (!isVisible) continue
-
-      const buffer = await el.screenshot({ type: "png" })
-      node.imageBase64 = `data:image/png;base64,${buffer.toString("base64")}`
-    } catch {
-      // Skip failed screenshots
-    }
-  }
-}
-
-function collectImageNodes(node: RawExtractedNode, out: RawExtractedNode[]) {
-  if (node.type === "image" && node.selector) out.push(node)
-  if (node.type === "svg" && !node.svgContent && node.selector) out.push(node)
-  if (node.children) {
-    for (const child of node.children) {
-      collectImageNodes(child, out)
-    }
-  }
-}
-
-/**
- * Screenshot frames with decorative backgrounds (glow, grid patterns, etc.)
- * Sets backgroundImage on the frame node for the plugin to use as fill.
- */
-async function screenshotBackgrounds(page: any, tree: RawExtractedNode) {
-  const bgNodes: RawExtractedNode[] = []
-  collectBgNodes(tree, bgNodes)
-
-  if (bgNodes.length === 0) return
-  console.log(`   Screenshotting ${bgNodes.length} background(s)...`)
-
-  for (const node of bgNodes) {
-    if (!node.backgroundSelector) continue
-    try {
-      const el = page.locator(node.backgroundSelector).first()
-      const isVisible = await el.isVisible().catch(() => false)
-      if (!isVisible) continue
-
-      // Hide non-decorative (non-absolute) children before screenshot
-      // so only background effects (glow, grid) are captured
-      await el.evaluate((parent: HTMLElement) => {
-        for (const child of parent.children) {
-          const pos = getComputedStyle(child).position
-          if (pos !== "absolute" && pos !== "fixed") {
-            ;(child as HTMLElement).dataset._wasVis = (child as HTMLElement).style.visibility
-            ;(child as HTMLElement).style.visibility = "hidden"
-          }
-        }
-      })
-      const buffer = await el.screenshot({ type: "png" })
-      // Restore hidden children
-      await el.evaluate((parent: HTMLElement) => {
-        for (const child of parent.children) {
-          if ("_wasVis" in (child as HTMLElement).dataset) {
-            ;(child as HTMLElement).style.visibility = (child as HTMLElement).dataset._wasVis || ""
-            delete (child as HTMLElement).dataset._wasVis
-          }
-        }
-      })
-      ;(node as any).backgroundImage = `data:image/png;base64,${buffer.toString("base64")}`
-    } catch {
-      // Skip failed screenshots
-    }
-  }
-}
-
-function collectBgNodes(node: RawExtractedNode, out: RawExtractedNode[]) {
-  if (node.backgroundSelector) out.push(node)
-  if (node.children) {
-    for (const child of node.children) {
-      collectBgNodes(child, out)
-    }
-  }
-}
 
 function outputResult(tree: RawExtractedNode, name: string) {
   const json = JSON.stringify(tree, null, 2)
@@ -538,9 +560,11 @@ async function startServer() {
       const pageName = url.pathname.replace("/api/extract/", "").replace("/api/extract", "")
       const bpParam = url.searchParams.get("breakpoints") // comma-separated: "Desktop,Tablet,Mobile"
       const bpName = url.searchParams.get("breakpoint") || "Desktop"
+      const stateName = url.searchParams.get("state") || null
 
       let targetUrl: string
       let displayName = pageName || "page"
+      let screenState: ScreenState | undefined
       if (pageName) {
         const pageConfig = PAGES.find(p => p.name === pageName)
         if (!pageConfig) {
@@ -550,6 +574,16 @@ async function startServer() {
         }
         targetUrl = `${BASE_URL}${pageConfig.route}`
         displayName = pageConfig.name
+        if (stateName) {
+          const states = PAGE_STATES[pageConfig.name] || []
+          screenState = states.find(s => s.name === stateName)
+          if (!screenState) {
+            res.writeHead(404, { "Content-Type": "application/json" })
+            res.end(JSON.stringify({ error: `State "${stateName}" not found for page "${pageName}"` }))
+            return
+          }
+          displayName = `${pageConfig.name}-${stateName}`
+        }
       } else {
         const customUrl = url.searchParams.get("url")
         if (!customUrl) {
@@ -578,7 +612,7 @@ async function startServer() {
           const roots = []
           for (const bp of selectedBPs) {
             console.log(`      → ${bp.name} (${bp.width}×${bp.height})`)
-            const tree = await extractURL(context, targetUrl, bp.width, bp.height)
+            const tree = await extractURL(context, targetUrl, bp.width, bp.height, screenState)
             roots.push({
               breakpoint: bp.name,
               width: bp.width,
@@ -600,7 +634,7 @@ async function startServer() {
       const bp = BREAKPOINTS.find(b => b.name.toLowerCase() === bpName.toLowerCase()) || BREAKPOINTS[0]
       console.log(`   📄 Extracting ${targetUrl} (${bp.width}×${bp.height})...`)
       try {
-        const result = await extractURL(context, targetUrl, bp.width, bp.height)
+        const result = await extractURL(context, targetUrl, bp.width, bp.height, screenState)
         res.writeHead(200, { "Content-Type": "application/json" })
         res.end(JSON.stringify({ tree: result, pageName: displayName }, null, 2))
         console.log(`   ✅ Done`)

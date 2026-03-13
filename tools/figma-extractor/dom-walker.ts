@@ -416,6 +416,46 @@ export const DOM_WALKER_SCRIPT = `
 
     const style = getComputedStyle(el);
 
+    // 0. Sonner toast detection (portal-rendered, no data-figma)
+    if (el.hasAttribute("data-sonner-toast")) {
+      const typeMap = { default: "Default", success: "Success", error: "Error", warning: "Warning", info: "Info" };
+      let dataType = el.getAttribute("data-type") || "default";
+      // toast.custom() sets data-type="custom" — check inner element for actual type
+      if (dataType === "custom") {
+        const inner = el.querySelector("[data-toast-type]");
+        if (inner) dataType = inner.getAttribute("data-toast-type") || "default";
+      }
+      const variants = { "Type": typeMap[dataType] || "Default" };
+
+      const hasDesc = !!el.querySelector("[data-description]");
+      variants["Show Description"] = hasDesc ? "True" : "False";
+
+      const hasAction = !!el.querySelector("[data-button]") || !!el.querySelector("button[data-action]") || !!el.querySelector("[data-action]");
+      variants["Show Action"] = hasAction ? "True" : "False";
+
+      const textOverrides = {};
+      const titleEl = el.querySelector("[data-title]");
+      if (titleEl) textOverrides["Title"] = titleEl.textContent.trim();
+      const descEl = el.querySelector("[data-description]");
+      if (descEl) textOverrides["Description"] = descEl.textContent.trim();
+
+      return {
+        type: "instance",
+        component: "Sonner",
+        variants,
+        textOverrides: Object.keys(textOverrides).length > 0 ? textOverrides : undefined,
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        position: "absolute",
+        x: Math.round(rect.left),
+        y: Math.round(rect.top),
+        fillWidth: getFlexGrow(el),
+        selfAlign: getSelfAlign(el) || undefined,
+        tagName: el.tagName,
+        dataSlot: "sonner-toast",
+      };
+    }
+
     // 1. Check for DS component (data-figma attribute)
     const figmaComp = el.getAttribute("data-figma");
     if (figmaComp) {
@@ -659,6 +699,19 @@ export const DOM_WALKER_SCRIPT = `
 
   const root = document.getElementById("root") || document.body;
   const result = walkDOM(root, 0);
+
+  // Sonner toasts render in a portal outside #root — walk them separately
+  const sonnerToaster = document.querySelector("[data-sonner-toaster]");
+  if (sonnerToaster && result && result.children) {
+    const toasts = sonnerToaster.querySelectorAll("[data-sonner-toast]");
+    for (const toast of toasts) {
+      const toastNode = walkDOM(toast, 1);
+      if (toastNode) {
+        result.children.push(toastNode);
+      }
+    }
+  }
+
   return result;
 }
 `

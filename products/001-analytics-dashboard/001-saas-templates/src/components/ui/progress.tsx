@@ -21,7 +21,8 @@ function Progress({
     <ProgressPrimitive.Root
       data-slot="progress"
       {...figma("Progress", {
-        Value: String(Math.round((value ?? 0) / 25) * 25),
+        Value: String(Math.ceil((value ?? 0) / 25) * 25),
+        "Show Label": "No",
       })}
       className={cn(
         "relative h-1.5 w-full overflow-hidden rounded-full bg-muted",

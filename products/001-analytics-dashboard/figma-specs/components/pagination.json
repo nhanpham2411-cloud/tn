@@ -11,13 +11,13 @@
       "properties": {
         "Type": ["Page", "Previous", "Next", "Ellipsis"],
         "State": ["Default", "Hover", "Disabled"],
-        "Active": ["True", "False"]
+        "Active": ["Yes", "No"]
       },
 
       "variantRestrictions": {
-        "Type=Previous": { "Active": ["False"] },
-        "Type=Next": { "Active": ["False"] },
-        "Type=Ellipsis": { "State": ["Default"], "Active": ["False"] }
+        "Type=Previous": { "Active": ["No"] },
+        "Type=Next": { "Active": ["No"] },
+        "Type=Ellipsis": { "State": ["Default"], "Active": ["No"] }
       },
 
       "base": {
@@ -38,11 +38,11 @@
       "variantStyles": {
         "State=Default": {},
         "State=Disabled": { "opacity": 0.5 },
-        "Active=True": {},
-        "Active=False": {},
+        "Active=Yes": {},
+        "Active=No": {},
 
         "Type=Page": {},
-        "Type=Page,Active=True": {
+        "Type=Page,Active=Yes": {
           "fill": "background",
           "stroke": "border",
           "textFill": "foreground"
@@ -51,7 +51,7 @@
           "fill": "accent",
           "textFill": "accent-foreground"
         },
-        "Type=Page,Active=True,State=Hover": {
+        "Type=Page,Active=Yes,State=Hover": {
           "fill": "accent",
           "stroke": "border",
           "textFill": "accent-foreground"
@@ -111,11 +111,11 @@
           "description": "Default, hover, active, and disabled states for page number items.",
           "layout": "horizontal",
           "items": [
-            { "label": "Default", "props": { "Type": "Page", "State": "Default", "Active": "False" } },
-            { "label": "Hover", "props": { "Type": "Page", "State": "Hover", "Active": "False" } },
-            { "label": "Active", "props": { "Type": "Page", "State": "Default", "Active": "True" } },
-            { "label": "Active Hover", "props": { "Type": "Page", "State": "Hover", "Active": "True" } },
-            { "label": "Disabled", "props": { "Type": "Page", "State": "Disabled", "Active": "False" } }
+            { "label": "Default", "props": { "Type": "Page", "State": "Default", "Active": "No" } },
+            { "label": "Hover", "props": { "Type": "Page", "State": "Hover", "Active": "No" } },
+            { "label": "Active", "props": { "Type": "Page", "State": "Default", "Active": "Yes" } },
+            { "label": "Active Hover", "props": { "Type": "Page", "State": "Hover", "Active": "Yes" } },
+            { "label": "Disabled", "props": { "Type": "Page", "State": "Disabled", "Active": "No" } }
           ]
         },
         {
@@ -123,10 +123,10 @@
           "description": "Previous and Next navigation items with default and hover states.",
           "layout": "horizontal",
           "items": [
-            { "label": "Previous", "props": { "Type": "Previous", "State": "Default", "Active": "False" } },
-            { "label": "Previous Hover", "props": { "Type": "Previous", "State": "Hover", "Active": "False" } },
-            { "label": "Next", "props": { "Type": "Next", "State": "Default", "Active": "False" } },
-            { "label": "Next Hover", "props": { "Type": "Next", "State": "Hover", "Active": "False" } }
+            { "label": "Previous", "props": { "Type": "Previous", "State": "Default", "Active": "No" } },
+            { "label": "Previous Hover", "props": { "Type": "Previous", "State": "Hover", "Active": "No" } },
+            { "label": "Next", "props": { "Type": "Next", "State": "Default", "Active": "No" } },
+            { "label": "Next Hover", "props": { "Type": "Next", "State": "Hover", "Active": "No" } }
           ]
         },
         {
@@ -134,7 +134,7 @@
           "description": "Non-interactive ellipsis indicator for collapsed page ranges.",
           "layout": "horizontal",
           "items": [
-            { "label": "Ellipsis", "props": { "Type": "Ellipsis", "State": "Default", "Active": "False" } }
+            { "label": "Ellipsis", "props": { "Type": "Ellipsis", "State": "Default", "Active": "No" } }
           ]
         }
       ],
@@ -163,8 +163,8 @@
       ],
 
       "figmaMapping": [
-        { "figma": "Type=Page,Active=False", "value": "No fill, muted-foreground text (ghost)", "code": "PaginationLink", "codeValue": "buttonVariants({ variant: 'ghost', size: 'icon' })" },
-        { "figma": "Type=Page,Active=True", "value": "background fill, border stroke, foreground text (outline)", "code": "PaginationLink isActive", "codeValue": "buttonVariants({ variant: 'outline', size: 'icon' })" },
+        { "figma": "Type=Page,Active=No", "value": "No fill, muted-foreground text (ghost)", "code": "PaginationLink", "codeValue": "buttonVariants({ variant: 'ghost', size: 'icon' })" },
+        { "figma": "Type=Page,Active=Yes", "value": "background fill, border stroke, foreground text (outline)", "code": "PaginationLink isActive", "codeValue": "buttonVariants({ variant: 'outline', size: 'icon' })" },
         { "figma": "Type=Previous", "value": "ChevronLeft + 'Previous', hug width", "code": "PaginationPrevious", "codeValue": "size='default', gap-1 pl-2.5" },
         { "figma": "Type=Next", "value": "'Next' + ChevronRight, hug width", "code": "PaginationNext", "codeValue": "size='default', gap-1 pr-2.5" },
         { "figma": "Type=Ellipsis", "value": "Ellipsis 16px, no hover/disabled", "code": "PaginationEllipsis", "codeValue": "size-9, aria-hidden, non-interactive" },
@@ -204,9 +204,9 @@
       },
 
       "properties": {
-        "Ellipsis": ["True", "False"],
-        "Show Prev": ["True", "False"],
-        "Show Next": ["True", "False"]
+        "Ellipsis": ["Yes", "No"],
+        "Show Prev": ["Yes", "No"],
+        "Show Next": ["Yes", "No"]
       },
 
       "base": {
@@ -220,25 +220,25 @@
         "heightMode": "hug",
         "hideLabel": true,
         "children": [
-          { "name": "Prev", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Previous", "State": "Default", "Active": "False" }, "showWhen": "Show Prev=True" },
-          { "name": "P1", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "1" } },
-          { "name": "P2", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "2" } },
-          { "name": "P3", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "True" }, "textOverrides": { "Label": "3" } },
-          { "name": "P4", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "4" } },
-          { "name": "P5", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "5" } },
-          { "name": "Dots", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Ellipsis", "State": "Default", "Active": "False" }, "showWhen": "Ellipsis=True" },
-          { "name": "P20", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "False" }, "textOverrides": { "Label": "20" }, "showWhen": "Ellipsis=True" },
-          { "name": "Next", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Next", "State": "Default", "Active": "False" }, "showWhen": "Show Next=True" }
+          { "name": "Prev", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Previous", "State": "Default", "Active": "No" }, "showWhen": "Show Prev=Yes" },
+          { "name": "P1", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "No" }, "textOverrides": { "Label": "1" } },
+          { "name": "P2", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "No" }, "textOverrides": { "Label": "2" } },
+          { "name": "P3", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "Yes" }, "textOverrides": { "Label": "3" } },
+          { "name": "P4", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "No" }, "textOverrides": { "Label": "4" } },
+          { "name": "P5", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "No" }, "textOverrides": { "Label": "5" } },
+          { "name": "Dots", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Ellipsis", "State": "Default", "Active": "No" }, "showWhen": "Ellipsis=Yes" },
+          { "name": "P20", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Page", "State": "Default", "Active": "No" }, "textOverrides": { "Label": "20" }, "showWhen": "Ellipsis=Yes" },
+          { "name": "Next", "type": "instance", "component": "Pagination Item", "variants": { "Type": "Next", "State": "Default", "Active": "No" }, "showWhen": "Show Next=Yes" }
         ]
       },
 
       "variantStyles": {
-        "Ellipsis=True": {},
-        "Ellipsis=False": {},
-        "Show Prev=True": {},
-        "Show Prev=False": {},
-        "Show Next=True": {},
-        "Show Next=False": {}
+        "Ellipsis=Yes": {},
+        "Ellipsis=No": {},
+        "Show Prev=Yes": {},
+        "Show Prev=No": {},
+        "Show Next=Yes": {},
+        "Show Next=No": {}
       },
 
       "examples": [
@@ -247,7 +247,7 @@
           "description": "Pagination with prev, next, page numbers, ellipsis, and last page.",
           "layout": "vertical",
           "items": [
-            { "label": "All Controls", "props": { "Ellipsis": "True", "Show Prev": "True", "Show Next": "True" } }
+            { "label": "All Controls", "props": { "Ellipsis": "Yes", "Show Prev": "Yes", "Show Next": "Yes" } }
           ]
         },
         {
@@ -255,7 +255,7 @@
           "description": "Simple sequential page numbers with navigation.",
           "layout": "vertical",
           "items": [
-            { "label": "No Ellipsis", "props": { "Ellipsis": "False", "Show Prev": "True", "Show Next": "True" } }
+            { "label": "No Ellipsis", "props": { "Ellipsis": "No", "Show Prev": "Yes", "Show Next": "Yes" } }
           ]
         },
         {
@@ -263,7 +263,7 @@
           "description": "Page numbers without previous or next buttons.",
           "layout": "vertical",
           "items": [
-            { "label": "No Nav", "props": { "Ellipsis": "False", "Show Prev": "False", "Show Next": "False" } }
+            { "label": "No Nav", "props": { "Ellipsis": "No", "Show Prev": "No", "Show Next": "No" } }
           ]
         }
       ],
@@ -291,12 +291,12 @@
       ],
 
       "figmaMapping": [
-        { "figma": "Ellipsis=True", "value": "P1-P5 + ... + P20", "code": "--", "codeValue": "Includes PaginationEllipsis + extra PaginationLink" },
-        { "figma": "Ellipsis=False", "value": "P1-P5 only", "code": "--", "codeValue": "Sequential PaginationLink items only" },
-        { "figma": "Show Prev=True", "value": "Previous button visible", "code": "--", "codeValue": "PaginationPrevious rendered" },
-        { "figma": "Show Prev=False", "value": "Previous button hidden", "code": "--", "codeValue": "PaginationPrevious not rendered" },
-        { "figma": "Show Next=True", "value": "Next button visible", "code": "--", "codeValue": "PaginationNext rendered" },
-        { "figma": "Show Next=False", "value": "Next button hidden", "code": "--", "codeValue": "PaginationNext not rendered" }
+        { "figma": "Ellipsis=Yes", "value": "P1-P5 + ... + P20", "code": "--", "codeValue": "Includes PaginationEllipsis + extra PaginationLink" },
+        { "figma": "Ellipsis=No", "value": "P1-P5 only", "code": "--", "codeValue": "Sequential PaginationLink items only" },
+        { "figma": "Show Prev=Yes", "value": "Previous button visible", "code": "--", "codeValue": "PaginationPrevious rendered" },
+        { "figma": "Show Prev=No", "value": "Previous button hidden", "code": "--", "codeValue": "PaginationPrevious not rendered" },
+        { "figma": "Show Next=Yes", "value": "Next button visible", "code": "--", "codeValue": "PaginationNext rendered" },
+        { "figma": "Show Next=No", "value": "Next button hidden", "code": "--", "codeValue": "PaginationNext not rendered" }
       ],
 
       "accessibility": {

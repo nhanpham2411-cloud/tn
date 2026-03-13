@@ -55,7 +55,7 @@
           "paddingLeft": "sm",
           "paddingRight": "none",
           "children": [
-            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default" }, "textOverrides": { "Label": "" } }
+            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default", "Show Label": "No" } }
           ]
         }
       },
@@ -145,7 +145,7 @@
           "paddingLeft": "sm",
           "paddingRight": "none",
           "children": [
-            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default" }, "textOverrides": { "Label": "" } }
+            { "name": "Checkbox", "type": "instance", "component": "Checkbox", "variants": { "Value": "Unchecked", "State": "Default", "Show Label": "No" } }
           ]
         }
       },

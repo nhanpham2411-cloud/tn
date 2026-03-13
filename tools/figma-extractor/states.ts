@@ -51,17 +51,10 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
         { action: "fill", selector: "#email", text: "invalid-email" },
         { action: "fill", selector: "#password", text: "short" },
         { action: "click", selector: "button[type='submit']" },
-        { action: "wait", ms: 300 },
-      ],
-    },
-    {
-      name: "submitting",
-      actions: [
-        { action: "fill", selector: "#email", text: "john@shoppulse.com" },
-        { action: "fill", selector: "#password", text: "SecureP@ss123" },
-        // Enable button by checking remember-me (ensures button is enabled)
-        { action: "click", selector: "button[type='submit']" },
-        { action: "wait", ms: 200 }, // Catch spinner before 1200ms navigation
+        { action: "waitFor", selector: ".text-destructive", timeout: 3000 },
+        // Wait for sonner toast to render and animate in
+        { action: "waitFor", selector: "[data-sonner-toast]", timeout: 2000 },
+        { action: "wait", ms: 500 },
       ],
     },
   ],
@@ -79,16 +72,31 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
     {
       name: "validation-error",
       actions: [
-        // Submit with empty/invalid fields to trigger all errors
+        // Fill all fields to enable button, but with invalid email + weak password
+        { action: "fill", selector: "#name", text: "Test User" },
         { action: "fill", selector: "#email", text: "bad-email" },
         { action: "fill", selector: "#password", text: "weak" },
-        { action: "click", selector: "button[type='submit']", force: true },
-        { action: "wait", ms: 300 },
+        // Use JS .click() to bypass decorative blur div intercepting pointer events on Mobile
+        { action: "evaluate", script: "document.querySelector('#terms').click()" },
+        { action: "wait", ms: 500 },
+        { action: "evaluate", script: "document.querySelector('button[type=\"submit\"]').click()" },
+        { action: "wait", ms: 500 },
+        { action: "waitFor", selector: ".text-destructive", timeout: 5000 },
+        { action: "waitFor", selector: "[data-sonner-toast]", timeout: 5000 },
       ],
     },
   ],
 
   "auth-forgot-password": [
+    {
+      name: "validation-error",
+      actions: [
+        { action: "fill", selector: "#email", text: "invalid-email" },
+        { action: "click", selector: "button[type='submit']" },
+        { action: "waitFor", selector: ".text-destructive", timeout: 3000 },
+        { action: "waitFor", selector: "[data-sonner-toast]", timeout: 2000 },
+      ],
+    },
     {
       name: "success",
       actions: [

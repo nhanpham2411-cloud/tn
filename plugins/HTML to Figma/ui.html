@@ -36,8 +36,6 @@
   .page-item .chevron.expanded { transform: rotate(90deg); }
   .page-item .chevron:hover { color: #a1a1aa; }
   .page-item .no-chevron { width: 16px; flex-shrink: 0; }
-  .state-group { overflow: hidden; display: none; }
-  .state-group.expanded { display: block; }
   .page-item.state { padding-left: 30px; color: #a1a1aa; font-size: 11px; }
   .page-item.state::before { content: '↳'; margin-right: 4px; color: #52525b; }
   .page-category { color: #71717a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px 4px; flex-shrink: 0; }
@@ -104,8 +102,8 @@
     <div id="footer-fetch">
       <div class="breakpoints">
         <label><input type="checkbox" value="Desktop" checked /> Desktop (1440)</label>
-        <label><input type="checkbox" value="Tablet" /> Tablet (768)</label>
-        <label><input type="checkbox" value="Mobile" /> Mobile (375)</label>
+        <label><input type="checkbox" value="Tablet" checked /> Tablet (768)</label>
+        <label><input type="checkbox" value="Mobile" checked /> Mobile (375)</label>
       </div>
       <div class="actions">
         <button class="btn-secondary" id="btnRefresh">Refresh</button>
@@ -219,30 +217,35 @@
 
       pageListEl.appendChild(item);
 
-      // State sub-items (collapsed by default)
-      let stateGroup = null;
+      // State sub-items — flat in list, hidden by default
+      const stateItems = [];
       if (hasStates) {
-        stateGroup = document.createElement('div');
-        stateGroup.className = 'state-group';
         for (const s of p.states) {
-          const stateItem = document.createElement('div');
-          stateItem.className = 'page-item state';
-          stateItem.textContent = s;
-          stateItem.dataset.name = p.name;
-          stateItem.dataset.state = s;
-          stateItem.onclick = () => selectPage(p.name, s, stateItem);
-          stateGroup.appendChild(stateItem);
+          const si = document.createElement('div');
+          si.className = 'page-item state';
+          si.textContent = s;
+          si.dataset.name = p.name;
+          si.dataset.state = s;
+          si.style.display = 'none';
+          si.onclick = () => selectPage(p.name, s, si);
+          pageListEl.appendChild(si);
+          stateItems.push(si);
         }
-        pageListEl.appendChild(stateGroup);
       }
 
-      // Click handler: select page + toggle expand if has states
+      // Click handler: select page + toggle expand
       item.onclick = () => {
         selectPage(p.name, null, item);
         if (hasStates) {
           const chevron = item.querySelector('.chevron');
-          const expanded = chevron.classList.toggle('expanded');
-          stateGroup.classList.toggle('expanded', expanded);
+          const showing = stateItems[0].style.display !== 'none';
+          if (showing) {
+            chevron.classList.remove('expanded');
+            stateItems.forEach(si => si.style.display = 'none');
+          } else {
+            chevron.classList.add('expanded');
+            stateItems.forEach(si => si.style.display = 'flex');
+          }
         }
       };
     }

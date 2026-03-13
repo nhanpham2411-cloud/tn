@@ -149,7 +149,7 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="px-md sm:px-xl lg:px-2xl pt-md sm:pt-xl lg:pt-2xl w-full">
+      <header className="px-md sm:px-xl lg:px-2xl pt-md w-full">
         <div className="flex flex-col gap-sm sm:gap-lg max-w-[1440px] mx-auto w-full">
         {/* Top row: logo text + tab nav + actions */}
         <div className="flex items-center justify-between">

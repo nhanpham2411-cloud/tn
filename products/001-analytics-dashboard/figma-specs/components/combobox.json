@@ -37,11 +37,12 @@
         "iconRight": true,
         "iconRightName": "ChevronsUpDown",
         "iconFill": "muted-foreground",
-        "iconOpacity": 0.5
+        "clipsContent": true
       },
 
       "variantStyles": {
         "State=Hover": {
+          "fill": "outline-hover",
           "stroke": "border-strong"
         },
         "State=Focus": {
