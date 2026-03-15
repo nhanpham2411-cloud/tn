@@ -21,6 +21,7 @@
         "width": 320,
         "height": 76,
         "heightMode": "fixed",
+        "minHeightVar": "height/textarea",
         "radius": "lg",
         "stroke": "border",
         "strokeWidth": 1,

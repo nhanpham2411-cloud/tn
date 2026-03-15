@@ -1,0 +1,344 @@
+{
+  "components": [
+    {
+      "name": "Thumbnail",
+      "description": "Visual element for product images, icon boxes, and text/initials badges. Three types: Image, Icon, Text. All types support Size, Shape, and Color properties.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { Thumbnail } from \"@/components/ui/thumbnail\""
+      },
+
+      "properties": {
+        "Type": ["Image", "Icon", "Text"],
+        "Size": ["XS", "SM", "Default", "LG", "XL"],
+        "Shape": ["Square", "Circle"],
+        "Color": ["Default", "Primary", "Primary Solid", "Success", "Destructive", "Warning", "Outline", "Surface"]
+      },
+
+      "variantRestrictions": {
+        "Type=Icon,Shape=Square": { "Size": ["XS", "SM", "Default", "LG"] },
+        "Type=Image": { "Color": ["Default"] }
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "center",
+        "counterAlign": "center",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 40,
+        "height": 40,
+        "heightMode": "fixed",
+        "radius": "lg",
+        "clipsContent": true,
+        "fill": "muted",
+        "hideLabel": true
+      },
+
+      "variantStyles": {
+        "Type=Image": {
+          "fill": "surface-raised",
+          "stroke": "border",
+          "imageUrl": "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp"
+        },
+        "Type=Icon": {
+          "clipsContent": false,
+          "iconFill": "muted-foreground",
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Package", "iconSize": 18 }
+          ]
+        },
+        "Type=Text": {
+          "clipsContent": false,
+          "textContent": "AB",
+          "textFill": "muted-foreground",
+          "textStyle": "SP/Body",
+          "hideLabel": false
+        },
+
+        "Shape=Square": {},
+        "Shape=Circle": { "radius": "full" },
+
+        "Color=Default": {},
+        "Color=Primary": { "fill": "primary-10", "textFill": "primary", "iconFill": "primary" },
+        "Color=Primary Solid": { "fill": "primary", "textFill": "primary-foreground", "iconFill": "primary-foreground" },
+        "Color=Success": { "fill": "success-subtle", "textFill": "success", "iconFill": "success" },
+        "Color=Destructive": { "fill": "destructive-subtle", "textFill": "destructive", "iconFill": "destructive" },
+        "Color=Warning": { "fill": "warning-subtle", "textFill": "warning", "iconFill": "warning" },
+        "Color=Outline": { "fill": "outline-hover", "textFill": "muted-foreground", "iconFill": "muted-foreground" },
+        "Color=Surface": { "fill": "surface-raised", "textFill": "muted-foreground", "iconFill": "muted-foreground" },
+
+        "Type=Icon,Shape=Circle": {
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Star", "iconSize": 18 }
+          ]
+        },
+
+        "Size=XS,Type=Image": { "width": 24, "height": 24 },
+        "Size=SM,Type=Image": { "width": 32, "height": 32 },
+        "Size=Default,Type=Image": {},
+        "Size=LG,Type=Image": { "width": 48, "height": 48 },
+        "Size=XL,Type=Image": {
+          "width": 64, "height": 64,
+          "imageUrl": "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp"
+        },
+
+        "Size=XS,Type=Image,Shape=Square": { "radius": "sm" },
+        "Size=SM,Type=Image,Shape=Square": { "radius": "md" },
+
+        "Size=XS,Type=Icon,Shape=Square": {
+          "width": 24, "height": 24, "radius": "md",
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Globe", "iconSize": 12 }
+          ]
+        },
+        "Size=SM,Type=Icon,Shape=Square": {
+          "width": 28, "height": 28, "radius": "md",
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Globe", "iconSize": 14 }
+          ]
+        },
+        "Size=Default,Type=Icon,Shape=Square": {
+          "width": 36, "height": 36
+        },
+        "Size=LG,Type=Icon,Shape=Square": {
+          "width": 44, "height": 44, "radius": "xl",
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Package", "iconSize": 20 }
+          ]
+        },
+
+        "Size=XS,Type=Icon,Shape=Circle": {
+          "width": 24, "height": 24,
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Star", "iconSize": 12 }
+          ]
+        },
+        "Size=SM,Type=Icon,Shape=Circle": {
+          "width": 28, "height": 28,
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "Star", "iconSize": 14 }
+          ]
+        },
+        "Size=Default,Type=Icon,Shape=Circle": {},
+        "Size=LG,Type=Icon,Shape=Circle": {
+          "width": 48, "height": 48,
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "CircleCheck", "iconSize": 22 }
+          ]
+        },
+        "Size=XL,Type=Icon,Shape=Circle": {
+          "width": 64, "height": 64,
+          "children": [
+            { "type": "icon", "name": "Icon", "iconName": "CircleAlert", "iconSize": 24 }
+          ]
+        },
+
+        "Size=XS,Type=Text": {
+          "width": 24, "height": 24,
+          "textContent": "1",
+          "textStyle": "SP/Label"
+        },
+        "Size=SM,Type=Text": {
+          "width": 28, "height": 28,
+          "textContent": "AB",
+          "textStyle": "SP/Label"
+        },
+        "Size=Default,Type=Text": {},
+        "Size=LG,Type=Text": {
+          "width": 48, "height": 48,
+          "textContent": "JD",
+          "textStyle": "SP/Body Medium"
+        },
+        "Size=XL,Type=Text": {
+          "width": 64, "height": 64,
+          "textContent": "BR",
+          "textStyle": "SP/Heading 6"
+        },
+
+        "Size=XS,Type=Text,Shape=Square": { "radius": "md" },
+        "Size=SM,Type=Text,Shape=Square": { "radius": "md" }
+      },
+
+      "examples": [
+        {
+          "name": "Image Sizes",
+          "description": "Product thumbnails — XS (24px), SM (32px), Default (40px), LG (48px), XL (64px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "XS", "props": { "Type": "Image", "Size": "XS", "Shape": "Square", "Color": "Default" } },
+            { "label": "SM", "props": { "Type": "Image", "Size": "SM", "Shape": "Square", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Image", "Size": "Default", "Shape": "Square", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Image", "Size": "LG", "Shape": "Square", "Color": "Default" } },
+            { "label": "XL", "props": { "Type": "Image", "Size": "XL", "Shape": "Square", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Image Circle",
+          "description": "Circular product thumbnails.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "SM", "props": { "Type": "Image", "Size": "SM", "Shape": "Circle", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Image", "Size": "Default", "Shape": "Circle", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Image", "Size": "LG", "Shape": "Circle", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Icon Square Sizes",
+          "description": "Square icon boxes — XS (24px), SM (28px), Default (36px), LG (44px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "XS", "props": { "Type": "Icon", "Size": "XS", "Shape": "Square", "Color": "Default" } },
+            { "label": "SM", "props": { "Type": "Icon", "Size": "SM", "Shape": "Square", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Icon", "Size": "LG", "Shape": "Square", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Icon Circle Sizes",
+          "description": "Circular icon containers — XS (24px), SM (28px), Default (40px), LG (48px), XL (64px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "XS", "props": { "Type": "Icon", "Size": "XS", "Shape": "Circle", "Color": "Default" } },
+            { "label": "SM", "props": { "Type": "Icon", "Size": "SM", "Shape": "Circle", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Icon", "Size": "Default", "Shape": "Circle", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Icon", "Size": "LG", "Shape": "Circle", "Color": "Default" } },
+            { "label": "XL", "props": { "Type": "Icon", "Size": "XL", "Shape": "Circle", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Icon Colors",
+          "description": "Icon thumbnails with semantic color presets.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Default" } },
+            { "label": "Primary", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Primary" } },
+            { "label": "Primary Solid", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Primary Solid" } },
+            { "label": "Success", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Success" } },
+            { "label": "Destructive", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Destructive" } },
+            { "label": "Warning", "props": { "Type": "Icon", "Size": "Default", "Shape": "Square", "Color": "Warning" } }
+          ]
+        },
+        {
+          "name": "Text Circle Sizes",
+          "description": "Circular text badges — XS (24px), SM (28px), Default (40px), LG (48px), XL (64px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "XS", "props": { "Type": "Text", "Size": "XS", "Shape": "Circle", "Color": "Default" } },
+            { "label": "SM", "props": { "Type": "Text", "Size": "SM", "Shape": "Circle", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Text", "Size": "LG", "Shape": "Circle", "Color": "Default" } },
+            { "label": "XL", "props": { "Type": "Text", "Size": "XL", "Shape": "Circle", "Color": "Default" } }
+          ]
+        },
+        {
+          "name": "Text Colors",
+          "description": "Text thumbnails with semantic color presets.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Default" } },
+            { "label": "Primary", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Primary" } },
+            { "label": "Primary Solid", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Primary Solid" } },
+            { "label": "Success", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Success" } },
+            { "label": "Destructive", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Destructive" } },
+            { "label": "Warning", "props": { "Type": "Text", "Size": "Default", "Shape": "Circle", "Color": "Warning" } }
+          ]
+        },
+        {
+          "name": "Text Square Sizes",
+          "description": "Square text badges — XS (24px), SM (28px), Default (40px), LG (48px), XL (64px).",
+          "layout": "horizontal",
+          "items": [
+            { "label": "XS", "props": { "Type": "Text", "Size": "XS", "Shape": "Square", "Color": "Default" } },
+            { "label": "SM", "props": { "Type": "Text", "Size": "SM", "Shape": "Square", "Color": "Default" } },
+            { "label": "Default", "props": { "Type": "Text", "Size": "Default", "Shape": "Square", "Color": "Default" } },
+            { "label": "LG", "props": { "Type": "Text", "Size": "LG", "Shape": "Square", "Color": "Default" } },
+            { "label": "XL", "props": { "Type": "Text", "Size": "XL", "Shape": "Square", "Color": "Default" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "type", "type": "\"image\" | \"icon\" | \"text\"", "default": "image", "description": "Visual style — square image, icon box, or text badge" },
+        { "name": "size", "type": "\"xs\" | \"sm\" | \"default\" | \"lg\" | \"xl\"", "default": "default", "description": "Size preset (varies per type and shape)" },
+        { "name": "shape", "type": "\"square\" | \"circle\"", "default": "square (image/icon) / circle (text)", "description": "Shape — square (rounded corners) or circle. Image and Icon default to square, Text defaults to circle." },
+        { "name": "color", "type": "\"default\" | \"primary\" | \"primary-solid\" | \"success\" | \"destructive\" | \"warning\" | \"outline\" | \"surface\"", "default": "default", "description": "Semantic color preset — controls background and icon/text color. Image type restricted to default only." },
+        { "name": "src", "type": "string", "default": "—", "description": "Image source URL (Image type only)" },
+        { "name": "alt", "type": "string", "default": "—", "description": "Accessible alt text (Image type only)" },
+        { "name": "fallback", "type": "string", "default": "—", "description": "Fallback text when image fails or missing, 1-3 chars (Image type only)" },
+        { "name": "icon", "type": "ReactNode", "default": "—", "description": "Icon element with size classes — color inherited from color prop via currentColor (Icon type only)" },
+        { "name": "text", "type": "string | number", "default": "—", "description": "Text content — initials, numbers, 1-3 chars (Text type only)" },
+        { "name": "className", "type": "string", "default": "—", "description": "Additional CSS classes" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "color=\"default\" background" },
+        { "token": "--color-primary-10", "value": "violet-600/10", "description": "color=\"primary\" background (light)" },
+        { "token": "--color-primary-20", "value": "violet-600/20", "description": "color=\"primary\" background (dark)" },
+        { "token": "--color-primary", "value": "violet-600", "description": "color=\"primary-solid\" background" },
+        { "token": "--color-success-subtle", "value": "green-50 / green-950", "description": "color=\"success\" background" },
+        { "token": "--color-destructive-subtle", "value": "red-50 / red-950", "description": "color=\"destructive\" background" },
+        { "token": "--color-warning-subtle", "value": "amber-50 / amber-950", "description": "color=\"warning\" background" },
+        { "token": "--color-outline-hover", "value": "zinc-800/8 / white/8", "description": "color=\"outline\" background" },
+        { "token": "--color-surface-raised", "value": "zinc-50 / zinc-900", "description": "color=\"surface\" background + Image type background" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Default icon/text foreground color" },
+        { "token": "--color-primary-foreground", "value": "white", "description": "color=\"primary-solid\" foreground color" },
+        { "token": "--color-success", "value": "green-600 / green-500", "description": "color=\"success\" foreground color" },
+        { "token": "--color-destructive", "value": "red-600 / red-500", "description": "color=\"destructive\" foreground color" },
+        { "token": "--color-warning", "value": "amber-600 / amber-500", "description": "color=\"warning\" foreground color" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Image thumbnail ring border" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Image type for product thumbnails with a short fallback string.", "dont": "Use Avatar for square product images — Avatar is circular, Thumbnail Image is square." },
+        { "do": "Use Icon type with shape=\"square\" for status/category indicators in list rows.", "dont": "Hardcode icon box structure inline — use Thumbnail for consistency." },
+        { "do": "Use Icon type with shape=\"circle\" for circular icon containers in KPI cards, empty states, and success/error modals.", "dont": "Manually create rounded-full div + icon inline — use Thumbnail Icon with shape=\"circle\" instead." },
+        { "do": "Use Text type for step indicators, numbered badges, and initials.", "dont": "Create custom div + span for numbered circles — use Thumbnail Text instead." },
+        { "do": "Use the color prop for semantic colors — color=\"primary\", color=\"success\", color=\"destructive\".", "dont": "Use className to set background colors — use the color prop instead for consistency." },
+        { "do": "Use shape prop to control square vs circle — shape=\"square\" or shape=\"circle\".", "dont": "Use className for rounded-full — use shape=\"circle\" instead." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Image", "value": "Product photo with ring border", "code": "type", "codeValue": "\"image\" (default)" },
+        { "figma": "Type=Icon", "value": "Icon in colored box", "code": "type", "codeValue": "\"icon\"" },
+        { "figma": "Type=Text", "value": "Text/initials badge", "code": "type", "codeValue": "\"text\"" },
+        { "figma": "Shape=Square", "value": "Rounded corners (md/lg/xl per size)", "code": "shape", "codeValue": "\"square\" (default for image/icon)" },
+        { "figma": "Shape=Circle", "value": "Fully round (rounded-full)", "code": "shape", "codeValue": "\"circle\" (default for text)" },
+        { "figma": "Color=Default", "value": "Muted bg + muted-foreground text/icon", "code": "color", "codeValue": "\"default\"" },
+        { "figma": "Color=Primary", "value": "Primary-10 bg + primary text/icon", "code": "color", "codeValue": "\"primary\"" },
+        { "figma": "Color=Primary Solid", "value": "Primary bg + white text/icon", "code": "color", "codeValue": "\"primary-solid\"" },
+        { "figma": "Color=Success", "value": "Success-subtle bg + success text/icon", "code": "color", "codeValue": "\"success\"" },
+        { "figma": "Color=Destructive", "value": "Destructive-subtle bg + destructive text/icon", "code": "color", "codeValue": "\"destructive\"" },
+        { "figma": "Color=Warning", "value": "Warning-subtle bg + warning text/icon", "code": "color", "codeValue": "\"warning\"" },
+        { "figma": "Color=Outline", "value": "Outline-hover bg + muted-foreground", "code": "color", "codeValue": "\"outline\"" },
+        { "figma": "Color=Surface", "value": "Surface-raised bg + muted-foreground", "code": "color", "codeValue": "\"surface\"" },
+        { "figma": "Size=XS", "value": "24px all types", "code": "size", "codeValue": "\"xs\"" },
+        { "figma": "Size=SM", "value": "32/28/28px per type", "code": "size", "codeValue": "\"sm\"" },
+        { "figma": "Size=Default", "value": "40/36/40px per type+shape", "code": "size", "codeValue": "\"default\"" },
+        { "figma": "Size=LG", "value": "48/44/48px per type+shape", "code": "size", "codeValue": "\"lg\"" },
+        { "figma": "Size=XL", "value": "64px (Image + Icon Circle + Text)", "code": "size", "codeValue": "\"xl\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Thumbnail is non-interactive — wrap in a button if a click action is needed" }
+        ],
+        "notes": [
+          "Image type: pass alt prop for screen readers",
+          "Icon type: icon is decorative — parent element should provide accessible label",
+          "Text type: text content is visible — ensure parent context provides meaning"
+        ]
+      },
+
+      "related": [
+        { "name": "Avatar", "desc": "Circular image element for user photos — use Thumbnail for icons and product images." },
+        { "name": "List Item", "desc": "Uses Thumbnail Image for products and Thumbnail Icon for transaction icons." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

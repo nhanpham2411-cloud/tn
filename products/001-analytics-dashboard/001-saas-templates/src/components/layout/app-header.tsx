@@ -26,10 +26,12 @@ import {
   Menu,
 } from "lucide-react"
 
+import { figma } from "@/lib/figma-dev"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SearchBox } from "@/components/ui/search-box"
 import { Badge } from "@/components/ui/badge"
+import { ListItem } from "@/components/ui/list-item"
 import {
   Sheet,
   SheetContent,
@@ -93,13 +95,6 @@ const INITIAL_NOTIFICATIONS = [
   { id: "5", icon: Users, title: "Team invite accepted", desc: "Marcus Johnson joined your workspace", time: "3h ago", read: true, type: "info" as const },
 ]
 
-const notifTypeColor: Record<string, string> = {
-  order: "text-primary",
-  warning: "text-amber-500",
-  success: "text-success",
-  info: "text-muted-foreground",
-}
-
 export function AppHeader() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -147,9 +142,13 @@ export function AppHeader() {
     return location.pathname.startsWith(path)
   }
 
+  // Figma variants: derive Page from route, Breakpoint from viewport
+  const figmaPage = topTabs.find((t) => isActive(t.path))?.label || "Dashboard"
+  const figmaBreakpoint = window.innerWidth >= 1024 ? "Desktop" : window.innerWidth >= 768 ? "Tablet" : "Mobile"
+
   return (
     <>
-      <header className="px-md sm:px-xl lg:px-2xl pt-md w-full">
+      <header className="px-md sm:px-xl lg:px-2xl pt-md w-full" {...figma("App Header", { Page: figmaPage, Breakpoint: figmaBreakpoint })}>
         <div className="flex flex-col gap-sm sm:gap-lg max-w-[1440px] mx-auto w-full">
         {/* Top row: logo text + tab nav + actions */}
         <div className="flex items-center justify-between">
@@ -158,7 +157,7 @@ export function AppHeader() {
           {/* Hamburger — mobile only */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden size-[36px] rounded-full text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon" className="md:hidden rounded-full text-muted-foreground hover:text-foreground">
                 <Menu className="size-[20px]" />
               </Button>
             </SheetTrigger>
@@ -166,7 +165,7 @@ export function AppHeader() {
               <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               <div className="flex flex-col h-full">
                 {/* Mobile nav header */}
-                <div className="flex items-center gap-sm px-xl py-lg border-b border-border/30 dark:border-white/[0.06]">
+                <div className="flex items-center gap-sm px-xl py-lg border-b border-border-subtle dark:border-white/[0.06]">
                   <svg viewBox="0 0 28 28" fill="none" className="size-[24px]">
                     <path d="M14 3L24 10L14 25L4 10Z" fill="url(#mobGrd)" fillOpacity="0.5" stroke="url(#mobGrd)" strokeWidth="1" strokeOpacity="0.7"/>
                     <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="url(#mobGrd)" fillOpacity="0.85"/>
@@ -183,8 +182,8 @@ export function AppHeader() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-sm px-xl py-sm sp-body transition-colors ${
                         isActive(page.url)
-                          ? "text-foreground bg-muted/50 dark:bg-white/[0.04] font-semibold"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/30 dark:hover:bg-white/[0.02]"
+                          ? "text-foreground bg-muted dark:bg-white/[0.04] font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-surface-raised dark:hover:bg-white/[0.02]"
                       }`}
                     >
                       <page.icon className="size-[18px]" />
@@ -215,7 +214,7 @@ export function AppHeader() {
                 className={`px-lg py-xs rounded-full sp-label transition-all ${
                   isActive(tab.path)
                     ? "bg-foreground text-background shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
                 {tab.label}
@@ -226,17 +225,17 @@ export function AppHeader() {
           {/* Right actions */}
           <div className="flex items-center gap-xs">
             {/* Mobile search icon — below sm only */}
-            <Button variant="ghost" size="icon" className="sm:hidden size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={() => setOpen(true)}>
+            <Button variant="ghost" size="icon" className="sm:hidden rounded-full text-muted-foreground hover:text-foreground" onClick={() => setOpen(true)}>
               <Search className="size-[18px]" />
             </Button>
 
             <Link to="/design-system">
-              <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground" title="Design System">
+              <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground" title="Design System">
                 <Palette className="size-[18px]" />
               </Button>
             </Link>
 
-            <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground" onClick={toggleTheme}>
+            <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground" onClick={toggleTheme}>
               {resolvedTheme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
             </Button>
 
@@ -246,14 +245,14 @@ export function AppHeader() {
                 <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground hover:text-foreground relative">
                   <Bell className="size-[18px]" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">
+                    <span className="absolute top-3xs right-3xs size-[16px] rounded-full bg-destructive text-destructive-foreground sp-micro font-bold flex items-center justify-center ring-2 ring-background">
                       {unreadCount}
                     </span>
                   )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-[calc(100vw-2rem)] sm:w-[380px] p-0" sideOffset={8}>
-                <div className="flex items-center justify-between px-xl py-md border-b border-border/30 dark:border-white/[0.06]">
+                <div className="flex items-center justify-between px-xl py-md border-b border-border-subtle dark:border-white/[0.06]">
                   <div className="flex items-center gap-sm">
                     <h4 className="sp-h5 text-foreground">Notifications</h4>
                     {unreadCount > 0 && (
@@ -269,41 +268,29 @@ export function AppHeader() {
                 <div className="max-h-[360px] overflow-y-auto">
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-2xl text-center">
-                      <Bell className="size-[24px] text-muted-foreground/50 mb-sm" />
+                      <Bell className="size-[24px] text-muted-foreground mb-sm" />
                       <p className="sp-body-medium text-foreground">All caught up!</p>
                       <p className="sp-caption text-muted-foreground mt-2xs">No notifications to show.</p>
                     </div>
                   ) : (
                     notifications.map((n) => (
-                      <div
+                      <ListItem
                         key={n.id}
-                        className={`flex items-start gap-sm px-xl py-md transition-colors hover:bg-muted/50 dark:hover:bg-white/[0.03] group relative ${!n.read ? "bg-primary/[0.03]" : ""}`}
+                        type="notification"
+                        id={n.id}
+                        icon={<n.icon className="size-[15px]" />}
+                        title={n.title}
+                        description={n.desc}
+                        time={n.time}
+                        unread={!n.read}
+                        category={n.type}
                         onClick={() => markRead(n.id)}
-                      >
-                        {!n.read && (
-                          <div className="absolute left-[8px] top-1/2 -translate-y-1/2 size-[6px] rounded-full bg-primary" />
-                        )}
-                        <div className={`size-[32px] shrink-0 rounded-lg bg-muted/40 dark:bg-white/[0.06] flex items-center justify-center mt-[2px] ${notifTypeColor[n.type]}`}>
-                          <n.icon className="size-[15px]" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`sp-body-medium text-foreground truncate ${!n.read ? "font-semibold" : ""}`}>{n.title}</p>
-                          <p className="sp-caption text-muted-foreground truncate mt-[1px]">{n.desc}</p>
-                          <p className="sp-caption text-muted-foreground/50 mt-2xs">{n.time}</p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => { e.stopPropagation(); removeNotif(n.id) }}
-                          className="size-[24px] shrink-0 text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted dark:hover:bg-white/[0.06] opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="size-[12px]" />
-                        </Button>
-                      </div>
+                        onDismiss={() => removeNotif(n.id)}
+                      />
                     ))
                   )}
                 </div>
-                <div className="border-t border-border/30 dark:border-white/[0.06] px-xl py-sm">
+                <div className="border-t border-border-subtle dark:border-white/[0.06] px-xl py-sm">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -321,9 +308,9 @@ export function AppHeader() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="rounded-full p-0 border-0 shadow-none hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-transparent">
                   <div className="relative size-[36px]">
-                    <Avatar className="size-[36px] ring-2 ring-primary/30 cursor-pointer">
+                    <Avatar className="size-[36px] ring-2 ring-ring cursor-pointer">
                       <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground sp-caption font-semibold">LN</AvatarFallback>
                     </Avatar>
                     <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
                   </div>

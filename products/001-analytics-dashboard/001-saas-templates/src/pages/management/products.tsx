@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { SearchBox } from "@/components/ui/search-box"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -40,6 +41,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCard,
 } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -115,9 +117,7 @@ function ProductsSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -148,25 +148,25 @@ const statusConfig: Record<string, { label: string; dotClass: string; badgeClass
   active: {
     label: "Active",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   draft: {
     label: "Draft",
     dotClass: "bg-warning",
-    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20",
+    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border",
   },
   archived: {
     label: "Archived",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
 }
 
 const categoryColors: Record<string, string> = {
   electronics: "text-primary",
-  fashion: "text-cyan-600 dark:text-cyan-400",
+  fashion: "text-info",
   accessories: "text-warning",
-  sports: "text-rose-600 dark:text-rose-400",
+  sports: "text-destructive",
   home: "text-success",
 }
 
@@ -327,7 +327,7 @@ export default function ProductsPage() {
   const ProductActions = ({ product }: { product: Product }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+        <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -354,7 +354,7 @@ export default function ProductsPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -370,7 +370,7 @@ export default function ProductsPage() {
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Products</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -385,16 +385,14 @@ export default function ProductsPage() {
         {/* KPI summary cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
-            { icon: Package, label: "Total Products", value: totalCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: Package, label: "Active", value: activeCount, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: DollarSign, label: "Total Revenue", value: `$${(totalRevenue / 1_000_000).toFixed(1)}M`, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: TrendingUp, label: "Avg Rating", value: avgRating, iconBg: "bg-warning-subtle", iconColor: "text-warning" },
+            { icon: Package, label: "Total Products", value: totalCount, color: "primary" as const },
+            { icon: Package, label: "Active", value: activeCount, color: "success" as const },
+            { icon: DollarSign, label: "Total Revenue", value: `$${(totalRevenue / 1_000_000).toFixed(1)}M`, color: "primary" as const },
+            { icon: TrendingUp, label: "Avg Rating", value: avgRating, color: "warning" as const },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
-                <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                  <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                </div>
+                <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                 <div>
                   <p className="sp-kpi-md text-foreground">{kpi.value}</p>
                   <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -413,7 +411,7 @@ export default function ProductsPage() {
                 <h3 className="sp-h4 text-foreground">All Products</h3>
                 <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} products found</p>
               </div>
-              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+              <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                 <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
               </Button>
             </div>
@@ -439,11 +437,10 @@ export default function ProductsPage() {
                   <TabsTrigger value="archived" className="rounded-full">Archived</TabsTrigger>
                 </TabsList>
               </Tabs>
-              <div className="flex items-center gap-3xs border border-border/60 rounded-lg p-3xs">
+              <div className="flex items-center gap-3xs border border-border rounded-lg p-3xs">
                 <Button
                   variant={view === "list" ? "secondary" : "ghost"}
-                  size="xs"
-                  className="size-[28px] p-0"
+                  size="icon-xs"
                   onClick={() => { setView("list"); setPage(1) }}
                   aria-label="List view"
                 >
@@ -451,8 +448,7 @@ export default function ProductsPage() {
                 </Button>
                 <Button
                   variant={view === "grid" ? "secondary" : "ghost"}
-                  size="xs"
-                  className="size-[28px] p-0"
+                  size="icon-xs"
                   onClick={() => { setView("grid"); setPage(1) }}
                   aria-label="Grid view"
                 >
@@ -468,7 +464,7 @@ export default function ProductsPage() {
                   <Button variant="outline" size="sm" onClick={handleBulkExport}>
                     <Download className="size-[13px] mr-xs" /> Export
                   </Button>
-                  <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleBulkArchive}>
+                  <Button variant="outline" size="sm" className="text-destructive border-destructive-subtle hover:bg-destructive-subtle" onClick={handleBulkArchive}>
                     <Trash2 className="size-[13px] mr-xs" /> Archive
                   </Button>
                   <Button variant="ghost" size="xs" onClick={() => setSelected(new Set())}>
@@ -520,14 +516,12 @@ export default function ProductsPage() {
                 ) : (
                   <div className="flex flex-col gap-sm">
                     {paginated.map((product) => (
-                      <div
+                      <TableCard
                         key={product.id}
-                        className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex items-center gap-md hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                        className="flex-row items-center gap-md"
                         onClick={() => setDetailSheet(product.id)}
                       >
-                        <div className="size-[48px] rounded-lg ring-1 ring-border/20 bg-surface-raised/50 dark:bg-surface-inset/50 overflow-hidden shrink-0">
-                          <img src={product.imageUrl} alt={product.name} className="size-full object-cover" onError={(e) => { e.currentTarget.style.display = "none" }} />
-                        </div>
+                        <Thumbnail type="image" size="lg" src={product.imageUrl} alt={product.name} fallback={product.image} />
                         <div className="flex-1 min-w-0">
                           <p className="sp-body-semibold text-foreground truncate">{product.name}</p>
                           <div className="flex items-center gap-sm sp-caption text-muted-foreground mt-3xs">
@@ -539,7 +533,7 @@ export default function ProductsPage() {
                           </div>
                         </div>
                         <StatusBadge status={product.status} />
-                      </div>
+                      </TableCard>
                     ))}
                   </div>
                 )}
@@ -570,19 +564,14 @@ export default function ProductsPage() {
                     </TableRow>
                   ) : (
                     paginated.map((product) => (
-                      <TableRow key={product.id} data-state={selected.has(product.id) ? "selected" : undefined}>
-                        <TableCell className="!p-0 text-center"><Checkbox checked={selected.has(product.id)} onCheckedChange={() => toggleOne(product.id)} aria-label={`Select ${product.name}`} /></TableCell>
+                      <TableRow key={product.id} className="cursor-pointer" data-state={selected.has(product.id) ? "selected" : undefined} onClick={() => setDetailSheet(product.id)}>
+                        <TableCell className="!p-0 text-center" onClick={(e) => e.stopPropagation()}><Checkbox checked={selected.has(product.id)} onCheckedChange={() => toggleOne(product.id)} aria-label={`Select ${product.name}`} /></TableCell>
                         <TableCell>
                           <div className="flex items-center gap-sm">
-                            <div className="size-[40px] rounded-lg ring-1 ring-border/20 bg-surface-raised/50 dark:bg-surface-inset/50 overflow-hidden shrink-0">
-                              <img src={product.imageUrl} alt={product.name} className="size-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden") }} />
-                              <span className="hidden sp-caption text-muted-foreground size-full flex items-center justify-center">{product.image}</span>
-                            </div>
+                            <Thumbnail type="image" src={product.imageUrl} alt={product.name} fallback={product.image} />
                             <div>
-                              <button className="sp-body-semibold text-foreground hover:text-primary transition-colors text-left" onClick={() => setDetailSheet(product.id)}>
-                                {product.name}
-                              </button>
-                              <p className="sp-caption text-muted-foreground/60">{product.id}</p>
+                              <p className="sp-body-semibold text-foreground">{product.name}</p>
+                              <p className="sp-caption text-muted-foreground">{product.id}</p>
                             </div>
                           </div>
                         </TableCell>
@@ -599,7 +588,7 @@ export default function ProductsPage() {
                           </div>
                         </TableCell>
                         <TableCell className="sp-caption text-muted-foreground">{product.stock}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                           <ProductActions product={product} />
                         </TableCell>
                       </TableRow>
@@ -622,7 +611,7 @@ export default function ProductsPage() {
                 <div className="grid gap-lg sm:grid-cols-2 lg:grid-cols-3">
                   {paginated.map((product) => (
                     <DCard key={product.id} className="!p-0 overflow-hidden flex flex-col">
-                      <div className="flex h-[140px] items-center justify-center bg-surface-raised/50 dark:bg-surface-inset/50 relative p-lg">
+                      <div className="flex h-[140px] items-center justify-center bg-surface-raised dark:bg-surface-inset relative p-lg">
                         <img src={product.imageUrl} alt={product.name} className="max-h-full max-w-full object-contain" onError={(e) => { e.currentTarget.style.display = "none" }} />
                         <div className="absolute top-md right-md">
                           <ProductActions product={product} />
@@ -631,9 +620,9 @@ export default function ProductsPage() {
                       <div className="p-lg flex flex-col gap-sm flex-1">
                         <div className="flex items-start justify-between gap-sm">
                           <div className="flex-1 min-w-0">
-                            <button className="sp-body-semibold text-foreground hover:text-primary transition-colors text-left truncate block w-full" onClick={() => setDetailSheet(product.id)}>
+                            <Button variant="link" className="sp-body-semibold text-foreground hover:text-primary p-0 h-auto truncate block w-full justify-start" onClick={() => setDetailSheet(product.id)}>
                               {product.name}
-                            </button>
+                            </Button>
                             <p className={`sp-caption capitalize mt-3xs ${categoryColors[product.category] ?? "text-muted-foreground"}`}>{product.category}</p>
                           </div>
                           <StatusBadge status={product.status} />
@@ -658,7 +647,7 @@ export default function ProductsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border mt-md">
                 <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
@@ -709,7 +698,7 @@ export default function ProductsPage() {
                 <div className="mt-xl flex flex-col gap-lg">
                   {/* Image gallery */}
                   <div className="flex flex-col gap-sm">
-                    <div className="rounded-xl overflow-hidden bg-surface-raised/50 dark:bg-surface-inset/50 h-[240px] flex items-center justify-center relative p-xl">
+                    <div className="rounded-xl overflow-hidden bg-surface-raised dark:bg-surface-inset h-[240px] flex items-center justify-center relative p-xl">
                       <img
                         src={detailProduct.images[detailImageIdx] ?? detailProduct.imageUrl}
                         alt={detailProduct.name}
@@ -719,13 +708,13 @@ export default function ProductsPage() {
                       {detailProduct.images.length > 1 && (
                         <>
                           <button
-                            className="absolute left-sm top-1/2 -translate-y-1/2 size-[28px] rounded-full bg-background/80 dark:bg-background/60 backdrop-blur-sm border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                            className="absolute left-sm top-1/2 -translate-y-1/2 size-[28px] rounded-full bg-background backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                             onClick={() => setDetailImageIdx((prev) => (prev - 1 + detailProduct.images.length) % detailProduct.images.length)}
                           >
                             <ChevronLeft className="size-[14px]" />
                           </button>
                           <button
-                            className="absolute right-sm top-1/2 -translate-y-1/2 size-[28px] rounded-full bg-background/80 dark:bg-background/60 backdrop-blur-sm border border-border/40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                            className="absolute right-sm top-1/2 -translate-y-1/2 size-[28px] rounded-full bg-background backdrop-blur-sm border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                             onClick={() => setDetailImageIdx((prev) => (prev + 1) % detailProduct.images.length)}
                           >
                             <ChevronRight className="size-[14px]" />
@@ -738,7 +727,7 @@ export default function ProductsPage() {
                         {detailProduct.images.map((img, idx) => (
                           <button
                             key={idx}
-                            className={`size-[48px] rounded-lg overflow-hidden border-2 shrink-0 bg-surface-raised/50 dark:bg-surface-inset/50 transition-colors ${idx === detailImageIdx ? "border-primary" : "border-transparent hover:border-border/60"}`}
+                            className={`size-[48px] rounded-lg overflow-hidden border-2 shrink-0 bg-surface-raised dark:bg-surface-inset transition-colors ${idx === detailImageIdx ? "border-primary" : "border-transparent hover:border-border"}`}
                             onClick={() => setDetailImageIdx(idx)}
                           >
                             <img src={img} alt={`${detailProduct.name} ${idx + 1}`} className="size-full object-cover" />
@@ -761,7 +750,7 @@ export default function ProductsPage() {
                       { label: "Revenue", value: `$${(detailProduct.price * detailProduct.sales).toLocaleString()}` },
                       { label: "Created", value: detailProduct.createdAt },
                     ].map((meta) => (
-                      <div key={meta.label} className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                      <div key={meta.label} className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                         <p className="sp-caption text-muted-foreground">{meta.label}</p>
                         <p className="sp-body-semibold text-foreground mt-2xs">{meta.value}</p>
                       </div>
@@ -840,7 +829,7 @@ export default function ProductsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleDeleteConfirm}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDeleteConfirm}>
                 <Trash2 className="size-[14px] mr-xs" /> Archive
               </AlertDialogAction>
             </AlertDialogFooter>

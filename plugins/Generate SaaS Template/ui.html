@@ -98,13 +98,13 @@
     /* ─── Foundation Type Selector ─── */
     .type-selector {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
       flex-shrink: 0;
     }
     .type-btn {
-      flex: 1;
-      padding: 6px 10px;
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 6px 4px;
       border: 1px solid #ddd;
       border-radius: 0;
       background: #fff;
@@ -114,13 +114,13 @@
       cursor: pointer;
       transition: all 0.15s;
       text-align: center;
+      white-space: nowrap;
     }
     .type-btn:hover { border-color: #18A0FB; color: #18A0FB; }
     .type-btn.active {
       border-color: #18A0FB;
       background: #e8f4fd;
       color: #18A0FB;
-      font-weight: 600;
     }
 
     /* ─── Status & Log ─── */
@@ -137,20 +137,11 @@
     .status.success { background: #e6f9e6; color: #1a7a1a; }
     .status.error { background: #fde8e4; color: #c00; }
 
-    .log {
-      max-height: 100px;
-      overflow-y: auto;
-      padding: 8px;
-      border-radius: 0;
-      background: #1e1e1e;
-      color: #d4d4d4;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 10px;
-      line-height: 1.5;
-      display: none;
-      flex-shrink: 0;
-    }
-    .log.visible { display: block; }
+    .dots { letter-spacing: 1px; display: inline; }
+    .dots span { animation: blink 1.4s infinite both; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
 
     .spec-area {
       flex: 1;
@@ -256,7 +247,6 @@
     </div>
 
     <div class="status" id="foundation-status">Ready</div>
-    <div class="log" id="foundation-log"></div>
   </div>
 
   <!-- ═══════════════════════════════════════════ -->
@@ -282,7 +272,6 @@
     </div>
 
     <div class="status" id="generate-status">Ready</div>
-    <div class="log" id="generate-log"></div>
   </div>
 
   <!-- ═══════════════════════════════════════════ -->
@@ -361,7 +350,6 @@
     // ─── Foundation Generate ───
     var foundationSpec = document.getElementById('foundation-spec');
     var foundationStatus = document.getElementById('foundation-status');
-    var foundationLog = document.getElementById('foundation-log');
     var btnFoundationGenerate = document.getElementById('btn-foundation-generate');
 
     btnFoundationGenerate.addEventListener('click', function() {
@@ -391,14 +379,12 @@
       selectedFoundationType = detectedType;
 
       btnFoundationGenerate.disabled = true;
-      foundationStatus.textContent = 'Fetching images...';
+      foundationStatus.innerHTML = 'Fetching images ' + _dotsHTML;
       foundationStatus.className = 'status';
-      foundationLog.className = 'log';
-      foundationLog.textContent = '';
 
       prefetchImages(spec).then(function(imageMap) {
         spec._imageData = imageMap;
-        foundationStatus.textContent = 'Generating...';
+        foundationStatus.innerHTML = 'Generating ' + _dotsHTML;
         parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'foundation' } }, '*');
       });
     });
@@ -406,15 +392,23 @@
     // ─── Generate UI ───
     var generateSpec = document.getElementById('generate-spec');
     var generateStatus = document.getElementById('generate-status');
-    var generateLog = document.getElementById('generate-log');
+    var _dotsHTML = '<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
     var btnGenerate = document.getElementById('btn-generate');
     var btnClear = document.getElementById('btn-clear');
 
-    // Scan spec for imageUrl fields, fetch all, embed as _imageData map
+    // Scan spec for imageUrl fields + imageOverrides values, fetch all, embed as _imageData map
     function collectImageUrls(obj) {
       var urls = [];
       if (!obj || typeof obj !== 'object') return urls;
       if (obj.imageUrl) urls.push(obj.imageUrl);
+      // Collect imageOverrides values (format: { "NodeName": "https://..." })
+      if (obj.imageOverrides && typeof obj.imageOverrides === 'object') {
+        var ioKeys = Object.keys(obj.imageOverrides);
+        for (var io = 0; io < ioKeys.length; io++) {
+          var ioVal = obj.imageOverrides[ioKeys[io]];
+          if (typeof ioVal === 'string' && ioVal.indexOf('http') === 0) urls.push(ioVal);
+        }
+      }
       var keys = Object.keys(obj);
       for (var i = 0; i < keys.length; i++) {
         if (typeof obj[keys[i]] === 'object') urls = urls.concat(collectImageUrls(obj[keys[i]]));
@@ -422,22 +416,95 @@
       return urls;
     }
 
+    // Convert image blob to PNG bytes via canvas (handles webp, avif, etc.)
+    function blobToPngBytes(blob) {
+      return new Promise(function(resolve, reject) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob(function(pngBlob) {
+            if (!pngBlob) { reject(new Error('Canvas toBlob failed')); return; }
+            pngBlob.arrayBuffer().then(function(buf) {
+              console.log('[prefetch] converted to PNG: ' + img.naturalWidth + 'x' + img.naturalHeight + ' → ' + buf.byteLength + ' bytes');
+              resolve(buf);
+            }).catch(reject);
+          }, 'image/png');
+        };
+        img.onerror = function() { reject(new Error('Image decode failed')); };
+        img.src = URL.createObjectURL(blob);
+      });
+    }
+
+    // CORS proxy fallback — used when direct fetch fails (e.g. i.pravatar.cc has no CORS headers)
+    var CORS_PROXIES = [
+      function(u) { return 'https://corsproxy.io/?' + encodeURIComponent(u); },
+      function(u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); }
+    ];
+
+    function fetchWithCorsProxy(url) {
+      return fetch(url)
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r;
+        })
+        .catch(function(directErr) {
+          console.log('[fetch-cors] direct fetch failed for ' + url + ': ' + (directErr.message || directErr) + ', trying CORS proxies...');
+          var chain = Promise.reject(directErr);
+          for (var pi = 0; pi < CORS_PROXIES.length; pi++) {
+            (function(proxyFn) {
+              chain = chain.catch(function() {
+                var proxyUrl = proxyFn(url);
+                console.log('[fetch-cors] trying proxy: ' + proxyUrl);
+                return fetch(proxyUrl).then(function(r) {
+                  if (!r.ok) throw new Error('proxy HTTP ' + r.status);
+                  return r;
+                });
+              });
+            })(CORS_PROXIES[pi]);
+          }
+          return chain;
+        });
+    }
+
     function prefetchImages(spec) {
       var urls = collectImageUrls(spec);
+      console.log('[prefetch] found ' + urls.length + ' imageUrls:', urls);
       // Deduplicate
       var unique = [];
       for (var i = 0; i < urls.length; i++) {
         if (unique.indexOf(urls[i]) === -1) unique.push(urls[i]);
       }
-      if (unique.length === 0) return Promise.resolve({});
+      if (unique.length === 0) { console.log('[prefetch] no images to fetch'); return Promise.resolve({}); }
       var imageMap = {};
       var fetches = unique.map(function(url) {
-        return fetch(url)
-          .then(function(r) { return r.arrayBuffer(); })
-          .then(function(buf) { imageMap[url] = Array.from(new Uint8Array(buf)); })
-          .catch(function(e) { console.warn('Image fetch failed:', url, e); });
+        console.log('[prefetch] fetching: ' + url);
+        return fetchWithCorsProxy(url)
+          .then(function(r) {
+            var contentType = r.headers.get('content-type') || '';
+            console.log('[prefetch] response: ' + url + ' status=' + r.status + ' type=' + contentType);
+            // If not PNG/JPEG/GIF, convert via canvas to ensure Figma compatibility
+            var needsConvert = contentType.indexOf('webp') !== -1 || contentType.indexOf('avif') !== -1;
+            if (needsConvert) {
+              console.log('[prefetch] converting ' + contentType + ' → PNG via canvas');
+              return r.blob().then(function(blob) { return blobToPngBytes(blob); });
+            }
+            return r.arrayBuffer();
+          })
+          .then(function(buf) {
+            console.log('[prefetch] OK: ' + url + ' bytes=' + buf.byteLength);
+            imageMap[url] = Array.from(new Uint8Array(buf));
+          })
+          .catch(function(e) { console.warn('[prefetch] FAILED:', url, e.message || e); });
       });
-      return Promise.all(fetches).then(function() { return imageMap; });
+      return Promise.all(fetches).then(function() {
+        console.log('[prefetch] done, imageMap keys:', Object.keys(imageMap));
+        return imageMap;
+      });
     }
 
     btnGenerate.addEventListener('click', function() {
@@ -458,14 +525,12 @@
 
       btnGenerate.disabled = true;
       btnClear.disabled = true;
-      generateStatus.textContent = 'Fetching images...';
+      generateStatus.innerHTML = 'Fetching images ' + _dotsHTML;
       generateStatus.className = 'status';
-      generateLog.className = 'log';
-      generateLog.textContent = '';
 
       prefetchImages(spec).then(function(imageMap) {
         spec._imageData = imageMap;
-        generateStatus.textContent = 'Generating...';
+        generateStatus.innerHTML = 'Generating ' + _dotsHTML;
         parent.postMessage({ pluginMessage: { type: 'generate', spec: spec, source: 'generate' } }, '*');
       });
     });
@@ -473,7 +538,7 @@
     btnClear.addEventListener('click', function() {
       btnGenerate.disabled = true;
       btnClear.disabled = true;
-      generateStatus.textContent = 'Clearing...';
+      generateStatus.innerHTML = 'Clearing ' + _dotsHTML;
       generateStatus.className = 'status';
 
       parent.postMessage({ pluginMessage: { type: 'clear' } }, '*');
@@ -533,10 +598,11 @@
       exportStatus.className = 'status success';
     }
 
-    // ─── Import JSON file ───
+    // ─── Import JSON file(s) — supports multi-select ───
     var fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.json';
+    fileInput.multiple = true;
     fileInput.style.display = 'none';
     document.body.appendChild(fileInput);
 
@@ -552,21 +618,67 @@
 
     fileInput.addEventListener('change', function() {
       if (!fileInput.files.length || !importTarget) return;
-      var file = fileInput.files[0];
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        importTarget.value = e.target.result;
-        // Find the status element for the active tab
-        var statusEl = importTarget.id.startsWith('foundation') ? foundationStatus : generateStatus;
-        statusEl.textContent = 'Imported: ' + file.name;
-        statusEl.className = 'status success';
-      };
-      reader.onerror = function() {
-        var statusEl = importTarget.id.startsWith('foundation') ? foundationStatus : generateStatus;
-        statusEl.textContent = 'Error reading file.';
-        statusEl.className = 'status error';
-      };
-      reader.readAsText(file);
+      var statusEl = importTarget.id.startsWith('foundation') ? foundationStatus : generateStatus;
+
+      if (fileInput.files.length === 1) {
+        // Single file — paste as-is
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          importTarget.value = e.target.result;
+          statusEl.textContent = 'Imported: ' + file.name;
+          statusEl.className = 'status success';
+        };
+        reader.onerror = function() {
+          statusEl.textContent = 'Error reading file.';
+          statusEl.className = 'status error';
+        };
+        reader.readAsText(file);
+      } else {
+        // Multi-file — merge all components arrays into single spec
+        var allComponents = [];
+        var filesRead = 0;
+        var totalFiles = fileInput.files.length;
+        var fileNames = [];
+        var targetPage = null;
+
+        for (var fi = 0; fi < totalFiles; fi++) {
+          (function(f) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              try {
+                var data = JSON.parse(e.target.result);
+                if (data.components && data.components.length) {
+                  allComponents = allComponents.concat(data.components);
+                }
+                if (data.targetPage) targetPage = data.targetPage;
+                fileNames.push(f.name);
+              } catch (pe) {
+                fileNames.push(f.name + ' (parse error)');
+              }
+              filesRead++;
+              if (filesRead === totalFiles) {
+                // All files read — merge into single spec
+                var merged = { targetPage: targetPage || 'Design System', components: allComponents };
+                importTarget.value = JSON.stringify(merged, null, 2);
+                statusEl.textContent = 'Merged ' + totalFiles + ' files (' + allComponents.length + ' components): ' + fileNames.join(', ');
+                statusEl.className = 'status success';
+              }
+            };
+            reader.onerror = function() {
+              filesRead++;
+              fileNames.push(f.name + ' (read error)');
+              if (filesRead === totalFiles) {
+                var merged = { targetPage: targetPage || 'Design System', components: allComponents };
+                importTarget.value = JSON.stringify(merged, null, 2);
+                statusEl.textContent = 'Merged with errors: ' + fileNames.join(', ');
+                statusEl.className = 'status error';
+              }
+            };
+            reader.readAsText(f);
+          })(fileInput.files[fi]);
+        }
+      }
     });
 
     // ─── Message handler ───
@@ -576,8 +688,14 @@
 
       // ─── Image fetch (plugin requests image from URL) ───
       if (msg.type === 'fetch-image') {
-        fetch(msg.url)
-          .then(function(r) { return r.arrayBuffer(); })
+        fetchWithCorsProxy(msg.url)
+          .then(function(r) {
+            var ct = r.headers.get('content-type') || '';
+            if (ct.indexOf('webp') !== -1 || ct.indexOf('avif') !== -1) {
+              return r.blob().then(function(blob) { return blobToPngBytes(blob); });
+            }
+            return r.arrayBuffer();
+          })
           .then(function(buf) {
             parent.postMessage({ pluginMessage: { type: 'image-data', id: msg.id, bytes: Array.from(new Uint8Array(buf)) } }, '*');
           })
@@ -596,32 +714,39 @@
         else if (source === 'export') statusEl = exportStatus;
         else statusEl = generateStatus;
 
-        statusEl.textContent = msg.text;
-
         if (msg.text.startsWith('Done')) {
+          statusEl.textContent = '✓ ' + msg.text;
           statusEl.className = 'status success';
         } else if (msg.text.startsWith('Error')) {
+          statusEl.textContent = '✗ ' + msg.text;
           statusEl.className = 'status error';
         } else {
+          var clean = msg.text.replace(/[\.\s]+$/, '');
+          statusEl.innerHTML = clean + ' ' + _dotsHTML;
           statusEl.className = 'status';
         }
 
-        // Re-enable buttons
-        btnFoundationGenerate.disabled = false;
-        btnGenerate.disabled = false;
-        btnClear.disabled = false;
-        btnExport.disabled = false;
-      }
-
-      if (msg.type === 'log') {
-        var source = msg.source || 'generate';
-        var logEl = source === 'foundation' ? foundationLog : generateLog;
-
-        if (msg.lines && msg.lines.length > 0) {
-          logEl.textContent = msg.lines.join('\n');
-          logEl.className = 'log visible';
+        // Re-enable buttons on done/error
+        if (msg.text.startsWith('Done') || msg.text.startsWith('Error')) {
+          btnFoundationGenerate.disabled = false;
+          btnGenerate.disabled = false;
+          btnClear.disabled = false;
+          btnExport.disabled = false;
         }
       }
+
+      // Real-time progress — replace status text with animated dots
+      if (msg.type === 'progress') {
+        var source = msg.source || 'generate';
+        var statusEl = source === 'foundation' ? foundationStatus : generateStatus;
+        var clean = (msg.text || 'Working').replace(/[\.\s]+$/, '');
+        statusEl.innerHTML = clean + ' ' + _dotsHTML;
+        statusEl.className = 'status';
+      }
+
+      // log-clear / log — no-op (log area removed)
+      if (msg.type === 'log-clear') {}
+      if (msg.type === 'log') {}
 
       if (msg.type === 'export-result') {
         exportResult.value = msg.json;

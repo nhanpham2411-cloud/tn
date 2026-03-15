@@ -38,7 +38,8 @@
         { "name": "Primary 10%", "variable": "primary-10", "tw": "bg-primary/10" },
         { "name": "Primary 20%", "variable": "primary-20", "tw": "bg-primary/20" },
         { "name": "Primary Subtle", "variable": "primary-subtle", "tw": "bg-primary-subtle" },
-        { "name": "Primary Subtle FG", "variable": "primary-subtle-foreground", "tw": "text-primary-subtle-foreground" }
+        { "name": "Primary Subtle FG", "variable": "primary-subtle-foreground", "tw": "text-primary-subtle-foreground" },
+        { "name": "Primary Border", "variable": "primary-border", "tw": "border-primary-border" }
       ]
     },
     {
@@ -65,6 +66,7 @@
         { "name": "Border Subtle", "variable": "border-subtle", "tw": "border-border-subtle" },
         { "name": "Border Strong", "variable": "border-strong", "tw": "border-border-strong" },
         { "name": "Border Card", "variable": "border-card", "tw": "border-border-card" },
+        { "name": "Toast Border", "variable": "toast-border", "tw": "border-toast-border" },
         { "name": "Ring", "variable": "ring", "tw": "ring-ring" },
         { "name": "Ring Error", "variable": "ring-error", "tw": "ring-ring-error" },
         { "name": "Ring Brand", "variable": "ring-brand", "tw": "ring-ring-brand" },

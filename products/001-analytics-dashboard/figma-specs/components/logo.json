@@ -16,6 +16,7 @@
       "base": {
         "layout": "horizontal",
         "counterAlign": "center",
+        "radius": "none",
         "gap": "sm",
         "paddingX": "none",
         "paddingY": "none",
@@ -25,26 +26,20 @@
         "hideLabel": true,
         "children": [
           {
-            "type": "frame",
+            "type": "icon",
             "name": "Mark",
             "showWhen": "Type=Full",
-            "width": 28,
-            "height": 28,
-            "widthMode": "fixed",
-            "fill": "primary",
-            "fillOpacity": 0.85,
-            "radius": "md"
+            "iconName": "ShopPulse",
+            "skipIconFill": true,
+            "iconSize": 28
           },
           {
-            "type": "frame",
+            "type": "icon",
             "name": "Mark",
             "showWhen": "Type=Icon",
-            "width": 28,
-            "height": 28,
-            "widthMode": "fixed",
-            "fill": "primary",
-            "fillOpacity": 0.85,
-            "radius": "md"
+            "iconName": "ShopPulse",
+            "skipIconFill": true,
+            "iconSize": 28
           },
           {
             "type": "text",
@@ -76,15 +71,12 @@
         "Size=Small,Type=Full": {
           "children": [
             {
-              "type": "frame",
+              "type": "icon",
               "name": "Mark",
               "showWhen": "Type=Full",
-              "width": 24,
-              "height": 24,
-              "widthMode": "fixed",
-              "fill": "primary",
-              "fillOpacity": 0.85,
-              "radius": "sm"
+              "iconName": "ShopPulse",
+            "skipIconFill": true,
+              "iconSize": 24
             },
             {
               "type": "text",
@@ -99,15 +91,12 @@
         "Size=Small,Type=Icon": {
           "children": [
             {
-              "type": "frame",
+              "type": "icon",
               "name": "Mark",
               "showWhen": "Type=Icon",
-              "width": 24,
-              "height": 24,
-              "widthMode": "fixed",
-              "fill": "primary",
-              "fillOpacity": 0.85,
-              "radius": "sm"
+              "iconName": "ShopPulse",
+            "skipIconFill": true,
+              "iconSize": 24
             }
           ]
         },
@@ -128,7 +117,7 @@
       "variantRestrictions": {},
 
       "showcase": {
-        "sections": ["header", "component"]
+        "sections": ["header", "component", "installation"]
       },
 
       "examples": [

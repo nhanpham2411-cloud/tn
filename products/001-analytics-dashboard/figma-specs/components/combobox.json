@@ -24,6 +24,7 @@
         "width": 200,
         "height": 36,
         "heightMode": "fixed",
+        "heightVar": "height/default",
         "radius": "lg",
         "stroke": "border",
         "strokeWidth": 1,
@@ -33,11 +34,17 @@
         "textContent": "Select framework...",
         "textStyle": "SP/Body Semibold",
         "textFill": "muted-foreground",
-        "labelFill": true,
-        "iconRight": true,
-        "iconRightName": "ChevronsUpDown",
         "iconFill": "muted-foreground",
-        "clipsContent": true
+        "labelFill": true,
+        "clipsContent": true,
+        "hideLabel": true,
+        "children": [
+          { "name": "Icon Left", "type": "icon", "iconName": "Globe", "iconSize": 16, "showWhen": "Left=Icon" },
+          { "name": "Prefix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+          { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Select framework...", "textFill": "muted-foreground", "fillWidth": true, "truncate": true },
+          { "name": "Suffix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "%", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+          { "name": "Icon Right", "type": "icon", "iconName": "ChevronsUpDown", "iconSize": 16 }
+        ]
       },
 
       "variantStyles": {
@@ -55,28 +62,56 @@
 
         "Value=Filled": {
           "textContent": "React",
-          "textFill": "foreground"
+          "textFill": "foreground",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Globe", "iconSize": 16, "showWhen": "Left=Icon" },
+            { "name": "Prefix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "React", "textFill": "foreground", "fillWidth": true, "truncate": true },
+            { "name": "Suffix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "%", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ChevronsUpDown", "iconSize": 16 }
+          ]
         },
 
-        "Left=Icon": {
-          "iconLeft": true,
-          "iconLeftName": "Globe"
-        },
-        "Left=Prefix": {
-          "prefix": "$"
-        },
+        "Left=Icon": {},
+        "Left=Prefix": { "prefix": "$" },
         "Left=Text Left": {
-          "textLeft": "Filter"
+          "textLeft": "Filter",
+          "hideLabel": false,
+          "labelFill": true,
+          "iconRight": true,
+          "iconRightName": "ChevronsUpDown",
+          "iconFill": "muted-foreground"
         },
 
         "Right=Icon": {
-          "iconRightName": "Info"
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Globe", "iconSize": 16, "showWhen": "Left=Icon" },
+            { "name": "Prefix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Select framework...", "textFill": "muted-foreground", "fillWidth": true, "truncate": true },
+            { "name": "Suffix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "%", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+            { "name": "Icon Right", "type": "icon", "iconName": "Info", "iconSize": 16 }
+          ]
         },
-        "Right=Suffix": {
-          "suffix": "%"
-        },
+        "Right=Suffix": { "suffix": "%" },
         "Right=Text Right": {
-          "textRight": "USD"
+          "textRight": "USD",
+          "hideLabel": false,
+          "labelFill": true,
+          "iconRight": true,
+          "iconRightName": "ChevronsUpDown",
+          "iconFill": "muted-foreground"
+        },
+
+        "Value=Filled,Right=Icon": {
+          "textContent": "React",
+          "textFill": "foreground",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Globe", "iconSize": 16, "showWhen": "Left=Icon" },
+            { "name": "Prefix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "React", "textFill": "foreground", "fillWidth": true, "truncate": true },
+            { "name": "Suffix", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "%", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+            { "name": "Icon Right", "type": "icon", "iconName": "Info", "iconSize": 16 }
+          ]
         }
       },
 

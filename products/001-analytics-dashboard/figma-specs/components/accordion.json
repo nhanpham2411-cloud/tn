@@ -225,8 +225,175 @@
             }
           ]
         },
+        "State=Hover": {
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "State=Focus": {
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
         "State=Disabled": {
-          "opacity": 0.5
+          "opacity": 0.5,
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Open=Yes,State=Hover": {
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Open", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Hover", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Open=Yes,State=Focus": {
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Open", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Focus", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
+        },
+        "Open=Yes,State=Disabled": {
+          "opacity": 0.5,
+          "children": [
+            {
+              "name": "Item 1",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Open", "End Item": "No" },
+              "textOverrides": { "Label": "Is it accessible?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 2",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Closed", "End Item": "No" },
+              "textOverrides": { "Label": "Is it styled?" },
+              "fillWidth": true
+            },
+            {
+              "name": "Item 3",
+              "type": "instance",
+              "component": "Accordion Item",
+              "variants": { "State": "Disabled", "Type": "Closed", "End Item": "Yes" },
+              "textOverrides": { "Label": "Is it animated?" },
+              "fillWidth": true
+            }
+          ]
         }
       },
 

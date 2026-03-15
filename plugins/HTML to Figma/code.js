@@ -228,9 +228,12 @@ async function loadTokenCaches() {
   }
 
   // 1. COLOR reverse map: resolve variable values → rgb string → token name
+  // Build TWO maps: exact RGBA (includes alpha) + RGB-only (base tokens, alpha=1)
+  // This prevents "foreground/6" when exact token "border-card" exists
   if (_darkModeId && allColor.length > 0) {
-    // Clear hardcoded map — dynamic data is authoritative
+    // Clear hardcoded maps — dynamic data is authoritative
     COLOR_RGB_TO_TOKEN = {};
+    COLOR_RGBA_TO_TOKEN = {};
     for (var crci = 0; crci < allColor.length; crci++) {
       var crv = allColor[crci];
       var crval = await _resolveVarValue(crv, _darkModeId, 0);
@@ -238,14 +241,21 @@ async function loadTokenCaches() {
         var crr = Math.round(crval.r * 255);
         var crg = Math.round(crval.g * 255);
         var crb = Math.round(crval.b * 255);
-        var crkey = crr + "," + crg + "," + crb;
+        var cra = crval.a !== undefined ? Math.round(crval.a * 100) / 100 : 1;
         var crparts = crv.name.split("/");
         var crtoken = crparts[crparts.length - 1].toLowerCase().replace(/ /g, "-");
-        // First variable wins — semantic tokens (e.g. "foreground") take priority over raw (e.g. "zinc-50")
-        if (!COLOR_RGB_TO_TOKEN[crkey]) COLOR_RGB_TO_TOKEN[crkey] = crtoken;
+        // Exact RGBA key — for ALL tokens (any alpha)
+        var crExactKey = crr + "," + crg + "," + crb + "," + cra;
+        if (!COLOR_RGBA_TO_TOKEN[crExactKey]) COLOR_RGBA_TO_TOKEN[crExactKey] = crtoken;
+        // RGB-only key — only for base tokens (alpha >= 0.99)
+        // Prevents white@6% (border-card) from overwriting white@100% (foreground)
+        if (cra >= 0.99) {
+          var crkey = crr + "," + crg + "," + crb;
+          if (!COLOR_RGB_TO_TOKEN[crkey]) COLOR_RGB_TO_TOKEN[crkey] = crtoken;
+        }
       }
     }
-    console.log("[HTML→Figma] Dynamic color map: " + Object.keys(COLOR_RGB_TO_TOKEN).length + " rgb→token entries");
+    console.log("[HTML→Figma] Dynamic color map: " + Object.keys(COLOR_RGB_TO_TOKEN).length + " rgb→token, " + Object.keys(COLOR_RGBA_TO_TOKEN).length + " rgba→token entries");
   }
 
   // 2. FLOAT reverse maps: resolve variable values → px → token name
@@ -449,18 +459,23 @@ function setFillToken(node, tokenName, fallbackRGBA) {
     }
     return;
   }
-  // Handle opacity suffix: "primary/50" → token="primary", opacity=0.5
-  var opacitySuffix = null;
-  var slashIdx = tokenName.indexOf("/");
-  if (slashIdx > 0) {
-    var afterSlash = tokenName.substring(slashIdx + 1);
-    var num = parseInt(afterSlash);
-    if (!isNaN(num) && num >= 0 && num <= 100) {
-      opacitySuffix = num / 100;
-      tokenName = tokenName.substring(0, slashIdx);
-    }
-  }
+  // Try exact token name first — e.g. "primary-10" may exist as a Figma variable
+  // Only fall back to slash-split if exact variable not found
   var v = findVar(tokenName);
+  var opacitySuffix = null;
+  if (!v) {
+    // Handle opacity suffix: "primary/50" → token="primary", opacity=0.5
+    var slashIdx = tokenName.indexOf("/");
+    if (slashIdx > 0) {
+      var afterSlash = tokenName.substring(slashIdx + 1);
+      var num = parseInt(afterSlash);
+      if (!isNaN(num) && num >= 0 && num <= 100) {
+        opacitySuffix = num / 100;
+        tokenName = tokenName.substring(0, slashIdx);
+      }
+    }
+    v = findVar(tokenName);
+  }
   if (v) {
     node.fills = [makeBoundPaint(v, opacitySuffix)];
     // Two-step opacity for reliability
@@ -488,17 +503,21 @@ function setStrokeToken(node, tokenName, fallbackRGBA) {
     }
     return;
   }
-  var opacitySuffix = null;
-  var slashIdx = tokenName.indexOf("/");
-  if (slashIdx > 0) {
-    var afterSlash = tokenName.substring(slashIdx + 1);
-    var num = parseInt(afterSlash);
-    if (!isNaN(num) && num >= 0 && num <= 100) {
-      opacitySuffix = num / 100;
-      tokenName = tokenName.substring(0, slashIdx);
-    }
-  }
+  // Try exact token name first (e.g. "border-card" as-is)
   var v = findVar(tokenName);
+  var opacitySuffix = null;
+  if (!v) {
+    var slashIdx = tokenName.indexOf("/");
+    if (slashIdx > 0) {
+      var afterSlash = tokenName.substring(slashIdx + 1);
+      var num = parseInt(afterSlash);
+      if (!isNaN(num) && num >= 0 && num <= 100) {
+        opacitySuffix = num / 100;
+        tokenName = tokenName.substring(0, slashIdx);
+      }
+    }
+    v = findVar(tokenName);
+  }
   if (v) {
     node.strokes = [makeBoundPaint(v, opacitySuffix)];
     if (opacitySuffix !== null) {
@@ -769,8 +788,13 @@ async function updateFrameProps(frame, spec) {
     frame.primaryAxisAlignItems = justifyMap[spec.primaryAlign] || "MIN";
     frame.counterAxisAlignItems = alignMap[spec.counterAlign] || "MIN";
     if (spec.wrap) frame.layoutWrap = "WRAP";
-    frame.primaryAxisSizingMode = "AUTO";
-    frame.counterAxisSizingMode = "FIXED";
+    if (spec.wrapGap != null) bindSpacing(frame, "counterAxisSpacing", spec.wrapGapToken || null, spec.wrapGap);
+    // Match create path: only hugWidth/hugHeight → AUTO, fill → only affects layoutSizing
+    var _isHoriz = spec.layout === "horizontal";
+    var _hugP = _isHoriz ? spec.hugWidth : spec.hugHeight;
+    var _hugC = _isHoriz ? spec.hugHeight : spec.hugWidth;
+    frame.primaryAxisSizingMode = _hugP ? "AUTO" : "FIXED";
+    frame.counterAxisSizingMode = _hugC ? "AUTO" : "FIXED";
   }
 
   // Fill
@@ -904,9 +928,18 @@ async function reconcileChildren(parent, childSpecs, parentLayout) {
   var matchedSet = []; // nodes that were matched and kept
   var resultOrder = []; // final desired order of children
 
+  // Track rendering progress for top-level reconciliation
+  var _isTopReconcile = _renderProgress.enabled && _renderProgress.done < _renderProgress.total;
+
   for (var si = 0; si < childSpecs.length; si++) {
     var spec = childSpecs[si];
     var specName = spec.name || (spec.textContent || spec.text || "").substring(0, 30) || spec.type || "Frame";
+
+    if (_isTopReconcile) {
+      _renderProgress.done++;
+      sendProgress("  " + _renderProgress.prefix + "Section [" + _renderProgress.done + "/" + _renderProgress.total + "] " + specName, "dim");
+      _renderProgress.enabled = false;
+    }
 
     // Find matching existing child by name
     var candidates = existingByName[specName];
@@ -939,6 +972,10 @@ async function reconcileChildren(parent, childSpecs, parentLayout) {
         // Absolute positioning — will be re-applied after reorder (see post-reorder block)
         resultOrder.push(newNode);
       }
+    }
+
+    if (_isTopReconcile) {
+      _renderProgress.enabled = true;
     }
   }
 
@@ -1026,10 +1063,19 @@ async function createFrame(node) {
 
     // Wrap
     if (node.wrap) frame.layoutWrap = "WRAP";
+    if (node.wrapGap != null) bindSpacing(frame, "counterAxisSpacing", node.wrapGapToken || null, node.wrapGap);
 
-    // Sizing
-    frame.primaryAxisSizingMode = "AUTO"; // hug by default
-    frame.counterAxisSizingMode = "FIXED";
+    // Sizing — frame's own sizing (how it sizes itself based on content)
+    // primaryAxisSizingMode: controls size along layout direction
+    // counterAxisSizingMode: controls size along cross-axis
+    // AUTO = hug content, FIXED = use explicit dimensions
+    var isHoriz = node.layout === "horizontal";
+    var hugPrimary = isHoriz ? node.hugWidth : node.hugHeight;
+    var hugCounter = isHoriz ? node.hugHeight : node.hugWidth;
+    // fillWidth/fillHeight = "fill parent" → only affects layoutSizing (child-in-parent)
+    // Only hugWidth/hugHeight = "hug content" → affects primaryAxisSizingMode (self sizing)
+    frame.primaryAxisSizingMode = hugPrimary ? "AUTO" : "FIXED";
+    frame.counterAxisSizingMode = hugCounter ? "AUTO" : "FIXED";
   }
 
   // Fill — use background image (decorative effects screenshot) if available
@@ -1097,8 +1143,22 @@ async function createFrame(node) {
 
   // Create children
   if (node.children && node.children.length > 0) {
-    for (const child of node.children) {
+    // Track rendering progress for top-level children (when _renderProgress enabled)
+    var _isTopLevel = _renderProgress.enabled && _renderProgress.done < _renderProgress.total;
+    for (var _ci = 0; _ci < node.children.length; _ci++) {
+      var child = node.children[_ci];
+      if (_isTopLevel) {
+        _renderProgress.done++;
+        var _childLabel = child.name || child.type || "node";
+        sendProgress("  " + _renderProgress.prefix + "Section [" + _renderProgress.done + "/" + _renderProgress.total + "] " + _childLabel, "dim");
+        // Disable so nested createFrame calls don't report
+        _renderProgress.enabled = false;
+      }
       const childNode = await createNode(child, node.layout);
+      if (_isTopLevel) {
+        // Re-enable for next sibling
+        _renderProgress.enabled = true;
+      }
       if (childNode) {
         frame.appendChild(childNode);
         applySizing(childNode, child, node.layout);
@@ -1202,6 +1262,9 @@ var COLOR_RGB_TO_TOKEN = {
   "37,99,235": "emphasis",           // blue-600
   "255,255,255": "foreground",       // pure white
 };
+// Exact RGBA map — includes alpha for tokens with built-in opacity (border-card, ghost-hover, etc.)
+// Key: "r,g,b,a" → token name. Prevents "foreground/6" when "border-card" exists.
+var COLOR_RGBA_TO_TOKEN = {};
 
 function resolveColorToken(colorStr) {
   if (!colorStr) return null;
@@ -1210,6 +1273,12 @@ function resolveColorToken(colorStr) {
   var r = parseInt(m[1]), g = parseInt(m[2]), b = parseInt(m[3]);
   var a = m[4] !== undefined ? parseFloat(m[4]) : 1;
   if (a === 0) return null; // fully transparent
+  var aRound = Math.round(a * 100) / 100;
+  // 1. Try exact RGBA match first — returns direct token, NO opacity suffix
+  var exactKey = r + "," + g + "," + b + "," + aRound;
+  var exactToken = COLOR_RGBA_TO_TOKEN[exactKey];
+  if (exactToken) return exactToken;
+  // 2. Fall back to RGB-only match (base tokens with alpha=1 only) + opacity suffix
   var key = r + "," + g + "," + b;
   var token = COLOR_RGB_TO_TOKEN[key];
   if (token) {
@@ -1303,6 +1372,17 @@ async function createIcon(node) {
       var svgFrame = figma.createNodeFromSvg(node.svgContent);
       svgFrame.name = name;
       svgFrame.resize(node.width || 16, node.height || 16);
+      // Flatten vectors (outline strokes → fills) so strokes scale with resize
+      if (svgFrame.children.length > 0) {
+        var svgChildren = [];
+        for (var sci = 0; sci < svgFrame.children.length; sci++) {
+          svgChildren.push(svgFrame.children[sci]);
+        }
+        try {
+          var flatVec = figma.flatten(svgChildren, svgFrame);
+          flatVec.constraints = { horizontal: "SCALE", vertical: "SCALE" };
+        } catch (fe) {}
+      }
       applyIconColor(svgFrame, node.colorToken, node.color);
       return svgFrame;
     } catch (e) {}
@@ -1321,7 +1401,7 @@ async function createIcon(node) {
     if (paint) frame.fills = [paint];
     frame.opacity = 0.3;
   }
-  frame.cornerRadius = 2;
+  bindRadius(frame, "cornerRadius", null, 2);
   return frame;
 }
 
@@ -1373,7 +1453,7 @@ async function createImage(node) {
   frame.name = node.name || "Image";
   frame.resize(node.width || 100, node.height || 100);
 
-  if (node.radius) frame.cornerRadius = node.radius;
+  if (node.radius) bindRadius(frame, "cornerRadius", node.radiusToken, node.radius);
 
   // Normalize: node.src with data URI → treat as imageBase64
   var imgBase64 = node.imageBase64 || (node.src && node.src.startsWith("data:image") ? node.src : null);
@@ -1451,7 +1531,12 @@ async function createInstance(node) {
   const textOverrides = node.textOverrides || (node.overrides && node.overrides.text) || null;
   if (textOverrides) {
     for (const [childName, text] of Object.entries(textOverrides)) {
-      const textNode = instance.findOne(n => n.type === "TEXT" && n.name === childName);
+      var textNode = instance.findOne(n => n.type === "TEXT" && n.name === childName);
+      // Fallback: "Label" → "Value" (Input/Select use "Value" text node), "Value" → "Label"
+      if (!textNode && (childName === "Label" || childName === "Value")) {
+        var altName = childName === "Label" ? "Value" : "Label";
+        textNode = instance.findOne(n => n.type === "TEXT" && n.name === altName);
+      }
       if (textNode) {
         try {
           const fontName = textNode.fontName;
@@ -1509,7 +1594,28 @@ async function createInstance(node) {
           );
         });
         if (iconSlot && iconSlot.type === "INSTANCE") {
-          try { iconSlot.swapComponent(logoComp); } catch (e) {}
+          try {
+            iconSlot.swapComponent(logoComp);
+            // Detect if target component is fill-based (brand logo) vs stroke-based (Lucide).
+            // Brand logos have colored fills on vectors; Lucide icons use strokes with fill=none.
+            // Only clear inherited stroke overrides for fill-based icons.
+            var compVectors = logoComp.findAll(function(n) {
+              return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "BOOLEAN_OPERATION";
+            });
+            var isFillBased = compVectors.length > 0 && compVectors.some(function(v) {
+              return v.fills && v.fills.length > 0 && v.fills[0].type === "SOLID" && v.fills[0].visible !== false;
+            });
+            if (isFillBased) {
+              var instVectors = iconSlot.findAll(function(n) {
+                return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE" || n.type === "BOOLEAN_OPERATION";
+              });
+              for (var vi = 0; vi < instVectors.length; vi++) {
+                if (instVectors[vi].strokes && instVectors[vi].strokes.length > 0) {
+                  instVectors[vi].strokes = [];
+                }
+              }
+            }
+          } catch (e) {}
         }
       }
     }
@@ -1542,10 +1648,10 @@ async function createManualInstance(node, csName) {
     frame.layoutMode = "HORIZONTAL";
     frame.counterAxisAlignItems = "CENTER";
     frame.primaryAxisAlignItems = "MIN";
-    frame.itemSpacing = 6;
-    frame.paddingTop = 12; frame.paddingBottom = 12;
-    frame.paddingLeft = 16; frame.paddingRight = 16;
-    frame.cornerRadius = 8;
+    bindSpacing(frame, "itemSpacing", null, 6);
+    bindSpacing(frame, "paddingTop", null, 12); bindSpacing(frame, "paddingBottom", null, 12);
+    bindSpacing(frame, "paddingLeft", null, 16); bindSpacing(frame, "paddingRight", null, 16);
+    bindRadius(frame, "cornerRadius", null, 8);
     frame.resize(w > 50 ? w : 356, h > 20 ? h : 48);
     frame.layoutSizingHorizontal = "HUG";
     frame.layoutSizingVertical = "HUG";
@@ -1609,10 +1715,10 @@ async function createManualInstance(node, csName) {
     var content = figma.createFrame();
     content.name = "Content";
     content.layoutMode = "VERTICAL";
-    content.itemSpacing = 2;
+    bindSpacing(content, "itemSpacing", null, 2);
     content.fills = [];
-    content.paddingTop = 0; content.paddingBottom = 0;
-    content.paddingLeft = 0; content.paddingRight = 0;
+    bindSpacing(content, "paddingTop", null, 0); bindSpacing(content, "paddingBottom", null, 0);
+    bindSpacing(content, "paddingLeft", null, 0); bindSpacing(content, "paddingRight", null, 0);
 
     // Title text
     var titleText = figma.createText();
@@ -1672,9 +1778,9 @@ async function createManualInstance(node, csName) {
       btn.layoutMode = "HORIZONTAL";
       btn.counterAxisAlignItems = "CENTER";
       btn.primaryAxisAlignItems = "CENTER";
-      btn.paddingTop = 6; btn.paddingBottom = 6;
-      btn.paddingLeft = 12; btn.paddingRight = 12;
-      btn.cornerRadius = 6;
+      bindSpacing(btn, "paddingTop", null, 6); bindSpacing(btn, "paddingBottom", null, 6);
+      bindSpacing(btn, "paddingLeft", null, 12); bindSpacing(btn, "paddingRight", null, 12);
+      bindRadius(btn, "cornerRadius", null, 6);
       if (bgVar) {
         btn.fills = [makeBoundPaint(bgVar)];
       } else {
@@ -1716,8 +1822,8 @@ async function createManualInstance(node, csName) {
   fallback.layoutMode = "HORIZONTAL";
   fallback.counterAxisAlignItems = "CENTER";
   fallback.primaryAxisAlignItems = "CENTER";
-  fallback.paddingLeft = 8; fallback.paddingRight = 8;
-  fallback.cornerRadius = 8;
+  bindSpacing(fallback, "paddingLeft", null, 8); bindSpacing(fallback, "paddingRight", null, 8);
+  bindRadius(fallback, "cornerRadius", null, 8);
   var cardVar = findVar("card");
   if (cardVar) {
     fallback.fills = [makeBoundPaint(cardVar)];
@@ -1779,7 +1885,7 @@ function createPlaceholder(node) {
   frame.name = node.name || node.label || "Placeholder";
   frame.resize(node.width || 200, node.height || 100);
   frame.fills = [{ type: "SOLID", color: { r: 0.15, g: 0.15, b: 0.18 }, opacity: 0.3 }];
-  if (node.radius) frame.cornerRadius = Math.min(node.radius, 9999);
+  if (node.radius) bindRadius(frame, "cornerRadius", node.radiusToken, Math.min(node.radius, 9999));
   return frame;
 }
 
@@ -1817,6 +1923,20 @@ function applySizing(figmaNode, dataNode, parentLayout) {
     figmaNode.layoutSizingHorizontal = "FILL";
   } else if (dataNode.hugWidth) {
     figmaNode.layoutSizingHorizontal = "HUG";
+  } else if (isInstance) {
+    // Instance width: inherit from component's root sizing
+    // Components with HUG width (Button, Badge, Tabs Item) → HUG
+    // Components with FIXED width (Input w-[320px], Select) → FIXED
+    try {
+      var _mainC = figmaNode.mainComponent;
+      if (_mainC) {
+        figmaNode.layoutSizingHorizontal = _mainC.layoutSizingHorizontal === "HUG" ? "HUG" : "FIXED";
+      } else {
+        figmaNode.layoutSizingHorizontal = "FIXED";
+      }
+    } catch (e) {
+      figmaNode.layoutSizingHorizontal = "FIXED";
+    }
   } else {
     figmaNode.layoutSizingHorizontal = "FIXED";
   }
@@ -1825,6 +1945,23 @@ function applySizing(figmaNode, dataNode, parentLayout) {
     figmaNode.layoutSizingVertical = "FILL";
   } else if (dataNode.hugHeight) {
     figmaNode.layoutSizingVertical = "HUG";
+  } else if (isInstance) {
+    // Instance height: inherit from component's root sizing
+    // Components with FIXED height (Button h-9, Input h-9, Checkbox size-4) → FIXED
+    // Components with HUG height (Alert, Card content) → HUG
+    try {
+      var mainComp = figmaNode.mainComponent;
+      if (mainComp) {
+        var compParent = mainComp.parent;
+        // For variants: check the ComponentSet's first variant (or mainComponent itself)
+        var rootComp = compParent && compParent.type === "COMPONENT_SET" ? mainComp : mainComp;
+        figmaNode.layoutSizingVertical = rootComp.layoutSizingVertical === "HUG" ? "HUG" : "FIXED";
+      } else {
+        figmaNode.layoutSizingVertical = "FIXED";
+      }
+    } catch (e) {
+      figmaNode.layoutSizingVertical = "FIXED";
+    }
   } else {
     figmaNode.layoutSizingVertical = "FIXED";
   }
@@ -1903,15 +2040,28 @@ async function applyDarkMode(node) {
 // State for multi-breakpoint responsive generation
 var _responsiveFrames = [];
 var _responsiveX = 0;
+var _responsiveY = 0;
 var _responsiveTotalNodes = 0;
+
+// Helper: send real-time progress (top-level so createFrame can access it)
+function sendProgress(text, level) {
+  figma.ui.postMessage({ type: "progress", message: text, level: level || "info" });
+}
+
+// Rendering progress tracker — tracks top-level children during createFrame
+var _renderProgress = { enabled: false, total: 0, done: 0, prefix: "" };
 
 figma.ui.onmessage = async (msg) => {
   // Ensure token caches are loaded before any generation
   // Only load once per session: on "generate" or "responsive-start" (NOT on every "responsive-frame")
   if (msg.type === "generate" || msg.type === "responsive-start") {
+    figma.ui.postMessage({ type: "log-clear" });
+    sendProgress("Loading token caches...", "dim");
     try {
       await loadTokenCaches();
+      sendProgress("  ✓ Token caches loaded", "ok");
     } catch (cacheErr) {
+      sendProgress("  ⚠ Token cache failed: " + cacheErr.message, "warn");
       console.log("[HTML→Figma] WARNING: loadTokenCaches failed: " + cacheErr.message + "\n" + cacheErr.stack);
     }
     // Switch to Visual page once at the start
@@ -1926,11 +2076,18 @@ figma.ui.onmessage = async (msg) => {
       const pageName = data.pageName || data.name || "Imported Screen";
       const frameName = root.name || pageName;
 
+      // Count total nodes for progress
+      function countSpecNodes(n) { var c = 1; if (n.children) for (var i = 0; i < n.children.length; i++) c += countSpecNodes(n.children[i]); return c; }
+      var _totalNodes = countSpecNodes(root);
+
       // Upsert: detect existing frame by name
       var existing = findExistingFrame(frameName);
       var isUpdate = !!existing;
 
-      figma.ui.postMessage({ type: "progress", message: (isUpdate ? "Updating" : "Creating") + ` "${frameName}"...` });
+      sendProgress((isUpdate ? "Updating" : "Creating") + ' "' + frameName + '" (' + _totalNodes + ' nodes)...');
+
+      // Enable top-level rendering progress
+      _renderProgress = { enabled: true, total: (root.children || []).length, done: 0, prefix: "" };
 
       if (existing) {
         // Reconcile: update frame props + children in place
@@ -1938,14 +2095,16 @@ figma.ui.onmessage = async (msg) => {
         await reconcileChildren(existing, root.children || [], root.layout);
 
         // Apply dark mode to frame
+        sendProgress("Applying dark mode...", "dim");
         await applyDarkMode(existing);
 
         figma.currentPage.selection = [existing];
-        figma.viewport.scrollAndZoomIntoView([existing]);
 
         let count = 0;
         function countAll(n) { count++; if ("children" in n) n.children.forEach(countAll); }
         countAll(existing);
+
+        sendProgress("  ✓ " + frameName + " updated — " + count + " Figma nodes", "ok");
 
         figma.ui.postMessage({
           type: "done",
@@ -1961,19 +2120,47 @@ figma.ui.onmessage = async (msg) => {
 
         rootNode.name = frameName;
 
-        const vp = figma.viewport.center;
-        rootNode.x = Math.round(vp.x - (root.width || 1440) / 2);
-        rootNode.y = Math.round(vp.y - (root.height || 900) / 2);
+        // Place to the right of current selection (200px gap), fallback to rightmost frame on page + 200px
+        var sel = figma.currentPage.selection;
+        if (sel.length > 0) {
+          var selRight = -Infinity, selTop = Infinity;
+          for (var si = 0; si < sel.length; si++) {
+            var sr = sel[si].x + sel[si].width;
+            if (sr > selRight) selRight = sr;
+            if (sel[si].y < selTop) selTop = sel[si].y;
+          }
+          rootNode.x = Math.round(selRight + 200);
+          rootNode.y = Math.round(selTop);
+        } else {
+          // Fallback: right of rightmost frame on page + 200px gap
+          var maxRight = 0, rightmostY = 0;
+          var kids = figma.currentPage.children;
+          for (var ki = 0; ki < kids.length; ki++) {
+            if (kids[ki] === rootNode) continue;
+            var r = kids[ki].x + kids[ki].width;
+            if (r > maxRight) { maxRight = r; rightmostY = kids[ki].y; }
+          }
+          if (maxRight > 0) {
+            rootNode.x = Math.round(maxRight + 200);
+            rootNode.y = Math.round(rightmostY);
+          } else {
+            const vp = figma.viewport.center;
+            rootNode.x = Math.round(vp.x - (root.width || 1440) / 2);
+            rootNode.y = Math.round(vp.y - (root.height || 900) / 2);
+          }
+        }
 
         // Apply dark mode to frame
+        sendProgress("Applying dark mode...", "dim");
         await applyDarkMode(rootNode);
 
         figma.currentPage.selection = [rootNode];
-        figma.viewport.scrollAndZoomIntoView([rootNode]);
 
         let count2 = 0;
         function countAll2(n) { count2++; if ("children" in n) n.children.forEach(countAll2); }
         countAll2(rootNode);
+
+        sendProgress("  ✓ " + frameName + " done — " + count2 + " Figma nodes", "ok");
 
         figma.ui.postMessage({
           type: "done",
@@ -1996,15 +2183,35 @@ figma.ui.onmessage = async (msg) => {
     var firstExisting = findExistingFrame(firstBPName);
     if (firstExisting) {
       _responsiveX = firstExisting.x;
+      _responsiveY = firstExisting.y;
     } else {
-      // Find rightmost frame on current page, place 300px to the right
-      var maxRight = 0;
-      var kids = figma.currentPage.children;
-      for (var ki = 0; ki < kids.length; ki++) {
-        var r = kids[ki].x + kids[ki].width;
-        if (r > maxRight) maxRight = r;
+      // Place to the right of current selection (200px gap), fallback to rightmost frame on page
+      var sel = figma.currentPage.selection;
+      if (sel.length > 0) {
+        var selRight = -Infinity, selTop = Infinity;
+        for (var si = 0; si < sel.length; si++) {
+          var sr = sel[si].x + sel[si].width;
+          if (sr > selRight) selRight = sr;
+          if (sel[si].y < selTop) selTop = sel[si].y;
+        }
+        _responsiveX = Math.round(selRight + 200);
+        _responsiveY = Math.round(selTop);
+      } else {
+        // Fallback: right of rightmost frame on page + 200px gap
+        var maxRight = 0, rightmostY = 0;
+        var kids = figma.currentPage.children;
+        for (var ki = 0; ki < kids.length; ki++) {
+          var r = kids[ki].x + kids[ki].width;
+          if (r > maxRight) { maxRight = r; rightmostY = kids[ki].y; }
+        }
+        if (maxRight > 0) {
+          _responsiveX = Math.round(maxRight + 200);
+          _responsiveY = Math.round(rightmostY);
+        } else {
+          _responsiveX = Math.round(figma.viewport.center.x - 720);
+          _responsiveY = 0;
+        }
       }
-      _responsiveX = maxRight > 0 ? maxRight + 200 : Math.round(figma.viewport.center.x - 720);
     }
     return;
   }
@@ -2023,10 +2230,14 @@ figma.ui.onmessage = async (msg) => {
       var existingFrame = findExistingFrame(frameName);
       var isUpd = !!existingFrame;
 
-      figma.ui.postMessage({
-        type: "progress",
-        message: (isUpd ? "Updating " : "Creating ") + bpName + " (" + (msg.index + 1) + "/" + msg.total + ")...",
-      });
+      // Count nodes for this breakpoint
+      function _countBPNodes(n) { var c = 1; if (n.children) for (var i = 0; i < n.children.length; i++) c += _countBPNodes(n.children[i]); return c; }
+      var _bpNodeCount = _countBPNodes(tree);
+
+      sendProgress((isUpd ? "Updating " : "Creating ") + bpName + " (" + (msg.index + 1) + "/" + msg.total + ") — " + _bpNodeCount + " nodes");
+
+      // Enable top-level rendering progress
+      _renderProgress = { enabled: true, total: (tree.children || []).length, done: 0, prefix: bpName + " " };
 
       console.log("[HTML→Figma] responsive-frame: tree has " + (tree.children ? tree.children.length : 0) + " children, layout=" + tree.layout + ", type=" + tree.type);
       var rootNode;
@@ -2072,11 +2283,12 @@ figma.ui.onmessage = async (msg) => {
       if (!existingFrame) {
         // Position side by side (only for new frames)
         rootNode.x = _responsiveX;
-        rootNode.y = 0;
+        rootNode.y = _responsiveY;
       }
       _responsiveX = rootNode.x + bpWidth + 40;
 
       // Apply dark mode to frame
+      sendProgress("  Applying dark mode...", "dim");
       await applyDarkMode(rootNode);
 
       _responsiveFrames.push(rootNode);
@@ -2093,6 +2305,8 @@ figma.ui.onmessage = async (msg) => {
       }
       _responsiveTotalNodes += nc;
 
+      sendProgress("  ✓ " + bpName + " done — " + nc + " Figma nodes", "ok");
+
       // Tell UI to send next breakpoint
       figma.ui.postMessage({ type: "frame-done" });
     } catch (err) {
@@ -2105,7 +2319,6 @@ figma.ui.onmessage = async (msg) => {
   if (msg.type === "responsive-end") {
     if (_responsiveFrames.length > 0) {
       figma.currentPage.selection = _responsiveFrames;
-      figma.viewport.scrollAndZoomIntoView(_responsiveFrames);
     }
     figma.ui.postMessage({
       type: "done",

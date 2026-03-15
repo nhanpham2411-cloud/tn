@@ -26,13 +26,16 @@
         "counterAlign": "center",
         "width": 36,
         "height": 36,
+        "heightMode": "fixed",
         "radius": "lg",
         "gap": "none",
         "paddingX": "none",
         "paddingY": "none",
-        "textStyle": "SP/Body",
-        "textContent": "1",
-        "textFill": "muted-foreground"
+        "hideLabel": true,
+        "textFill": "muted-foreground",
+        "children": [
+          { "name": "Label", "type": "text", "textStyle": "SP/Body", "textContent": "1" }
+        ]
       },
 
       "variantStyles": {
@@ -64,12 +67,11 @@
           "paddingLeft": 10,
           "paddingRight": "md",
           "paddingY": "none",
-          "iconLeft": true,
-          "iconLeftName": "ChevronLeft",
-          "iconFill": "muted-foreground",
-          "textStyle": "SP/Body Semibold",
-          "textContent": "Previous",
-          "textFill": "muted-foreground"
+          "textFill": "muted-foreground",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "ChevronLeft", "iconSize": 16 },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Previous" }
+          ]
         },
         "Type=Previous,State=Hover": {
           "fill": "accent",
@@ -84,12 +86,11 @@
           "paddingLeft": "md",
           "paddingRight": 10,
           "paddingY": "none",
-          "iconRight": true,
-          "iconRightName": "ChevronRight",
-          "iconFill": "muted-foreground",
-          "textStyle": "SP/Body Semibold",
-          "textContent": "Next",
-          "textFill": "muted-foreground"
+          "textFill": "muted-foreground",
+          "children": [
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Next" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ChevronRight", "iconSize": 16 }
+          ]
         },
         "Type=Next,State=Hover": {
           "fill": "accent",
@@ -98,10 +99,9 @@
         },
 
         "Type=Ellipsis": {
-          "hideLabel": true,
-          "iconLeft": true,
-          "iconLeftName": "Ellipsis",
-          "iconFill": "muted-foreground"
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Ellipsis", "iconSize": 16, "iconFill": "muted-foreground" }
+          ]
         }
       },
 

@@ -38,6 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -101,24 +102,24 @@ const statusConfig: Record<User["status"], { label: string; dotClass: string; ba
   active: {
     label: "Active",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   inactive: {
     label: "Inactive",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
   invited: {
     label: "Invited",
     dotClass: "bg-primary animate-pulse",
-    badgeClass: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20",
+    badgeClass: "bg-primary-10 text-primary border-primary-10 dark:bg-primary-20",
   },
 }
 
 const planConfig: Record<User["plan"], { label: string; color: string; bg: string }> = {
   free: { label: "Free", color: "text-muted-foreground", bg: "bg-muted" },
-  pro: { label: "Pro", color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
-  enterprise: { label: "Enterprise", color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-500/10 dark:bg-violet-500/20" },
+  pro: { label: "Pro", color: "text-primary", bg: "bg-primary-10 dark:bg-primary-20" },
+  enterprise: { label: "Enterprise", color: "text-primary", bg: "bg-primary-10 dark:bg-primary-20" },
 }
 
 interface ActivityEntry {
@@ -142,14 +143,14 @@ const activityLog: ActivityEntry[] = [
   { action: "Invited 3 team members", date: "Feb 18, 2026 at 9:00 AM", type: "team" },
 ]
 
-const activityTypeConfig: Record<ActivityEntry["type"], { icon: React.ElementType; color: string; bg: string; label: string }> = {
-  auth: { icon: LogIn, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20", label: "Auth" },
-  settings: { icon: Settings, color: "text-warning", bg: "bg-warning-subtle", label: "Settings" },
-  report: { icon: FileText, color: "text-success", bg: "bg-success-subtle", label: "Report" },
-  team: { icon: Users, color: "text-violet-600 dark:text-violet-400", bg: "bg-violet-500/10 dark:bg-violet-500/20", label: "Team" },
-  security: { icon: Key, color: "text-destructive", bg: "bg-destructive/10 dark:bg-destructive/20", label: "Security" },
-  billing: { icon: CreditCard, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10 dark:bg-amber-500/20", label: "Billing" },
-  project: { icon: Globe, color: "text-cyan-600 dark:text-cyan-400", bg: "bg-cyan-500/10 dark:bg-cyan-500/20", label: "Project" },
+const activityTypeConfig: Record<ActivityEntry["type"], { icon: React.ElementType; color: "primary" | "success" | "warning" | "destructive" | "default"; label: string }> = {
+  auth: { icon: LogIn, color: "primary", label: "Auth" },
+  settings: { icon: Settings, color: "warning", label: "Settings" },
+  report: { icon: FileText, color: "success", label: "Report" },
+  team: { icon: Users, color: "primary", label: "Team" },
+  security: { icon: Key, color: "destructive", label: "Security" },
+  billing: { icon: CreditCard, color: "warning", label: "Billing" },
+  project: { icon: Globe, color: "primary", label: "Project" },
 }
 
 /* ------------------------------------------------------------------ */
@@ -238,9 +239,7 @@ export default function UserProfilePage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center gap-md py-4xl">
-        <div className="size-[48px] rounded-full bg-surface-raised flex items-center justify-center mb-sm">
-          <Users className="size-[22px] text-muted-foreground" />
-        </div>
+        <Thumbnail type="icon" shape="circle" size="lg" color="surface" icon={<Users className="size-[22px]" />} className="mb-sm" />
         <h2 className="sp-h4 text-foreground">User not found</h2>
         <p className="sp-body text-muted-foreground">The user with ID "{id}" does not exist.</p>
         <Button asChild variant="outline">
@@ -260,7 +259,7 @@ export default function UserProfilePage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -277,10 +276,10 @@ export default function UserProfilePage() {
             </Link>
           </Button>
           <div className="flex items-center gap-sm">
-            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+            <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
               <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
             </Button>
-            <div className="flex items-center gap-2xs text-muted-foreground/70">
+            <div className="flex items-center gap-2xs text-muted-foreground">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -294,7 +293,7 @@ export default function UserProfilePage() {
           <DCard>
             <div className="flex flex-col items-center gap-md sm:flex-row sm:items-start">
               <div className="relative">
-                <Avatar className="size-[64px] ring-1 ring-border/20">
+                <Avatar className="size-[64px] ring-1 ring-border">
                   <AvatarImage src={user.avatarUrl} alt={user.name} />
                   <AvatarFallback className="sp-h4">{user.avatar}</AvatarFallback>
                 </Avatar>
@@ -339,7 +338,7 @@ export default function UserProfilePage() {
                 <Button>Send Message</Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon" className="size-[36px]" aria-label="More options">
+                    <Button variant="outline" size="icon-sm" aria-label="More options">
                       <MoreHorizontal className="size-[16px]" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -374,16 +373,14 @@ export default function UserProfilePage() {
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
             {[
-              { icon: CreditCard, label: "Plan", value: user.plan, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-              { icon: Shield, label: "Role", value: user.role, iconBg: "bg-success-subtle", iconColor: "text-success" },
-              { icon: Calendar, label: "Member Since", value: user.joinDate, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
-              { icon: Activity, label: "Last Active", value: user.lastActive, iconBg: "bg-violet-100 dark:bg-violet-500/20", iconColor: "text-violet-600 dark:text-violet-400" },
+              { icon: CreditCard, label: "Plan", value: user.plan, color: "primary" as const },
+              { icon: Shield, label: "Role", value: user.role, color: "success" as const },
+              { icon: Calendar, label: "Member Since", value: user.joinDate, color: "default" as const },
+              { icon: Activity, label: "Last Active", value: user.lastActive, color: "primary" as const },
             ].map((kpi) => (
               <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
                 <div className="flex items-center gap-sm">
-                  <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                    <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                  </div>
+                  <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                   <div>
                     <p className="sp-body-semibold text-foreground capitalize">{kpi.value}</p>
                     <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -426,16 +423,14 @@ export default function UserProfilePage() {
                     return (
                       <div key={i}>
                         <div className="flex items-center gap-md py-md">
-                          <div className={`size-[30px] rounded-lg ${typeConf.bg} flex items-center justify-center shrink-0`}>
-                            <TypeIcon className={`size-[14px] ${typeConf.color}`} />
-                          </div>
+                          <Thumbnail type="icon" size="sm" color={typeConf.color} icon={<TypeIcon className="size-[14px]" />} className="!size-[30px]" />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-sm">
                               <span className="sp-body-medium text-foreground">{entry.action}</span>
                               <Badge variant="outline" className="sp-caption capitalize shrink-0">{entry.type}</Badge>
                             </div>
                           </div>
-                          <span className="sp-caption text-muted-foreground/60 shrink-0 hidden sm:block">{entry.date}</span>
+                          <span className="sp-caption text-muted-foreground shrink-0 hidden sm:block">{entry.date}</span>
                         </div>
                         {i < 4 && <Separator />}
                       </div>
@@ -497,7 +492,7 @@ export default function UserProfilePage() {
                     <p className="sp-caption text-muted-foreground mt-3xs">Complete history of user actions</p>
                   </div>
                   <div className="flex items-center gap-sm">
-                    <Filter className="size-[14px] text-muted-foreground/60" />
+                    <Filter className="size-[14px] text-muted-foreground" />
                     <Select value={activityFilter} onValueChange={setActivityFilter}>
                       <SelectTrigger className="w-[140px]">
                         <SelectValue />
@@ -518,9 +513,7 @@ export default function UserProfilePage() {
 
                 {filteredActivity.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-2xl text-center">
-                    <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-                      <Activity className="size-[18px] text-muted-foreground" />
-                    </div>
+                    <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Activity className="size-[18px]" />} className="mb-md" />
                     <p className="sp-body-semibold text-foreground">No activity found</p>
                     <p className="sp-caption text-muted-foreground mt-2xs">No {activityFilter} events recorded for this user.</p>
                   </div>
@@ -528,22 +521,20 @@ export default function UserProfilePage() {
                   <>
                     <div className="relative">
                       {/* Timeline line */}
-                      <div className="absolute left-[14px] top-[20px] bottom-[20px] w-[2px] bg-border/40 dark:bg-border-subtle" />
+                      <div className="absolute left-[14px] top-[20px] bottom-[20px] w-[2px] bg-border-subtle" />
                       <div className="flex flex-col gap-sm">
                         {displayedActivity.map((entry, i) => {
                           const typeConf = activityTypeConfig[entry.type]
                           const TypeIcon = typeConf.icon
                           return (
                             <div key={i} className="flex items-start gap-md relative">
-                              <div className={`size-[30px] rounded-lg ${typeConf.bg} flex items-center justify-center shrink-0 z-10`}>
-                                <TypeIcon className={`size-[14px] ${typeConf.color}`} />
-                              </div>
+                              <Thumbnail type="icon" size="sm" icon={<TypeIcon className={`size-[14px] ${typeConf.color}`} />} className={`!size-[30px] z-10 ${typeConf.bg}`} />
                               <div className="flex-1 flex flex-col gap-2xs sm:flex-row sm:items-center sm:justify-between py-xs min-h-[30px]">
                                 <div className="flex items-center gap-sm">
                                   <span className="sp-body-medium text-foreground">{entry.action}</span>
                                   <Badge variant="outline" className="sp-caption capitalize">{typeConf.label}</Badge>
                                 </div>
-                                <span className="sp-caption text-muted-foreground/60 shrink-0">{entry.date}</span>
+                                <span className="sp-caption text-muted-foreground shrink-0">{entry.date}</span>
                               </div>
                             </div>
                           )
@@ -643,14 +634,14 @@ export default function UserProfilePage() {
                 </DCard>
 
                 {/* Danger Zone */}
-                <DCard className="!border-destructive/30">
+                <DCard className="!border-destructive-border">
                   <h3 className="sp-h4 text-destructive flex items-center gap-xs">
                     <AlertTriangle className="size-[16px]" />
                     Danger Zone
                   </h3>
                   <p className="sp-caption text-muted-foreground mt-3xs mb-lg">Irreversible actions for this user account</p>
                   <div className="flex flex-col gap-md">
-                    <div className="flex items-center justify-between rounded-xl border border-border/60 dark:border-border-subtle p-lg">
+                    <div className="flex items-center justify-between rounded-xl border border-border-subtle p-lg">
                       <div>
                         <p className="sp-body-semibold text-foreground">Deactivate User</p>
                         <p className="sp-caption text-muted-foreground mt-2xs">User will lose access but data is preserved</p>
@@ -659,7 +650,7 @@ export default function UserProfilePage() {
                         <UserMinus className="size-[14px] mr-xs" /> Deactivate
                       </Button>
                     </div>
-                    <div className="flex items-center justify-between rounded-xl border border-destructive/30 p-lg">
+                    <div className="flex items-center justify-between rounded-xl border border-destructive-subtle p-lg">
                       <div>
                         <p className="sp-body-semibold text-foreground">Delete User</p>
                         <p className="sp-caption text-muted-foreground mt-2xs">Permanently remove this user and all their data</p>
@@ -702,7 +693,7 @@ export default function UserProfilePage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleDelete}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDelete}>
                 Delete User
               </AlertDialogAction>
             </AlertDialogFooter>

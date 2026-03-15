@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import { ShopPulseLogo } from "@/components/layout/auth-layout"
 import { figma } from "@/lib/figma-dev"
 
@@ -45,10 +46,8 @@ export default function ForgotPasswordPage() {
   if (sent) {
     return (
       <Card className="w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
-        <CardHeader>
-          <div className="mx-auto mb-sm flex size-[48px] items-center justify-center rounded-full bg-success-subtle">
-            <CheckCircle2 className="size-xl text-success" />
-          </div>
+        <CardHeader className="items-center text-center">
+          <Thumbnail type="icon" shape="circle" size="lg" color="success" icon={<CheckCircle2 className="size-[24px]" />} className="mb-sm" />
           <CardTitle className="sp-h2">Check your email</CardTitle>
           <CardDescription>
             We've sent a password reset link to{" "}
@@ -64,19 +63,19 @@ export default function ForgotPasswordPage() {
             </a>
           </Button>
           <p className="sp-caption text-center text-muted-foreground">
-            Didn't receive the email? Check your spam folder or{" "}
-            <Button
-              variant="ghost"
+            Didn't receive the email? Check your spam folder or
+            <br />
+            <span
               onClick={() => setSent(false)}
-              className="h-auto p-0 text-primary hover:underline hover:bg-transparent"
+              className="text-primary font-medium hover:underline cursor-pointer"
             >
               try another email
-            </Button>
+            </span>
           </p>
         </CardContent>
 
-        <CardFooter>
-          <Button variant="ghost" onClick={() => navigate("/auth/sign-in")}>
+        <CardFooter className="justify-center">
+          <Button variant="ghost" className="w-full" onClick={() => navigate("/auth/sign-in")}>
             <ArrowLeft />
             Back to sign in
           </Button>
@@ -100,7 +99,7 @@ export default function ForgotPasswordPage() {
 
       <CardContent>
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"

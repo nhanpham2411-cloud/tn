@@ -24,11 +24,11 @@
         "width": 320,
         "height": 36,
         "heightMode": "fixed",
+        "heightVar": "height/default",
         "radius": "full",
         "fill": "muted",
         "stroke": "border",
         "strokeWidth": 1,
-        "strokeOpacity": 0.5,
         "hideLabel": true,
         "clipsContent": true,
         "children": [
@@ -45,7 +45,6 @@
             "textStyle": "SP/Body",
             "textContent": "Search products...",
             "textFill": "muted-foreground",
-            "textFillOpacity": 0.7,
             "fillWidth": true,
             "textAutoResize": "TRUNCATE",
             "maxLines": 1
@@ -62,11 +61,9 @@
             "paddingX": "2xs",
             "paddingY": "none",
             "radius": "sm",
-            "fill": "foreground",
-            "fillOpacity": 0.05,
-            "stroke": "foreground",
+            "fill": "surface-raised",
+            "stroke": "border-subtle",
             "strokeWidth": 1,
-            "strokeOpacity": 0.1,
             "showWhen": "Shortcut=Yes,Value=Placeholder",
             "children": [
               {
@@ -74,8 +71,7 @@
                 "type": "text",
                 "textStyle": "SP/Caption",
                 "textContent": "⌘K",
-                "textFill": "muted-foreground",
-                "textFillOpacity": 0.7
+                "textFill": "muted-foreground"
               }
             ]
           },
@@ -92,7 +88,7 @@
 
       "variantStyles": {
         "State=Hover": {
-          "strokeOpacity": 0.8
+          "stroke": "border-strong"
         },
         "State=Focus": {
           "focusRing": "ring",
@@ -139,13 +135,14 @@
       ],
 
       "designTokens": [
-        { "token": "--muted", "value": "zinc-100 / white 4%", "description": "Input background" },
-        { "token": "--border (50%)", "value": "zinc-200/50", "description": "Default border" },
-        { "token": "--ring", "value": "violet-600/30", "description": "Focus ring" },
-        { "token": "--muted-foreground", "value": "zinc-500", "description": "Search icon & placeholder color" },
-        { "token": "--foreground", "value": "zinc-900", "description": "Input text & clear icon hover" },
-        { "token": "--foreground/5", "value": "zinc-900 5% / white 5%", "description": "⌘K badge background" },
-        { "token": "--foreground/10", "value": "zinc-900 10% / white 10%", "description": "⌘K badge border" },
+        { "token": "--color-muted", "value": "zinc-100 / white 4%", "description": "Input background" },
+        { "token": "--color-border", "value": "zinc-200 / zinc-800", "description": "Default border" },
+        { "token": "--color-border-strong", "value": "zinc-300 / zinc-600", "description": "Hover & focus border" },
+        { "token": "--color-ring", "value": "violet-600/30", "description": "Focus ring" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Search icon, placeholder & badge text" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Input text & clear icon hover" },
+        { "token": "--color-surface-raised", "value": "zinc-100 / white 6%", "description": "⌘K badge background" },
+        { "token": "--color-border-subtle", "value": "zinc-100 / white 6%", "description": "⌘K badge border" },
         { "token": "rounded-full", "value": "9999px", "description": "Pill shape border radius" }
       ],
 
@@ -155,8 +152,8 @@
       ],
 
       "figmaMapping": [
-        { "figma": "State=Default", "value": "border-border/50", "code": "--", "codeValue": "Default appearance" },
-        { "figma": "State=Hover", "value": "border-border/80", "code": "hover:", "codeValue": "hover:border-border/80" },
+        { "figma": "State=Default", "value": "border-border, bg-muted", "code": "--", "codeValue": "Default appearance" },
+        { "figma": "State=Hover", "value": "border-border-strong", "code": "hover:", "codeValue": "hover:border-border-strong" },
         { "figma": "State=Focus", "value": "ring-[3px] ring-ring, border-strong", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
         { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "true" },
         { "figma": "Value=Placeholder", "value": "Placeholder text, muted-foreground", "code": "placeholder", "codeValue": "\"Search...\"" },

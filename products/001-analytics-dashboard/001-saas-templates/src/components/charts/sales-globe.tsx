@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import * as d3 from "d3"
+import { CountryFlag } from "@/components/charts/sales-map"
 
 export interface SalesLocation {
   city: string
@@ -64,13 +65,7 @@ function generateDots(feature: any, spacing = 16) {
   return dots
 }
 
-/* ── country code → flag emoji ─────────────────────────── */
-const FLAG_MAP: Record<string, string> = {
-  US: "🇺🇸", UK: "🇬🇧", GB: "🇬🇧", FR: "🇫🇷", JP: "🇯🇵", AU: "🇦🇺",
-  SG: "🇸🇬", AE: "🇦🇪", BR: "🇧🇷", DE: "🇩🇪", CA: "🇨🇦", KR: "🇰🇷",
-  CN: "🇨🇳", IN: "🇮🇳", MX: "🇲🇽", NL: "🇳🇱", IT: "🇮🇹", ES: "🇪🇸", NG: "🇳🇬", ZA: "🇿🇦",
-}
-function countryFlag(code: string) { return FLAG_MAP[code] || "🌍" }
+/* ── country flags → imported from sales-map ─── */
 
 /* ── component ─────────────────────────────────────────── */
 
@@ -331,9 +326,9 @@ export function SalesGlobe({ locations, className = "" }: SalesGlobeProps) {
               className="absolute left-0 top-0"
               style={{ opacity: 0, willChange: "transform, opacity" }}
             >
-              <div className="flex flex-col items-center -translate-x-1/2 -translate-y-full pb-[8px]">
-                <div className="whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-[10px] py-[6px] flex items-center gap-[6px] shadow-md dark:shadow-lg">
-                  <span className="text-[14px] leading-none">{countryFlag(loc.country)}</span>
+              <div className="flex flex-col items-center -translate-x-1/2 -translate-y-full pb-xs">
+                <div className="whitespace-nowrap rounded-lg bg-popover backdrop-blur-md border border-border-subtle dark:border-white/[0.1] px-sm py-2xs flex items-center gap-2xs shadow-md dark:shadow-lg">
+                  <CountryFlag code={loc.country} size={16} />
                   <span className="sp-label text-foreground leading-none">
                     {loc.city}
                   </span>

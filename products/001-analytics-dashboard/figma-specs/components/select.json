@@ -11,30 +11,65 @@
 
       "properties": {
         "State": ["Default", "Hover", "Focus", "Error", "Disabled"],
-        "Value": ["Placeholder", "Filled"]
+        "Value": ["Placeholder", "Filled"],
+        "Show Icon": ["No", "Yes"],
+        "Show Label": ["No", "Yes"]
       },
 
       "base": {
         "layout": "horizontal",
-        "primaryAlign": "space-between",
+        "primaryAlign": "start",
         "counterAlign": "center",
         "gap": "xs",
         "width": 320,
         "height": 36,
         "heightMode": "fixed",
+        "heightVar": "height/default",
         "radius": "lg",
         "stroke": "border",
         "strokeWidth": 1,
         "fill": "input",
-        "paddingX": "sm",
+        "clipsContent": true,
+        "paddingLeft": "sm",
+        "paddingRight": "xs",
         "paddingY": "none",
-        "textContent": "Select option",
-        "textStyle": "SP/Body",
-        "textFill": "muted-foreground",
-        "labelFill": true,
-        "iconRight": true,
-        "iconRightName": "ChevronDown",
-        "iconFill": "muted-foreground"
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Icon",
+            "type": "icon",
+            "iconName": "ChartNoAxesColumn",
+            "iconSize": 16,
+            "iconFill": "muted-foreground",
+            "showWhen": "Show Icon=Yes",
+            "swapProperty": "Swap Icon"
+          },
+          {
+            "name": "Label",
+            "type": "text",
+            "textContent": "Compare:",
+            "textStyle": "SP/Body Medium",
+            "textFill": "foreground",
+            "showWhen": "Show Label=Yes"
+          },
+          {
+            "name": "Value",
+            "type": "text",
+            "textContent": "Select option",
+            "textStyle": "SP/Body",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "truncate": true
+          },
+          {
+            "name": "Chevron",
+            "type": "icon",
+            "iconName": "ChevronDown",
+            "iconFill": "muted-foreground",
+            "width": 16,
+            "height": 16
+          }
+        ]
       },
 
       "variantStyles": {
@@ -52,8 +87,51 @@
           "opacity": 0.5
         },
         "Value=Filled": {
-          "textContent": "Option A",
-          "textFill": "foreground"
+          "children": [
+            {
+              "name": "Icon",
+              "type": "icon",
+              "iconName": "ChartNoAxesColumn",
+              "iconSize": 16,
+              "iconFill": "muted-foreground",
+              "showWhen": "Show Icon=Yes",
+              "swapProperty": "Swap Icon"
+            },
+            {
+              "name": "Label",
+              "type": "text",
+              "textContent": "Compare:",
+              "textStyle": "SP/Body Medium",
+              "textFill": "foreground",
+              "showWhen": "Show Label=Yes"
+            },
+            {
+              "name": "Value",
+              "type": "text",
+              "textContent": "Previous period",
+              "textStyle": "SP/Body",
+              "textFill": "foreground",
+              "fillWidth": true,
+              "truncate": true
+            },
+            {
+              "name": "Chevron",
+              "type": "icon",
+              "iconName": "ChevronDown",
+              "iconFill": "muted-foreground",
+              "width": 16,
+              "height": 16
+            }
+          ]
+        },
+        "Show Icon=Yes": {
+          "widthMode": "hug"
+        },
+        "Show Label=Yes": {
+          "widthMode": "hug"
+        },
+        "Show Icon=Yes,Show Label=Yes": {
+          "widthMode": "hug"
         }
       },
 
@@ -63,11 +141,11 @@
           "description": "Default, hover, focus (ring), error (red border), and disabled.",
           "layout": "vertical",
           "items": [
-            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder" } },
-            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder" } },
-            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder" } },
-            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder" } },
-            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder" } }
+            { "label": "Default", "props": { "State": "Default", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } },
+            { "label": "Hover", "props": { "State": "Hover", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } },
+            { "label": "Focus", "props": { "State": "Focus", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } },
+            { "label": "Error", "props": { "State": "Error", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } },
+            { "label": "Disabled", "props": { "State": "Disabled", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } }
           ]
         },
         {
@@ -75,8 +153,18 @@
           "description": "Placeholder (muted) and filled (foreground) states.",
           "layout": "vertical",
           "items": [
-            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder" } },
-            { "label": "Filled", "props": { "State": "Default", "Value": "Filled" } }
+            { "label": "Placeholder", "props": { "State": "Default", "Value": "Placeholder", "Show Icon": "No", "Show Label": "No" } },
+            { "label": "Filled", "props": { "State": "Default", "Value": "Filled", "Show Icon": "No", "Show Label": "No" } }
+          ]
+        },
+        {
+          "name": "With Icon & Label",
+          "description": "Select with leading icon and label prefix — useful for filter-style selects like Compare period.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Icon only", "props": { "State": "Default", "Value": "Filled", "Show Icon": "Yes", "Show Label": "No" } },
+            { "label": "Label only", "props": { "State": "Default", "Value": "Filled", "Show Icon": "No", "Show Label": "Yes" } },
+            { "label": "Icon + Label", "props": { "State": "Default", "Value": "Filled", "Show Icon": "Yes", "Show Label": "Yes" } }
           ]
         }
       ],
@@ -111,7 +199,9 @@
         { "figma": "State=Error", "value": "border-destructive-border", "code": "aria-invalid", "codeValue": "true" },
         { "figma": "State=Disabled", "value": "opacity-50", "code": "disabled", "codeValue": "true" },
         { "figma": "Value=Placeholder", "value": "Placeholder text in muted-foreground", "code": "placeholder", "codeValue": "\"Select option\"" },
-        { "figma": "Value=Filled", "value": "Selected value in foreground", "code": "value", "codeValue": "\"Option A\"" }
+        { "figma": "Value=Filled", "value": "Selected value in foreground", "code": "value", "codeValue": "\"Option A\"" },
+        { "figma": "Show Icon=Yes", "value": "Leading icon visible, width HUG", "code": "children", "codeValue": "<BarChart3 /> before <SelectValue>" },
+        { "figma": "Show Label=Yes", "value": "Prefix label visible, width HUG", "code": "children", "codeValue": "<span>Compare:</span> before <SelectValue>" }
       ],
 
       "accessibility": {

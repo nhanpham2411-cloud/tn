@@ -13,19 +13,19 @@ import { useTheme } from "@/hooks/use-theme"
 const toasterStyle = {
   "--normal-bg": "var(--foreground)",
   "--normal-text": "var(--background)",
-  "--normal-border": "color-mix(in srgb, var(--foreground) 90%, transparent)",
+  "--normal-border": "var(--toast-border)",
   "--success-bg": "var(--foreground)",
   "--success-text": "var(--background)",
-  "--success-border": "color-mix(in srgb, var(--foreground) 90%, transparent)",
+  "--success-border": "var(--toast-border)",
   "--error-bg": "var(--foreground)",
   "--error-text": "var(--background)",
-  "--error-border": "color-mix(in srgb, var(--foreground) 90%, transparent)",
+  "--error-border": "var(--toast-border)",
   "--warning-bg": "var(--foreground)",
   "--warning-text": "var(--background)",
-  "--warning-border": "color-mix(in srgb, var(--foreground) 90%, transparent)",
+  "--warning-border": "var(--toast-border)",
   "--info-bg": "var(--foreground)",
   "--info-text": "var(--background)",
-  "--info-border": "color-mix(in srgb, var(--foreground) 90%, transparent)",
+  "--info-border": "var(--toast-border)",
 } as React.CSSProperties
 
 function Toaster(props: React.ComponentProps<typeof Sonner>) {

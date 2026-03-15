@@ -11,7 +11,8 @@
 
       "properties": {
         "Value": ["Unchecked", "Checked"],
-        "State": ["Default", "Hover", "Focus", "Disabled"]
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Show Label": ["Yes", "No"]
       },
 
       "base": {
@@ -22,6 +23,8 @@
         "indicator": {
           "width": 16,
           "height": 16,
+          "widthVar": "radio",
+          "heightVar": "radio",
           "radius": "full",
           "clipsContent": true,
           "thumb": {
@@ -41,16 +44,19 @@
 
       "variantStyles": {
         "Value=Unchecked": {},
-        "Value=Checked": { "fill": "primary", "stroke": "primary", "showThumb": true },
+        "Value=Checked": { "fill": "primary", "stroke": "primary-border", "showThumb": true },
 
         "State=Default": {},
-        "State=Hover": { "stroke": "primary", "strokeOpacity": 0.6 },
+        "State=Hover": { "stroke": "primary-border" },
         "State=Focus": { "focusRing": "ring" },
         "State=Disabled": { "opacity": 0.5 },
 
-        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary" },
-        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
-        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 }
+        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary-border" },
+        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary-border", "focusRing": "ring" },
+        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary-border", "opacity": 0.5 },
+
+        "Show Label=Yes": {},
+        "Show Label=No": { "hideLabel": true }
       },
 
       "examples": [
@@ -59,8 +65,8 @@
           "description": "Unchecked and checked radio items side by side.",
           "layout": "horizontal",
           "items": [
-            { "label": "Unchecked", "props": { "Value": "Unchecked", "State": "Default" } },
-            { "label": "Checked", "props": { "Value": "Checked", "State": "Default" } }
+            { "label": "Unchecked", "props": { "Value": "Unchecked", "State": "Default", "Show Label": "Yes" } },
+            { "label": "Checked", "props": { "Value": "Checked", "State": "Default", "Show Label": "Yes" } }
           ]
         },
         {
@@ -68,9 +74,9 @@
           "description": "Hover, focus, and disabled states.",
           "layout": "horizontal",
           "items": [
-            { "label": "Hover", "props": { "Value": "Unchecked", "State": "Hover" } },
-            { "label": "Focus", "props": { "Value": "Checked", "State": "Focus" } },
-            { "label": "Disabled", "props": { "Value": "Checked", "State": "Disabled" } }
+            { "label": "Hover", "props": { "Value": "Unchecked", "State": "Hover", "Show Label": "Yes" } },
+            { "label": "Focus", "props": { "Value": "Checked", "State": "Focus", "Show Label": "Yes" } },
+            { "label": "Disabled", "props": { "Value": "Checked", "State": "Disabled", "Show Label": "Yes" } }
           ]
         }
       ],
@@ -83,7 +89,8 @@
       ],
 
       "designTokens": [
-        { "token": "--primary", "value": "violet-600", "description": "Selected indicator fill and border" },
+        { "token": "--primary", "value": "violet-600", "description": "Selected indicator fill" },
+        { "token": "--primary-border", "value": "violet-500", "description": "Hover border and selected indicator border" },
         { "token": "--primary-foreground", "value": "white", "description": "Inner dot color" },
         { "token": "--border-strong", "value": "zinc-400", "description": "Unselected item border" },
         { "token": "--input", "value": "transparent", "description": "Unselected background" },
@@ -102,10 +109,12 @@
       "figmaMapping": [
         { "figma": "Indicator", "value": "16x16 rounded-full", "code": "RadioGroupItem", "codeValue": "size-md rounded-full border border-border-strong bg-input" },
         { "figma": "Value=Unchecked", "value": "bg-input, border-strong", "code": "unchecked", "codeValue": "No dot" },
-        { "figma": "Value=Checked", "value": "bg-primary, border-primary, Circle dot", "code": "data-[state=checked]", "codeValue": "data-[state=checked]:bg-primary data-[state=checked]:border-primary" },
-        { "figma": "State=Hover", "value": "border-primary/60", "code": "hover:", "codeValue": "hover:border-primary/60" },
+        { "figma": "Value=Checked", "value": "bg-primary, border-primary-border, Circle dot", "code": "data-[state=checked]", "codeValue": "data-[state=checked]:bg-primary data-[state=checked]:border-primary-border" },
+        { "figma": "State=Hover", "value": "border-primary-border", "code": "hover:", "codeValue": "hover:border-primary-border" },
         { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
-        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" },
+        { "figma": "Show Label=Yes", "value": "Label text visible", "code": "children", "codeValue": "<Label>Option label</Label>" },
+        { "figma": "Show Label=No", "value": "No label, radio only", "code": "—", "codeValue": "No Label sibling" }
       ],
 
       "accessibility": {

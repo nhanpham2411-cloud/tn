@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Table,
   TableBody,
@@ -94,10 +95,10 @@ const plans = [
 ]
 
 const usage = [
-  { label: "Storage", used: 32.4, total: 100, unit: "GB", icon: HardDrive, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
-  { label: "API Calls", used: 847000, total: 1000000, unit: "calls", icon: BarChart3, color: "text-success", bg: "bg-success-subtle" },
-  { label: "Team Members", used: 12, total: 50, unit: "seats", icon: Users, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
-  { label: "Projects", used: 8, total: -1, unit: "projects", icon: Zap, color: "text-warning", bg: "bg-warning-subtle" },
+  { label: "Storage", used: 32.4, total: 100, unit: "GB", icon: HardDrive, color: "primary" as const },
+  { label: "API Calls", used: 847000, total: 1000000, unit: "calls", icon: BarChart3, color: "success" as const },
+  { label: "Team Members", used: 12, total: 50, unit: "seats", icon: Users, color: "primary" as const },
+  { label: "Projects", used: 8, total: -1, unit: "projects", icon: Zap, color: "warning" as const },
 ]
 
 const billingHistory = [
@@ -123,9 +124,9 @@ function formatTotal(total: number, unit: string): string {
 }
 
 const statusBadgeConfig: Record<string, { dotClass: string; badgeClass: string; label: string }> = {
-  paid: { dotClass: "bg-success", badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20", label: "Paid" },
-  pending: { dotClass: "bg-warning", badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20", label: "Pending" },
-  failed: { dotClass: "bg-destructive", badgeClass: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20", label: "Failed" },
+  paid: { dotClass: "bg-success", badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border", label: "Paid" },
+  pending: { dotClass: "bg-warning", badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border", label: "Pending" },
+  failed: { dotClass: "bg-destructive", badgeClass: "bg-destructive-subtle text-destructive border-destructive-border", label: "Failed" },
 }
 
 /* ------------------------------------------------------------------ */
@@ -194,7 +195,7 @@ export default function BillingPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Billing data may not be current.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -210,12 +211,12 @@ export default function BillingPage() {
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">Billing</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
+          <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -230,9 +231,7 @@ export default function BillingPage() {
             {usage.map((item) => (
               <DCard key={item.label} className="flex flex-col justify-center gap-xs">
                 <div className="flex items-center gap-sm">
-                  <div className={`size-[36px] rounded-lg ${item.bg} flex items-center justify-center`}>
-                    <item.icon className={`size-[18px] ${item.color}`} />
-                  </div>
+                  <Thumbnail type="icon" color={item.color} icon={<item.icon className="size-[18px]" />} />
                   <div className="flex-1 min-w-0">
                     <p className="sp-body-semibold text-foreground">{formatUsage(item.used, item.unit)}</p>
                     <p className="sp-caption text-muted-foreground">{item.label}</p>
@@ -241,7 +240,7 @@ export default function BillingPage() {
                 {item.total !== -1 && (
                   <Progress value={(item.used / item.total) * 100} className="h-1.5 mt-xs" />
                 )}
-                <p className="sp-caption text-muted-foreground/60">
+                <p className="sp-caption text-muted-foreground">
                   {item.total === -1 ? "Unlimited" : `of ${formatTotal(item.total, item.unit)}`}
                 </p>
               </DCard>
@@ -265,13 +264,13 @@ export default function BillingPage() {
                   <p className="sp-caption text-muted-foreground mt-3xs truncate">You are on the {currentPlan?.name} plan · Next billing on Mar 1, 2026</p>
                 </div>
                 <div className="flex items-center gap-sm shrink-0">
-                  <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-primary/10 dark:bg-primary/20 text-primary sp-caption font-medium">
+                  <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-primary-10 dark:bg-primary-20 text-primary sp-caption font-medium">
                     <Zap className="size-[10px]" /> {currentPlan?.name}
                   </span>
                   <Button
                     variant="ghost"
                     size="xs"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                     onClick={() => setCancelDialog(true)}
                   >
                     Cancel Plan
@@ -284,8 +283,8 @@ export default function BillingPage() {
                     key={plan.name}
                     className={`rounded-xl border p-lg flex flex-col gap-md transition-colors ${
                       plan.current
-                        ? "border-primary bg-primary/5 dark:bg-primary/10"
-                        : "border-border/60 dark:border-border-subtle"
+                        ? "border-primary bg-primary-10 dark:bg-primary-20"
+                        : "border-border dark:border-border-subtle"
                     }`}
                   >
                     <div>
@@ -329,10 +328,8 @@ export default function BillingPage() {
               </div>
               <div className="flex flex-col gap-md">
                 {/* Card 1 - Default */}
-                <div className="flex items-center gap-md rounded-xl border border-border/60 dark:border-border-subtle p-lg">
-                  <div className="size-[40px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <CreditCard className="size-[18px] text-primary" />
-                  </div>
+                <div className="flex items-center gap-md rounded-xl border border-border dark:border-border-subtle p-lg">
+                  <Thumbnail type="icon" color="primary" icon={<CreditCard className="size-[18px]" />} />
                   <div className="flex-1">
                     <p className="sp-body-semibold text-foreground">Visa ending in 4242</p>
                     <p className="sp-caption text-muted-foreground">Expires 12/2027</p>
@@ -343,10 +340,8 @@ export default function BillingPage() {
                   </Button>
                 </div>
                 {/* Card 2 - Backup */}
-                <div className="flex items-center gap-md rounded-xl border border-border/60 dark:border-border-subtle p-lg">
-                  <div className="size-[40px] rounded-lg bg-muted flex items-center justify-center">
-                    <CreditCard className="size-[18px] text-muted-foreground" />
-                  </div>
+                <div className="flex items-center gap-md rounded-xl border border-border dark:border-border-subtle p-lg">
+                  <Thumbnail type="icon" icon={<CreditCard className="size-[18px] text-muted-foreground" />} />
                   <div className="flex-1">
                     <p className="sp-body-semibold text-foreground">Mastercard ending in 8371</p>
                     <p className="sp-caption text-muted-foreground">Expires 06/2026</p>
@@ -357,7 +352,7 @@ export default function BillingPage() {
                   <Button
                     variant="ghost"
                     size="xs"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                     onClick={() => setRemoveCardDialog(true)}
                     aria-label="Remove card"
                   >
@@ -386,7 +381,7 @@ export default function BillingPage() {
                   {billingHistory.map((invoice) => {
                     const cfg = statusBadgeConfig[invoice.status] ?? statusBadgeConfig.paid
                     return (
-                      <div key={invoice.id} className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm">
+                      <div key={invoice.id} className="rounded-xl border border-border dark:border-white/[0.06] p-md flex flex-col gap-sm">
                         <div className="flex items-center justify-between">
                           <span className="sp-body-semibold text-foreground">{invoice.id}</span>
                           <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium ${cfg.badgeClass}`}>
@@ -400,11 +395,11 @@ export default function BillingPage() {
                         </div>
                         <div className="flex items-center justify-end gap-xs">
                           {invoice.status === "failed" && (
-                            <Button variant="ghost" size="xs" className="text-destructive hover:text-destructive hover:bg-destructive/10 sp-caption" onClick={() => handleRetryPayment(invoice.id)}>
+                            <Button variant="ghost" size="xs" className="text-destructive hover:text-destructive hover:bg-destructive-subtle sp-caption" onClick={() => handleRetryPayment(invoice.id)}>
                               Retry
                             </Button>
                           )}
-                          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
+                          <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
                             <Download className="size-[14px]" />
                           </Button>
                         </div>
@@ -412,7 +407,7 @@ export default function BillingPage() {
                     )
                   })}
                 </div>
-                <p className="sp-caption text-muted-foreground/60 text-center pt-lg border-t border-border/40 mt-md">
+                <p className="sp-caption text-muted-foreground text-center pt-lg border-t border-border-subtle mt-md">
                   Need help with billing? Contact support at billing@shoppulse.io
                 </p>
               </div>
@@ -449,13 +444,13 @@ export default function BillingPage() {
                                 <Button
                                   variant="ghost"
                                   size="xs"
-                                  className="text-destructive hover:text-destructive hover:bg-destructive/10 sp-caption"
+                                  className="text-destructive hover:text-destructive hover:bg-destructive-subtle sp-caption"
                                   onClick={() => handleRetryPayment(invoice.id)}
                                 >
                                   Retry
                                 </Button>
                               )}
-                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
+                              <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={() => { toast(`Downloading ${invoice.id}...`); setTimeout(() => toast.success("Downloaded"), 800) }} aria-label="Download">
                                 <Download className="size-[14px]" />
                               </Button>
                             </div>
@@ -465,7 +460,7 @@ export default function BillingPage() {
                     })}
                   </TableBody>
                 </Table>
-                <p className="sp-caption text-muted-foreground/60 text-center pt-lg border-t border-border/40 mt-md">
+                <p className="sp-caption text-muted-foreground text-center pt-lg border-t border-border-subtle mt-md">
                   Need help with billing? Contact support at billing@shoppulse.io
                 </p>
               </div>
@@ -489,7 +484,7 @@ export default function BillingPage() {
             <AlertDialogFooter>
               <AlertDialogCancel disabled={cancelling}>Keep Subscription</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="bg-destructive text-destructive-foreground hover:bg-destructive"
                 onClick={handleCancelSubscription}
                 disabled={cancelling}
               >
@@ -514,7 +509,7 @@ export default function BillingPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleRemoveCard}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleRemoveCard}>
                 Remove Card
               </AlertDialogAction>
             </AlertDialogFooter>

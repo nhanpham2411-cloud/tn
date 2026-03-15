@@ -18,6 +18,7 @@
         "layout": "horizontal",
         "primaryAlign": "start",
         "counterAlign": "center",
+        "radius": "none",
         "gap": "4xs",
         "widthMode": "hug",
         "heightMode": "hug",

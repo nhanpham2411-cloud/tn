@@ -13,13 +13,17 @@ import { figma, AVATAR_SIZE } from "@/lib/figma-dev"
  */
 function Avatar({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+  const hasImage = React.Children.toArray(children).some(
+    (child) => React.isValidElement(child) && child.type === AvatarImage
+  )
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
       {...figma("Avatar", {
-        Type: "Image",
+        Type: hasImage ? "Image" : "Text",
         Size: AVATAR_SIZE[className?.includes("size-8") ? "sm" : className?.includes("size-14") ? "lg" : "default"] ?? "Default",
       })}
       className={cn(
@@ -27,7 +31,9 @@ function Avatar({
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </AvatarPrimitive.Root>
   )
 }
 
@@ -52,7 +58,7 @@ function AvatarFallback({
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
-        "flex size-full items-center justify-center rounded-full bg-muted typo-paragraph-sm-bold",
+        "flex size-full items-center justify-center rounded-full bg-muted text-muted-foreground typo-paragraph-sm-bold",
         className
       )}
       {...props}

@@ -63,14 +63,16 @@
                 "type": "text",
                 "textStyle": "SP/Body Semibold",
                 "textContent": "Heads up",
-                "textFill": "foreground"
+                "textFill": "foreground",
+                "fillWidth": true
               },
               {
                 "name": "Description",
                 "type": "text",
                 "textStyle": "SP/Body",
                 "textContent": "Your settings will be applied on next login.",
-                "textFill": "ghost-foreground"
+                "textFill": "ghost-foreground",
+                "fillWidth": true
               }
             ]
           }
@@ -84,8 +86,8 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -95,8 +97,8 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -106,8 +108,8 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -117,8 +119,8 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -126,8 +128,8 @@
         "Show Icon=No": {
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -135,7 +137,7 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground", "fillWidth": true }
             ]}
           ]
         },
@@ -143,217 +145,177 @@
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground", "fillWidth": true }
             ]}
           ]
         },
         "Show Icon=No,Show Title=No": {
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your settings will be applied on next login.", "textFill": "ghost-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Show Icon=No,Show Description=No": {
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Heads up", "textFill": "foreground", "fillWidth": true }
             ]}
           ]
         },
 
         "Type=Error,Show Icon=No": {
-          "fill": "destructive-subtle",
-          "stroke": "destructive-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Error,Show Title=No": {
-          "fill": "destructive-subtle",
-          "stroke": "destructive-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Error,Show Description=No": {
-          "fill": "destructive-subtle",
-          "stroke": "destructive-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleAlert", "iconFill": "destructive-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Error,Show Icon=No,Show Title=No": {
-          "fill": "destructive-subtle",
-          "stroke": "destructive-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your session has expired. Please log in again.", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Error,Show Icon=No,Show Description=No": {
-          "fill": "destructive-subtle",
-          "stroke": "destructive-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Error", "textFill": "destructive-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
 
         "Type=Success,Show Icon=No": {
-          "fill": "success-subtle",
-          "stroke": "success-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Success,Show Title=No": {
-          "fill": "success-subtle",
-          "stroke": "success-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Success,Show Description=No": {
-          "fill": "success-subtle",
-          "stroke": "success-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / CircleCheck", "iconFill": "success-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Success,Show Icon=No,Show Title=No": {
-          "fill": "success-subtle",
-          "stroke": "success-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your changes have been saved successfully.", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Success,Show Icon=No,Show Description=No": {
-          "fill": "success-subtle",
-          "stroke": "success-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Saved", "textFill": "success-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
 
         "Type=Warning,Show Icon=No": {
-          "fill": "warning-subtle",
-          "stroke": "warning-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Warning,Show Title=No": {
-          "fill": "warning-subtle",
-          "stroke": "warning-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Warning,Show Description=No": {
-          "fill": "warning-subtle",
-          "stroke": "warning-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / TriangleAlert", "iconFill": "warning-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Warning,Show Icon=No,Show Title=No": {
-          "fill": "warning-subtle",
-          "stroke": "warning-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Your free trial expires in 3 days.", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Warning,Show Icon=No,Show Description=No": {
-          "fill": "warning-subtle",
-          "stroke": "warning-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Warning", "textFill": "warning-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
 
         "Type=Emphasis,Show Icon=No": {
-          "fill": "emphasis-subtle",
-          "stroke": "emphasis-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" },
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground", "fillWidth": true },
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Emphasis,Show Title=No": {
-          "fill": "emphasis-subtle",
-          "stroke": "emphasis-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Emphasis,Show Description=No": {
-          "fill": "emphasis-subtle",
-          "stroke": "emphasis-border",
           "children": [
             { "name": "Icon", "type": "instance", "component": "Icon / Info", "iconFill": "emphasis-subtle-foreground", "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed" },
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Emphasis,Show Icon=No,Show Title=No": {
-          "fill": "emphasis-subtle",
-          "stroke": "emphasis-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Description", "type": "text", "textStyle": "SP/Body", "textContent": "Analytics dashboard is now available.", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },
         "Type=Emphasis,Show Icon=No,Show Description=No": {
-          "fill": "emphasis-subtle",
-          "stroke": "emphasis-border",
           "children": [
             { "name": "Content", "type": "frame", "layout": "vertical", "primaryAlign": "start", "counterAlign": "start", "gap": "none", "paddingX": "none", "paddingY": "none", "heightMode": "hug", "children": [
-              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground" }
+              { "name": "Title", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "New feature", "textFill": "emphasis-subtle-foreground", "fillWidth": true }
             ]}
           ]
         },

@@ -318,9 +318,9 @@ export function AuthLayout() {
   }, [])
 
   return (
-    <div className="flex min-h-svh">
+    <div className="flex min-h-svh" {...figma("Screen", { Type: "Auth" })}>
       {/* Left — branding panel with animated dashboard illustration (hidden on mobile) */}
-      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-center gap-4xl bg-[#0c0a1a] p-2xl relative overflow-hidden">
+      <div className="hidden lg:flex lg:flex-1 flex-col items-center justify-center gap-4xl bg-[#0c0a1a] p-2xl relative overflow-hidden" {...figma("Illustration", { Type: "Auth" })}>
         {/* Gradient background */}
         <div className="absolute inset-0">
           <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary-10 blur-[100px]" />
@@ -347,7 +347,7 @@ export function AuthLayout() {
         <div className="relative z-10 flex flex-col items-center gap-lg">
           <AuthIllustration />
           <div className="text-center max-w-[360px]">
-            <h2 className="text-[24px] font-heading font-bold text-foreground leading-tight tracking-tight mb-xs">
+            <h2 className="sp-h2 text-foreground leading-tight mb-xs">
               Powerful analytics for<br />modern e-commerce
             </h2>
             <p className="sp-body text-muted-foreground leading-relaxed">

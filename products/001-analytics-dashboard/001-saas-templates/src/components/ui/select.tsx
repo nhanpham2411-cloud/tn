@@ -40,9 +40,14 @@ function SelectTrigger({
   className,
   size,
   children,
+  showIcon,
+  showLabel,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> &
-  VariantProps<typeof selectTriggerVariants>) {
+  VariantProps<typeof selectTriggerVariants> & {
+    showIcon?: boolean
+    showLabel?: boolean
+  }) {
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
@@ -50,6 +55,8 @@ function SelectTrigger({
       {...figma("Select", {
         State: props.disabled ? "Disabled" : "Default",
         Value: "Placeholder",
+        "Show Icon": showIcon ? "Yes" : "No",
+        "Show Label": showLabel ? "Yes" : "No",
       })}
       className={cn(selectTriggerVariants({ size, className }))}
       {...props}
@@ -122,7 +129,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-md py-2xs pl-xs pr-2xl typo-paragraph-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-pointer select-none items-center rounded-md py-2xs pl-xs pr-2xl typo-paragraph-sm outline-none transition-colors hover:bg-accent focus:bg-accent focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}

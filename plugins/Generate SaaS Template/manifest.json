@@ -7,7 +7,19 @@
   "documentAccess": "dynamic-page",
   "editorType": ["figma"],
   "networkAccess": {
-    "allowedDomains": ["https://avatars.githubusercontent.com"],
-    "reasoning": "Fetch demo avatar images for component generation"
+    "allowedDomains": [
+      "https://avatars.githubusercontent.com",
+      "https://images.unsplash.com",
+      "https://i.pravatar.cc",
+      "https://cdn.dummyjson.com",
+      "https://randomuser.me",
+      "https://picsum.photos",
+      "https://loremflickr.com",
+      "https://placehold.co",
+      "https://ui-avatars.com",
+      "https://corsproxy.io",
+      "https://api.allorigins.win"
+    ],
+    "reasoning": "Fetch demo images for component generation — avatars, product photos, user profiles, placeholders. CORS proxies for servers without CORS headers (e.g. i.pravatar.cc)"
   }
 }

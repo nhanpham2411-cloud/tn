@@ -113,6 +113,8 @@ function convertInstance(node: ExtractedNode): PluginNode {
   }
   // Never set fixed height on instances
 
+  if (node.selfAlign) result.selfAlign = node.selfAlign
+
   return result
 }
 
@@ -303,11 +305,17 @@ function convertFrame(node: ExtractedNode, isTopLevel = false): PluginNode | nul
     }
     if (node.fillHeight) {
       sizing.height = "fill"
+    } else if (node.width && node.height && Math.abs(node.width - node.height) <= 2 && node.width <= 100) {
+      // Small square frames (icon containers like size-[48px]): keep fixed height
+      sizing.height = `fixed:${node.height}`
     }
-    // Never set fixed height on frames with children → let them hug
+    // Otherwise let frames with children hug height
   }
 
   if (Object.keys(sizing).length > 0) result.sizing = sizing
+
+  // Self alignment (mx-auto → center, ml-auto → end)
+  if (node.selfAlign) result.selfAlign = node.selfAlign
 
   // Visual
   const fill = mapColor(node.fill)

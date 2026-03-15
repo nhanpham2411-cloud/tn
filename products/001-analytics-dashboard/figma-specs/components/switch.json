@@ -11,7 +11,8 @@
 
       "properties": {
         "Value": ["Off", "On"],
-        "State": ["Default", "Hover", "Focus", "Disabled"]
+        "State": ["Default", "Hover", "Focus", "Disabled"],
+        "Show Label": ["Yes", "No"]
       },
 
       "base": {
@@ -22,6 +23,8 @@
         "indicator": {
           "width": 33,
           "height": 18,
+          "widthVar": "switch/track-w",
+          "heightVar": "switch/track-h",
           "radius": "xl",
           "clipsContent": true,
           "paddingX": 1,
@@ -51,7 +54,10 @@
 
         "Value=On,State=Hover": { "fill": "primary", "indicatorAlign": "max", "opacity": 0.9 },
         "Value=On,State=Focus": { "fill": "primary", "indicatorAlign": "max", "focusRing": "ring" },
-        "Value=On,State=Disabled": { "fill": "primary", "indicatorAlign": "max", "opacity": 0.5 }
+        "Value=On,State=Disabled": { "fill": "primary", "indicatorAlign": "max", "opacity": 0.5 },
+
+        "Show Label=Yes": {},
+        "Show Label=No": { "hideLabel": true }
       },
 
       "examples": [
@@ -60,8 +66,8 @@
           "description": "Off and on states side by side.",
           "layout": "horizontal",
           "items": [
-            { "label": "Off", "props": { "Value": "Off", "State": "Default" } },
-            { "label": "On", "props": { "Value": "On", "State": "Default" } }
+            { "label": "Off", "props": { "Value": "Off", "State": "Default", "Show Label": "Yes" } },
+            { "label": "On", "props": { "Value": "On", "State": "Default", "Show Label": "Yes" } }
           ]
         },
         {
@@ -69,9 +75,9 @@
           "description": "Hover, focus, and disabled states applied to the on state.",
           "layout": "horizontal",
           "items": [
-            { "label": "Hover", "props": { "Value": "On", "State": "Hover" } },
-            { "label": "Focus", "props": { "Value": "On", "State": "Focus" } },
-            { "label": "Disabled", "props": { "Value": "On", "State": "Disabled" } }
+            { "label": "Hover", "props": { "Value": "On", "State": "Hover", "Show Label": "Yes" } },
+            { "label": "Focus", "props": { "Value": "On", "State": "Focus", "Show Label": "Yes" } },
+            { "label": "Disabled", "props": { "Value": "On", "State": "Disabled", "Show Label": "Yes" } }
           ]
         }
       ],
@@ -104,7 +110,9 @@
         { "figma": "Value=On", "value": "bg-primary, thumb right", "code": "data-[state=checked]", "codeValue": "data-[state=checked]:bg-primary translate-x-[15px]" },
         { "figma": "State=Hover", "value": "opacity 90%", "code": "hover:", "codeValue": "hover:opacity-90" },
         { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
-        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" }
+        { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" },
+        { "figma": "Show Label=Yes", "value": "Label text visible", "code": "children", "codeValue": "<Label>Airplane Mode</Label>" },
+        { "figma": "Show Label=No", "value": "No label, switch only", "code": "—", "codeValue": "No Label sibling" }
       ],
 
       "accessibility": {

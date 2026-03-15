@@ -78,19 +78,25 @@ function parseColor(str: string | null | undefined): { r: number; g: number; b: 
   return null
 }
 
-// Pre-built color token map: will be populated at runtime from CSS vars
-let colorTokenMap: Map<string, string> | null = null
+// Pre-built color token maps: populated at runtime from CSS vars
+let colorTokenMap: Map<string, string> | null = null    // key: "r,g,b" → base token (alpha=1 only)
+let exactColorMap: Map<string, string> | null = null    // key: "r,g,b,a" → exact token (any alpha)
 
 // Priority tokens — prefer these when multiple tokens share the same RGB
 const PRIORITY_TOKENS = new Set([
   "foreground", "background", "primary", "primary-foreground",
+  "primary-10", "primary-20",
   "secondary", "secondary-foreground", "muted", "muted-foreground",
   "accent", "accent-foreground", "destructive", "destructive-foreground",
-  "border", "card", "card-foreground", "input",
+  "destructive-subtle", "success-subtle", "warning-subtle", "emphasis-subtle",
+  "border", "border-card", "border-subtle", "card", "card-foreground", "input",
   "ring", "popover", "sidebar-background", "sidebar-foreground",
   "brand", "brand-foreground",
   "success", "success-foreground", "warning", "warning-foreground",
   "emphasis", "emphasis-foreground",
+  "ghost", "ghost-hover", "surface-raised", "surface-inset",
+  "outline", "outline-hover", "backdrop",
+  "glass-bg", "glass-bg-hover", "glass-border", "glass-border-hover",
 ])
 
 // Force specific RGB → token overrides (applied after token map build)
@@ -100,19 +106,31 @@ const FORCED_TOKEN_MAP: Record<string, string> = {
 
 export function buildColorTokenMap(cssVarMap: Record<string, string>) {
   colorTokenMap = new Map()
-  // First pass: insert all tokens
+  exactColorMap = new Map()
+
   for (const [varName, computedColor] of Object.entries(cssVarMap)) {
     const parsed = parseColor(computedColor)
     if (parsed) {
-      const key = `${parsed.r},${parsed.g},${parsed.b}`
-      // Only overwrite if the new token has higher priority
-      const existing = colorTokenMap.get(key)
-      if (!existing || PRIORITY_TOKENS.has(varName)) {
-        colorTokenMap.set(key, varName)
+      // Exact RGBA key (includes alpha) — for precise matching
+      const a = Math.round(parsed.a * 100) / 100
+      const exactKey = `${parsed.r},${parsed.g},${parsed.b},${a}`
+      const existingExact = exactColorMap.get(exactKey)
+      if (!existingExact || PRIORITY_TOKENS.has(varName)) {
+        exactColorMap.set(exactKey, varName)
+      }
+
+      // RGB-only key — only for base tokens (alpha >= 1)
+      // This prevents `border` (white@6%) from overwriting `foreground` (white@100%)
+      if (a >= 0.99) {
+        const rgbKey = `${parsed.r},${parsed.g},${parsed.b}`
+        const existing = colorTokenMap.get(rgbKey)
+        if (!existing || PRIORITY_TOKENS.has(varName)) {
+          colorTokenMap.set(rgbKey, varName)
+        }
       }
     }
   }
-  // Apply forced overrides
+  // Apply forced overrides to RGB map
   for (const [key, token] of Object.entries(FORCED_TOKEN_MAP)) {
     colorTokenMap.set(key, token)
   }
@@ -131,25 +149,34 @@ export function mapColor(rawRGBA: string | null | undefined): string | undefined
   if (!parsed) return undefined
   if (parsed.a === 0) return undefined // fully transparent
 
-  const key = `${parsed.r},${parsed.g},${parsed.b}`
+  const a = Math.round(parsed.a * 100) / 100
 
-  // Check token map first
+  // 1. Try exact RGBA match first (e.g., border=rgba(255,255,255,0.06), accent=rgba(...,0.08))
+  // This returns the semantic token directly — NO manual opacity suffix needed
+  if (exactColorMap) {
+    const exactKey = `${parsed.r},${parsed.g},${parsed.b},${a}`
+    const exactToken = exactColorMap.get(exactKey)
+    if (exactToken) return exactToken
+  }
+
+  // 2. Fall back to RGB-only match + opacity suffix (only base tokens with alpha=1 in RGB map)
+  const key = `${parsed.r},${parsed.g},${parsed.b}`
   if (colorTokenMap) {
     const token = colorTokenMap.get(key)
     if (token) {
-      if (parsed.a < 1 && parsed.a > 0) {
-        const pct = Math.round(parsed.a * 100)
+      if (a < 1 && a > 0) {
+        const pct = Math.round(a * 100)
         return `${token}/${pct}`
       }
       return token
     }
   }
 
-  // Check hardcoded fallbacks
+  // 3. Check hardcoded fallbacks
   const fallback = HARDCODED_COLOR_MAP[key]
   if (fallback) {
-    if (parsed.a < 1 && parsed.a > 0) {
-      return `${fallback}/${Math.round(parsed.a * 100)}`
+    if (a < 1 && a > 0) {
+      return `${fallback}/${Math.round(a * 100)}`
     }
     return fallback
   }
@@ -256,6 +283,7 @@ export const CSS_VAR_EXTRACTION_SCRIPT = `
     "sidebar-accent", "sidebar-accent-foreground",
     "sidebar-accent-hover", "sidebar-muted", "sidebar-border", "sidebar-ring",
     "chart-1", "chart-2", "chart-3", "chart-4", "chart-5", "chart-6",
+    "glass-bg", "glass-bg-hover", "glass-border", "glass-border-hover",
   ];
 
   // Create a temp element to resolve CSS var values

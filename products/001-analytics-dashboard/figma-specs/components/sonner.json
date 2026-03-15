@@ -2,7 +2,7 @@
   "components": [
     {
       "name": "Sonner",
-      "description": "Auto-dismissing toast notification for transient feedback. Inverted colors: bg-foreground text-background. Container: rounded-lg, border 1px foreground/10, py-sm px-md, shadow-lg. Icon (16px instance, semantic color) + Title (SP/Body Medium) + Description (SP/Caption) + Action button.",
+      "description": "Auto-dismissing toast notification for transient feedback. Inverted colors: bg-foreground text-background. Container: rounded-lg, border 1px foreground/90, py-sm px-md, shadow-lg. Icon (16px instance, semantic color) + Title (SP/Body Medium) + Description (SP/Caption) + Action button.",
       "category": "Feedback",
       "installation": {
         "dependencies": "pnpm add sonner",
@@ -24,9 +24,8 @@
         "heightMode": "hug",
         "radius": "lg",
         "fill": "foreground",
-        "stroke": "foreground",
+        "stroke": "toast-border",
         "strokeWidth": 1,
-        "strokeOpacity": 0.1,
         "paddingX": "md",
         "paddingY": "sm",
         "effectStyleName": "Shadows/lg",

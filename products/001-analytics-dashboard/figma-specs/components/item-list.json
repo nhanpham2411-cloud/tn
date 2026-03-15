@@ -1,0 +1,1088 @@
+{
+  "components": [
+    {
+      "name": "Order Item",
+      "description": "List item row for orders — Avatar leading, customer name + order ID + time, trailing amount + status badge. Maps to <ListItem type=\"order\">.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { ListItem } from \"@/components/ui/list-item\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Value": ["Image", "Fallback"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "sm",
+        "paddingX": "sm",
+        "paddingY": "xs",
+        "width": 400,
+        "heightMode": "hug",
+        "radius": "xl",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Avatar",
+            "type": "instance",
+            "component": "Avatar",
+            "variants": { "Type": "Image", "Size": "Default" },
+            "imageUrl": "https://i.pravatar.cc/80?img=12"
+          },
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "3xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "counterAlign": "start",
+            "fillWidth": true,
+            "children": [
+              { "type": "text", "name": "Title", "textContent": "Emma Johnson", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+              {
+                "name": "Subtitle Row",
+                "type": "frame",
+                "layout": "horizontal",
+                "gap": "2xs",
+                "paddingX": "none",
+                "paddingY": "none",
+                "counterAlign": "center",
+                "widthMode": "hug",
+                "children": [
+                  { "type": "text", "name": "Order ID", "textContent": "#ORD-7842", "textFill": "muted-foreground", "textStyle": "SP/Data SM" },
+                  { "type": "text", "name": "Dot", "textContent": "·", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+                  { "type": "icon", "name": "Clock Icon", "iconName": "Clock", "iconFill": "muted-foreground", "iconSize": 11 },
+                  { "type": "text", "name": "Time", "textContent": "2 min ago", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Trailing",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "2xs",
+            "paddingX": "none",
+            "paddingY": "none",
+            "primaryAlign": "end",
+            "counterAlign": "end",
+            "widthMode": "hug",
+            "children": [
+              { "type": "text", "name": "Amount", "textContent": "$284.00", "textFill": "foreground", "textStyle": "SP/Data" },
+              { "name": "Status Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Warning", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Label": "Processing" }, "widthMode": "hug" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 1
+        },
+
+        "Value=Fallback": {
+          "children": [
+            { "name": "Avatar", "type": "instance", "component": "Avatar", "variants": { "Type": "Text", "Size": "Default" }, "textOverrides": { "Label": "MW" } },
+            {
+              "name": "Content", "type": "frame", "layout": "vertical", "gap": "3xs", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Michael Wang", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+                { "name": "Subtitle Row", "type": "frame", "layout": "horizontal", "gap": "2xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+                  { "type": "text", "name": "Order ID", "textContent": "#ORD-7841", "textFill": "muted-foreground", "textStyle": "SP/Data SM" },
+                  { "type": "text", "name": "Dot", "textContent": "·", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+                  { "type": "icon", "name": "Clock Icon", "iconName": "Clock", "iconFill": "muted-foreground", "iconSize": 11 },
+                  { "type": "text", "name": "Time", "textContent": "15 min ago", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+                ]}
+              ]
+            },
+            { "name": "Trailing", "type": "frame", "layout": "vertical", "gap": "2xs", "paddingX": "none", "paddingY": "none", "primaryAlign": "end", "counterAlign": "end", "widthMode": "hug", "children": [
+              { "type": "text", "name": "Amount", "textContent": "$156.50", "textFill": "foreground", "textStyle": "SP/Data" },
+              { "name": "Status Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Success", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Label": "Shipped" }, "widthMode": "hug" }
+            ]}
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Image avatar and fallback initials variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Image", "props": { "State": "Default", "Value": "Image" } },
+            { "label": "Fallback", "props": { "State": "Default", "Value": "Fallback" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "title", "type": "string", "default": "--", "description": "Customer name" },
+        { "name": "orderId", "type": "string", "default": "--", "description": "Order ID (e.g. #ORD-7842)" },
+        { "name": "time", "type": "string", "default": "--", "description": "Time label (e.g. 2 min ago)" },
+        { "name": "amount", "type": "string", "default": "--", "description": "Order amount (e.g. $284.00)" },
+        { "name": "status", "type": "string", "default": "--", "description": "Status text" },
+        { "name": "statusVariant", "type": "string", "default": "secondary", "description": "Badge variant for status" },
+        { "name": "avatarUrl", "type": "string", "default": "--", "description": "Avatar image URL" },
+        { "name": "avatarFallback", "type": "string", "default": "?", "description": "Fallback initials" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Title + amount text" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Subtitle, order ID, time" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Hover background" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Image value when avatar URL is available, Fallback when not.", "dont": "Show all items with the same value — real lists have visual variety." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=Image", "value": "Avatar with photo", "code": "value", "codeValue": "\"image\"" },
+        { "figma": "Value=Fallback", "value": "Avatar with initials", "code": "value", "codeValue": "\"fallback\"" },
+        { "figma": "State=Hover", "value": "Muted background", "code": "state", "codeValue": "\"hover\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [{ "key": "Tab", "action": "Move focus to the list item" }],
+        "notes": ["Ensure accessible name via title prop."]
+      },
+
+      "related": [
+        { "name": "Item List", "desc": "Parent container for Order Item rows." },
+        { "name": "Avatar", "desc": "Leading element — image or initials." },
+        { "name": "Badge", "desc": "Trailing status indicator." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Product Item",
+      "description": "List item row for products — Thumbnail image leading, product name + sales + price, trailing growth arrow. Maps to <ListItem type=\"product\">.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { ListItem } from \"@/components/ui/list-item\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Value": ["Default", "Star", "Negative"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "sm",
+        "paddingX": "sm",
+        "paddingY": "xs",
+        "width": 400,
+        "heightMode": "hug",
+        "radius": "xl",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Thumbnail",
+            "type": "instance",
+            "component": "Thumbnail",
+            "variants": { "Type": "Image", "Size": "Default", "Shape": "Square", "Color": "Default" },
+            "imageUrl": "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp"
+          },
+          {
+            "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+            "children": [
+              { "type": "text", "name": "Title", "textContent": "Apple AirPods Pro", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+              { "name": "Subtitle Row", "type": "frame", "layout": "horizontal", "gap": "2xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+                { "type": "text", "name": "Sales", "textContent": "1,842 sold", "textFill": "muted-foreground", "textStyle": "SP/Data SM" },
+                { "type": "text", "name": "Dot", "textContent": "·", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+                { "type": "text", "name": "Price", "textContent": "$249.99", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+              ]}
+            ]
+          },
+          { "name": "Growth", "type": "frame", "layout": "horizontal", "gap": "3xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+            { "type": "icon", "name": "Arrow Icon", "iconName": "ArrowUpRight", "iconFill": "success", "iconSize": 12 },
+            { "type": "text", "name": "Growth Value", "textContent": "+18.3%", "textFill": "success", "textStyle": "SP/Data SM" }
+          ]}
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 1
+        },
+
+        "Value=Star": {
+          "children": [
+            {
+              "name": "Image Wrapper", "type": "frame", "layout": "horizontal",
+              "widthMode": "hug", "heightMode": "hug",
+              "paddingX": "none", "paddingY": "none", "gap": "none", "radius": "none",
+              "children": [
+                {
+                  "name": "Thumbnail",
+                  "type": "instance",
+                  "component": "Thumbnail",
+                  "variants": { "Type": "Image", "Size": "Default", "Shape": "Square", "Color": "Default" },
+                  "imageUrl": "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp"
+                },
+                {
+                  "name": "Star Badge", "type": "frame", "position": "absolute",
+                  "x": 24, "y": 0,
+                  "constraints": { "horizontal": "MAX", "vertical": "MIN" },
+                  "width": 16, "height": 16, "widthMode": "fixed", "heightMode": "fixed",
+                  "layout": "horizontal", "primaryAlign": "center", "counterAlign": "center",
+                  "paddingX": "none", "paddingY": "none", "gap": "none",
+                  "radius": "none", "radiusTopRight": "lg", "radiusBottomLeft": "md", "fill": "warning",
+                  "children": [
+                    { "type": "icon", "name": "Star Icon", "iconName": "Star", "iconFill": "primary-foreground", "iconSize": 9 }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Rolex Datejust", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+                { "name": "Subtitle Row", "type": "frame", "layout": "horizontal", "gap": "2xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+                  { "type": "text", "name": "Sales", "textContent": "1,456 sold", "textFill": "muted-foreground", "textStyle": "SP/Data SM" },
+                  { "type": "text", "name": "Dot", "textContent": "·", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+                  { "type": "text", "name": "Price", "textContent": "$4,999.99", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+                ]}
+              ]
+            },
+            { "name": "Growth", "type": "frame", "layout": "horizontal", "gap": "3xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+              { "type": "icon", "name": "Arrow Icon", "iconName": "ArrowUpRight", "iconFill": "success", "iconSize": 12 },
+              { "type": "text", "name": "Growth Value", "textContent": "+12.1%", "textFill": "success", "textStyle": "SP/Data SM" }
+            ]}
+          ]
+        },
+        "Value=Negative": {
+          "children": [
+            {
+              "name": "Thumbnail",
+              "type": "instance",
+              "component": "Thumbnail",
+              "variants": { "Type": "Image", "Size": "Default", "Shape": "Square", "Color": "Default" },
+              "imageUrl": "https://cdn.dummyjson.com/product-images/womens-bags/prada-women-bag/1.webp"
+            },
+            {
+              "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Prada Women Bag", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+                { "name": "Subtitle Row", "type": "frame", "layout": "horizontal", "gap": "2xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+                  { "type": "text", "name": "Sales", "textContent": "754 sold", "textFill": "muted-foreground", "textStyle": "SP/Data SM" },
+                  { "type": "text", "name": "Dot", "textContent": "·", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+                  { "type": "text", "name": "Price", "textContent": "$129.99", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+                ]}
+              ]
+            },
+            { "name": "Growth", "type": "frame", "layout": "horizontal", "gap": "3xs", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+              { "type": "icon", "name": "Arrow Icon", "iconName": "ArrowDownRight", "iconFill": "destructive", "iconSize": 12 },
+              { "type": "text", "name": "Growth Value", "textContent": "-4.2%", "textFill": "destructive", "textStyle": "SP/Data SM" }
+            ]}
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Default, Star (top product), and Negative growth variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default", "Value": "Default" } },
+            { "label": "Star", "props": { "State": "Default", "Value": "Star" } },
+            { "label": "Negative", "props": { "State": "Default", "Value": "Negative" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "title", "type": "string", "default": "--", "description": "Product name" },
+        { "name": "sales", "type": "string", "default": "--", "description": "Sales count (e.g. 1,842 sold)" },
+        { "name": "price", "type": "string", "default": "--", "description": "Price label" },
+        { "name": "growth", "type": "string", "default": "--", "description": "Growth percentage with sign" },
+        { "name": "showStar", "type": "boolean", "default": "false", "description": "Show star badge overlay" },
+        { "name": "imageUrl", "type": "string", "default": "--", "description": "Product image URL" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Title text" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Sales, price text" },
+        { "token": "--color-success", "value": "emerald-500", "description": "Positive growth" },
+        { "token": "--color-destructive", "value": "red-500", "description": "Negative growth" },
+        { "token": "--color-warning", "value": "amber-500", "description": "Star badge background" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Star for top-selling products, Negative for declining ones.", "dont": "Show all products with the same growth direction." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=Default", "value": "Positive growth arrow", "code": "value", "codeValue": "\"default\"" },
+        { "figma": "Value=Star", "value": "Star badge + positive growth", "code": "value", "codeValue": "\"star\"" },
+        { "figma": "Value=Negative", "value": "Negative growth arrow", "code": "value", "codeValue": "\"negative\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [{ "key": "Tab", "action": "Move focus to the list item" }],
+        "notes": ["Product name serves as accessible label."]
+      },
+
+      "related": [
+        { "name": "Item List", "desc": "Parent container." },
+        { "name": "Thumbnail", "desc": "Product image element." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "User Item",
+      "description": "List item row for users — Avatar leading, user name + email, trailing role + status badges. Maps to <ListItem type=\"user\">.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { ListItem } from \"@/components/ui/list-item\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Value": ["Image", "Fallback"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "sm",
+        "paddingX": "sm",
+        "paddingY": "xs",
+        "width": 400,
+        "heightMode": "hug",
+        "radius": "xl",
+        "hideLabel": true,
+        "children": [
+          { "name": "Avatar", "type": "instance", "component": "Avatar", "variants": { "Type": "Image", "Size": "SM" }, "imageUrl": "https://i.pravatar.cc/80?img=32" },
+          {
+            "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+            "children": [
+              { "type": "text", "name": "Title", "textContent": "Sarah Lee", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+              { "type": "text", "name": "Email", "textContent": "sarah@example.com", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true }
+            ]
+          },
+          { "name": "Trailing", "type": "frame", "layout": "horizontal", "gap": "sm", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+            { "name": "Role Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Outline", "Level": "Primary", "Size": "SM" }, "textOverrides": { "Label": "Admin" }, "widthMode": "hug" },
+            { "name": "Status Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Success", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Label": "Active" }, "widthMode": "hug" }
+          ]}
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 1
+        },
+
+        "Value=Fallback": {
+          "children": [
+            { "name": "Avatar", "type": "instance", "component": "Avatar", "variants": { "Type": "Text", "Size": "SM" }, "textOverrides": { "Label": "MR" } },
+            {
+              "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Maria Rodriguez", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Email", "textContent": "maria@example.com", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true }
+              ]
+            },
+            { "name": "Trailing", "type": "frame", "layout": "horizontal", "gap": "sm", "paddingX": "none", "paddingY": "none", "counterAlign": "center", "widthMode": "hug", "children": [
+              { "name": "Role Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Outline", "Level": "Primary", "Size": "SM" }, "textOverrides": { "Label": "Viewer" }, "widthMode": "hug" },
+              { "name": "Status Badge", "type": "instance", "component": "Badge", "variants": { "Variant": "Secondary", "Level": "Secondary", "Size": "SM" }, "textOverrides": { "Label": "Inactive" }, "widthMode": "hug" }
+            ]}
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Image avatar and fallback initials variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Image", "props": { "State": "Default", "Value": "Image" } },
+            { "label": "Fallback", "props": { "State": "Default", "Value": "Fallback" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "title", "type": "string", "default": "--", "description": "User name" },
+        { "name": "email", "type": "string", "default": "--", "description": "Email address" },
+        { "name": "role", "type": "string", "default": "--", "description": "Role label (Admin, Viewer, etc.)" },
+        { "name": "status", "type": "string", "default": "--", "description": "Status text" },
+        { "name": "avatarUrl", "type": "string", "default": "--", "description": "Avatar image URL" },
+        { "name": "avatarFallback", "type": "string", "default": "?", "description": "Fallback initials" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Name text" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Email text" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Hover background" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Image when user has profile photo, Fallback for users without.", "dont": "Mix user items with order items in the same list." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=Image", "value": "Avatar with photo", "code": "value", "codeValue": "\"image\"" },
+        { "figma": "Value=Fallback", "value": "Avatar with initials", "code": "value", "codeValue": "\"fallback\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [{ "key": "Tab", "action": "Move focus to the list item" }],
+        "notes": ["User name serves as accessible label."]
+      },
+
+      "related": [
+        { "name": "Item List", "desc": "Parent container." },
+        { "name": "Avatar", "desc": "Leading user avatar." },
+        { "name": "Badge", "desc": "Role and status badges." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Transaction Item",
+      "description": "List item row for transactions — Thumbnail icon leading, transaction title + subtitle, trailing amount + time. Maps to <ListItem type=\"transaction\">.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { ListItem } from \"@/components/ui/list-item\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Value": ["Positive", "Negative"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "center",
+        "gap": "sm",
+        "paddingX": "sm",
+        "paddingY": "xs",
+        "width": 400,
+        "heightMode": "hug",
+        "radius": "xl",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Icon Box",
+            "type": "frame",
+            "layout": "horizontal",
+            "primaryAlign": "center",
+            "counterAlign": "center",
+            "width": 40, "height": 40,
+            "widthMode": "fixed", "heightMode": "fixed",
+            "radius": "lg",
+            "fill": "muted",
+            "paddingX": "none", "paddingY": "none", "gap": "none",
+            "children": [
+              { "type": "icon", "name": "Icon", "iconName": "ArrowUp", "iconFill": "success", "iconSize": 16 }
+            ]
+          },
+          {
+            "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+            "children": [
+              { "type": "text", "name": "Title", "textContent": "Payment Received", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+              { "type": "text", "name": "Subtitle", "textContent": "Stripe — Visa ****4242", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true }
+            ]
+          },
+          { "name": "Trailing", "type": "frame", "layout": "vertical", "gap": "2xs", "paddingX": "none", "paddingY": "none", "primaryAlign": "end", "counterAlign": "end", "widthMode": "hug", "children": [
+            { "type": "text", "name": "Amount", "textContent": "+$1,200.00", "textFill": "success", "textStyle": "SP/Data" },
+            { "type": "text", "name": "Time", "textContent": "Today, 2:30 PM", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+          ]}
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "muted",
+          "fillOpacity": 1
+        },
+
+        "Value=Negative": {
+          "children": [
+            {
+              "name": "Icon Box",
+              "type": "frame",
+              "layout": "horizontal",
+              "primaryAlign": "center",
+              "counterAlign": "center",
+              "width": 40, "height": 40,
+              "widthMode": "fixed", "heightMode": "fixed",
+              "radius": "lg",
+              "fill": "muted",
+              "paddingX": "none", "paddingY": "none", "gap": "none",
+              "children": [
+                { "type": "icon", "name": "Icon", "iconName": "ArrowDown", "iconFill": "destructive", "iconSize": 16 }
+              ]
+            },
+            {
+              "name": "Content", "type": "frame", "layout": "vertical", "gap": "none", "paddingX": "none", "paddingY": "none", "counterAlign": "start", "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Refund Issued", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Subtitle", "textContent": "Order #ORD-7801", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true }
+              ]
+            },
+            { "name": "Trailing", "type": "frame", "layout": "vertical", "gap": "2xs", "paddingX": "none", "paddingY": "none", "primaryAlign": "end", "counterAlign": "end", "widthMode": "hug", "children": [
+              { "type": "text", "name": "Amount", "textContent": "-$450.00", "textFill": "foreground", "textStyle": "SP/Data" },
+              { "type": "text", "name": "Time", "textContent": "Yesterday, 4:15 PM", "textFill": "muted-foreground", "textStyle": "SP/Data SM" }
+            ]}
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Positive (incoming) and Negative (refund/outgoing) transaction variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Positive", "props": { "State": "Default", "Value": "Positive" } },
+            { "label": "Negative", "props": { "State": "Default", "Value": "Negative" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "title", "type": "string", "default": "--", "description": "Transaction title" },
+        { "name": "subtitle", "type": "string", "default": "--", "description": "Description / payment method" },
+        { "name": "amount", "type": "string", "default": "--", "description": "Amount with sign (+$1,200 or -$450)" },
+        { "name": "positive", "type": "boolean", "default": "true", "description": "Positive amount = green text" },
+        { "name": "time", "type": "string", "default": "--", "description": "Time label" },
+        { "name": "icon", "type": "ReactNode", "default": "--", "description": "Leading icon element" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Title + negative amount" },
+        { "token": "--color-success", "value": "emerald-500", "description": "Positive amount" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Thumbnail bg + hover background" }
+      ],
+
+      "bestPractices": [
+        { "do": "Match amount sign with Value variant — positive for incoming, negative for refunds.", "dont": "Use success color for negative amounts." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=Positive", "value": "Green amount", "code": "value", "codeValue": "\"positive\"" },
+        { "figma": "Value=Negative", "value": "Default amount", "code": "value", "codeValue": "\"negative\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [{ "key": "Tab", "action": "Move focus to the list item" }],
+        "notes": ["Transaction title serves as accessible label."]
+      },
+
+      "related": [
+        { "name": "Item List", "desc": "Parent container." },
+        { "name": "Thumbnail", "desc": "Leading icon box." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Notification Item",
+      "description": "List item row for notifications — Thumbnail icon leading with optional unread dot, title + description + time stacked, dismiss button on hover. Maps to <ListItem type=\"notification\">.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import { ListItem } from \"@/components/ui/list-item\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"],
+        "Value": ["Unread", "Read"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "sm",
+        "paddingX": "xl",
+        "paddingY": "md",
+        "width": 400,
+        "heightMode": "hug",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Leading",
+            "type": "frame",
+            "layout": "horizontal",
+            "widthMode": "hug",
+            "heightMode": "hug",
+            "paddingX": "none",
+            "paddingY": "none",
+            "gap": "none",
+            "radius": "none",
+            "clipsContent": false,
+            "children": [
+              {
+                "name": "Unread Dot",
+                "type": "instance",
+                "component": "Badge",
+                "variants": { "Type": "Dot", "Variant": "Default", "Size": "SM" },
+                "position": "absolute",
+                "x": -10,
+                "y": 0,
+                "constraints": { "horizontal": "MIN", "vertical": "CENTER" }
+              },
+              {
+                "name": "Thumbnail",
+                "type": "instance",
+                "component": "Thumbnail",
+                "variants": { "Type": "Icon", "Size": "SM", "Shape": "Square", "Color": "Primary" },
+                "iconOverrides": { "Icon": "ShoppingCart" }
+              }
+            ]
+          },
+          {
+            "name": "Content",
+            "type": "frame",
+            "layout": "vertical",
+            "gap": "none",
+            "paddingX": "none",
+            "paddingY": "none",
+            "counterAlign": "start",
+            "fillWidth": true,
+            "children": [
+              { "type": "text", "name": "Title", "textContent": "New order #SP-4821", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+              { "type": "text", "name": "Description", "textContent": "Emily Zhang placed a $284.00 order", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true },
+              { "type": "text", "name": "Time", "textContent": "2 min ago", "textFill": "muted-foreground", "textStyle": "SP/Caption" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Value=Unread": {
+          "fill": "primary-10"
+        },
+
+        "State=Hover": {
+          "fill": "muted"
+        },
+
+        "Value=Read": {
+          "children": [
+            {
+              "name": "Leading",
+              "type": "frame",
+              "layout": "horizontal",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "paddingX": "none",
+              "paddingY": "none",
+              "gap": "none",
+              "radius": "none",
+              "clipsContent": false,
+              "children": [
+                {
+                  "name": "Thumbnail",
+                  "type": "instance",
+                  "component": "Thumbnail",
+                  "variants": { "Type": "Icon", "Size": "SM", "Shape": "Square", "Color": "Success" },
+                  "iconOverrides": { "Icon": "TrendingUp" }
+                }
+              ]
+            },
+            {
+              "name": "Content",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": "none",
+              "paddingX": "none",
+              "paddingY": "none",
+              "counterAlign": "start",
+              "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Revenue milestone", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Description", "textContent": "Monthly revenue crossed $100k!", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Time", "textContent": "1h ago", "textFill": "muted-foreground", "textStyle": "SP/Caption" }
+              ]
+            }
+          ]
+        },
+
+        "State=Hover,Value=Unread": {
+          "fill": "muted",
+          "children": [
+            {
+              "name": "Leading",
+              "type": "frame",
+              "layout": "horizontal",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "paddingX": "none",
+              "paddingY": "none",
+              "gap": "none",
+              "radius": "none",
+              "clipsContent": false,
+              "children": [
+                {
+                  "name": "Unread Dot",
+                  "type": "instance",
+                  "component": "Badge",
+                  "variants": { "Type": "Dot", "Variant": "Default", "Size": "SM" },
+                  "position": "absolute",
+                  "x": -10,
+                  "y": 0,
+                  "constraints": { "horizontal": "MIN", "vertical": "CENTER" }
+                },
+                {
+                  "name": "Thumbnail",
+                  "type": "instance",
+                  "component": "Thumbnail",
+                  "variants": { "Type": "Icon", "Size": "SM", "Shape": "Square", "Color": "Primary" },
+                  "iconOverrides": { "Icon": "ShoppingCart" }
+                }
+              ]
+            },
+            {
+              "name": "Content",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": "none",
+              "paddingX": "none",
+              "paddingY": "none",
+              "counterAlign": "start",
+              "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "New order #SP-4821", "textFill": "foreground", "textStyle": "SP/Body Semibold", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Description", "textContent": "Emily Zhang placed a $284.00 order", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Time", "textContent": "2 min ago", "textFill": "muted-foreground", "textStyle": "SP/Caption" }
+              ]
+            },
+            {
+              "name": "Dismiss",
+              "type": "instance",
+              "component": "Button",
+              "variants": { "Variant": "Ghost", "Size": "Mini", "Icon": "Icon Only" },
+              "iconOverrides": { "Icon Left": "X" }
+            }
+          ]
+        },
+
+        "State=Hover,Value=Read": {
+          "fill": "muted",
+          "children": [
+            {
+              "name": "Leading",
+              "type": "frame",
+              "layout": "horizontal",
+              "widthMode": "hug",
+              "heightMode": "hug",
+              "paddingX": "none",
+              "paddingY": "none",
+              "gap": "none",
+              "radius": "none",
+              "children": [
+                {
+                  "name": "Thumbnail",
+                  "type": "instance",
+                  "component": "Thumbnail",
+                  "variants": { "Type": "Icon", "Size": "SM", "Shape": "Square", "Color": "Success" },
+                  "iconOverrides": { "Icon": "TrendingUp" }
+                }
+              ]
+            },
+            {
+              "name": "Content",
+              "type": "frame",
+              "layout": "vertical",
+              "gap": "none",
+              "paddingX": "none",
+              "paddingY": "none",
+              "counterAlign": "start",
+              "fillWidth": true,
+              "children": [
+                { "type": "text", "name": "Title", "textContent": "Revenue milestone", "textFill": "foreground", "textStyle": "SP/Body Medium", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Description", "textContent": "Monthly revenue crossed $100k!", "textFill": "muted-foreground", "textStyle": "SP/Caption", "fillWidth": true, "truncate": true },
+                { "type": "text", "name": "Time", "textContent": "1h ago", "textFill": "muted-foreground", "textStyle": "SP/Caption" }
+              ]
+            },
+            {
+              "name": "Dismiss",
+              "type": "instance",
+              "component": "Button",
+              "variants": { "Variant": "Ghost", "Size": "Mini", "Icon": "Icon Only" },
+              "iconOverrides": { "Icon Left": "X" }
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Values",
+          "description": "Unread (with blue dot + primary-10 bg) and Read notification variants.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Unread", "props": { "State": "Default", "Value": "Unread" } },
+            { "label": "Read", "props": { "State": "Default", "Value": "Read" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "title", "type": "string", "default": "--", "description": "Notification title" },
+        { "name": "description", "type": "string", "default": "--", "description": "Description text" },
+        { "name": "time", "type": "string", "default": "--", "description": "Time label" },
+        { "name": "unread", "type": "boolean", "default": "false", "description": "Show unread dot + primary-10 bg" },
+        { "name": "category", "type": "string", "default": "info", "description": "Thumbnail color category (order→Primary, warning→Warning, success→Success, info→Default)" },
+        { "name": "icon", "type": "ReactNode", "default": "--", "description": "Leading icon element" },
+        { "name": "onDismiss", "type": "function", "default": "--", "description": "Dismiss handler — shows close button on hover" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-primary-10", "value": "violet-600/10%", "description": "Unread background tint" },
+        { "token": "--color-primary", "value": "violet-600", "description": "Unread dot" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Title text" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Description + time text" },
+        { "token": "--color-muted", "value": "zinc-100 / zinc-800", "description": "Hover background" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use Unread for new notifications, Read for acknowledged ones.", "dont": "Show all notifications as unread — users expect a mix." },
+        { "do": "Map category to Thumbnail color: order→Primary, warning→Warning, success→Success, info→Default.", "dont": "Use the same Thumbnail color for all notification types." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Value=Unread", "value": "Blue dot + semibold title + primary-10 bg", "code": "value", "codeValue": "\"unread\"" },
+        { "figma": "Value=Read", "value": "No dot + medium title + no bg", "code": "value", "codeValue": "\"read\"" },
+        { "figma": "State=Hover", "value": "Muted bg + dismiss button", "code": "state", "codeValue": "\"hover\"" }
+      ],
+
+      "accessibility": {
+        "keyboard": [{ "key": "Tab", "action": "Move focus to the list item" }],
+        "notes": ["Notification title serves as accessible label.", "Unread dot is decorative — use aria attributes for screen reader notification count."]
+      },
+
+      "related": [
+        { "name": "Item List", "desc": "Parent container." },
+        { "name": "Thumbnail", "desc": "Leading icon with category color." },
+        { "name": "Button", "desc": "Dismiss button (ghost, icon-xs)." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
+      "name": "Item List",
+      "component": "Item List",
+      "properties": {
+        "Type": ["Order", "Product", "User", "Transaction", "Notification"]
+      },
+      "base": {
+        "width": 400,
+        "heightMode": "hug",
+        "layout": "vertical",
+        "gap": "none",
+        "paddingX": "none",
+        "paddingY": "none",
+        "radius": "none",
+        "children": [
+          {
+            "name": "Row 1",
+            "type": "instance",
+            "component": "Order Item",
+            "variants": { "State": "Default", "Value": "Image" },
+            "fillWidth": true,
+            "overrides": {
+              "imageOverrides": { "Avatar": "https://i.pravatar.cc/80?img=12" }
+            }
+          },
+          {
+            "name": "Row 2",
+            "type": "instance",
+            "component": "Order Item",
+            "variants": { "State": "Default", "Value": "Fallback" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 3",
+            "type": "instance",
+            "component": "Order Item",
+            "variants": { "State": "Default", "Value": "Image" },
+            "fillWidth": true,
+            "overrides": {
+              "nested": {
+                "Content": { "Title": "Ava Patel" },
+                "Subtitle Row": { "Order ID": "#ORD-7840", "Time": "1 hr ago" },
+                "Trailing": { "Amount": "$432.00" },
+                "Status Badge": { "Label": "Pending" }
+              },
+              "nestedVariants": { "Status Badge": { "Variant": "Secondary", "Level": "Secondary" } },
+              "imageOverrides": { "Avatar": "https://i.pravatar.cc/80?img=35" }
+            }
+          },
+          {
+            "name": "Row 4",
+            "type": "instance",
+            "component": "Order Item",
+            "variants": { "State": "Default", "Value": "Fallback" },
+            "fillWidth": true,
+            "overrides": {
+              "nested": {
+                "Avatar": { "Label": "RK" },
+                "Content": { "Title": "Robert Kim" },
+                "Subtitle Row": { "Order ID": "#ORD-7839", "Time": "3 hrs ago" },
+                "Trailing": { "Amount": "$89.99" },
+                "Status Badge": { "Label": "Delivered" }
+              }
+            }
+          }
+        ]
+      },
+      "variantStyles": {
+        "Type=Product": {
+          "children": [
+            { "name": "Row 1", "type": "instance", "component": "Product Item", "variants": { "State": "Default", "Value": "Star" }, "fillWidth": true },
+            { "name": "Row 2", "type": "instance", "component": "Product Item", "variants": { "State": "Default", "Value": "Default" }, "fillWidth": true },
+            { "name": "Row 3", "type": "instance", "component": "Product Item", "variants": { "State": "Default", "Value": "Default" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "Nike Air Jordan 1" },
+                  "Subtitle Row": { "Sales": "1,234 sold", "Price": "$179.99" },
+                  "Growth": { "Growth Value": "+8.7%" }
+                },
+                "imageOverrides": { "Thumbnail": "https://cdn.dummyjson.com/product-images/mens-shoes/nike-air-jordan-1-red-and-black/1.webp" }
+              }
+            },
+            { "name": "Row 4", "type": "instance", "component": "Product Item", "variants": { "State": "Default", "Value": "Negative" }, "fillWidth": true }
+          ]
+        },
+        "Type=User": {
+          "children": [
+            { "name": "Row 1", "type": "instance", "component": "User Item", "variants": { "State": "Default", "Value": "Image" }, "fillWidth": true,
+              "overrides": {
+                "imageOverrides": { "Avatar": "https://i.pravatar.cc/80?img=32" }
+              }
+            },
+            { "name": "Row 2", "type": "instance", "component": "User Item", "variants": { "State": "Default", "Value": "Image" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "James Davis", "Email": "james@example.com" },
+                  "Role Badge": { "Label": "Editor" }
+                },
+                "imageOverrides": { "Avatar": "https://i.pravatar.cc/80?img=44" }
+              }
+            },
+            { "name": "Row 3", "type": "instance", "component": "User Item", "variants": { "State": "Default", "Value": "Fallback" }, "fillWidth": true },
+            { "name": "Row 4", "type": "instance", "component": "User Item", "variants": { "State": "Default", "Value": "Fallback" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Avatar": { "Label": "TN" },
+                  "Content": { "Title": "Tom Nguyen", "Email": "tom@example.com" },
+                  "Role Badge": { "Label": "Editor" },
+                  "Status Badge": { "Label": "Pending" }
+                },
+                "nestedVariants": { "Status Badge": { "Variant": "Warning" } }
+              }
+            }
+          ]
+        },
+        "Type=Transaction": {
+          "children": [
+            { "name": "Row 1", "type": "instance", "component": "Transaction Item", "variants": { "State": "Default", "Value": "Positive" }, "fillWidth": true },
+            { "name": "Row 2", "type": "instance", "component": "Transaction Item", "variants": { "State": "Default", "Value": "Negative" }, "fillWidth": true },
+            { "name": "Row 3", "type": "instance", "component": "Transaction Item", "variants": { "State": "Default", "Value": "Positive" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "Subscription", "Subtitle": "Monthly plan — Pro" },
+                  "Trailing": { "Amount": "+$49.00", "Time": "Mar 1, 9:00 AM" }
+                }
+              }
+            },
+            { "name": "Row 4", "type": "instance", "component": "Transaction Item", "variants": { "State": "Default", "Value": "Negative" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "Platform Fee", "Subtitle": "Stripe processing" },
+                  "Trailing": { "Amount": "-$12.40", "Time": "Mar 1, 9:00 AM" }
+                }
+              }
+            }
+          ]
+        },
+        "Type=Notification": {
+          "children": [
+            { "name": "Row 1", "type": "instance", "component": "Notification Item", "variants": { "State": "Default", "Value": "Unread" }, "fillWidth": true },
+            { "name": "Row 2", "type": "instance", "component": "Notification Item", "variants": { "State": "Default", "Value": "Unread" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "Low stock alert", "Description": "MacBook Pro 14\" has only 12 units left", "Time": "18 min ago" }
+                },
+                "nestedVariants": { "Thumbnail": { "Color": "Warning" } },
+                "iconSwap": { "Icon": "TriangleAlert" }
+              }
+            },
+            { "name": "Row 3", "type": "instance", "component": "Notification Item", "variants": { "State": "Default", "Value": "Read" }, "fillWidth": true },
+            { "name": "Row 4", "type": "instance", "component": "Notification Item", "variants": { "State": "Default", "Value": "Read" }, "fillWidth": true,
+              "overrides": {
+                "nested": {
+                  "Content": { "Title": "New review", "Description": "5-star review on Apple AirPods Pro", "Time": "2h ago" }
+                },
+                "nestedVariants": { "Thumbnail": { "Color": "Default" } },
+                "iconSwap": { "Icon": "MessageSquare" }
+              }
+            }
+          ]
+        }
+      },
+
+      "examples": [
+        {
+          "title": "Order List",
+          "props": { "Type": "Order" },
+          "preview": "4 recent orders with avatar, ID, time, amount, status badge"
+        },
+        {
+          "title": "Notification Center",
+          "props": { "Type": "Notification" },
+          "preview": "Mix of unread and read notifications with category icons"
+        }
+      ],
+
+      "props": [
+        { "name": "Type", "type": "Order | Product | User | Transaction | Notification", "default": "Order", "desc": "Determines which item type fills the list." }
+      ],
+
+      "designTokens": [
+        { "token": "gap: none", "usage": "No gap between items — each item provides its own padding." },
+        { "token": "radius: none", "usage": "No border radius — container is structural, not decorative." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    }
+  ]
+}

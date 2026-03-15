@@ -418,7 +418,7 @@ function SidebarGroupLabel({
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        "duration-200 flex h-2xl shrink-0 items-center rounded-md px-xs typo-paragraph-mini-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-md [&>svg]:shrink-0",
+        "duration-200 flex h-2xl shrink-0 items-center rounded-md px-xs typo-paragraph-mini-medium text-sidebar-foreground outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-md [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className
       )}

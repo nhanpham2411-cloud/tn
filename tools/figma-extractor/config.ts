@@ -81,6 +81,11 @@ export const TEXT_STYLE_RULES = [
   // Mono (JetBrains Mono)
   { family: /JetBrains/i, weight: 400, minSize: 11, maxSize: 15, style: "sp-mono" },
   { family: /JetBrains/i, weight: 500, minSize: 11, maxSize: 15, style: "sp-mono-medium" },
+  // Mono at KPI sizes (dashboard values in monospace)
+  { family: /JetBrains/i, weight: 600, minSize: 29, maxSize: 36, style: "sp-kpi-lg" },
+  { family: /JetBrains/i, weight: 500, minSize: 18, maxSize: 22, style: "sp-kpi-sm" },
+  // Body at 16px (edge case — e.g. dot separators "···")
+  { family: /Inter/i, weight: 400, minSize: 15, maxSize: 17, style: "sp-body" },
 ]
 
 // Elements to skip during extraction (non-visual, scripts, etc.)

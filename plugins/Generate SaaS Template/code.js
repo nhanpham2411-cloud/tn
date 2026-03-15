@@ -44,14 +44,19 @@ function fetchImageFromUI(url) {
 var _prefetchedImages = {}; // url → byte array (from UI pre-fetch)
 
 async function getImageHash(url) {
-  if (_imageHashCache[url]) return _imageHashCache[url];
+  if (_imageHashCache[url]) { console.log("[IMG] cache hit: " + url); return _imageHashCache[url]; }
   var imgBytes;
   if (_prefetchedImages[url]) {
+    console.log("[IMG] prefetch hit: " + url + " bytes=" + _prefetchedImages[url].length);
     imgBytes = new Uint8Array(_prefetchedImages[url]);
   } else {
+    console.log("[IMG] prefetch MISS, runtime fetch: " + url);
+    console.log("[IMG] prefetch keys: " + Object.keys(_prefetchedImages).join(", "));
     imgBytes = await fetchImageFromUI(url);
+    console.log("[IMG] runtime fetch OK, bytes=" + imgBytes.length);
   }
   var img = figma.createImage(imgBytes);
+  console.log("[IMG] createImage OK, hash=" + img.hash);
   _imageHashCache[url] = img.hash;
   return img.hash;
 }
@@ -194,6 +199,11 @@ function findRadiusVar(name) {
   return findVar(name, ["border radius/", "radius/"]);
 }
 
+// Size variable finder — searches size/* collection only
+function findSizeVar(name) {
+  return findVar(name, ["size/"]);
+}
+
 function findTextStyle(name) {
   if (!name) return null;
   var lower = name.toLowerCase();
@@ -277,6 +287,28 @@ function setStrokeWithOpacity(node, varName, opacity) {
   }
 }
 
+// Reset stale properties on a variant comp from previous plugin runs.
+// Called at the start of every variant build so removed JSON fields don't linger.
+function _resetStaleProps(node) {
+  // Size constraints
+  try { node.setBoundVariable("minWidth", null); } catch(e) {}
+  try { node.setBoundVariable("minHeight", null); } catch(e) {}
+  node.minWidth = null;
+  node.minHeight = null;
+  // Stroke — clear so variants without stroke don't keep old borders
+  node.strokes = [];
+  node.strokeWeight = 0;
+  node.strokeTopWeight = 0; node.strokeRightWeight = 0;
+  node.strokeBottomWeight = 0; node.strokeLeftWeight = 0;
+  node.dashPattern = [];
+  // Effects — clear stale effect styles / focus rings
+  node.effects = [];
+  // Opacity — reset to fully opaque
+  node.opacity = 1;
+  // Clips content — reset to false
+  node.clipsContent = false;
+}
+
 // Per-side stroke weights: "all" | "top,right,bottom" | "top,bottom,left" etc.
 function _applyStrokeSides(node, sides, weight) {
   if (!sides || sides === "all") return; // uniform stroke, nothing to change
@@ -351,6 +383,15 @@ function bindRadius(node, field, varName, fallbackValue) {
     try { node.setBoundVariable(field, v); return; } catch (e) {}
   }
   try { node[field] = fallbackValue; } catch (e) {}
+}
+
+// Bind size variable (height/width) — only searches size/* collection
+// No fallback needed: resize() already set the pixel value before this is called
+function bindSizeVar(node, field, varName) {
+  var v = findSizeVar(varName);
+  if (v) {
+    try { node.setBoundVariable(field, v); } catch (e) {}
+  }
 }
 
 function hexToRgb(hex) {
@@ -1098,6 +1139,28 @@ async function applyComponentOverrides(instance, spec) {
       }
     }
   }
+
+  // Image overrides — change image fill on nested instances by name
+  // Format: "imageOverrides": { "Avatar": "https://...", "Thumbnail": "https://..." }
+  if (overrides.imageOverrides) {
+    var imgKeys = Object.keys(overrides.imageOverrides);
+    for (var im = 0; im < imgKeys.length; im++) {
+      var imgUrl = overrides.imageOverrides[imgKeys[im]];
+      var imgTargetName = imgKeys[im];
+      var imgNodes = instance.findAll(function(node) {
+        return node.name === imgTargetName && (node.type === "INSTANCE" || node.type === "FRAME" || node.type === "RECTANGLE");
+      });
+      for (var imn = 0; imn < imgNodes.length; imn++) {
+        try {
+          var _oImgHash = await getImageHash(imgUrl);
+          imgNodes[imn].fills = [{ type: "IMAGE", imageHash: _oImgHash, scaleMode: "FILL" }];
+          console.log("[overrides] imageOverrides OK: " + imgTargetName + " = " + imgUrl);
+        } catch (e) {
+          console.log("[overrides] imageOverrides FAILED: " + imgTargetName + " " + e.message);
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -1334,6 +1397,7 @@ function applyGap(frame, spec) {
   if (!spec.gap && spec.gap !== "auto") return;
   if (spec.gap === "auto") {
     frame.itemSpacing = 0;
+    try { frame.setBoundVariable("itemSpacing", null); } catch(e) {}
     return;
   }
   var gapVal = getSpacingValue(spec.gap);
@@ -1443,7 +1507,8 @@ function applyChildSizing(child, childSpec, parentSpec) {
 /**
  * Main entry point — generate a full page from JSON spec
  */
-async function doGenerate(specInput) {
+async function doGenerate(specInput, sendProgress) {
+  if (!sendProgress) sendProgress = function() {};
   var spec;
   if (typeof specInput === "string") {
     try {
@@ -1676,9 +1741,10 @@ function parseColor(val) {
   return null;
 }
 
-async function doCreateVariables(spec) {
+async function doCreateVariables(spec, sendProgress) {
   var log = [];
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   var collections = spec.collections;
   if (!collections || !collections.length) {
     return { success: false, error: "No collections found in spec" };
@@ -1730,6 +1796,7 @@ async function doCreateVariables(spec) {
   // PASS 1: Upsert collections + variables (no values yet)
   for (var ci = 0; ci < collections.length; ci++) {
     var colSpec = collections[ci];
+    sendProgress("Variables — " + colSpec.name + " [" + (ci + 1) + "/" + collections.length + "]");
     var colKey = colSpec.name.toLowerCase();
     var col = existingColMap[colKey] || null;
     var isNewCol = !col;
@@ -1908,9 +1975,10 @@ async function doCreateVariables(spec) {
 // SECTION 10: FOUNDATION — CREATE TEXT STYLES
 // ============================================================
 
-async function doCreateTextStyles(spec) {
+async function doCreateTextStyles(spec, sendProgress) {
   var log = [];
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   var styles = spec.styles;
   if (!styles || !styles.length) {
     return { success: false, error: "No styles found in spec" };
@@ -1929,6 +1997,7 @@ async function doCreateTextStyles(spec) {
 
   for (var si = 0; si < styles.length; si++) {
     var s = styles[si];
+    sendProgress("Text styles [" + (si + 1) + "/" + styles.length + "] " + s.name);
     var nameKey = s.name.toLowerCase();
     seenNames[nameKey] = true;
 
@@ -2006,9 +2075,10 @@ async function doCreateTextStyles(spec) {
 // SECTION 11: FOUNDATION — CREATE EFFECT STYLES
 // ============================================================
 
-async function doCreateEffectStyles(spec) {
+async function doCreateEffectStyles(spec, sendProgress) {
   var log = [];
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   var styles = spec.styles;
   if (!styles || !styles.length) {
     return { success: false, error: "No styles found in spec" };
@@ -2030,6 +2100,7 @@ async function doCreateEffectStyles(spec) {
 
   for (var si = 0; si < styles.length; si++) {
     var s = styles[si];
+    sendProgress("Effect styles [" + (si + 1) + "/" + styles.length + "] " + s.name);
     var nameKey = s.name.toLowerCase();
     seenNames[nameKey] = true;
 
@@ -2145,9 +2216,10 @@ async function doCreateEffectStyles(spec) {
  *         icons: [{ name: "Search", svg: "<svg ...>...</svg>" },
  *                 { name: "Google", svg: "...", brand: true }, ...] }
  */
-async function doCreateIcons(spec) {
+async function doCreateIcons(spec, sendProgress) {
   var log = [];
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   await loadCaches();
   await preloadCommonFonts();
 
@@ -2203,14 +2275,17 @@ async function doCreateIcons(spec) {
     existingIconMap[cn] = tpComps[ci];
   }
   var iconCount = 0;
+  var flagCompCount = 0;
   var iconSample = [];
   for (var ek in existingIconMap) {
     if (ek.indexOf("Icon / ") === 0) {
       iconCount++;
       if (iconSample.length < 3) iconSample.push(ek);
+    } else if (ek.indexOf("Flag / ") === 0) {
+      flagCompCount++;
     }
   }
-  log.push("Found " + iconCount + " icon components on '" + targetPage.name + "'");
+  log.push("Found " + iconCount + " icon + " + flagCompCount + " flag components on '" + targetPage.name + "'");
   if (iconSample.length > 0) log.push("Samples: " + iconSample.join(", "));
 
   // --- Step 3: Upsert icons ---
@@ -2255,8 +2330,82 @@ async function doCreateIcons(spec) {
     }
   }
 
+  // Helper: outline strokes → fills so icon strokes scale with instance resize
+  // Uses outlineStroke() on each vector, then flattens into single vector
+  function outlineIconStrokes(comp) {
+    if (comp.children.length === 0) return;
+    // Step 1: outline all stroke-based vectors
+    var vectors = comp.findAll(function(n) {
+      return n.type === "VECTOR" || n.type === "LINE" || n.type === "ELLIPSE"
+        || n.type === "RECTANGLE" || n.type === "POLYGON" || n.type === "STAR";
+    });
+    var outlinedNodes = [];
+    var toRemove = [];
+    for (var vi = 0; vi < vectors.length; vi++) {
+      var vec = vectors[vi];
+      if (vec.strokes && vec.strokes.length > 0 && vec.strokeWeight > 0) {
+        try {
+          var outlined = vec.outlineStroke();
+          if (outlined) {
+            var vecParent = vec.parent;
+            if (vecParent) {
+              var idx = Array.prototype.indexOf.call(vecParent.children, vec);
+              vecParent.insertChild(idx, outlined);
+              outlinedNodes.push(outlined);
+            }
+            // Check if original is stroke-only (fill=none or transparent)
+            var hasVisibleFill = false;
+            if (vec.fills && vec.fills.length > 0) {
+              for (var fi = 0; fi < vec.fills.length; fi++) {
+                if (vec.fills[fi].visible !== false && vec.fills[fi].opacity !== 0) {
+                  hasVisibleFill = true;
+                  break;
+                }
+              }
+            }
+            if (!hasVisibleFill) {
+              toRemove.push(vec);
+            } else {
+              // Has both fills and strokes — keep fills, remove strokes
+              vec.strokes = [];
+            }
+          }
+        } catch (oe) {
+          // outlineStroke not supported for this node — skip
+        }
+      }
+    }
+    // Remove stroke-only originals
+    for (var ri = 0; ri < toRemove.length; ri++) {
+      toRemove[ri].remove();
+    }
+    // Step 2: flatten all remaining children into single vector
+    if (comp.children.length > 0) {
+      var allChildren = [];
+      for (var ci = 0; ci < comp.children.length; ci++) {
+        allChildren.push(comp.children[ci]);
+      }
+      try {
+        var flat = figma.flatten(allChildren, comp);
+        flat.constraints = { horizontal: "SCALE", vertical: "SCALE" };
+        // Re-bind foreground
+        if (fgVar) {
+          if (flat.fills && flat.fills.length > 0) {
+            flat.fills = [makeBoundPaint(fgVar)];
+          }
+          // After outline, strokes should be gone — but clean up just in case
+          if (flat.strokes && flat.strokes.length > 0) {
+            flat.strokes = [];
+          }
+        }
+      } catch (fe) {
+        log.push("WARN: flatten failed: " + fe.message);
+      }
+    }
+  }
+
   // Helper: update SVG children of existing component
-  function replaceChildren(comp, svgStr, isBrand, sz) {
+  function replaceChildren(comp, svgStr, skipColorBind, sz) {
     while (comp.children.length > 0) {
       comp.children[0].remove();
     }
@@ -2266,7 +2415,17 @@ async function doCreateIcons(spec) {
     }
     svgFrame.remove();
     comp.resize(sz, sz);
-    if (!isBrand) bindForeground(comp);
+    if (!skipColorBind) {
+      bindForeground(comp);
+      outlineIconStrokes(comp);
+    }
+  }
+
+  // Helper: read stored hash from component description
+  function getHash(comp) {
+    var desc = comp.description || "";
+    var match = desc.match(/svg:[a-z0-9]+/);
+    return match ? match[0] : null;
   }
 
   // Helper: store hash in component description
@@ -2277,11 +2436,6 @@ async function doCreateIcons(spec) {
     comp.description = desc ? desc + "\n" + hash : hash;
   }
 
-  function getHash(comp) {
-    var desc = comp.description || "";
-    var match = desc.match(/svg:([a-z0-9]+)/);
-    return match ? "svg:" + match[1] : null;
-  }
 
   // Log first 5 existing icon names for debugging
   var existingNames = Object.keys(existingIconMap);
@@ -2289,11 +2443,14 @@ async function doCreateIcons(spec) {
 
   for (var i = 0; i < icons.length; i++) {
     var iconSpec = icons[i];
-    var compName = "Icon / " + iconSpec.name;
     var isBrand = !!iconSpec.brand;
+    var isFlag = !!iconSpec.flag;
+    var compName = isFlag ? "Flag / " + iconSpec.name : "Icon / " + iconSpec.name;
     var newHash = hashSvg(iconSpec.svg);
 
     try {
+      sendProgress("Icons [" + (i + 1) + "/" + icons.length + "] " + iconSpec.name + (isBrand ? " (brand)" : isFlag ? " (flag)" : ""));
+
       // Try exact match first, then without prefix fallback
       var existing = existingIconMap[compName] || existingIconMap[iconSpec.name] || null;
 
@@ -2303,14 +2460,13 @@ async function doCreateIcons(spec) {
           log.push("Renamed '" + existing.name + "' → '" + compName + "'");
           existing.name = compName;
         }
-        var oldHash = getHash(existing);
-        if (oldHash === newHash) {
-          // SVG unchanged — keep as-is
+        // Hash comparison — skip unchanged icons to preserve instance overrides in components
+        var existingHash = getHash(existing);
+        if (existingHash === newHash) {
           iconComps.push(existing);
           kept++;
         } else {
-          // SVG changed (or first run with hash) — update children, re-bind colors
-          replaceChildren(existing, iconSpec.svg, isBrand, size);
+          replaceChildren(existing, iconSpec.svg, isBrand || isFlag, size);
           setHash(existing, newHash);
           iconComps.push(existing);
           updated++;
@@ -2330,9 +2486,10 @@ async function doCreateIcons(spec) {
         }
         svgFrame.remove();
 
-        // Bind colors (skip for brand icons — keep original multi-color fills)
-        if (!isBrand) {
+        // Bind colors + outline strokes (skip for brand/flag icons — keep original multi-color fills)
+        if (!isBrand && !isFlag) {
           bindForeground(comp);
+          outlineIconStrokes(comp);
         }
 
         // Store hash for future change detection
@@ -2352,17 +2509,18 @@ async function doCreateIcons(spec) {
   // --- Step 3.5: Delete icon components NOT in JSON ---
   var specIconNames = {};
   for (var sni = 0; sni < icons.length; sni++) {
-    specIconNames["Icon / " + icons[sni].name] = true;
+    var prefix = icons[sni].flag ? "Flag / " : "Icon / ";
+    specIconNames[prefix + icons[sni].name] = true;
   }
   var deleted = 0;
-  var allPageComps = targetPage.findAll(function(n) { return n.type === "COMPONENT" && n.name.indexOf("Icon / ") === 0; });
+  var allPageComps = targetPage.findAll(function(n) { return n.type === "COMPONENT" && (n.name.indexOf("Icon / ") === 0 || n.name.indexOf("Flag / ") === 0); });
   for (var dci = 0; dci < allPageComps.length; dci++) {
     if (!specIconNames[allPageComps[dci].name]) {
       log.push("Deleted icon: " + allPageComps[dci].name);
       // Remove parent card if inside showcase
       var parentCard = allPageComps[dci].parent;
       if (parentCard && parentCard.type === "FRAME" && parentCard.parent && parentCard.parent.type === "FRAME"
-          && (parentCard.parent.name === "Brand Grid" || parentCard.parent.name === "Icon Grid")) {
+          && (parentCard.parent.name === "Brand Grid" || parentCard.parent.name === "Icon Grid" || parentCard.parent.name === "Flag Grid")) {
         try { parentCard.remove(); } catch (e) {}
       } else {
         try { allPageComps[dci].remove(); } catch (e) {}
@@ -2381,17 +2539,15 @@ async function doCreateIcons(spec) {
     var card = figma.createFrame();
     card.name = label;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 6;
+    _bindSp(card, "itemSpacing", 6);
     card.counterAxisAlignItems = "CENTER";
     card.primaryAxisAlignItems = "CENTER";
-    card.paddingTop = 12; card.paddingBottom = 8;
-    card.paddingLeft = 8; card.paddingRight = 8;
+    _bindPad(card, 12, 8, 8, 8);
     card.resize(80, 60);
     card.layoutSizingHorizontal = "FIXED";
     card.layoutSizingVertical = "HUG";
     setFill(card, "card");
-    card.topLeftRadius = 8; card.topRightRadius = 8;
-    card.bottomLeftRadius = 8; card.bottomRightRadius = 8;
+    _bindRad(card, 8);
     parent.appendChild(card);
     card.appendChild(comp);
     return card;
@@ -2405,8 +2561,27 @@ async function doCreateIcons(spec) {
     // Find existing grids
     var brandGrid = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Brand Grid"; });
     var iconGrid = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Icon Grid"; });
+    var flagGrid = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Flag Grid"; });
 
-    // Build set of names in Brand Grid and Icon Grid separately
+    // Ensure "Icons" header exists above Icon Grid (added for parity with Brand Logos header)
+    var iconsHeader = oldShowcase.findOne(function(n) { return n.type === "FRAME" && n.name === "Icons"; });
+    if (!iconsHeader && iconGrid) {
+      iconsHeader = figma.createFrame();
+      iconsHeader.name = "Icons"; iconsHeader.layoutMode = "VERTICAL";
+      _bindSp(iconsHeader, "itemSpacing", 12);
+      _bindPad(iconsHeader, 0, 0, 0, 0);
+      _bindRad(iconsHeader, 0);
+      iconsHeader.fills = []; iconsHeader.clipsContent = false;
+      // Insert right before Icon Grid
+      var igIdx = oldShowcase.children.indexOf(iconGrid);
+      if (igIdx >= 0) oldShowcase.insertChild(igIdx, iconsHeader);
+      else oldShowcase.appendChild(iconsHeader);
+      try { iconsHeader.layoutSizingHorizontal = "FILL"; iconsHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+      await _makeLabel("Icons", "SP/H3", "foreground", iconsHeader);
+      log.push("Added 'Icons' header label");
+    }
+
+    // Build set of names in Brand Grid, Icon Grid, and Flag Grid separately
     var inBrandGridSet = {};
     if (brandGrid) {
       var bgComps = brandGrid.findAll(function(n) { return n.type === "COMPONENT"; });
@@ -2417,13 +2592,47 @@ async function doCreateIcons(spec) {
       var igComps = iconGrid.findAll(function(n) { return n.type === "COMPONENT"; });
       for (var igi = 0; igi < igComps.length; igi++) inIconGridSet[igComps[igi].name] = true;
     }
+    var inFlagGridSet = {};
+    if (flagGrid) {
+      var fgComps = flagGrid.findAll(function(n) { return n.type === "COMPONENT"; });
+      for (var fgi = 0; fgi < fgComps.length; fgi++) inFlagGridSet[fgComps[fgi].name] = true;
+    }
 
     var added = 0;
     for (var ic = 0; ic < icons.length; ic++) {
       if (!iconComps[ic]) continue;
-      var compName = "Icon / " + icons[ic].name;
+      var compName = icons[ic].flag ? "Flag / " + icons[ic].name : "Icon / " + icons[ic].name;
 
-      if (icons[ic].brand) {
+      if (icons[ic].flag) {
+        // Flag icon belongs in Flag Grid — skip only if already there
+        if (inFlagGridSet[compName]) continue;
+        if (!flagGrid) {
+          // Create flag section — insert after last grid/separator
+          var flagHeader = figma.createFrame();
+          flagHeader.name = "Country Flags"; flagHeader.layoutMode = "VERTICAL";
+          _bindSp(flagHeader, "itemSpacing", 12);
+          _bindPad(flagHeader, 0, 0, 0, 0);
+          _bindRad(flagHeader, 0);
+          flagHeader.fills = []; flagHeader.clipsContent = false;
+          oldShowcase.appendChild(flagHeader);
+          try { flagHeader.layoutSizingHorizontal = "FILL"; flagHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+          await _makeLabel("Country Flags", "SP/H3", "foreground", flagHeader);
+
+          flagGrid = figma.createFrame();
+          flagGrid.name = "Flag Grid";
+          flagGrid.layoutMode = "HORIZONTAL"; flagGrid.layoutWrap = "WRAP";
+          _bindSp(flagGrid, "itemSpacing", 8);
+          _bindSp(flagGrid, "counterAxisSpacing", 8);
+          _bindPad(flagGrid, 0, 0, 0, 0);
+          _bindRad(flagGrid, 0);
+          flagGrid.fills = []; flagGrid.clipsContent = false;
+          oldShowcase.appendChild(flagGrid);
+          try { flagGrid.layoutSizingHorizontal = "FILL"; flagGrid.layoutSizingVertical = "HUG"; } catch (e) {}
+        }
+        var card = makeIconCard(iconComps[ic], icons[ic].name, flagGrid);
+        await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+        added++;
+      } else if (icons[ic].brand) {
         // Brand icon belongs in Brand Grid — skip only if already there
         if (inBrandGridSet[compName]) continue;
         // If it's in Icon Grid, move its card to Brand Grid (or remove old card)
@@ -2450,7 +2659,8 @@ async function doCreateIcons(spec) {
             if (oldShowcase.children[ci2].name === "Divider") { sepIdx = ci2; break; }
           }
           var brandHeader = figma.createFrame();
-          brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL"; brandHeader.itemSpacing = 12;
+          brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL";
+          _bindSp(brandHeader, "itemSpacing", 12);
           brandHeader.fills = []; brandHeader.clipsContent = false;
           oldShowcase.insertChild(sepIdx + 1, brandHeader);
           try { brandHeader.layoutSizingHorizontal = "FILL"; brandHeader.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2459,7 +2669,8 @@ async function doCreateIcons(spec) {
           brandGrid = figma.createFrame();
           brandGrid.name = "Brand Grid";
           brandGrid.layoutMode = "HORIZONTAL"; brandGrid.layoutWrap = "WRAP";
-          brandGrid.itemSpacing = 8; brandGrid.counterAxisSpacing = 8;
+          _bindSp(brandGrid, "itemSpacing", 8);
+          _bindSp(brandGrid, "counterAxisSpacing", 8);
           brandGrid.fills = []; brandGrid.clipsContent = false;
           oldShowcase.insertChild(sepIdx + 2, brandGrid);
           try { brandGrid.layoutSizingHorizontal = "FILL"; brandGrid.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2481,6 +2692,106 @@ async function doCreateIcons(spec) {
     }
     if (added > 0) log.push("Added " + added + " missing icons to showcase");
     else log.push("Showcase already complete");
+
+    // --- Step 4b: Fix existing icon card labels — bind text style ---
+    var grids = [brandGrid, iconGrid, flagGrid].filter(function(g) { return !!g; });
+    var fixedLabels = 0;
+    var captionStyleFix = findTextStyle("SP/Caption");
+    for (var gi = 0; gi < grids.length; gi++) {
+      var cards = grids[gi].children;
+      for (var ci2 = 0; ci2 < cards.length; ci2++) {
+        if (cards[ci2].type !== "FRAME") continue;
+        var textNodes = cards[ci2].findAll(function(n) { return n.type === "TEXT"; });
+        for (var ti = 0; ti < textNodes.length; ti++) {
+          var tn = textNodes[ti];
+          if (!captionStyleFix) continue;
+          var currentStyleId = "";
+          try { currentStyleId = tn.textStyleId; } catch(e) {}
+          if (currentStyleId !== captionStyleFix.id) {
+            try {
+              if (captionStyleFix.fontName) await figma.loadFontAsync(captionStyleFix.fontName);
+              await tn.setTextStyleIdAsync(captionStyleFix.id);
+              setTextFill(tn, "muted-foreground");
+              fixedLabels++;
+            } catch(e) {}
+          }
+        }
+      }
+    }
+    if (fixedLabels > 0) log.push("Fixed " + fixedLabels + " existing icon labels (text style)");
+
+    // --- Step 4c: Bind variable tokens on existing showcase frame + grids ---
+    _bindPad(oldShowcase, 64, 64, 64, 64);
+    _bindSp(oldShowcase, "itemSpacing", 48);
+    _bindRad(oldShowcase, 0);
+    if (brandGrid) {
+      _bindSp(brandGrid, "itemSpacing", 8);
+      _bindSp(brandGrid, "counterAxisSpacing", 8);
+      _bindPad(brandGrid, 0, 0, 0, 0);
+      _bindRad(brandGrid, 0);
+    }
+    if (iconGrid) {
+      _bindSp(iconGrid, "itemSpacing", 8);
+      _bindSp(iconGrid, "counterAxisSpacing", 8);
+      _bindPad(iconGrid, 0, 0, 0, 0);
+      _bindRad(iconGrid, 0);
+    }
+    if (flagGrid) {
+      _bindSp(flagGrid, "itemSpacing", 8);
+      _bindSp(flagGrid, "counterAxisSpacing", 8);
+      _bindPad(flagGrid, 0, 0, 0, 0);
+      _bindRad(flagGrid, 0);
+    }
+    // Fix sub-header frames gap + padding + radius tokens
+    var subFrames = oldShowcase.findAll(function(n) { return n.type === "FRAME" && (n.name === "Header" || n.name === "Brand Logos" || n.name === "Icons" || n.name === "Country Flags"); });
+    for (var sfi = 0; sfi < subFrames.length; sfi++) {
+      _bindSp(subFrames[sfi], "itemSpacing", subFrames[sfi].itemSpacing);
+      _bindPad(subFrames[sfi], 0, 0, 0, 0);
+      _bindRad(subFrames[sfi], 0);
+    }
+    // Fix ALL text nodes in showcase — bind text style
+    var allTextNodes = oldShowcase.findAll(function(n) { return n.type === "TEXT"; });
+    var _textStyleMap = { "SP/H1": null, "SP/H3": null, "SP/Body LG": null, "SP/Caption": null, "SP/Body Semibold": null, "SP/Body": null, "SP/Overline": null, "SP/Label": null };
+    var _tsmKeys = Object.keys(_textStyleMap);
+    for (var _tsi = 0; _tsi < _tsmKeys.length; _tsi++) _textStyleMap[_tsmKeys[_tsi]] = findTextStyle(_tsmKeys[_tsi]);
+    var fixedTextStyles = 0;
+    for (var _ati = 0; _ati < allTextNodes.length; _ati++) {
+      var _tn = allTextNodes[_ati];
+      var _curStyleId = ""; try { _curStyleId = _tn.textStyleId; } catch(e) {}
+      if (_curStyleId && _curStyleId !== "" && _curStyleId !== figma.mixed) continue; // already bound
+      // Detect which style to bind based on font size + weight
+      var _fs = 14; try { _fs = _tn.fontSize !== figma.mixed ? _tn.fontSize : 14; } catch(e) {}
+      var _fw = "Regular"; try { _fw = _tn.fontName !== figma.mixed ? _tn.fontName.style : "Regular"; } catch(e) {}
+      var _matchStyle = null;
+      if (_fs >= 34 && _fw.indexOf("Bold") !== -1) _matchStyle = _textStyleMap["SP/H1"];
+      else if (_fs >= 18 && _fw.indexOf("Bold") !== -1) _matchStyle = _textStyleMap["SP/H3"];
+      else if (_fs >= 15 && _fw === "Regular") _matchStyle = _textStyleMap["SP/Body LG"];
+      else if (_fs >= 13 && _fw.indexOf("SemiBold") !== -1) _matchStyle = _textStyleMap["SP/Body Semibold"];
+      else if (_fs >= 13 && _fw === "Regular") _matchStyle = _textStyleMap["SP/Body"];
+      else if (_fs >= 11 && _fw === "Regular") _matchStyle = _textStyleMap["SP/Caption"];
+      else if (_fs >= 10 && _fw.indexOf("SemiBold") !== -1) _matchStyle = _textStyleMap["SP/Overline"];
+      else _matchStyle = _textStyleMap["SP/Caption"];
+      if (_matchStyle) {
+        try {
+          if (_matchStyle.fontName) await figma.loadFontAsync(_matchStyle.fontName);
+          await _tn.setTextStyleIdAsync(_matchStyle.id);
+          fixedTextStyles++;
+        } catch(e) {}
+      }
+    }
+    if (fixedTextStyles > 0) log.push("Bound text styles on " + fixedTextStyles + " text nodes");
+    // Fix icon card radius + padding tokens
+    var allCards = [];
+    if (brandGrid) for (var bci = 0; bci < brandGrid.children.length; bci++) { if (brandGrid.children[bci].type === "FRAME") allCards.push(brandGrid.children[bci]); }
+    if (iconGrid) for (var ici = 0; ici < iconGrid.children.length; ici++) { if (iconGrid.children[ici].type === "FRAME") allCards.push(iconGrid.children[ici]); }
+    if (flagGrid) for (var fci = 0; fci < flagGrid.children.length; fci++) { if (flagGrid.children[fci].type === "FRAME") allCards.push(flagGrid.children[fci]); }
+    for (var aci = 0; aci < allCards.length; aci++) {
+      var c = allCards[aci];
+      _bindRad(c, 8);
+      _bindPad(c, c.paddingTop, c.paddingRight, c.paddingBottom, c.paddingLeft);
+      _bindSp(c, "itemSpacing", c.itemSpacing);
+    }
+    log.push("Bound variable tokens on showcase frames (" + allCards.length + " cards)");
   } else {
     // No showcase exists — build from scratch
     var showcase = figma.createFrame();
@@ -2489,19 +2800,23 @@ async function doCreateIcons(spec) {
     showcase.resize(1440, 100);
     showcase.layoutSizingHorizontal = "FIXED";
     showcase.layoutSizingVertical = "HUG";
-    showcase.paddingTop = 80; showcase.paddingRight = 80;
-    showcase.paddingBottom = 80; showcase.paddingLeft = 80;
-    showcase.itemSpacing = 48;
+    _bindPad(showcase, 64, 64, 64, 64);
+    _bindSp(showcase, "itemSpacing", 48);
+    _bindRad(showcase, 0);
     setFill(showcase, "background");
     showcase.clipsContent = false;
 
     var brandCount = 0;
-    for (var bi = 0; bi < icons.length; bi++) { if (icons[bi].brand) brandCount++; }
-    var regularCount = icons.length - brandCount;
+    var flagCount = 0;
+    for (var bi = 0; bi < icons.length; bi++) { if (icons[bi].brand) brandCount++; else if (icons[bi].flag) flagCount++; }
+    var regularCount = icons.length - brandCount - flagCount;
 
     // Header
     var header = figma.createFrame();
-    header.name = "Header"; header.layoutMode = "VERTICAL"; header.itemSpacing = 12;
+    header.name = "Header"; header.layoutMode = "VERTICAL";
+    _bindSp(header, "itemSpacing", 12);
+    _bindPad(header, 0, 0, 0, 0);
+    _bindRad(header, 0);
     header.fills = []; header.clipsContent = false;
     showcase.appendChild(header);
     try { header.layoutSizingHorizontal = "FILL"; header.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2509,6 +2824,7 @@ async function doCreateIcons(spec) {
     var descParts = [];
     if (regularCount > 0) descParts.push("Lucide icon set \u2014 " + regularCount + " icons, " + size + "\u00d7" + size + "px, stroke bound to foreground variable");
     if (brandCount > 0) descParts.push(brandCount + " brand logos with original colors");
+    if (flagCount > 0) descParts.push(flagCount + " country flags with original colors");
     descParts.push("Supports Light/Dark mode.");
     await _makeLabel(descParts.join(". "), "SP/Body LG", "muted-foreground", header);
 
@@ -2517,7 +2833,10 @@ async function doCreateIcons(spec) {
     // Brand section
     if (brandCount > 0) {
       var brandHeader = figma.createFrame();
-      brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL"; brandHeader.itemSpacing = 12;
+      brandHeader.name = "Brand Logos"; brandHeader.layoutMode = "VERTICAL";
+      _bindSp(brandHeader, "itemSpacing", 12);
+      _bindPad(brandHeader, 0, 0, 0, 0);
+      _bindRad(brandHeader, 0);
       brandHeader.fills = []; brandHeader.clipsContent = false;
       showcase.appendChild(brandHeader);
       try { brandHeader.layoutSizingHorizontal = "FILL"; brandHeader.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2526,7 +2845,10 @@ async function doCreateIcons(spec) {
       var brandGrid = figma.createFrame();
       brandGrid.name = "Brand Grid";
       brandGrid.layoutMode = "HORIZONTAL"; brandGrid.layoutWrap = "WRAP";
-      brandGrid.itemSpacing = 8; brandGrid.counterAxisSpacing = 8;
+      _bindSp(brandGrid, "itemSpacing", 8);
+      _bindSp(brandGrid, "counterAxisSpacing", 8);
+      _bindPad(brandGrid, 0, 0, 0, 0);
+      _bindRad(brandGrid, 0);
       brandGrid.fills = []; brandGrid.clipsContent = false;
       showcase.appendChild(brandGrid);
       try { brandGrid.layoutSizingHorizontal = "FILL"; brandGrid.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2541,7 +2863,10 @@ async function doCreateIcons(spec) {
 
     // Regular icon grid
     var iconHeader = figma.createFrame();
-    iconHeader.name = "Icons"; iconHeader.layoutMode = "VERTICAL"; iconHeader.itemSpacing = 12;
+    iconHeader.name = "Icons"; iconHeader.layoutMode = "VERTICAL";
+    _bindSp(iconHeader, "itemSpacing", 12);
+    _bindPad(iconHeader, 0, 0, 0, 0);
+    _bindRad(iconHeader, 0);
     iconHeader.fills = []; iconHeader.clipsContent = false;
     showcase.appendChild(iconHeader);
     try { iconHeader.layoutSizingHorizontal = "FILL"; iconHeader.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -2550,15 +2875,50 @@ async function doCreateIcons(spec) {
     var gridFrame = figma.createFrame();
     gridFrame.name = "Icon Grid";
     gridFrame.layoutMode = "HORIZONTAL"; gridFrame.layoutWrap = "WRAP";
-    gridFrame.itemSpacing = 8; gridFrame.counterAxisSpacing = 8;
+    _bindSp(gridFrame, "itemSpacing", 8);
+    _bindSp(gridFrame, "counterAxisSpacing", 8);
+    _bindPad(gridFrame, 0, 0, 0, 0);
+    _bindRad(gridFrame, 0);
     gridFrame.fills = []; gridFrame.clipsContent = false;
     showcase.appendChild(gridFrame);
     try { gridFrame.layoutSizingHorizontal = "FILL"; gridFrame.layoutSizingVertical = "HUG"; } catch (e) {}
 
     for (var ic = 0; ic < icons.length; ic++) {
-      if (icons[ic].brand || !iconComps[ic]) continue;
+      if (icons[ic].brand || icons[ic].flag || !iconComps[ic]) continue;
       var card = makeIconCard(iconComps[ic], icons[ic].name, gridFrame);
       await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+    }
+
+    // Country flags section
+    if (flagCount > 0) {
+      _makeSep(showcase);
+
+      var flagHeader = figma.createFrame();
+      flagHeader.name = "Country Flags"; flagHeader.layoutMode = "VERTICAL";
+      _bindSp(flagHeader, "itemSpacing", 12);
+      _bindPad(flagHeader, 0, 0, 0, 0);
+      _bindRad(flagHeader, 0);
+      flagHeader.fills = []; flagHeader.clipsContent = false;
+      showcase.appendChild(flagHeader);
+      try { flagHeader.layoutSizingHorizontal = "FILL"; flagHeader.layoutSizingVertical = "HUG"; } catch (e) {}
+      await _makeLabel("Country Flags", "SP/H3", "foreground", flagHeader);
+
+      var flagGrid = figma.createFrame();
+      flagGrid.name = "Flag Grid";
+      flagGrid.layoutMode = "HORIZONTAL"; flagGrid.layoutWrap = "WRAP";
+      _bindSp(flagGrid, "itemSpacing", 8);
+      _bindSp(flagGrid, "counterAxisSpacing", 8);
+      _bindPad(flagGrid, 0, 0, 0, 0);
+      _bindRad(flagGrid, 0);
+      flagGrid.fills = []; flagGrid.clipsContent = false;
+      showcase.appendChild(flagGrid);
+      try { flagGrid.layoutSizingHorizontal = "FILL"; flagGrid.layoutSizingVertical = "HUG"; } catch (e) {}
+
+      for (var ic = 0; ic < icons.length; ic++) {
+        if (!icons[ic].flag || !iconComps[ic]) continue;
+        var card = makeIconCard(iconComps[ic], icons[ic].name, flagGrid);
+        await _makeLabel(icons[ic].name, "SP/Caption", "muted-foreground", card);
+      }
     }
 
     targetPage.appendChild(showcase);
@@ -2608,7 +2968,9 @@ function _makeFrame(name, dir, gap, parent) {
   var f = figma.createFrame();
   f.name = name;
   f.layoutMode = dir === "h" ? "HORIZONTAL" : "VERTICAL";
-  f.itemSpacing = gap || 0;
+  _bindSp(f, "itemSpacing", gap || 0);
+  _bindPad(f, 0, 0, 0, 0);
+  _bindRad(f, 0);
   f.fills = [];
   f.clipsContent = false;
   if (parent) {
@@ -2624,6 +2986,8 @@ function _makeSep(parent) {
   s.name = "Divider";
   s.resize(100, 1);
   setFill(s, "border");
+  _bindPad(s, 0, 0, 0, 0);
+  _bindRad(s, 0);
   if (parent) {
     parent.appendChild(s);
     try { s.layoutSizingHorizontal = "FILL"; s.layoutSizingVertical = "FIXED"; } catch (e) {}
@@ -2637,11 +3001,9 @@ function _makePill(text, parent) {
   pill.layoutMode = "HORIZONTAL";
   pill.primaryAxisAlignItems = "CENTER";
   pill.counterAxisAlignItems = "CENTER";
-  pill.paddingLeft = 12; pill.paddingRight = 12;
-  pill.paddingTop = 4; pill.paddingBottom = 4;
+  _bindPad(pill, 4, 12, 4, 12);
   setFill(pill, "card");
-  pill.topLeftRadius = 9999; pill.topRightRadius = 9999;
-  pill.bottomLeftRadius = 9999; pill.bottomRightRadius = 9999;
+  _bindRad(pill, 9999);
   if (parent) parent.appendChild(pill);
   pill.layoutSizingHorizontal = "HUG"; pill.layoutSizingVertical = "HUG";
   return pill;
@@ -2699,7 +3061,8 @@ function _getChildOrder(childrenSpec, combo) {
   return order;
 }
 
-async function _processChildren(childrenSpec, parent, combo) {
+async function _processChildren(childrenSpec, parent, combo, defaults) {
+  defaults = defaults || {};
   var validNames = {};
   for (var ci = 0; ci < childrenSpec.length; ci++) {
     var cs = childrenSpec[ci];
@@ -2730,7 +3093,8 @@ async function _processChildren(childrenSpec, parent, combo) {
         txt.fontSize = cs.fontSize || 14;
       }
       txt.characters = cs.textContent || "";
-      if (cs.textFill) setTextFill(txt, cs.textFill);
+      var _ctf = cs.textFill || defaults.textFill;
+      if (_ctf) setTextFill(txt, _ctf);
       // Truncation must be set BEFORE fill sizing (ORDER MATTERS: TRUNCATE → maxLines → textTruncation → FILL)
       if (cs.truncate) {
         txt.textAutoResize = "TRUNCATE";
@@ -2765,10 +3129,11 @@ async function _processChildren(childrenSpec, parent, combo) {
       frm.primaryAxisAlignItems = pa === "start" ? "MIN" : pa === "end" ? "MAX" : pa === "space-between" ? "SPACE_BETWEEN" : pa === "center" ? "CENTER" : "MIN";
       var ca = cs.counterAlign || "center";
       frm.counterAxisAlignItems = ca === "start" ? "MIN" : ca === "end" ? "MAX" : "CENTER";
-      // Gap — "auto" = no variable binding (space-between auto), string token = variable binding, number = raw pixel
+      // Gap — "auto" = space-between (bind spacing/none), string token = variable binding, number = raw pixel
       var gap = cs.gap !== undefined ? cs.gap : "xs";
       if (gap === "auto") {
         frm.itemSpacing = 0;
+        try { frm.setBoundVariable("itemSpacing", null); } catch(e) {}
       } else if (typeof gap === "string") {
         frm.itemSpacing = getSpacingValue(gap);
         bindFloat(frm, "itemSpacing", gap.indexOf("/") !== -1 ? gap : "spacing/" + gap, frm.itemSpacing);
@@ -2776,8 +3141,9 @@ async function _processChildren(childrenSpec, parent, combo) {
       // Size
       var frmW = cs.width || 100; var frmH = cs.height || 36;
       frm.resize(frmW, frmH);
-      try { frm.layoutSizingHorizontal = cs.widthMode === "fixed" ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"; } catch(e) {}
-      try { frm.layoutSizingVertical = cs.fillHeight ? "FILL" : cs.heightMode === "fixed" ? "FIXED" : "HUG"; } catch(e) {}
+      var _isAbsChild = cs.position === "absolute";
+      try { frm.layoutSizingHorizontal = cs.widthMode === "fixed" || _isAbsChild ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"; } catch(e) {}
+      try { frm.layoutSizingVertical = cs.fillHeight ? "FILL" : cs.heightMode === "fixed" || _isAbsChild ? "FIXED" : "HUG"; } catch(e) {}
       // Padding — supports paddingX/paddingY (both sides) and per-side paddingTop/paddingBottom/paddingLeft/paddingRight
       var px = cs.paddingX !== undefined ? cs.paddingX : "none"; var py = cs.paddingY !== undefined ? cs.paddingY : "none";
       if (typeof px === "string") {
@@ -2845,7 +3211,18 @@ async function _processChildren(childrenSpec, parent, combo) {
         }
       }
       // Fill & Stroke
-      if (cs.fill) {
+      if (cs.imageUrl) {
+        try {
+          debugLog.push("  [IMG] Children frame imageUrl: " + cs.imageUrl + " prefetched=" + !!_prefetchedImages[cs.imageUrl]);
+          var _cImgHash = await getImageHash(cs.imageUrl);
+          frm.fills = [{ type: "IMAGE", imageHash: _cImgHash, scaleMode: cs.imageScaleMode || "FILL" }];
+          debugLog.push("  [IMG] Success, hash=" + _cImgHash);
+        } catch(e) {
+          debugLog.push("  [WARN] Children frame imageUrl failed: " + e.message);
+          if (cs.fill) { if (cs.fillOpacity !== undefined) setFillWithOpacity(frm, cs.fill, cs.fillOpacity); else setFill(frm, cs.fill); }
+          else frm.fills = [];
+        }
+      } else if (cs.fill) {
         if (cs.fillOpacity !== undefined) setFillWithOpacity(frm, cs.fill, cs.fillOpacity);
         else setFill(frm, cs.fill);
       } else frm.fills = [];
@@ -2854,11 +3231,19 @@ async function _processChildren(childrenSpec, parent, combo) {
       // Absolute positioning (child ignores parent auto-layout, uses x/y)
       if (cs.position === "absolute") {
         frm.layoutPositioning = "ABSOLUTE";
+        // Re-apply resize after ABSOLUTE — auto-layout may have overridden initial resize
+        frm.resize(cs.width || 100, cs.height || 36);
         if (cs.x !== undefined) frm.x = cs.x;
         if (cs.y !== undefined) frm.y = cs.y;
+        if (cs.constraints) {
+          frm.constraints = {
+            horizontal: cs.constraints.horizontal || "MIN",
+            vertical: cs.constraints.vertical || "MIN"
+          };
+        }
       }
-      // Clips content
-      if (cs.clipsContent) frm.clipsContent = true;
+      // Clips content — explicit both ways for upsert safety
+      frm.clipsContent = !!cs.clipsContent;
       // Effect style on child frame (e.g. "Ring/default", "Shadows/sm")
       if (cs.effectStyleName) {
         var _ceStyles = await figma.getLocalEffectStylesAsync();
@@ -2874,7 +3259,7 @@ async function _processChildren(childrenSpec, parent, combo) {
       if (cs.opacity !== undefined) frm.opacity = cs.opacity;
       // Nested children
       if (cs.children && cs.children.length > 0) {
-        var nestedNames = await _processChildren(cs.children, frm, combo);
+        var nestedNames = await _processChildren(cs.children, frm, combo, defaults);
         for (var nri = frm.children.length - 1; nri >= 0; nri--) {
           if (!nestedNames[frm.children[nri].name]) frm.children[nri].remove();
         }
@@ -2937,13 +3322,15 @@ async function _processChildren(childrenSpec, parent, combo) {
           iconExist.swapComponent(_wantIconComp);
         }
         iconExist.resize(iconSize, iconSize);
-        // Always re-apply iconFill on upsert
-        var _uIconVecs = iconExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
-        var _uIconVar = findVar(cs.iconFill || "foreground");
-        if (_uIconVar) {
-          for (var _uiv = 0; _uiv < _uIconVecs.length; _uiv++) {
-            if (_uIconVecs[_uiv].strokes && _uIconVecs[_uiv].strokes.length > 0) _uIconVecs[_uiv].strokes = [makeBoundPaint(_uIconVar)];
-            if (_uIconVecs[_uiv].fills && _uIconVecs[_uiv].fills.length > 0) _uIconVecs[_uiv].fills = [makeBoundPaint(_uIconVar)];
+        // Always re-apply iconFill on upsert (skip for brand icons with original gradient)
+        if (!cs.skipIconFill) {
+          var _uIconVecs = iconExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
+          var _uIconVar = findVar(cs.iconFill || defaults.iconFill || defaults.textFill || "foreground");
+          if (_uIconVar) {
+            for (var _uiv = 0; _uiv < _uIconVecs.length; _uiv++) {
+              if (_uIconVecs[_uiv].strokes && _uIconVecs[_uiv].strokes.length > 0) _uIconVecs[_uiv].strokes = [makeBoundPaint(_uIconVar)];
+              if (_uIconVecs[_uiv].fills && _uIconVecs[_uiv].fills.length > 0) _uIconVecs[_uiv].fills = [makeBoundPaint(_uIconVar)];
+            }
           }
         }
       } else {
@@ -2952,12 +3339,14 @@ async function _processChildren(childrenSpec, parent, combo) {
         if (iconComp) {
           var iconInst = iconComp.createInstance();
           iconInst.name = name; iconInst.resize(iconSize, iconSize);
-          var iconVecs = iconInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
-          var iconFgVar = findVar(cs.iconFill || "foreground");
-          if (iconFgVar) {
-            for (var iv = 0; iv < iconVecs.length; iv++) {
-              if (iconVecs[iv].strokes && iconVecs[iv].strokes.length > 0) iconVecs[iv].strokes = [makeBoundPaint(iconFgVar)];
-              if (iconVecs[iv].fills && iconVecs[iv].fills.length > 0) iconVecs[iv].fills = [makeBoundPaint(iconFgVar)];
+          if (!cs.skipIconFill) {
+            var iconVecs = iconInst.findAll(function(n) { return n.type === "VECTOR" || n.type === "BOOLEAN_OPERATION" || n.type === "ELLIPSE" || n.type === "LINE"; });
+            var iconFgVar = findVar(cs.iconFill || defaults.iconFill || defaults.textFill || "foreground");
+            if (iconFgVar) {
+              for (var iv = 0; iv < iconVecs.length; iv++) {
+                if (iconVecs[iv].strokes && iconVecs[iv].strokes.length > 0) iconVecs[iv].strokes = [makeBoundPaint(iconFgVar)];
+                if (iconVecs[iv].fills && iconVecs[iv].fills.length > 0) iconVecs[iv].fills = [makeBoundPaint(iconFgVar)];
+              }
             }
           }
           parent.appendChild(iconInst);
@@ -2983,25 +3372,32 @@ async function _processChildren(childrenSpec, parent, combo) {
         var _inst = null;
         if (_compSet) {
           var _instProps = cs.variants || {};
+          console.log("[DEBUG instance NEW] name='" + name + "' component='" + compSetName + "' variants=" + JSON.stringify(_instProps));
           _inst = _getInstance(_compSet, _instProps);
+          console.log("[DEBUG instance NEW] _inst created=" + !!_inst + " type=" + (_inst ? _inst.type : "null"));
         } else {
           // Fallback: try as standalone COMPONENT (e.g., icons from foundation)
           var _standaloneComp = findComponent(compSetName);
           if (_standaloneComp && _standaloneComp.type === "COMPONENT") {
             _inst = _standaloneComp.createInstance();
           }
+          console.log("[DEBUG instance NEW] ComponentSet '" + compSetName + "' NOT found, standalone=" + !!_standaloneComp);
         }
         if (_inst) {
             _inst.name = name;
             var _instTexts = _inst.findAll(function(n) { return n.type === "TEXT"; });
+            console.log("[DEBUG instance NEW] '" + name + "' textNodes found=" + _instTexts.length + " names=[" + _instTexts.map(function(t) { return t.name; }).join(", ") + "]");
             for (var _it = 0; _it < _instTexts.length; _it++) {
               var _fn3 = _instTexts[_it].fontName;
-              if (_fn3 && _fn3 !== figma.mixed) { try { await figma.loadFontAsync(_fn3); } catch(e) {} }
+              if (_fn3 && _fn3 !== figma.mixed) { try { await figma.loadFontAsync(_fn3); } catch(e) { console.log("[DEBUG instance NEW] Font load FAILED for '" + _instTexts[_it].name + "': " + e.message); } }
+              else { console.log("[DEBUG instance NEW] Font MIXED or null for '" + _instTexts[_it].name + "'"); }
             }
             if (cs.textOverrides) {
+              console.log("[DEBUG instance NEW] textOverrides keys=" + JSON.stringify(Object.keys(cs.textOverrides)));
               for (var _toKey in cs.textOverrides) {
                 var _toNode = _inst.findOne(function(n) { return n.type === "TEXT" && n.name === _toKey; });
-                if (_toNode) { try { _toNode.characters = cs.textOverrides[_toKey]; } catch(e) {} }
+                console.log("[DEBUG instance NEW] textOverride '" + _toKey + "' → findOne=" + !!_toNode + " value='" + cs.textOverrides[_toKey] + "'");
+                if (_toNode) { try { _toNode.characters = cs.textOverrides[_toKey]; console.log("[DEBUG instance NEW] '" + _toKey + "' characters SET OK"); } catch(e) { console.log("[DEBUG instance NEW] '" + _toKey + "' characters FAILED: " + e.message); } }
               }
             }
             // iconOverrides: swap icon instances inside the component instance
@@ -3035,15 +3431,34 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_inst);
             try { _inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _inst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // Absolute positioning for instance children
+            if (cs.position === "absolute") {
+              _inst.layoutPositioning = "ABSOLUTE";
+              // Re-apply resize after ABSOLUTE — auto-layout may override instance size
+              try { _inst.resize(cs.width || _inst.width, cs.height || _inst.height); } catch(e) {}
+              if (cs.x !== undefined) _inst.x = cs.x;
+              if (cs.y !== undefined) _inst.y = cs.y;
+              if (cs.constraints) { _inst.constraints = { horizontal: cs.constraints.horizontal || "MIN", vertical: cs.constraints.vertical || "MIN" }; }
+            }
             // Apply overrides (nested text, nested variants, icon swap, boolean) on instance children
             if (cs.overrides) { await applyComponentOverrides(_inst, cs); }
+            // imageUrl: override image fill on instance root (e.g. Avatar with custom photo)
+            if (cs.imageUrl) {
+              try {
+                var _instImgHash = await getImageHash(cs.imageUrl);
+                _inst.fills = [{ type: "IMAGE", imageHash: _instImgHash, scaleMode: "FILL" }];
+                console.log("[instance NEW] imageUrl override OK: " + cs.imageUrl);
+              } catch(e) { console.log("[instance NEW] imageUrl override FAILED: " + e.message); }
+            }
             // swapProperty handled in post-build phase after combineAsVariants
         }
       } else {
         // Update existing instance — check if component needs swapping
         var _needSwap = false;
-        if (compSetName && existNode.mainComponent) {
-          var _existCompName = existNode.mainComponent.parent && existNode.mainComponent.parent.type === "COMPONENT_SET" ? existNode.mainComponent.parent.name : existNode.mainComponent.name;
+        var _existMainComp2 = null;
+        try { _existMainComp2 = await existNode.getMainComponentAsync(); } catch(e) {}
+        if (compSetName && _existMainComp2) {
+          var _existCompName = _existMainComp2.parent && _existMainComp2.parent.type === "COMPONENT_SET" ? _existMainComp2.parent.name : _existMainComp2.name;
           if (_existCompName !== compSetName) { _needSwap = true; }
         }
         if (_needSwap) {
@@ -3077,19 +3492,40 @@ async function _processChildren(childrenSpec, parent, combo) {
             parent.appendChild(_swapInst);
             try { _swapInst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
             try { _swapInst.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
+            // Absolute positioning for swapped instance
+            if (cs.position === "absolute") {
+              _swapInst.layoutPositioning = "ABSOLUTE";
+              // Re-apply resize after ABSOLUTE — auto-layout may override instance size
+              try { _swapInst.resize(cs.width || _swapInst.width, cs.height || _swapInst.height); } catch(e) {}
+              if (cs.x !== undefined) _swapInst.x = cs.x;
+              if (cs.y !== undefined) _swapInst.y = cs.y;
+              if (cs.constraints) { _swapInst.constraints = { horizontal: cs.constraints.horizontal || "MIN", vertical: cs.constraints.vertical || "MIN" }; }
+            }
             // Apply overrides (nested text, nested variants, icon swap, boolean) on swapped instance
             if (cs.overrides) { await applyComponentOverrides(_swapInst, cs); }
+            // imageUrl: override image fill on swapped instance
+            if (cs.imageUrl) {
+              try {
+                var _swapImgHash = await getImageHash(cs.imageUrl);
+                _swapInst.fills = [{ type: "IMAGE", imageHash: _swapImgHash, scaleMode: "FILL" }];
+              } catch(e) { console.log("[instance SWAP] imageUrl override FAILED: " + e.message); }
+            }
             // swapProperty handled in post-build phase after combineAsVariants
           }
         } else {
-          if (cs.variants) { try { existNode.setProperties(cs.variants); } catch(e) {} }
+          console.log("[DEBUG instance UPDATE] name='" + name + "' component='" + compSetName + "' existNode.type=" + existNode.type);
+          if (cs.variants) { try { existNode.setProperties(cs.variants); console.log("[DEBUG instance UPDATE] setProperties OK: " + JSON.stringify(cs.variants)); } catch(e) { console.log("[DEBUG instance UPDATE] setProperties FAILED: " + e.message); } }
           if (cs.textOverrides) {
+            console.log("[DEBUG instance UPDATE] textOverrides keys=" + JSON.stringify(Object.keys(cs.textOverrides)));
+            var _allTextsDebug = existNode.findAll(function(n) { return n.type === "TEXT"; });
+            console.log("[DEBUG instance UPDATE] '" + name + "' textNodes found=" + _allTextsDebug.length + " names=[" + _allTextsDebug.map(function(t) { return t.name; }).join(", ") + "]");
             for (var _toKey2 in cs.textOverrides) {
               var _toNode2 = existNode.findOne(function(n) { return n.type === "TEXT" && n.name === _toKey2; });
+              console.log("[DEBUG instance UPDATE] textOverride '" + _toKey2 + "' → findOne=" + !!_toNode2);
               if (_toNode2) {
                 var _fn4 = _toNode2.fontName;
-                if (_fn4 && _fn4 !== figma.mixed) { try { await figma.loadFontAsync(_fn4); } catch(e) {} }
-                try { _toNode2.characters = cs.textOverrides[_toKey2]; } catch(e) {}
+                if (_fn4 && _fn4 !== figma.mixed) { try { await figma.loadFontAsync(_fn4); } catch(e) { console.log("[DEBUG instance UPDATE] Font load FAILED: " + e.message); } }
+                try { _toNode2.characters = cs.textOverrides[_toKey2]; console.log("[DEBUG instance UPDATE] '" + _toKey2 + "' SET OK to '" + cs.textOverrides[_toKey2] + "'"); } catch(e) { console.log("[DEBUG instance UPDATE] '" + _toKey2 + "' FAILED: " + e.message); }
               }
             }
           }
@@ -3114,8 +3550,24 @@ async function _processChildren(childrenSpec, parent, combo) {
               }
             }
           }
+          // Absolute positioning for existing instance
+          if (cs.position === "absolute") {
+            existNode.layoutPositioning = "ABSOLUTE";
+            // Re-apply resize after ABSOLUTE — auto-layout may override instance size
+            try { existNode.resize(cs.width || existNode.width, cs.height || existNode.height); } catch(e) {}
+            if (cs.x !== undefined) existNode.x = cs.x;
+            if (cs.y !== undefined) existNode.y = cs.y;
+            if (cs.constraints) { existNode.constraints = { horizontal: cs.constraints.horizontal || "MIN", vertical: cs.constraints.vertical || "MIN" }; }
+          }
           // Apply overrides on existing instance (nested text, nested variants, icon swap, boolean)
           if (cs.overrides) { await applyComponentOverrides(existNode, cs); }
+          // imageUrl: override image fill on existing instance
+          if (cs.imageUrl) {
+            try {
+              var _updImgHash = await getImageHash(cs.imageUrl);
+              existNode.fills = [{ type: "IMAGE", imageHash: _updImgHash, scaleMode: "FILL" }];
+            } catch(e) { console.log("[instance UPDATE] imageUrl override FAILED: " + e.message); }
+          }
           try { existNode.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
           try { existNode.layoutSizingVertical = cs.heightMode === "hug" ? "HUG" : "FIXED"; } catch(e) {}
         }
@@ -3127,9 +3579,10 @@ async function _processChildren(childrenSpec, parent, combo) {
 
 // --- Main: Create ComponentSet + Showcase ---
 
-async function doCreateComponents(spec) {
+async function doCreateComponents(spec, sendProgress) {
   var log = [];
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   await loadCaches();
   await preloadCommonFonts();
 
@@ -3160,6 +3613,7 @@ async function doCreateComponents(spec) {
   for (var ci = 0; ci < components.length; ci++) {
     var compSpec = components[ci];
     var compName = compSpec.name || "Component";
+    sendProgress("Component [" + (ci + 1) + "/" + components.length + "] " + compName, "ok");
     var properties = compSpec.properties || {};
     var base = compSpec.base || {};
     var variantStyles = compSpec.variantStyles || {};
@@ -3327,11 +3781,15 @@ async function doCreateComponents(spec) {
       }
       return null;
     }
+    var _variantProgressInterval = combos.length > 20 ? Math.ceil(combos.length / 10) : 1;
     for (var vi = 0; vi < combos.length; vi++) {
       var combo = combos[vi];
       var vname = [];
       for (var np = 0; np < propNames.length; np++) vname.push(propNames[np] + "=" + combo[propNames[np]]);
       var vnameStr = vname.join(", ");
+      if (vi % _variantProgressInterval === 0 || vi === combos.length - 1) {
+        sendProgress(compName + " — variant [" + (vi + 1) + "/" + combos.length + "]");
+      }
 
       var merged = mergeComponentStyles(base, combo, variantStyles, propNames);
       var _mergedHash = JSON.stringify(merged);
@@ -3348,16 +3806,21 @@ async function doCreateComponents(spec) {
       var comp;
       var _normVnameStr = _normalizeVarName(vnameStr);
       if (_isUpdate && existingVarMap[_normVnameStr]) {
-        // Upsert: reuse variant node (preserves instances), but rebuild all children fresh
+        // Upsert: reuse variant node AND preserve children (in-place update, no rebuild)
+        // Children are updated by _processChildren / native icon+label flow which find existing nodes by name
         comp = existingVarMap[_normVnameStr];
         _seenVars[_normVnameStr] = true;
-        for (var _urc = comp.children.length - 1; _urc >= 0; _urc--) comp.children[_urc].remove();
+        // DO NOT remove children — _processChildren and native flow find+update existing nodes
+        // Only reset visual properties on the variant COMPONENT itself
         comp.opacity = 1; comp.fills = []; comp.strokes = []; comp.effects = [];
       } else {
         comp = figma.createComponent();
         comp.name = vnameStr;
         _isNewVariant = true;
       }
+
+      // Reset stale properties from previous runs before applying new spec
+      _resetStaleProps(comp);
 
       if (_hasAddon) {
         // Outer comp: transparent HUG wrapper, no padding/fill/stroke
@@ -3369,6 +3832,19 @@ async function doCreateComponents(spec) {
         comp.resize(merged.width || 240, merged.height || 36);
         comp.layoutSizingHorizontal = "FIXED";
         comp.layoutSizingVertical = "FIXED";
+        // Bind size variables (variant level only — NOT inner children)
+        if (merged.minWidthVar) {
+          bindSizeVar(comp, "minWidth", merged.minWidthVar);
+          try { comp.setBoundVariable("width", null); } catch(e) {}
+        } else if (merged.widthVar) {
+          bindSizeVar(comp, "width", merged.widthVar);
+        }
+        if (merged.minHeightVar) {
+          bindSizeVar(comp, "minHeight", merged.minHeightVar);
+          try { comp.setBoundVariable("height", null); } catch(e) {}
+        } else if (merged.heightVar) {
+          bindSizeVar(comp, "height", merged.heightVar);
+        }
         comp.fills = [];
         comp.paddingLeft = 0; comp.paddingRight = 0; comp.paddingTop = 0; comp.paddingBottom = 0;
         bindFloat(comp, "paddingLeft", "spacing/none", 0); bindFloat(comp, "paddingRight", "spacing/none", 0); bindFloat(comp, "paddingTop", "spacing/none", 0); bindFloat(comp, "paddingBottom", "spacing/none", 0);
@@ -3383,12 +3859,14 @@ async function doCreateComponents(spec) {
         var gapRI = merged.gap !== undefined ? merged.gap : "xs";
         if (gapRI === "auto") {
           innerF.itemSpacing = 0;
+          try { innerF.setBoundVariable("itemSpacing", null); } catch(e) {}
         } else if (typeof gapRI === "string") {
           innerF.itemSpacing = getSpacingValue(gapRI);
           var gapVarNameI = gapRI.indexOf("/") !== -1 ? gapRI : "spacing/" + gapRI;
           bindFloat(innerF, "itemSpacing", gapVarNameI, innerF.itemSpacing);
         } else { innerF.itemSpacing = gapRI; if (gapRI === 0) bindFloat(innerF, "itemSpacing", "spacing/none", 0); }
         innerF.resize(merged.width || 240, merged.height || 36);
+        // NO size variable binding on innerF — only variant comp gets size tokens
         var pxRI = merged.paddingX !== undefined ? merged.paddingX : "md";
         var pyRI = merged.paddingY !== undefined ? merged.paddingY : "xs";
         if (typeof pxRI === "string") {
@@ -3412,7 +3890,7 @@ async function doCreateComponents(spec) {
           if (rVarI) { try { if (!_textLeft) { innerF.setBoundVariable("topLeftRadius",rVarI); innerF.setBoundVariable("bottomLeftRadius",rVarI); } if (!_textRight) { innerF.setBoundVariable("topRightRadius",rVarI); innerF.setBoundVariable("bottomRightRadius",rVarI); } } catch(e){} }
         }
         if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(innerF, merged.fill, merged.fillOpacity); else setFill(innerF, merged.fill); } else innerF.fills = [];
-        if (merged.stroke) { if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(innerF, merged.stroke, merged.strokeOpacity); else setStroke(innerF, merged.stroke); innerF.strokeWeight = merged.strokeWeight || 1; innerF.strokeAlign = "INSIDE"; if (merged.strokeDash && Array.isArray(merged.strokeDash)) innerF.dashPattern = merged.strokeDash; if (merged.strokeSides) _applyStrokeSides(innerF, merged.strokeSides, merged.strokeWeight || 1); }
+        if (merged.stroke) { if (merged.strokeOpacity !== undefined) setStrokeWithOpacity(innerF, merged.stroke, merged.strokeOpacity); else setStroke(innerF, merged.stroke); innerF.strokeWeight = merged.strokeWeight || 1; innerF.strokeAlign = "INSIDE"; if (merged.strokeDash && Array.isArray(merged.strokeDash)) innerF.dashPattern = merged.strokeDash; else innerF.dashPattern = []; if (merged.strokeSides) _applyStrokeSides(innerF, merged.strokeSides, merged.strokeWeight || 1); } else { innerF.strokes = []; innerF.strokeWeight = 0; innerF.dashPattern = []; }
         // Remove shared-edge borders: border-l-0 when textLeft, border-r-0 when textRight
         if (_textLeft) innerF.strokeLeftWeight = 0;
         if (_textRight) innerF.strokeRightWeight = 0;
@@ -3463,6 +3941,9 @@ async function doCreateComponents(spec) {
         var _indW = _indSpec.width || 16;
         var _indH = _indSpec.height || 16;
         indicatorF.resize(_indW, _indH);
+        // Bind size variables for indicator width/height
+        if (_indSpec.widthVar) bindSizeVar(indicatorF, "width", _indSpec.widthVar);
+        if (_indSpec.heightVar) bindSizeVar(indicatorF, "height", _indSpec.heightVar);
         indicatorF.layoutSizingHorizontal = "FIXED";
         indicatorF.layoutSizingVertical = "FIXED";
         var _indPx = _indSpec.paddingX !== undefined ? _indSpec.paddingX : "none"; var _indPy = _indSpec.paddingY !== undefined ? _indSpec.paddingY : "none";
@@ -3542,6 +4023,7 @@ async function doCreateComponents(spec) {
         var gapR = merged.gap !== undefined ? merged.gap : "xs";
         if (gapR === "auto") {
           comp.itemSpacing = 0;
+          try { comp.setBoundVariable("itemSpacing", null); } catch(e) {}
         } else if (typeof gapR === "string") {
           comp.itemSpacing = getSpacingValue(gapR);
           var gapVarName = gapR.indexOf("/") !== -1 ? gapR : "spacing/" + gapR;
@@ -3552,6 +4034,19 @@ async function doCreateComponents(spec) {
         comp.layoutSizingHorizontal = merged.widthMode === "hug" ? "HUG" : "FIXED";
         var _useHugV = merged.heightMode === "hug" || (merged.heightMode !== "fixed" && !!(merged.children && merged.children.length > 0));
         comp.layoutSizingVertical = _useHugV ? "HUG" : "FIXED";
+        // Bind size variables — stale minWidth/minHeight already cleared by _resetStaleProps
+        if (merged.minWidthVar) {
+          bindSizeVar(comp, "minWidth", merged.minWidthVar);
+          try { comp.setBoundVariable("width", null); } catch(e) {}
+        } else if (merged.widthVar && comp.layoutSizingHorizontal === "FIXED") {
+          bindSizeVar(comp, "width", merged.widthVar);
+        }
+        if (merged.minHeightVar) {
+          bindSizeVar(comp, "minHeight", merged.minHeightVar);
+          try { comp.setBoundVariable("height", null); } catch(e) {}
+        } else if (merged.heightVar && comp.layoutSizingVertical === "FIXED") {
+          bindSizeVar(comp, "height", merged.heightVar);
+        }
         // Padding — bind to spacing/* variable (NOT border radius)
         var pxR = merged.paddingX !== undefined ? merged.paddingX : "md";
         var pyR = merged.paddingY !== undefined ? merged.paddingY : "xs";
@@ -3615,9 +4110,16 @@ async function doCreateComponents(spec) {
         // Fill
         if (merged.imageUrl) {
           try {
+            console.log("[IMG] variant imageUrl: " + merged.imageUrl + " for " + vnameStr);
             var _imgHash = await getImageHash(merged.imageUrl);
             comp.fills = [{ type: "IMAGE", imageHash: _imgHash, scaleMode: "FILL" }];
-          } catch(e) { log.push("  [WARN] Image fetch failed: " + e.message); comp.fills = []; }
+            log.push("  [IMG] Image OK: " + merged.imageUrl);
+          } catch(e) {
+            log.push("  [WARN] Image fetch failed for " + vnameStr + ": " + e.message);
+            console.log("[IMG] FAILED: " + e.message + " url=" + merged.imageUrl);
+            // Fallback: show fill color so variant isn't invisible
+            if (merged.fill) { setFill(comp, merged.fill); }
+          }
         } else if (merged.fill) { if (merged.fillOpacity !== undefined) setFillWithOpacity(comp, merged.fill, merged.fillOpacity); else setFill(comp, merged.fill); }
         else comp.fills = [];
         // Stroke
@@ -3708,7 +4210,7 @@ async function doCreateComponents(spec) {
       // --- Children mode: structured child nodes for compound components ---
       var _hasChildren = !!(merged.children && merged.children.length > 0) && !_hasAddon && !_hasIndicator;
       if (_hasChildren) {
-        var _childValidNames = await _processChildren(merged.children, comp, combo);
+        var _childValidNames = await _processChildren(merged.children, comp, combo, { textFill: merged.textFill, iconFill: merged.iconFill });
         for (var _rchild = comp.children.length - 1; _rchild >= 0; _rchild--) {
           if (!_childValidNames[comp.children[_rchild].name]) comp.children[_rchild].remove();
         }
@@ -3738,6 +4240,7 @@ async function doCreateComponents(spec) {
         tlF.strokeRightWeight = 0; // border-r-0: no right border at shared edge with innerF
         tlF.topLeftRadius = _radVal2; tlF.bottomLeftRadius = _radVal2;
         tlF.topRightRadius = 0; tlF.bottomRightRadius = 0;
+        var _rn0TL = findVar("border radius/none"); if (_rn0TL) { try { tlF.setBoundVariable("topRightRadius",_rn0TL); tlF.setBoundVariable("bottomRightRadius",_rn0TL); } catch(e){} }
         tlF.layoutSizingHorizontal = "HUG"; tlF.layoutSizingVertical = "FILL";
         var tlTxt = _findKid(tlF, "Text", "TEXT");
         if (!tlTxt) { tlTxt = figma.createText(); tlTxt.name = "Text"; tlF.appendChild(tlTxt); }
@@ -3768,6 +4271,12 @@ async function doCreateComponents(spec) {
           if (leftExist && leftExist.type === "INSTANCE") {
             leftExist.visible = true;
             leftExist.resize(icoSize, icoSize);
+            // Swap component if icon name changed (e.g. Check → Minus on upsert)
+            var _wantLeftComp = findIconComponent(_iconLeftName);
+            var _leftMainComp = null; try { _leftMainComp = await leftExist.getMainComponentAsync(); } catch(e) {}
+            if (_wantLeftComp && _leftMainComp && _leftMainComp.id !== _wantLeftComp.id) {
+              leftExist.swapComponent(_wantLeftComp);
+            }
             var leftVecs = leftExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
             var icoFgVar = findVar(_iconColor);
             if (icoFgVar) { for (var lv = 0; lv < leftVecs.length; lv++) { if (leftVecs[lv].strokes && leftVecs[lv].strokes.length > 0) leftVecs[lv].strokes = [makeBoundPaint(icoFgVar)]; } }
@@ -3789,18 +4298,8 @@ async function doCreateComponents(spec) {
             }
           }
         } else {
-          // Not showing — hide but keep instance for swap property consistency
-          if (leftExist) {
-            leftExist.visible = false;
-          } else {
-            // Create hidden instance so swap property exists on all variants
-            var _hiddenLeftComp = findIconComponent(_iconLeftName) || findIconComponent("Search");
-            if (_hiddenLeftComp) {
-              var _hiddenLeft = _hiddenLeftComp.createInstance();
-              _hiddenLeft.name = "Icon Left"; _hiddenLeft.resize(icoSize, icoSize); _hiddenLeft.visible = false;
-              iconTarget.appendChild(_hiddenLeft);
-            }
-          }
+          // Not showing — remove icon entirely (no hidden instances, full variant model)
+          if (leftExist) leftExist.remove();
         }
       }
 
@@ -3849,6 +4348,12 @@ async function doCreateComponents(spec) {
           if (rightExist && rightExist.type === "INSTANCE") {
             rightExist.visible = true;
             rightExist.resize(icoSize, icoSize);
+            // Swap component if icon name changed on upsert
+            var _wantRightComp = findIconComponent(_iconRightName);
+            var _rightMainComp = null; try { _rightMainComp = await rightExist.getMainComponentAsync(); } catch(e) {}
+            if (_wantRightComp && _rightMainComp && _rightMainComp.id !== _wantRightComp.id) {
+              rightExist.swapComponent(_wantRightComp);
+            }
             var rightVecs = rightExist.findAll(function(n) { return n.type === "VECTOR" || n.type === "ELLIPSE" || n.type === "LINE"; });
             var icoFgVar3 = findVar(_iconColor);
             if (icoFgVar3) { for (var rv2 = 0; rv2 < rightVecs.length; rv2++) { if (rightVecs[rv2].strokes && rightVecs[rv2].strokes.length > 0) rightVecs[rv2].strokes = [makeBoundPaint(icoFgVar3)]; } }
@@ -3871,16 +4376,8 @@ async function doCreateComponents(spec) {
           }
         } else {
           // Not showing — hide but keep instance for swap property consistency
-          if (rightExist) {
-            rightExist.visible = false;
-          } else {
-            var _hiddenRightComp = findIconComponent(_iconRightName) || findIconComponent("ArrowRight");
-            if (_hiddenRightComp) {
-              var _hiddenRight = _hiddenRightComp.createInstance();
-              _hiddenRight.name = "Icon Right"; _hiddenRight.resize(icoSize, icoSize); _hiddenRight.visible = false;
-              iconTarget.appendChild(_hiddenRight);
-            }
-          }
+          // Not showing — remove icon entirely (no hidden instances, full variant model)
+          if (rightExist) rightExist.remove();
         }
       }
 
@@ -3896,6 +4393,7 @@ async function doCreateComponents(spec) {
         setStroke(trF, merged.stroke || "border"); trF.strokeWeight = 1; trF.strokeAlign = "INSIDE";
         trF.strokeLeftWeight = 0; // border-l-0: no left border at shared edge with innerF
         trF.topLeftRadius = 0; trF.bottomLeftRadius = 0;
+        var _rn0TR = findVar("border radius/none"); if (_rn0TR) { try { trF.setBoundVariable("topLeftRadius",_rn0TR); trF.setBoundVariable("bottomLeftRadius",_rn0TR); } catch(e){} }
         trF.topRightRadius = _radVal2; trF.bottomRightRadius = _radVal2;
         trF.layoutSizingHorizontal = "HUG"; trF.layoutSizingVertical = "FILL";
         var trTxt = _findKid(trF, "Text", "TEXT");
@@ -4055,7 +4553,7 @@ async function doCreateComponents(spec) {
       if (compSpec.description) cs.description = compSpec.description;
       cs.layoutMode = "NONE"; cs.fills = [];
       // ComponentSet visual: dashed border, radius 16, foreground color
-      cs.cornerRadius = 16;
+      _bindRad(cs, 16);
       cs.dashPattern = [10, 5];
       cs.strokeWeight = 1;
       cs.strokeAlign = "INSIDE";
@@ -4078,7 +4576,7 @@ async function doCreateComponents(spec) {
       cs.layoutMode = "NONE";
       cs.fills = []; // transparent — showcase frame provides bg
       // ComponentSet visual: dashed border, radius 16, foreground color
-      cs.cornerRadius = 16;
+      _bindRad(cs, 16);
       cs.dashPattern = [10, 5];
       cs.strokeWeight = 1;
       cs.strokeAlign = "INSIDE";
@@ -4087,6 +4585,52 @@ async function doCreateComponents(spec) {
       componentSetCache[compName] = cs;
       createdSets++;
       log.push("  ComponentSet: " + varComps.length + " in, " + cs.children.length + " in CS");
+    }
+
+    // --- Post-combine: re-apply imageUrl on instance children ---
+    // combineAsVariants resets instance fill overrides. Re-apply imageUrl from spec.
+    if (compSpec.base && compSpec.base.children) {
+      for (var _pcvi = 0; _pcvi < cs.children.length; _pcvi++) {
+        var _pcVariant = cs.children[_pcvi];
+        // Parse variant name to get variantStyles key
+        var _pcVName = _pcVariant.name;
+        // Determine which children array to use: variantStyles override or base
+        var _pcChildren = compSpec.base.children;
+        if (compSpec.variantStyles) {
+          // Check compound keys first (e.g. "State=Hover,Value=Image"), then single keys
+          var _pcParts = _pcVName.split(", ");
+          var _pcFound = false;
+          // Try full compound key
+          if (compSpec.variantStyles[_pcVName] && compSpec.variantStyles[_pcVName].children) {
+            _pcChildren = compSpec.variantStyles[_pcVName].children;
+            _pcFound = true;
+          }
+          // Try single keys (shallow merge: last match with children wins)
+          if (!_pcFound) {
+            for (var _pcp = 0; _pcp < _pcParts.length; _pcp++) {
+              var _pcKey = _pcParts[_pcp].trim();
+              if (compSpec.variantStyles[_pcKey] && compSpec.variantStyles[_pcKey].children) {
+                _pcChildren = compSpec.variantStyles[_pcKey].children;
+              }
+            }
+          }
+        }
+        // Scan children for instance type with imageUrl
+        for (var _pcci = 0; _pcci < _pcChildren.length; _pcci++) {
+          var _pcChild = _pcChildren[_pcci];
+          if (_pcChild.type === "instance" && _pcChild.imageUrl && _pcChild.name) {
+            // Find the matching node inside this variant
+            var _pcTarget = _pcVariant.findOne(function(n) { return n.name === _pcChild.name && (n.type === "INSTANCE" || n.type === "FRAME" || n.type === "RECTANGLE"); });
+            if (_pcTarget) {
+              try {
+                var _pcImgHash = await getImageHash(_pcChild.imageUrl);
+                _pcTarget.fills = [{ type: "IMAGE", imageHash: _pcImgHash, scaleMode: "FILL" }];
+                log.push("  [post-combine] imageUrl re-applied: " + _pcChild.name + " = " + _pcChild.imageUrl.substring(0, 50));
+              } catch(e) { log.push("  [post-combine] imageUrl FAILED: " + _pcChild.name + " " + e.message); }
+            }
+          }
+        }
+      }
     }
 
     // --- Post-build diagnostics & fixes ---
@@ -4142,13 +4686,14 @@ async function doCreateComponents(spec) {
       }
     }
 
+    sendProgress(compName + " — linking properties");
     // --- 3b. Post-build: Instance Swap Properties ---
     // Scan compSpec children for swapProperty, create INSTANCE_SWAP on ComponentSet, link all instances
     var _swapSpecs = [];
     var _scanSwap = function(children) {
       if (!children) return;
       for (var _si = 0; _si < children.length; _si++) {
-        if (children[_si].type === "instance" && children[_si].swapProperty) {
+        if ((children[_si].type === "instance" || children[_si].type === "icon") && children[_si].swapProperty) {
           _swapSpecs.push({ name: children[_si].name, propName: children[_si].swapProperty });
         }
         if (children[_si].children) _scanSwap(children[_si].children);
@@ -4202,8 +4747,10 @@ async function doCreateComponents(spec) {
 
     // --- 3c. Post-build: Link Icon Left / Icon Right swap properties ---
     // Ensure all icon instances across variants are linked to a single INSTANCE_SWAP property on ComponentSet
-    if (cs && cs.type === "COMPONENT_SET") {
+    // Skip if component has fixedIcons: true (icons are semantically fixed, not swappable — e.g. Checkbox Check/Minus)
+    if (cs && cs.type === "COMPONENT_SET" && !compSpec.fixedIcons) {
       var _iconSwapNames = ["Icon Left", "Icon Right"];
+      log.push("  [icon-swap] Starting for " + compName + " (fixedIcons=" + !!compSpec.fixedIcons + ")");
       for (var _isn = 0; _isn < _iconSwapNames.length; _isn++) {
         var _isName = _iconSwapNames[_isn];
         var _isInstances = [];
@@ -4211,19 +4758,24 @@ async function doCreateComponents(spec) {
           var _isFound = cs.children[_isv].findAll(function(n) { return n.type === "INSTANCE" && n.name === _isName; });
           for (var _isf = 0; _isf < _isFound.length; _isf++) _isInstances.push(_isFound[_isf]);
         }
+        log.push("  [icon-swap] '" + _isName + "' found " + _isInstances.length + " instances across " + cs.children.length + " variants");
         if (_isInstances.length === 0) continue;
         // Find existing INSTANCE_SWAP property
         var _isKey = null;
         var _isDefs = cs.componentPropertyDefinitions || {};
+        var _allPropKeys = Object.keys(_isDefs);
+        log.push("  [icon-swap] CS properties: " + _allPropKeys.filter(function(k) { return _isDefs[k].type === "INSTANCE_SWAP"; }).join(", "));
         for (var _idk in _isDefs) {
           if ((_idk === _isName || _idk.indexOf(_isName + "#") === 0) && _isDefs[_idk].type === "INSTANCE_SWAP") {
             _isKey = _idk; break;
           }
         }
+        log.push("  [icon-swap] Existing key for '" + _isName + "': " + (_isKey || "NONE — will create"));
         // Create if not exists
         if (!_isKey) {
           try {
             var _isMainComp = await _isInstances[0].getMainComponentAsync();
+            log.push("  [icon-swap] mainComponent: " + (_isMainComp ? _isMainComp.name + " id=" + _isMainComp.id : "NULL"));
             if (_isMainComp) {
               _isKey = cs.addComponentProperty(_isName, "INSTANCE_SWAP", _isMainComp.id);
               log.push("  [icon-swap] Created '" + _isName + "' key=" + _isKey);
@@ -4233,9 +4785,38 @@ async function doCreateComponents(spec) {
         // Link all instances
         if (_isKey) {
           for (var _isl = 0; _isl < _isInstances.length; _isl++) {
-            try { _isInstances[_isl].componentPropertyReferences = { mainComponent: _isKey }; } catch(e) {}
+            try {
+              _isInstances[_isl].componentPropertyReferences = { mainComponent: _isKey };
+              log.push("  [icon-swap] Linked '" + _isName + "' inst#" + _isl + " in variant '" + _isInstances[_isl].parent.name.substring(0, 40) + "'");
+            } catch(e) { log.push("  [icon-swap] Link FAILED inst#" + _isl + ": " + e.message); }
           }
-          log.push("  [icon-swap] Linked " + _isInstances.length + " '" + _isName + "' instances to key=" + _isKey);
+          log.push("  [icon-swap] Total linked: " + _isInstances.length + " '" + _isName + "' instances to key=" + _isKey);
+        } else {
+          log.push("  [icon-swap] ⚠ NO KEY for '" + _isName + "' — swap property NOT created");
+        }
+      }
+    }
+
+    // --- 3d. Cleanup stale INSTANCE_SWAP properties (no instances reference them) ---
+    if (cs && cs.type === "COMPONENT_SET") {
+      var _cleanDefs = cs.componentPropertyDefinitions || {};
+      for (var _ck in _cleanDefs) {
+        if (_cleanDefs[_ck].type !== "INSTANCE_SWAP") continue;
+        // Check if ANY instance in ANY variant still references this key
+        var _ckReferenced = false;
+        for (var _cv = 0; _cv < cs.children.length; _cv++) {
+          var _allInsts = cs.children[_cv].findAll(function(n) { return n.type === "INSTANCE"; });
+          for (var _ai = 0; _ai < _allInsts.length; _ai++) {
+            var _refs = _allInsts[_ai].componentPropertyReferences || {};
+            if (_refs.mainComponent === _ck) { _ckReferenced = true; break; }
+          }
+          if (_ckReferenced) break;
+        }
+        if (!_ckReferenced) {
+          try {
+            cs.deleteComponentProperty(_ck);
+            log.push("  [cleanup] Removed stale INSTANCE_SWAP property: " + _ck);
+          } catch(e) { log.push("  [cleanup] Failed to remove '" + _ck + "': " + e.message); }
         }
       }
     }
@@ -4269,6 +4850,7 @@ async function doCreateComponents(spec) {
       }
     }
     if (!_skipShowcase) {
+      sendProgress(compName + " — building showcase");
       log.push("  Building showcase...");
       var showcase = await _buildShowcase(cs, compSpec, properties, propNames, log);
       showcase.setPluginData("specHash", _showcaseSpecHash);
@@ -4400,11 +4982,16 @@ async function doCreateComponents(spec) {
         try { _psNode.remove(); } catch(e) { log.push("  Cleanup: WARN remove failed: " + e.message); }
       }
     }
+
+    // Per-component completion
+    var _compElapsed = Date.now() - startTime;
+    sendProgress("  ✓ " + compName + " done (" + cs.children.length + " variants, " + _compElapsed + "ms)", "ok");
   }
 
   // Never change viewport — user keeps their current view position
 
   var elapsed = Date.now() - startTime;
+  sendProgress("✓ All done — " + createdSets + " components, " + createdVariants + " variants in " + elapsed + "ms", "ok");
   log.push("Done! " + createdSets + " created, " + createdVariants + " variants + showcase in " + elapsed + "ms");
   return { success: true, message: createdSets + " new + upserted component(s) done", elapsed: elapsed, log: log };
 }
@@ -4414,7 +5001,7 @@ async function _makeTableRow(cells, isHeader, parent) {
   var row = figma.createFrame();
   row.name = isHeader ? "Table Header" : "Table Row";
   row.layoutMode = "HORIZONTAL";
-  row.itemSpacing = 0;
+  _bindSp(row, "itemSpacing", 0);
   row.fills = [];
   if (isHeader) setFillWithOpacity(row, "muted", 0.5);
   if (parent) {
@@ -4425,8 +5012,8 @@ async function _makeTableRow(cells, isHeader, parent) {
     var cell = figma.createFrame();
     cell.name = "Cell";
     cell.layoutMode = "HORIZONTAL";
-    cell.paddingTop = 8; cell.paddingBottom = 8; cell.paddingLeft = 16; cell.paddingRight = 16;
-    cell.itemSpacing = 0;
+    _bindPad(cell, 8, 16, 8, 16);
+    _bindSp(cell, "itemSpacing", 0);
     cell.fills = [];
     row.appendChild(cell);
     cell.layoutSizingHorizontal = "FILL";
@@ -4451,8 +5038,8 @@ async function _makeTable(title, headers, rows, parent) {
   var table = figma.createFrame();
   table.name = title + " Table";
   table.layoutMode = "VERTICAL";
-  table.itemSpacing = 0;
-  table.topLeftRadius = 12; table.topRightRadius = 12; table.bottomLeftRadius = 12; table.bottomRightRadius = 12;
+  _bindSp(table, "itemSpacing", 0);
+  _bindRad(table, 12);
   table.clipsContent = true;
   setFill(table, "card");
   setStroke(table, "border"); table.strokeWeight = 1; table.strokeAlign = "INSIDE";
@@ -4472,9 +5059,9 @@ async function _buildInstallSec(parent, installData) {
   var installSec = _makeFrame("Section — Installation", "v", 24, parent);
   await _makeLabel("Installation", "SP/H3", "foreground", installSec);
   var installCard = figma.createFrame(); installCard.name = "Install Card";
-  installCard.layoutMode = "VERTICAL"; installCard.itemSpacing = 0;
-  installCard.paddingTop = 0; installCard.paddingBottom = 0; installCard.paddingLeft = 0; installCard.paddingRight = 0;
-  installCard.topLeftRadius = 12; installCard.topRightRadius = 12; installCard.bottomLeftRadius = 12; installCard.bottomRightRadius = 12;
+  installCard.layoutMode = "VERTICAL"; _bindSp(installCard, "itemSpacing", 0);
+  _bindPad(installCard, 0, 0, 0, 0);
+  _bindRad(installCard, 12);
   installCard.clipsContent = true;
   installCard.fills = [];
   setStroke(installCard, "border"); installCard.strokeWeight = 1; installCard.strokeAlign = "INSIDE";
@@ -4483,8 +5070,8 @@ async function _buildInstallSec(parent, installData) {
   // Dependencies sub-section
   if (installData.dependencies) {
     var depHeader = figma.createFrame(); depHeader.name = "Dep Header";
-    depHeader.layoutMode = "HORIZONTAL"; depHeader.itemSpacing = 0;
-    depHeader.paddingTop = 12; depHeader.paddingBottom = 12; depHeader.paddingLeft = 16; depHeader.paddingRight = 16;
+    depHeader.layoutMode = "HORIZONTAL"; _bindSp(depHeader, "itemSpacing", 0);
+    _bindPad(depHeader, 12, 16, 12, 16);
     setFillWithOpacity(depHeader, "muted", 0.3);
     installCard.appendChild(depHeader);
     try { depHeader.layoutSizingHorizontal = "FILL"; depHeader.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -4495,8 +5082,8 @@ async function _buildInstallSec(parent, installData) {
     installCard.appendChild(depSep);
     try { depSep.layoutSizingHorizontal = "FILL"; } catch(e) {}
     var depCode = figma.createFrame(); depCode.name = "Code Block";
-    depCode.layoutMode = "VERTICAL"; depCode.itemSpacing = 0;
-    depCode.paddingTop = 16; depCode.paddingBottom = 16; depCode.paddingLeft = 16; depCode.paddingRight = 16;
+    depCode.layoutMode = "VERTICAL"; _bindSp(depCode, "itemSpacing", 0);
+    _bindPad(depCode, 16, 16, 16, 16);
     setFill(depCode, "code");
     installCard.appendChild(depCode);
     try { depCode.layoutSizingHorizontal = "FILL"; depCode.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -4505,8 +5092,8 @@ async function _buildInstallSec(parent, installData) {
   // Import sub-section
   if (installData.import) {
     var impHeader = figma.createFrame(); impHeader.name = "Import Header";
-    impHeader.layoutMode = "HORIZONTAL"; impHeader.itemSpacing = 0;
-    impHeader.paddingTop = 12; impHeader.paddingBottom = 12; impHeader.paddingLeft = 16; impHeader.paddingRight = 16;
+    impHeader.layoutMode = "HORIZONTAL"; _bindSp(impHeader, "itemSpacing", 0);
+    _bindPad(impHeader, 12, 16, 12, 16);
     setFillWithOpacity(impHeader, "muted", 0.3);
     installCard.appendChild(impHeader);
     try { impHeader.layoutSizingHorizontal = "FILL"; impHeader.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -4517,8 +5104,8 @@ async function _buildInstallSec(parent, installData) {
     installCard.appendChild(impSep);
     try { impSep.layoutSizingHorizontal = "FILL"; } catch(e) {}
     var impCode = figma.createFrame(); impCode.name = "Code Block";
-    impCode.layoutMode = "VERTICAL"; impCode.itemSpacing = 0;
-    impCode.paddingTop = 16; impCode.paddingBottom = 16; impCode.paddingLeft = 16; impCode.paddingRight = 16;
+    impCode.layoutMode = "VERTICAL"; _bindSp(impCode, "itemSpacing", 0);
+    _bindPad(impCode, 16, 16, 16, 16);
     setFill(impCode, "code");
     installCard.appendChild(impCode);
     try { impCode.layoutSizingHorizontal = "FILL"; impCode.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -4636,7 +5223,7 @@ function _layoutCSGrid(cs, properties, propNames) {
   cs.strokeWeight = 1;
   cs.strokeAlign = "INSIDE";
   cs.dashPattern = [10, 5];
-  cs.topLeftRadius = 16; cs.topRightRadius = 16; cs.bottomLeftRadius = 16; cs.bottomRightRadius = 16;
+  _bindRad(cs, 16);
 
   return _totalW;
 }
@@ -4659,8 +5246,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   main.resize(1440, 100);
   main.layoutSizingHorizontal = "FIXED";
   main.layoutSizingVertical = "HUG";
-  main.paddingTop = 80; main.paddingRight = 80; main.paddingBottom = 80; main.paddingLeft = 80;
-  main.itemSpacing = 64;
+  _bindPad(main, 64, 64, 64, 64);
+  _bindSp(main, "itemSpacing", 64);
+  _bindRad(main, 0);
   setFill(main, "background");
   main.clipsContent = false;
 
@@ -4703,9 +5291,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   // --- Card helper (Header → Separator → Preview) with border ---
   async function _makeExCard(name, desc, parent) {
     var card = figma.createFrame(); card.name = name;
-    card.layoutMode = "VERTICAL"; card.itemSpacing = 0; card.fills = [];
+    card.layoutMode = "VERTICAL"; _bindSp(card, "itemSpacing", 0); card.fills = [];
     card.resize(CARD_W, 100);
-    card.topLeftRadius = 12; card.topRightRadius = 12; card.bottomLeftRadius = 12; card.bottomRightRadius = 12;
+    _bindRad(card, 12);
     card.clipsContent = true;
     // Border for visibility
     setStroke(card, "border"); card.strokeWeight = 1; card.strokeAlign = "INSIDE";
@@ -4716,8 +5304,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     }
     try { card.layoutSizingVertical = "HUG"; } catch (e) {}
     // Header
-    var hdr = figma.createFrame(); hdr.name = "Header"; hdr.layoutMode = "VERTICAL"; hdr.itemSpacing = 6;
-    hdr.paddingTop = 16; hdr.paddingBottom = 16; hdr.paddingLeft = 24; hdr.paddingRight = 24;
+    var hdr = figma.createFrame(); hdr.name = "Header"; hdr.layoutMode = "VERTICAL"; _bindSp(hdr, "itemSpacing", 6);
+    _bindPad(hdr, 16, 24, 16, 24);
     setFillWithOpacity(hdr, "muted", 0.5);
     card.appendChild(hdr);
     try { hdr.layoutSizingHorizontal = "FILL"; hdr.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -4726,8 +5314,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Separator
     _makeSep(card);
     // Preview
-    var prev = figma.createFrame(); prev.name = "Preview"; prev.layoutMode = "VERTICAL"; prev.itemSpacing = 12;
-    prev.paddingTop = 20; prev.paddingBottom = 20; prev.paddingLeft = 24; prev.paddingRight = 24;
+    var prev = figma.createFrame(); prev.name = "Preview"; prev.layoutMode = "VERTICAL"; _bindSp(prev, "itemSpacing", 12);
+    _bindPad(prev, 20, 24, 20, 24);
     setFill(prev, "card");
     card.appendChild(prev);
     try { prev.layoutSizingHorizontal = "FILL"; prev.layoutSizingVertical = "HUG"; } catch (e) {}
@@ -4770,10 +5358,10 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   compSec.appendChild(cs);
 
   // If CS width > 1280 (content area), switch main frame to HUG width
-  var _contentArea = 1440 - 80 - 80; // 1280
+  var _contentArea = 1440 - 64 - 64; // 1312
   if (_totalW > _contentArea) {
     main.layoutSizingHorizontal = "HUG";
-    main.paddingRight = 80; main.paddingLeft = 80;
+    _bindSp(main, "paddingRight", 64); _bindSp(main, "paddingLeft", 64);
   }
 
   // Helper: build props from a flat object {PropName: "value", ...}
@@ -4795,8 +5383,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
 
   // Build an explore card: preview area + property controls
   var exploreCard = figma.createFrame(); exploreCard.name = "Explore Card";
-  exploreCard.layoutMode = "VERTICAL"; exploreCard.itemSpacing = 0;
-  exploreCard.topLeftRadius = 12; exploreCard.topRightRadius = 12; exploreCard.bottomLeftRadius = 12; exploreCard.bottomRightRadius = 12;
+  exploreCard.layoutMode = "VERTICAL"; _bindSp(exploreCard, "itemSpacing", 0);
+  _bindRad(exploreCard, 12);
   exploreCard.clipsContent = true;
   exploreCard.fills = [];
   setStroke(exploreCard, "border"); exploreCard.strokeWeight = 1; exploreCard.strokeAlign = "INSIDE";
@@ -4805,8 +5393,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
 
   // Preview area
   var expPreview = figma.createFrame(); expPreview.name = "Preview";
-  expPreview.layoutMode = "HORIZONTAL"; expPreview.itemSpacing = 16;
-  expPreview.paddingTop = 48; expPreview.paddingBottom = 48; expPreview.paddingLeft = 48; expPreview.paddingRight = 48;
+  expPreview.layoutMode = "HORIZONTAL"; _bindSp(expPreview, "itemSpacing", 16);
+  _bindPad(expPreview, 48, 48, 48, 48);
   expPreview.primaryAxisAlignItems = "CENTER"; expPreview.counterAxisAlignItems = "CENTER";
   setFillWithOpacity(expPreview, "muted", 0.2);
   exploreCard.appendChild(expPreview);
@@ -4818,8 +5406,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   // Controls area
   _makeSep(exploreCard);
   var expControls = figma.createFrame(); expControls.name = "Controls";
-  expControls.layoutMode = "VERTICAL"; expControls.itemSpacing = 16;
-  expControls.paddingTop = 16; expControls.paddingBottom = 16; expControls.paddingLeft = 16; expControls.paddingRight = 16;
+  expControls.layoutMode = "VERTICAL"; _bindSp(expControls, "itemSpacing", 16);
+  _bindPad(expControls, 16, 16, 16, 16);
   setFillWithOpacity(expControls, "muted", 0.1);
   exploreCard.appendChild(expControls);
   try { expControls.layoutSizingHorizontal = "FILL"; expControls.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -4832,12 +5420,12 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     await _makeLabel(epName, "SP/Label", "muted-foreground", epRow);
     var epPills = _makeFrame("Pills", "h", 6, epRow);
     epPills.layoutSizingHorizontal = "HUG";
-    epPills.layoutWrap = "WRAP"; epPills.counterAxisSpacing = 6;
+    epPills.layoutWrap = "WRAP"; _bindSp(epPills, "counterAxisSpacing", 6);
     for (var epv = 0; epv < epVals.length; epv++) {
       var epPill = figma.createFrame(); epPill.name = epVals[epv];
       epPill.layoutMode = "HORIZONTAL"; epPill.primaryAxisAlignItems = "CENTER"; epPill.counterAxisAlignItems = "CENTER";
-      epPill.paddingLeft = 8; epPill.paddingRight = 8; epPill.paddingTop = 4; epPill.paddingBottom = 4;
-      epPill.topLeftRadius = 6; epPill.topRightRadius = 6; epPill.bottomLeftRadius = 6; epPill.bottomRightRadius = 6;
+      _bindPad(epPill, 4, 8, 4, 8);
+      _bindRad(epPill, 6);
       if (epv === 0) {
         setFill(epPill, "primary");
         setStroke(epPill, "primary"); epPill.strokeWeight = 1; epPill.strokeAlign = "INSIDE";
@@ -4879,7 +5467,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
         var exDef = customExamples[exj];
         var exPrev = await _makeExCard(exDef.name, exDef.description || "", exRow);
         exPrev.layoutMode = exDef.layout === "vertical" ? "VERTICAL" : "HORIZONTAL";
-        exPrev.itemSpacing = 12;
+        _bindSp(exPrev, "itemSpacing", 12);
         exPrev.counterAxisAlignItems = "CENTER";
         if (exDef.layout === "vertical") { exPrev.counterAxisAlignItems = "MIN"; }
         // Create instances in parallel (font loads batched), then append in order
@@ -4924,8 +5512,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
 
     // Example 1: "All [FirstProp]" — one instance per first-prop value
     var _allVarPrev = await _makeExCard("All " + firstProp + "s", "Each " + (firstProp || "").toLowerCase() + " variant side by side.", _nextRow());
-    _allVarPrev.layoutMode = "HORIZONTAL"; _allVarPrev.itemSpacing = 12; _allVarPrev.counterAxisAlignItems = "CENTER";
-    _allVarPrev.layoutWrap = "WRAP"; _allVarPrev.counterAxisSpacing = 12;
+    _allVarPrev.layoutMode = "HORIZONTAL"; _bindSp(_allVarPrev, "itemSpacing", 12); _allVarPrev.counterAxisAlignItems = "CENTER";
+    _allVarPrev.layoutWrap = "WRAP"; _bindSp(_allVarPrev, "counterAxisSpacing", 12);
     for (var av = 0; av < firstVals.length; av++) {
       var avp = {}; avp[firstProp] = firstVals[av];
       await _getInstanceWithLabel(cs, _buildProps(avp), firstVals[av], _allVarPrev);
@@ -4934,7 +5522,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Example 2: "All Sizes" (if Size property exists)
     if (properties["Size"]) {
       var _allSzPrev = await _makeExCard("All Sizes", "Size comparison from largest to smallest.", _nextRow());
-      _allSzPrev.layoutMode = "HORIZONTAL"; _allSzPrev.itemSpacing = 16; _allSzPrev.counterAxisAlignItems = "MAX";
+      _allSzPrev.layoutMode = "HORIZONTAL"; _bindSp(_allSzPrev, "itemSpacing", 16); _allSzPrev.counterAxisAlignItems = "MAX";
       for (var sz = 0; sz < sizes.length; sz++) {
         var szp = { "Size": sizes[sz] };
         await _getInstanceWithLabel(cs, _buildProps(szp), sizes[sz], _allSzPrev);
@@ -4944,7 +5532,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Example 3: "States" (if State property exists)
     if (properties["State"] && states.length > 1) {
       var _stPrev = await _makeExCard("State Flow", "Visual states: " + states.join(" → ") + ".", _nextRow());
-      _stPrev.layoutMode = "HORIZONTAL"; _stPrev.itemSpacing = 16; _stPrev.counterAxisAlignItems = "CENTER";
+      _stPrev.layoutMode = "HORIZONTAL"; _bindSp(_stPrev, "itemSpacing", 16); _stPrev.counterAxisAlignItems = "CENTER";
       for (var si = 0; si < states.length; si++) {
         var stp = { "State": states[si] };
         await _getInstanceWithLabel(cs, _buildProps(stp), states[si], _stPrev);
@@ -4954,7 +5542,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Example 4: "Disabled/Off" comparison (if Disabled or Value prop exists)
     if (properties["Disabled"]) {
       var _disPrev = await _makeExCard("Enabled vs Disabled", "Active and inactive comparison.", _nextRow());
-      _disPrev.layoutMode = "HORIZONTAL"; _disPrev.itemSpacing = 16; _disPrev.counterAxisAlignItems = "CENTER";
+      _disPrev.layoutMode = "HORIZONTAL"; _bindSp(_disPrev, "itemSpacing", 16); _disPrev.counterAxisAlignItems = "CENTER";
       await _getInstanceWithLabel(cs, _buildProps({"Disabled": "false"}), "Enabled", _disPrev);
       await _getInstanceWithLabel(cs, _buildProps({"Disabled": "true"}), "Disabled", _disPrev);
     }
@@ -4965,7 +5553,7 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       if (secProp !== "Size" && secProp !== "State" && secProp !== "Disabled") {
         var secVals = properties[secProp];
         var _secPrev = await _makeExCard("All " + secProp + "s", secProp + " variations.", _nextRow());
-        _secPrev.layoutMode = "HORIZONTAL"; _secPrev.itemSpacing = 12; _secPrev.counterAxisAlignItems = "CENTER";
+        _secPrev.layoutMode = "HORIZONTAL"; _bindSp(_secPrev, "itemSpacing", 12); _secPrev.counterAxisAlignItems = "CENTER";
         for (var sv = 0; sv < secVals.length; sv++) {
           var svp = {}; svp[secProp] = secVals[sv];
           await _getInstanceWithLabel(cs, _buildProps(svp), secVals[sv], _secPrev);
@@ -4976,8 +5564,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Example 6: combined — first value of each prop variation
     if (propNames.length >= 3) {
       var _combPrev = await _makeExCard("Combined", "Multiple properties combined together.", _nextRow());
-      _combPrev.layoutMode = "HORIZONTAL"; _combPrev.itemSpacing = 12; _combPrev.counterAxisAlignItems = "CENTER";
-      _combPrev.layoutWrap = "WRAP"; _combPrev.counterAxisSpacing = 12;
+      _combPrev.layoutMode = "HORIZONTAL"; _bindSp(_combPrev, "itemSpacing", 12); _combPrev.counterAxisAlignItems = "CENTER";
+      _combPrev.layoutWrap = "WRAP"; _bindSp(_combPrev, "counterAxisSpacing", 12);
       // Show first×last combo for each pair of first 2 properties
       var fp = propNames[0]; var sp = propNames[1];
       var fpv = properties[fp]; var spv = properties[sp];
@@ -5033,9 +5621,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       var bpCards = _makeFrame("Do Dont", "h", 16, bpRow);
       // Do card
       var doCard = figma.createFrame(); doCard.name = "Do";
-      doCard.layoutMode = "VERTICAL"; doCard.itemSpacing = 8;
-      doCard.paddingTop = 16; doCard.paddingBottom = 16; doCard.paddingLeft = 16; doCard.paddingRight = 16;
-      doCard.topLeftRadius = 12; doCard.topRightRadius = 12; doCard.bottomLeftRadius = 12; doCard.bottomRightRadius = 12;
+      doCard.layoutMode = "VERTICAL"; _bindSp(doCard, "itemSpacing", 8);
+      _bindPad(doCard, 16, 16, 16, 16);
+      _bindRad(doCard, 12);
       setFill(doCard, "card");
       setStroke(doCard, "success"); doCard.strokeWeight = 1; doCard.strokeAlign = "INSIDE";
       bpCards.appendChild(doCard);
@@ -5044,9 +5632,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
       await _makeLabel(bp.do || bp["do"], "SP/Caption", "foreground", doCard);
       // Don't card
       var dontCard = figma.createFrame(); dontCard.name = "Dont";
-      dontCard.layoutMode = "VERTICAL"; dontCard.itemSpacing = 8;
-      dontCard.paddingTop = 16; dontCard.paddingBottom = 16; dontCard.paddingLeft = 16; dontCard.paddingRight = 16;
-      dontCard.topLeftRadius = 12; dontCard.topRightRadius = 12; dontCard.bottomLeftRadius = 12; dontCard.bottomRightRadius = 12;
+      dontCard.layoutMode = "VERTICAL"; _bindSp(dontCard, "itemSpacing", 8);
+      _bindPad(dontCard, 16, 16, 16, 16);
+      _bindRad(dontCard, 12);
       setFill(dontCard, "card");
       setStroke(dontCard, "destructive"); dontCard.strokeWeight = 1; dontCard.strokeAlign = "INSIDE";
       bpCards.appendChild(dontCard);
@@ -5088,9 +5676,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Keyboard section
     if (a11yData.keyboard && a11yData.keyboard.length > 0) {
       var kbCard = figma.createFrame(); kbCard.name = "Keyboard";
-      kbCard.layoutMode = "VERTICAL"; kbCard.itemSpacing = 12;
-      kbCard.paddingTop = 16; kbCard.paddingBottom = 16; kbCard.paddingLeft = 16; kbCard.paddingRight = 16;
-      kbCard.topLeftRadius = 12; kbCard.topRightRadius = 12; kbCard.bottomLeftRadius = 12; kbCard.bottomRightRadius = 12;
+      kbCard.layoutMode = "VERTICAL"; _bindSp(kbCard, "itemSpacing", 12);
+      _bindPad(kbCard, 16, 16, 16, 16);
+      _bindRad(kbCard, 12);
       setFill(kbCard, "card");
       setStroke(kbCard, "border"); kbCard.strokeWeight = 1; kbCard.strokeAlign = "INSIDE";
       a11ySec.appendChild(kbCard);
@@ -5105,9 +5693,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     // Notes section
     if (a11yData.notes && a11yData.notes.length > 0) {
       var notesCard = figma.createFrame(); notesCard.name = "Notes";
-      notesCard.layoutMode = "VERTICAL"; notesCard.itemSpacing = 8;
-      notesCard.paddingTop = 16; notesCard.paddingBottom = 16; notesCard.paddingLeft = 16; notesCard.paddingRight = 16;
-      notesCard.topLeftRadius = 12; notesCard.topRightRadius = 12; notesCard.bottomLeftRadius = 12; notesCard.bottomRightRadius = 12;
+      notesCard.layoutMode = "VERTICAL"; _bindSp(notesCard, "itemSpacing", 8);
+      _bindPad(notesCard, 16, 16, 16, 16);
+      _bindRad(notesCard, 12);
       setFill(notesCard, "card");
       setStroke(notesCard, "border"); notesCard.strokeWeight = 1; notesCard.strokeAlign = "INSIDE";
       a11ySec.appendChild(notesCard);
@@ -5120,9 +5708,9 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
   } else {
     // Default placeholder
     var a11yPlaceholder = figma.createFrame(); a11yPlaceholder.name = "A11y Placeholder";
-    a11yPlaceholder.layoutMode = "VERTICAL"; a11yPlaceholder.itemSpacing = 8;
-    a11yPlaceholder.paddingTop = 16; a11yPlaceholder.paddingBottom = 16; a11yPlaceholder.paddingLeft = 16; a11yPlaceholder.paddingRight = 16;
-    a11yPlaceholder.topLeftRadius = 12; a11yPlaceholder.topRightRadius = 12; a11yPlaceholder.bottomLeftRadius = 12; a11yPlaceholder.bottomRightRadius = 12;
+    a11yPlaceholder.layoutMode = "VERTICAL"; _bindSp(a11yPlaceholder, "itemSpacing", 8);
+    _bindPad(a11yPlaceholder, 16, 16, 16, 16);
+    _bindRad(a11yPlaceholder, 12);
     setFill(a11yPlaceholder, "card");
     setStroke(a11yPlaceholder, "border"); a11yPlaceholder.strokeWeight = 1; a11yPlaceholder.strokeAlign = "INSIDE";
     a11ySec.appendChild(a11yPlaceholder);
@@ -5141,8 +5729,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     var relSec = _makeFrame("Section — Related", "v", 24, main);
     await _makeLabel("Related Components", "SP/H3", "foreground", relSec);
     var relCard = figma.createFrame(); relCard.name = "Related List";
-    relCard.layoutMode = "VERTICAL"; relCard.itemSpacing = 0;
-    relCard.topLeftRadius = 12; relCard.topRightRadius = 12; relCard.bottomLeftRadius = 12; relCard.bottomRightRadius = 12;
+    relCard.layoutMode = "VERTICAL"; _bindSp(relCard, "itemSpacing", 0);
+    _bindRad(relCard, 12);
     relCard.clipsContent = true;
     setFill(relCard, "card");
     setStroke(relCard, "border"); relCard.strokeWeight = 1; relCard.strokeAlign = "INSIDE";
@@ -5150,8 +5738,8 @@ async function _buildShowcase(cs, compSpec, properties, propNames, log) {
     try { relCard.layoutSizingHorizontal = "FILL"; relCard.layoutSizingVertical = "HUG"; } catch(e) {}
     for (var rli = 0; rli < relatedData.length; rli++) {
       var relItem = figma.createFrame(); relItem.name = relatedData[rli].name;
-      relItem.layoutMode = "VERTICAL"; relItem.itemSpacing = 4;
-      relItem.paddingTop = 12; relItem.paddingBottom = 12; relItem.paddingLeft = 16; relItem.paddingRight = 16;
+      relItem.layoutMode = "VERTICAL"; _bindSp(relItem, "itemSpacing", 4);
+      _bindPad(relItem, 12, 16, 12, 16);
       relItem.fills = [];
       relCard.appendChild(relItem);
       try { relItem.layoutSizingHorizontal = "FILL"; relItem.layoutSizingVertical = "HUG"; } catch(e) {}
@@ -5517,8 +6105,9 @@ async function doExportEffectStyles() {
 // SECTION 12.5: FOUNDATION DOCUMENTATION PAGES
 // ============================================================
 
-async function doFoundationDocs(spec) {
+async function doFoundationDocs(spec, sendProgress) {
   var startTime = Date.now();
+  if (!sendProgress) sendProgress = function() {};
   var log = [];
   try {
     await loadCaches();
@@ -5552,8 +6141,6 @@ async function doFoundationDocs(spec) {
     var root = existingRoot || figma.createFrame();
     root.name = rootFrameName;
     root.layoutMode = "VERTICAL";
-    root.itemSpacing = 40;
-    root.paddingTop = 40; root.paddingRight = 40; root.paddingBottom = 40; root.paddingLeft = 40;
     root.resize(1200, 100);
     root.primaryAxisSizingMode = "AUTO";
     root.counterAxisSizingMode = "FIXED";
@@ -5590,6 +6177,7 @@ async function doFoundationDocs(spec) {
     // Render sections
     for (var si = 0; si < spec.sections.length; si++) {
       var section = spec.sections[si];
+      sendProgress(spec.name + " — " + section.title + " [" + (si + 1) + "/" + spec.sections.length + "]");
       log.push("Rendering section: " + section.title);
       await _renderDocSection(section, root, log);
     }
@@ -5644,11 +6232,9 @@ async function _renderColorGrid(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 0;
     card.resize(itemWidth, 120);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     setFill(card, "card", "#ffffff");
@@ -5670,8 +6256,6 @@ async function _renderColorGrid(section, parent, log) {
     var labels = figma.createFrame();
     labels.name = "Labels";
     labels.layoutMode = "VERTICAL";
-    labels.itemSpacing = 2;
-    labels.paddingTop = 8; labels.paddingRight = 8; labels.paddingBottom = 8; labels.paddingLeft = 8;
     labels.fills = [];
     card.appendChild(labels);
     _bindSp(labels, "itemSpacing", 2);
@@ -5763,12 +6347,9 @@ async function _renderFontFamily(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 6;
     card.resize(itemWidth, 100);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     card.fills = [];
@@ -5801,11 +6382,8 @@ async function _renderTypeScale(section, parent, log) {
     var row = figma.createFrame();
     row.name = item.name;
     row.layoutMode = "HORIZONTAL";
-    row.itemSpacing = 16;
     row.primaryAxisAlignItems = "SPACE_BETWEEN";
     row.counterAxisAlignItems = "CENTER";
-    row.paddingTop = 16; row.paddingRight = 16; row.paddingBottom = 16; row.paddingLeft = 16;
-    row.cornerRadius = 8;
     row.strokeWeight = 1;
     setStroke(row, "border", "#e4e4e7");
     row.fills = [];
@@ -5832,8 +6410,6 @@ async function _renderTypeScale(section, parent, log) {
     var badge = figma.createFrame();
     badge.name = "Badge";
     badge.layoutMode = "HORIZONTAL";
-    badge.paddingTop = 4; badge.paddingRight = 12; badge.paddingBottom = 4; badge.paddingLeft = 12;
-    badge.cornerRadius = 4;
     badge.fills = [];
     setFill(badge, "muted", "#f4f4f5");
     row.appendChild(badge);
@@ -5864,12 +6440,9 @@ async function _renderFontWeight(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 8;
     card.resize(itemWidth, 100);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     card.fills = [];
@@ -5905,10 +6478,7 @@ async function _renderSpacingBar(section, parent, log) {
     var row = figma.createFrame();
     row.name = item.name;
     row.layoutMode = "HORIZONTAL";
-    row.itemSpacing = 12;
     row.counterAxisAlignItems = "CENTER";
-    row.paddingTop = 8; row.paddingRight = 12; row.paddingBottom = 8; row.paddingLeft = 12;
-    row.cornerRadius = 8;
     row.strokeWeight = 1;
     setStroke(row, "border", "#e4e4e7");
     row.fills = [];
@@ -5930,7 +6500,6 @@ async function _renderSpacingBar(section, parent, log) {
     bar.name = "Bar";
     var barWidth = Math.max(item.value, 4);
     bar.resize(barWidth, 20);
-    bar.cornerRadius = 4;
     setFill(bar, "primary", "#7c3aed");
     row.appendChild(bar);
     _bindRad(bar, 4);
@@ -5944,8 +6513,6 @@ async function _renderSpacingBar(section, parent, log) {
     var twBadge = figma.createFrame();
     twBadge.name = "TW";
     twBadge.layoutMode = "HORIZONTAL";
-    twBadge.paddingTop = 2; twBadge.paddingRight = 8; twBadge.paddingBottom = 2; twBadge.paddingLeft = 8;
-    twBadge.cornerRadius = 4;
     twBadge.fills = [];
     setFill(twBadge, "muted", "#f4f4f5");
     row.appendChild(twBadge);
@@ -5977,12 +6544,9 @@ async function _renderRadiusGrid(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 8;
     card.resize(itemWidth, 160);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     card.fills = [];
@@ -5997,7 +6561,6 @@ async function _renderRadiusGrid(section, parent, log) {
     demo.name = "Demo";
     demo.resize(64, 64);
     var radius = item.value > 32 ? 32 : item.value;
-    demo.cornerRadius = radius;
     setFill(demo, "primary", "#7c3aed");
     card.appendChild(demo);
     _bindRad(demo, radius);
@@ -6029,12 +6592,9 @@ async function _renderShadowGrid(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 6;
     card.resize(itemWidth, 120);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 20; card.paddingRight = 20; card.paddingBottom = 20; card.paddingLeft = 20;
-    card.cornerRadius = 12;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     setFill(card, "card", "#ffffff");
@@ -6081,12 +6641,9 @@ async function _renderIllustrationGrid(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 12;
     card.resize(itemWidth, 100);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 24; card.paddingRight = 16; card.paddingBottom = 24; card.paddingLeft = 16;
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     card.fills = [];
@@ -6100,7 +6657,6 @@ async function _renderIllustrationGrid(section, parent, log) {
     var circle = figma.createFrame();
     circle.name = "IconBg";
     circle.resize(48, 48);
-    circle.cornerRadius = 24;
     setFill(circle, "muted", "#f4f4f5");
     circle.layoutMode = "HORIZONTAL";
     circle.primaryAxisAlignItems = "CENTER";
@@ -6145,12 +6701,9 @@ async function _renderPatternGrid(section, parent, log) {
     var card = figma.createFrame();
     card.name = item.name;
     card.layoutMode = "VERTICAL";
-    card.itemSpacing = 8;
     card.resize(itemWidth, 100);
     card.primaryAxisSizingMode = "AUTO";
     card.counterAxisSizingMode = "FIXED";
-    card.paddingTop = 16; card.paddingRight = 16; card.paddingBottom = 16; card.paddingLeft = 16;
-    card.cornerRadius = 8;
     card.strokeWeight = 1;
     setStroke(card, "border", "#e4e4e7");
     card.fills = [];
@@ -6220,31 +6773,39 @@ figma.ui.onmessage = async function(msg) {
     // Route based on spec.type
     var specType = spec.type || "page";
 
+    // Helper: send real-time progress to UI
+    function sendProgress(text, level) {
+      figma.ui.postMessage({ type: "progress", text: text, level: level || "", source: source });
+    }
+
+    // Clear log area at start
+    figma.ui.postMessage({ type: "log-clear", source: source });
+
     try {
       var result;
 
       if (specType === "foundation-variables") {
-        figma.ui.postMessage({ type: "status", text: "Creating variables...", source: source });
-        result = await doCreateVariables(spec);
+        sendProgress("Creating variables...");
+        result = await doCreateVariables(spec, sendProgress);
       } else if (specType === "foundation-text-styles") {
-        figma.ui.postMessage({ type: "status", text: "Creating text styles...", source: source });
-        result = await doCreateTextStyles(spec);
+        sendProgress("Creating text styles...");
+        result = await doCreateTextStyles(spec, sendProgress);
       } else if (specType === "foundation-effects") {
-        figma.ui.postMessage({ type: "status", text: "Creating effect styles...", source: source });
-        result = await doCreateEffectStyles(spec);
+        sendProgress("Creating effect styles...");
+        result = await doCreateEffectStyles(spec, sendProgress);
       } else if (specType === "foundation-icons") {
-        figma.ui.postMessage({ type: "status", text: "Creating icons...", source: source });
-        result = await doCreateIcons(spec);
+        sendProgress("Creating icons...");
+        result = await doCreateIcons(spec, sendProgress);
       } else if (specType === "foundation-components") {
-        figma.ui.postMessage({ type: "status", text: "Creating components...", source: source });
-        result = await doCreateComponents(spec);
+        sendProgress("Creating components...");
+        result = await doCreateComponents(spec, sendProgress);
       } else if (specType === "foundation-docs") {
-        figma.ui.postMessage({ type: "status", text: "Creating " + spec.name + " docs...", source: source });
-        result = await doFoundationDocs(spec);
+        sendProgress("Creating " + spec.name + " docs...");
+        result = await doFoundationDocs(spec, sendProgress);
       } else {
         // Default: page generation
-        figma.ui.postMessage({ type: "status", text: "Generating...", source: source });
-        result = await doGenerate(spec);
+        sendProgress("Generating...");
+        result = await doGenerate(spec, sendProgress);
       }
 
       if (result.success) {

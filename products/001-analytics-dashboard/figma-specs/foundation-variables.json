@@ -83,15 +83,15 @@
       "variables": [
         {"name": "background", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/50", "Dark": "#0c0c10"}},
         {"name": "foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/50"}},
-        {"name": "foreground-subtle", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/500"}},
+        {"name": "foreground-subtle", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/500"}},
 
         {"name": "card", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/white", "Dark": "#141418"}},
-        {"name": "card-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/50"}},
+        {"name": "card-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/50"}},
         {"name": "card-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/50", "Dark": "$raw colors/zinc/900"}},
-        {"name": "card-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
+        {"name": "card-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
 
         {"name": "popover", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/zinc/900"}},
-        {"name": "popover-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/50"}},
+        {"name": "popover-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/50"}},
 
         {"name": "primary", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/600"}},
         {"name": "primary-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
@@ -99,38 +99,40 @@
         {"name": "primary-10", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#7c3aed1a", "Dark": "#7c3aed1a"}},
         {"name": "primary-20", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#7c3aed33", "Dark": "#7c3aed33"}},
         {"name": "primary-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/violet/50", "Dark": "$raw colors/violet/950"}},
-        {"name": "primary-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/400"}},
+        {"name": "primary-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/400"}},
+        {"name": "primary-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/violet/500", "Dark": "$raw colors/violet/500"}},
 
         {"name": "secondary", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/800"}},
         {"name": "secondary-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/900", "Dark": "$raw colors/zinc/50"}},
         {"name": "secondary-hover", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/300", "Dark": "$raw colors/zinc/900"}},
 
         {"name": "accent", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "$raw colors/zinc/800"}},
-        {"name": "accent-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/900", "Dark": "$raw colors/zinc/50"}},
+        {"name": "accent-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/900", "Dark": "$raw colors/zinc/50"}},
         {"name": "accent-selected", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/300", "Dark": "$raw colors/zinc/700"}},
 
         {"name": "muted", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "$raw colors/zinc/800"}},
-        {"name": "muted-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
+        {"name": "muted-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
 
         {"name": "border", "type": "COLOR", "scopes": ["STROKE_COLOR", "FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/800"}},
         {"name": "border-subtle", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/zinc/100", "Dark": "#ffffff0f"}},
         {"name": "border-strong", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/zinc/400", "Dark": "$raw colors/zinc/600"}},
         {"name": "border-card", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "#0000000f", "Dark": "#ffffff0f"}},
+        {"name": "toast-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "#171717e6", "Dark": "#fafaf9e6"}},
 
         {"name": "input", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/zinc/900"}},
         {"name": "input-readonly", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "$raw colors/zinc/800"}},
-        {"name": "ring", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/800"}},
-        {"name": "ring-error", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/red/200", "Dark": "$raw colors/red/900"}},
-        {"name": "ring-brand", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/violet/200", "Dark": "$raw colors/violet/900"}},
-        {"name": "ring-success", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/green/200", "Dark": "$raw colors/green/900"}},
-        {"name": "ring-warning", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/amber/200", "Dark": "$raw colors/amber/900"}},
-        {"name": "ring-emphasis", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/blue/200", "Dark": "$raw colors/blue/900"}},
+        {"name": "ring", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/800"}},
+        {"name": "ring-error", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/red/200", "Dark": "$raw colors/red/900"}},
+        {"name": "ring-brand", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/violet/200", "Dark": "$raw colors/violet/900"}},
+        {"name": "ring-success", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/green/200", "Dark": "$raw colors/green/900"}},
+        {"name": "ring-warning", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/amber/200", "Dark": "$raw colors/amber/900"}},
+        {"name": "ring-emphasis", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "$raw colors/blue/200", "Dark": "$raw colors/blue/900"}},
 
         {"name": "backdrop", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#00000099", "Dark": "#000000b3"}},
         {"name": "shadow-color", "type": "COLOR", "scopes": ["EFFECT_COLOR"], "values": {"Light": "#00000040", "Dark": "#00000080"}},
 
         {"name": "ghost", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "#ffffff03", "Dark": "#00000003"}},
-        {"name": "ghost-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
+        {"name": "ghost-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/400"}},
         {"name": "ghost-hover", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#0000000d", "Dark": "#ffffff0f"}},
 
         {"name": "outline", "type": "COLOR", "scopes": ["STROKE_COLOR", "FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "#ffffff1a", "Dark": "#ffffff0a"}},
@@ -145,33 +147,33 @@
         {"name": "destructive-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "destructive-hover", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/red/700", "Dark": "$raw colors/red/600"}},
         {"name": "destructive-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/red/50", "Dark": "#ef44441a"}},
-        {"name": "destructive-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/red/600", "Dark": "$raw colors/red/400"}},
+        {"name": "destructive-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/red/600", "Dark": "$raw colors/red/400"}},
         {"name": "destructive-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/red/500", "Dark": "$raw colors/red/500"}},
 
         {"name": "success", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/green/600", "Dark": "$raw colors/green/500"}},
         {"name": "success-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "success-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/green/50", "Dark": "#22c55e1a"}},
-        {"name": "success-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/green/600", "Dark": "$raw colors/green/400"}},
+        {"name": "success-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/green/600", "Dark": "$raw colors/green/400"}},
         {"name": "success-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/green/500", "Dark": "$raw colors/green/500"}},
 
         {"name": "warning", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/amber/600", "Dark": "$raw colors/amber/500"}},
         {"name": "warning-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "warning-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/amber/50", "Dark": "#f59e0b1a"}},
-        {"name": "warning-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/amber/600", "Dark": "$raw colors/amber/400"}},
+        {"name": "warning-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/amber/600", "Dark": "$raw colors/amber/400"}},
         {"name": "warning-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/amber/500", "Dark": "$raw colors/amber/500"}},
 
         {"name": "emphasis", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/blue/600", "Dark": "$raw colors/blue/500"}},
         {"name": "emphasis-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "emphasis-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/blue/50", "Dark": "#3b82f61a"}},
-        {"name": "emphasis-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/blue/600", "Dark": "$raw colors/blue/400"}},
+        {"name": "emphasis-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/blue/600", "Dark": "$raw colors/blue/400"}},
         {"name": "emphasis-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/blue/500", "Dark": "$raw colors/blue/500"}},
 
         {"name": "brand", "type": "COLOR", "scopes": ["ALL_FILLS", "STROKE_COLOR"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/600"}},
         {"name": "brand-hover", "type": "COLOR", "scopes": ["FRAME_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/violet/700", "Dark": "$raw colors/violet/700"}},
         {"name": "brand-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "brand-subtle", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/violet/50", "Dark": "$raw colors/violet/950"}},
-        {"name": "brand-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/400"}},
-        {"name": "brand-subtle-foreground-hover", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/violet/700", "Dark": "$raw colors/violet/300"}},
+        {"name": "brand-subtle-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/400"}},
+        {"name": "brand-subtle-foreground-hover", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/violet/700", "Dark": "$raw colors/violet/300"}},
         {"name": "brand-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/violet/500", "Dark": "$raw colors/violet/600"}},
 
         {"name": "glass-bg", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "#ffffffb2", "Dark": "#ffffff08"}},
@@ -180,13 +182,13 @@
         {"name": "glass-border-hover", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "#0000001f", "Dark": "#ffffff1a"}},
 
         {"name": "sidebar-background", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/zinc/900"}},
-        {"name": "sidebar-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/100"}},
+        {"name": "sidebar-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/950", "Dark": "$raw colors/zinc/100"}},
         {"name": "sidebar-primary", "type": "COLOR", "scopes": ["ALL_FILLS"], "values": {"Light": "$raw colors/violet/600", "Dark": "$raw colors/violet/500"}},
         {"name": "sidebar-primary-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/white", "Dark": "$raw colors/white"}},
         {"name": "sidebar-accent", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/100", "Dark": "$raw colors/zinc/800"}},
-        {"name": "sidebar-accent-foreground", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/100"}},
+        {"name": "sidebar-accent-foreground", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/500", "Dark": "$raw colors/zinc/100"}},
         {"name": "sidebar-accent-hover", "type": "COLOR", "scopes": ["FRAME_FILL"], "values": {"Light": "$raw colors/zinc/50", "Dark": "$raw colors/zinc/950"}},
-        {"name": "sidebar-muted", "type": "COLOR", "scopes": ["TEXT_FILL"], "values": {"Light": "$raw colors/zinc/400", "Dark": "$raw colors/zinc/500"}},
+        {"name": "sidebar-muted", "type": "COLOR", "scopes": ["TEXT_FILL", "SHAPE_FILL"], "values": {"Light": "$raw colors/zinc/400", "Dark": "$raw colors/zinc/500"}},
         {"name": "sidebar-border", "type": "COLOR", "scopes": ["STROKE_COLOR"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/800"}},
         {"name": "sidebar-ring", "type": "COLOR", "scopes": ["STROKE_COLOR", "EFFECT_COLOR"], "values": {"Light": "$raw colors/zinc/200", "Dark": "$raw colors/zinc/950"}},
 
@@ -233,6 +235,47 @@
         {"name": "2xl",  "type": "FLOAT", "values": {"Value": 16}},
         {"name": "3xl",  "type": "FLOAT", "values": {"Value": 24}},
         {"name": "full", "type": "FLOAT", "values": {"Value": 9999}}
+      ]
+    },
+    {
+      "name": "size",
+      "modes": ["Value"],
+      "scopes": ["WIDTH_HEIGHT"],
+      "variables": [
+        {"name": "height/mini",    "type": "FLOAT", "values": {"Value": 24}},
+        {"name": "height/small",   "type": "FLOAT", "values": {"Value": 32}},
+        {"name": "height/default", "type": "FLOAT", "values": {"Value": 36}},
+        {"name": "height/large",   "type": "FLOAT", "values": {"Value": 40}},
+
+        {"name": "icon/mini",    "type": "FLOAT", "values": {"Value": 24}},
+        {"name": "icon/small",   "type": "FLOAT", "values": {"Value": 32}},
+        {"name": "icon/default", "type": "FLOAT", "values": {"Value": 36}},
+        {"name": "icon/large",   "type": "FLOAT", "values": {"Value": 40}},
+
+        {"name": "badge/sm",      "type": "FLOAT", "values": {"Value": 20}},
+        {"name": "badge/default", "type": "FLOAT", "values": {"Value": 24}},
+        {"name": "badge/lg",      "type": "FLOAT", "values": {"Value": 28}},
+        {"name": "badge-round/sm",      "type": "FLOAT", "values": {"Value": 20}},
+        {"name": "badge-round/default", "type": "FLOAT", "values": {"Value": 24}},
+        {"name": "badge-round/lg",      "type": "FLOAT", "values": {"Value": 28}},
+        {"name": "badge-dot/sm",      "type": "FLOAT", "values": {"Value": 4}},
+        {"name": "badge-dot/default", "type": "FLOAT", "values": {"Value": 8}},
+        {"name": "badge-dot/lg",      "type": "FLOAT", "values": {"Value": 12}},
+
+        {"name": "avatar/sm",      "type": "FLOAT", "values": {"Value": 32}},
+        {"name": "avatar/default", "type": "FLOAT", "values": {"Value": 40}},
+        {"name": "avatar/lg",      "type": "FLOAT", "values": {"Value": 56}},
+
+        {"name": "checkbox",    "type": "FLOAT", "values": {"Value": 16}},
+        {"name": "switch/track-w", "type": "FLOAT", "values": {"Value": 33}},
+        {"name": "switch/track-h", "type": "FLOAT", "values": {"Value": 18}},
+        {"name": "switch/thumb",   "type": "FLOAT", "values": {"Value": 16}},
+        {"name": "radio",       "type": "FLOAT", "values": {"Value": 16}},
+
+        {"name": "width/input",    "type": "FLOAT", "values": {"Value": 320}},
+        {"name": "width/textarea",  "type": "FLOAT", "values": {"Value": 320}},
+        {"name": "width/select",    "type": "FLOAT", "values": {"Value": 320}},
+        {"name": "height/textarea", "type": "FLOAT", "values": {"Value": 76}}
       ]
     }
   ]

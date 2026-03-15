@@ -24,10 +24,13 @@
         "radius": "full",
         "widthMode": "hug",
         "heightMode": "hug",
-        "iconSize": 12,
-        "textStyle": "SP/Label",
-        "textContent": "Dashboard",
-        "textFill": "muted-foreground"
+        "hideLabel": true,
+        "textFill": "muted-foreground",
+        "iconFill": "muted-foreground",
+        "children": [
+          { "name": "Label", "type": "text", "textStyle": "SP/Label", "textContent": "Dashboard" },
+          { "name": "Icon Right", "type": "icon", "iconName": "ChevronDown", "iconSize": 12, "showWhen": "Type=Trigger" }
+        ]
       },
 
       "variantStyles": {
@@ -35,31 +38,26 @@
         "State=Active": {
           "fill": "foreground",
           "textFill": "background",
+          "iconFill": "background",
           "effectStyleName": "Shadows/sm"
         },
         "State=Hover": {
           "fill": "muted",
-          "fillOpacity": 0.4,
-          "textFill": "foreground"
+          "textFill": "foreground",
+          "iconFill": "foreground"
         },
 
-        "Type=Trigger": {
-          "iconRight": true,
-          "iconRightName": "ChevronDown"
-        },
+        "Type=Trigger": {},
         "Type=Trigger,State=Active": {
           "fill": "foreground",
           "textFill": "background",
-          "effectStyleName": "Shadows/sm",
-          "iconRight": true,
-          "iconRightName": "ChevronDown"
+          "iconFill": "background",
+          "effectStyleName": "Shadows/sm"
         },
         "Type=Trigger,State=Hover": {
           "fill": "muted",
-          "fillOpacity": 0.4,
           "textFill": "foreground",
-          "iconRight": true,
-          "iconRightName": "ChevronDown"
+          "iconFill": "foreground"
         }
       },
 
@@ -98,7 +96,7 @@
         { "token": "--muted-foreground", "value": "zinc-500", "description": "Default text color for nav items" },
         { "token": "--foreground", "value": "zinc-950 / zinc-50", "description": "Active item background + hover text color" },
         { "token": "--background", "value": "white / zinc-950", "description": "Active item text color (inverted)" },
-        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover state background (40% opacity)" },
+        { "token": "--muted", "value": "zinc-100 / zinc-800", "description": "Hover state background" },
         { "token": "Shadows/sm", "value": "0 1px 2px rgba(0,0,0,0.05)", "description": "Active state shadow (shadow-sm)" },
         { "token": "rounded-full", "value": "9999px", "description": "Pill shape border radius" },
         { "token": "--spacing-lg", "value": "20px", "description": "Horizontal padding (px-lg)" },
@@ -116,7 +114,7 @@
         { "figma": "Type=Trigger", "value": "Text + ChevronDown icon", "code": "NavigationMenuTrigger", "codeValue": "ChevronDown appended automatically" },
         { "figma": "State=Default", "value": "No fill, muted-foreground text", "code": "--", "codeValue": "Default appearance" },
         { "figma": "State=Active", "value": "bg-foreground text-background shadow-sm", "code": "data-active / data-[state=open]", "codeValue": "Active route or open trigger" },
-        { "figma": "State=Hover", "value": "bg-muted/40 text-foreground", "code": "hover:", "codeValue": "hover:bg-muted/40 hover:text-foreground" }
+        { "figma": "State=Hover", "value": "bg-muted text-foreground", "code": "hover:", "codeValue": "hover:bg-muted hover:text-foreground" }
       ],
 
       "accessibility": {
@@ -167,7 +165,6 @@
         "widthMode": "hug",
         "heightMode": "hug",
         "fill": "muted",
-        "fillOpacity": 0.5,
         "hideLabel": true,
         "children": [
           {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   MoreHorizontal,
   UserPlus,
@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -39,6 +40,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCard,
+  TableCardRow,
 } from "@/components/ui/table"
 import {
   DropdownMenu,
@@ -113,9 +116,7 @@ function UsersListSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -152,17 +153,17 @@ const statusConfig: Record<User["status"], { label: string; dotClass: string; ba
   active: {
     label: "Active",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   inactive: {
     label: "Inactive",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
   invited: {
     label: "Invited",
     dotClass: "bg-primary animate-pulse",
-    badgeClass: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20",
+    badgeClass: "bg-primary-10 text-primary border-primary-20 dark:bg-primary-20",
   },
 }
 
@@ -171,6 +172,7 @@ const statusConfig: Record<User["status"], { label: string; dotClass: string; ba
 /* ------------------------------------------------------------------ */
 
 export default function UsersListPage() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [connectionStatus, setConnectionStatus] = useState<"online" | "offline">("online")
   const [refreshing, setRefreshing] = useState(false)
@@ -289,7 +291,7 @@ export default function UsersListPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -305,7 +307,7 @@ export default function UsersListPage() {
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Users</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -320,16 +322,14 @@ export default function UsersListPage() {
         {/* KPI cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
-            { icon: Users, label: "Total Users", value: totalCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: UserCheck, label: "Active", value: activeCount, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: UserX, label: "Inactive", value: inactiveCount, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
-            { icon: Mail, label: "Invited", value: invitedCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
+            { icon: Users, label: "Total Users", value: totalCount, color: "primary" as const },
+            { icon: UserCheck, label: "Active", value: activeCount, color: "success" as const },
+            { icon: UserX, label: "Inactive", value: inactiveCount, color: "default" as const },
+            { icon: Mail, label: "Invited", value: invitedCount, color: "primary" as const },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
-                <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                  <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                </div>
+                <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                 <div>
                   <p className="sp-kpi-md text-foreground">{kpi.value}</p>
                   <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -349,7 +349,7 @@ export default function UsersListPage() {
                   <h3 className="sp-h4 text-foreground">All Users</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} users found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+                <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -383,7 +383,7 @@ export default function UsersListPage() {
                   <Button variant="outline" size="sm" onClick={handleBulkExport}>
                     <Download className="size-[13px] mr-xs" /> Export
                   </Button>
-                  <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleBulkDelete}>
+                  <Button variant="outline" size="sm" className="text-destructive border-destructive-border hover:bg-destructive-subtle" onClick={handleBulkDelete}>
                     <Trash2 className="size-[13px] mr-xs" /> Remove
                   </Button>
                   <Button variant="ghost" size="xs" onClick={() => setSelected(new Set())}>
@@ -433,29 +433,27 @@ export default function UsersListPage() {
                 {paginated.map((user) => {
                   const status = statusConfig[user.status]
                   return (
-                    <Link
-                      key={user.id}
-                      to={`/management/users/${user.id}`}
-                      className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors"
-                    >
-                      <div className="flex items-center gap-sm">
-                        <Avatar className="size-[36px] ring-1 ring-border/20">
-                          <AvatarImage src={user.avatarUrl} alt={user.name} />
-                          <AvatarFallback className="sp-caption">{user.avatar}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="sp-body-semibold text-foreground truncate">{user.name}</p>
-                          <p className="sp-caption text-muted-foreground/60 truncate">{user.email}</p>
+                    <Link key={user.id} to={`/management/users/${user.id}`} className="block">
+                      <TableCard>
+                        <div className="flex items-center gap-sm">
+                          <Avatar className="size-[36px] ring-1 ring-ring">
+                            <AvatarImage src={user.avatarUrl} alt={user.name} />
+                            <AvatarFallback className="sp-caption">{user.avatar}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="sp-body-semibold text-foreground truncate">{user.name}</p>
+                            <p className="sp-caption text-muted-foreground truncate">{user.email}</p>
+                          </div>
+                          <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium shrink-0 ${status.badgeClass}`}>
+                            <span className={`size-[5px] rounded-full ${status.dotClass}`} />
+                            {status.label}
+                          </span>
                         </div>
-                        <span className={`inline-flex items-center gap-xs px-sm py-3xs rounded-full border sp-caption font-medium shrink-0 ${status.badgeClass}`}>
-                          <span className={`size-[5px] rounded-full ${status.dotClass}`} />
-                          {status.label}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between sp-caption text-muted-foreground">
-                        <span><Badge variant="outline" className="sp-caption mr-xs">{roleLabel[user.role]}</Badge> · {user.plan}</span>
-                        <span>{user.lastActive}</span>
-                      </div>
+                        <TableCardRow className="sp-caption text-muted-foreground">
+                          <span><Badge variant="outline" className="sp-caption mr-xs">{roleLabel[user.role]}</Badge> · {user.plan}</span>
+                          <span>{user.lastActive}</span>
+                        </TableCardRow>
+                      </TableCard>
                     </Link>
                   )
                 })}
@@ -492,21 +490,21 @@ export default function UsersListPage() {
                   paginated.map((user) => {
                     const status = statusConfig[user.status]
                     return (
-                      <TableRow key={user.id} className="group">
-                        <TableCell className="!p-0 text-center">
+                      <TableRow key={user.id} className="group cursor-pointer" onClick={() => navigate(`/management/users/${user.id}`)}>
+                        <TableCell className="!p-0 text-center" onClick={(e) => e.stopPropagation()}>
                           <Checkbox checked={selected.has(user.id)} onCheckedChange={() => toggleOne(user.id)} aria-label={`Select ${user.name}`} />
                         </TableCell>
                         <TableCell>
-                          <Link to={`/management/users/${user.id}`} className="flex items-center gap-sm hover:opacity-80 transition-opacity">
-                            <Avatar className="size-[32px] ring-1 ring-border/20">
+                          <div className="flex items-center gap-sm">
+                            <Avatar className="size-[32px] ring-1 ring-ring">
                               <AvatarImage src={user.avatarUrl} alt={user.name} />
                               <AvatarFallback className="sp-caption">{user.avatar}</AvatarFallback>
                             </Avatar>
                             <div className="min-w-0">
                               <p className="sp-body-semibold text-foreground truncate">{user.name}</p>
-                              <p className="sp-caption text-muted-foreground/60 truncate">{user.email}</p>
+                              <p className="sp-caption text-muted-foreground truncate">{user.email}</p>
                             </div>
-                          </Link>
+                          </div>
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="sp-caption">{roleLabel[user.role]}</Badge>
@@ -519,10 +517,10 @@ export default function UsersListPage() {
                         </TableCell>
                         <TableCell className="sp-caption text-muted-foreground capitalize">{user.plan}</TableCell>
                         <TableCell className="sp-caption text-muted-foreground">{user.lastActive}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+                              <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
                                 <MoreHorizontal className="size-[14px]" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -554,7 +552,7 @@ export default function UsersListPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border mt-md">
                 <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
@@ -595,8 +593,8 @@ export default function UsersListPage() {
                   <SheetDescription>Change role for {editUser.name}</SheetDescription>
                 </SheetHeader>
                 <div className="mt-xl flex flex-col gap-lg">
-                  <div className="flex items-center gap-sm p-lg rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50">
-                    <Avatar className="size-[40px] ring-1 ring-border/20">
+                  <div className="flex items-center gap-sm p-lg rounded-xl bg-surface-raised dark:bg-surface-inset">
+                    <Avatar className="size-[40px] ring-1 ring-ring">
                       <AvatarImage src={editUser.avatarUrl} alt={editUser.name} />
                       <AvatarFallback className="sp-body-semibold">{editUser.avatar}</AvatarFallback>
                     </Avatar>
@@ -640,7 +638,7 @@ export default function UsersListPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleDeleteConfirm}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDeleteConfirm}>
                 <Trash2 className="size-[14px] mr-xs" /> Remove
               </AlertDialogAction>
             </AlertDialogFooter>

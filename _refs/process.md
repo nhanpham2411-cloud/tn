@@ -1196,6 +1196,20 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 - Other sections (Explore, Examples, Props, Tokens, etc.) are **web-only** — not rendered in Figma
 - Variable binding: gap/padding → `spacing/*` (string tokens), radius → `border radius/*`
 
+> **⛔ ABSOLUTE RULE — 100% Foundation Token Binding (áp dụng TOÀN BỘ dự án, common-mistake #177)**:
+> MỌI visual property — color, spacing, radius, typography, effect — PHẢI 100% bind từ foundation tokens. TUYỆT ĐỐI KHÔNG raw hex, Tailwind color scale names, hardcoded pixel, manual font override. Áp dụng cho CẢ web React code, Figma JSON spec, VÀ plugin output. Foundation (`index.css` → Figma variables/text styles/effects) = SINGLE SOURCE OF TRUTH. Nếu cần token chưa có → TẠO MỚI trong foundation TRƯỚC.
+>
+> **⚠️ Universal Variable Token Binding Rule (áp dụng TOÀN BỘ Phase 7)**:
+> MỌI UI tạo bởi PLUGIN (cả "Generate SaaS Template" lẫn "HTML to Figma") PHẢI bind variable token cho gap, padding, border-radius — kể cả 0px → `spacing/none` / `border radius/none`. KHÔNG raw number assignment.
+> - Generate SaaS Template: dùng `bindFloat()` / `_bindSp()` / `_bindRad()` / `_bindPad()` (string tokens trong JSON spec)
+> - HTML to Figma: dùng `bindSpacing()` / `bindRadius()` (auto-resolve px→token)
+> - Helper frames (`_makeFrame`, `_makeSep`, sub-headers, grids): tất cả bind padding 0 + radius 0
+> - `gap: "auto"` (space-between): bind `spacing/none` trên tất cả 4 code paths
+> - Text styles: `setTextStyleIdAsync()` — KHÔNG override `fontSize`/`fontName` sau binding
+> - Effect styles: Ring/Shadow/Glow via `setEffectStyleIdAsync()`
+> - **Color token scope**: `stroke` PHẢI dùng `-border` suffix tokens (`primary-border`, `destructive-border`, `toast-border`). KHÔNG dùng fill/text tokens cho border (common-mistake #167)
+> - Xem common-mistake #153, #159, #167, #168, #177
+
 #### 7d. Component Generation
 - Analyze React component tree → convert thành JSON spec format
 - Mỗi page = 1 JSON spec file
@@ -1207,16 +1221,27 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
   3. **Visual Diff Prediction** — mental render mỗi variant, so sánh với web
   4. Fix TẤT CẢ issues tìm được TRƯỚC KHI giao cho user chạy plugin
   5. Report kết quả review (PASS/FIXED/BLOCKED)
+- **Image Service & CORS Verification** (áp dụng cho components có imageUrl):
+  - [ ] Image CORS verify: `curl -sI <imageUrl> | grep access-control` cho MỌI image service mới
+  - [ ] JSON imageUrl match web data: cross-check JSON URLs với web DS data arrays (ilOrderData, ilUserData, etc.)
+  - [ ] No raw frame for DS elements: dots/badges/indicators → component instances
+  - [ ] Group instance imageOverrides: explicit cho MỌI row có custom image
 
 #### 7e. Flow Generation
 - Chạy Figma plugin "Generate SaaS Template"
 - Plugin tạo frames, components, layout tự động
-- Verify: Figma output vs React app trên browser
+- **Mandatory Screenshot Verification Protocol** (xem `_refs/plugin-json-pattern.md` → "Screenshot Verification Protocol"):
+  1. **Spec Content Cross-Check** — so sánh JSON spec vs web React source (text, variants, children, overrides)
+  2. **User Plugin Run** — user chạy plugin + chụp ảnh Figma output
+  3. **Visual Accuracy Verification** — Claude compare screenshot vs web UI (content accuracy + visual fidelity)
+  4. **Iterate** — nếu mismatch, fix spec/web, re-run plugin, re-verify
+  5. Mark spec DONE chỉ sau khi screenshot verification PASS
 
 ### Deliverable
 - JSON spec files trong `figma-specs/`
 - Design system page với component docs (10-section standard)
 - Figma file với tất cả pages generated
+- **Screenshot verification report** (spec name → PASS/FIXED/BLOCKED)
 
 ### Checklist
 - [ ] Foundation variables + text styles + effects synced
@@ -1227,14 +1252,41 @@ Export JSON specs từ React app → chạy Figma plugin để generate UI tự 
 - [ ] Interactive Demo cho overlay/trigger components
 - [ ] JSON specs viết cho tất cả pages
 - [ ] Mỗi JSON spec đã qua Review & Test Protocol (3 bước: Format, Cross-Check, Visual Diff)
+- [ ] **🔴 MANDATORY: Screenshot Verification Protocol — MỖI spec (component + foundation) phải qua spec cross-check + user plugin run + Claude TỰ chụp screenshot bằng Figma MCP `get_screenshot` để verify visual output TRƯỚC mark done. KHÔNG yêu cầu user chụp hình.**
 - [ ] Figma plugin chạy thành công (không error)
-- [ ] Output khớp với React app (visual comparison)
+- [ ] Claude TỰ chụp web screenshot (Playwright/browser) + Figma screenshot (`get_screenshot` MCP) → so sánh 2 bên → báo cáo lỗi nếu có
 - [ ] Tất cả components đều sử dụng Figma component set (không detach)
 - [ ] ComponentSet visual: border inside 1px DASH foreground, radius 16px, variants xếp lưới gọn gàng
 - [ ] Properties trên Figma khớp 100% React Explore controls (tên property, tên value, số lượng)
 - [ ] Boolean-like properties dùng `"Yes"/"No"` — KHÔNG `"True"/"False"` (common-mistake #120). Check: properties, variantStyles, showWhen, instance variants, examples
 - [ ] Group+Item: item ở index 0 trong JSON, parent dùng instance reference, Accordion cũng là Group+Item (common-mistake #122)
 - [ ] Indicator components (Radio, Checkbox, Switch): clipsContent trong indicator object, không ở base (common-mistake #121)
+- [ ] Screen component trên web DS có Page property (Dashboard, Analytics, Reports, Users, Products, Orders) với content riêng cho mỗi page
+- [ ] Illustration component JSON (`illustration.json`) tạo đúng: Type=Auth, 480×700, vertical, space-between, Logo instance + center content + footer stats
+- [ ] **Image Service & CORS Verification** (cho components có imageUrl):
+  - [ ] Image CORS verify: `curl -sI <imageUrl> | grep access-control` cho MỌI image service mới
+  - [ ] JSON imageUrl match web data: cross-check JSON URLs với web DS data arrays (ilOrderData, ilUserData, etc.)
+  - [ ] No raw frame for DS elements: dots/badges/indicators → component instances
+  - [ ] Group instance imageOverrides: explicit cho MỌI row có custom image
+- [ ] Screen JSON spec KHÔNG tồn tại — screens dùng HTML-to-Figma pipeline only (common-mistake #157)
+- [ ] Dynamic grid columns dùng inline `style` (KHÔNG `grid-cols-${n}` template literal) (common-mistake #155)
+- [ ] Auth breakpoint: branding panel = desktop only (`hidden lg:flex`), logo in card = tablet+mobile (common-mistake #156)
+- [ ] **Universal token binding (common-mistake #159)**:
+  - [ ] MỌI frame bind variable token: gap/padding/radius kể cả 0px → `spacing/none` / `border radius/none`
+  - [ ] MỌI text node bind text style. KHÔNG override `fontSize`/`fontName` sau binding
+  - [ ] MỌI effect (Ring, Shadow, Glow) bind effect style via `setEffectStyleIdAsync()`
+  - [ ] Áp dụng: component gen, showcase, foundation docs, icon assets, fallback frames, toasts
+- [ ] **DOM Extraction — figma() static vs runtime state (common-mistake #161)**:
+  - [ ] Form input Value variant: Select/Combobox detect `data-placeholder` on child span, Input/Textarea detect `inputEl.value` → override `Value: "Filled"`
+  - [ ] Container components (Screen, Illustration) trong `CONTAINER_COMPONENTS` set → walker recurse, không extract leaf instance
+  - [ ] Dual walker sync: mọi fix ở `raw-dom-walker.ts` → fix cả `dom-walker.ts`
+  - [ ] Sau khi add Playwright states → verify extraction output: variant values khớp visual state
+- [ ] **Icon upsert correctness (common-mistake #172-174)**:
+  - [ ] Variants dùng `iconLeftName`/`iconRightName` khác nhau → plugin swap đúng component trên upsert (KHÔNG giữ icon cũ)
+  - [ ] Variant KHÔNG cần icon → node XÓA hoàn toàn, KHÔNG hidden instance
+  - [ ] KHÔNG mix native `iconRight`/`iconLeft` + `children` array icon cùng variant (exception: addon variants)
+  - [ ] Indicator components có icon semantic (Checkbox Check/Minus) → `"fixedIcons": true` (KHÔNG tạo INSTANCE_SWAP)
+- [ ] ⛔ Plugin code guard: verify upsert path KHÔNG có `comp.children.remove()` loop — xóa children = phá hủy instances (common-mistake #192)
 - [ ] `common-mistakes.md` reviewed — no known mistakes repeated
 
 ---

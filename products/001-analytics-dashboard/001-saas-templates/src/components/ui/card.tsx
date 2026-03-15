@@ -29,7 +29,7 @@ function Card({
         Size: size === "lg" ? "Large" : size === "md" ? "Medium" : "Default",
       })}
       className={cn(
-        "rounded-2xl border border-border/60 bg-card text-card-foreground dark:border-border-subtle",
+        "rounded-2xl border border-border bg-card text-card-foreground dark:border-border-subtle",
         !size && "p-md",
         size === "md" && "p-xl",
         size === "lg" && "p-2xl",

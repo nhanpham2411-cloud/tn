@@ -51,6 +51,8 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
 
   /* --- Data Visualization: Area Chart Colors --- */
   --color-area-orange-fill: var(--area-orange-fill);
@@ -147,6 +149,7 @@
   --color-surface-raised: var(--surface-raised);
   --color-surface-inset: var(--surface-inset);
   --color-border-card: var(--border-card);
+  --color-toast-border: var(--toast-border);
   --color-code: var(--code);
   --color-code-foreground: var(--code-foreground);
 
@@ -162,6 +165,7 @@
   /* --- Semantic status colors (Primary/Secondary levels) --- */
   --color-primary-subtle: var(--primary-subtle);
   --color-primary-subtle-foreground: var(--primary-subtle-foreground);
+  --color-primary-border: var(--primary-border);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-success-subtle: var(--success-subtle);
@@ -179,6 +183,7 @@
   --color-emphasis-border: var(--emphasis-border);
 
   /* --- SprouX Spacing (from Figma semantic tokens) --- */
+  --spacing-px: 1px;
   --spacing-4xs: 2px;
   --spacing-3xs: 4px;
   --spacing-2xs: 6px;
@@ -670,6 +675,7 @@
 
     --primary-subtle: var(--color-violet-50);
     --primary-subtle-foreground: var(--color-violet-600);
+    --primary-border: var(--color-violet-500);
 
     --success: var(--color-green-600);
     --success-foreground: #ffffff;             /* raw: white */
@@ -715,6 +721,7 @@
     --surface-raised: var(--color-zinc-100);   /* icon containers, image placeholders */
     --surface-inset: var(--color-zinc-100);    /* progress tracks, inset panels */
     --border-card: rgba(0,0,0,0.06);           /* subtle list-item / card borders */
+    --toast-border: color-mix(in srgb, var(--foreground) 90%, transparent); /* inverted toast border */
     --code: var(--color-zinc-100);             /* code block background */
     --code-foreground: var(--color-zinc-800);  /* code block text */
 
@@ -728,6 +735,8 @@
     --chart-4: #c4b5fd;                        /* Pastel lavender */
     --chart-5: #86efac;                        /* Pastel mint */
     --chart-6: #fde68a;                        /* Pastel gold */
+    --chart-7: #0891b2;                        /* Teal cyan */
+    --chart-8: #e11d48;                        /* Rose */
 
     /* --- Chart Gradient Fills (for Recharts <Area>) --- */
     --chart-1-fill-start: rgba(124, 58, 237, 0.35);
@@ -871,6 +880,7 @@
 
     --primary-subtle: var(--color-violet-950);
     --primary-subtle-foreground: var(--color-violet-400);
+    --primary-border: var(--color-violet-500);
 
     --success: var(--color-green-500);
     --success-foreground: #ffffff;             /* raw: white */
@@ -916,6 +926,7 @@
     --surface-raised: rgba(255,255,255,0.06);  /* icon containers, image placeholders */
     --surface-inset: rgba(255,255,255,0.04);   /* progress tracks, inset panels */
     --border-card: rgba(255,255,255,0.06);     /* subtle list-item / card borders */
+    --toast-border: color-mix(in srgb, var(--foreground) 90%, transparent); /* inverted toast border */
     --code: var(--color-zinc-900);             /* code block background */
     --code-foreground: var(--color-zinc-200);  /* code block text */
 
@@ -929,6 +940,8 @@
     --chart-4: #ddd6fe;                        /* Pastel lavender */
     --chart-5: #bbf7d0;                        /* Pastel mint */
     --chart-6: #fef08a;                        /* Pastel yellow */
+    --chart-7: #22d3ee;                        /* Bright cyan */
+    --chart-8: #fb7185;                        /* Bright rose */
 
     /* --- Chart Gradient Fills (Violet + Green + Amber) --- */
     --chart-1-fill-start: rgba(167, 139, 250, 0.35);
@@ -1068,6 +1081,18 @@
 @utility sp-data     { font-family: var(--font-mono); font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
 @utility sp-data-sm  { font-family: var(--font-mono); font-weight: 400; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; }
 @utility sp-order-id { font-family: var(--font-mono); font-weight: 500; font-size: 13px; line-height: 20px; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+
+/* ---- ShopPulse Extended (micro UI, code display, metadata) ---- */
+
+@utility sp-body-sm   { font-family: var(--font-body); font-weight: 400; font-size: 13px; line-height: 20px; letter-spacing: 0; }
+@utility sp-code      { font-family: var(--font-mono); font-weight: 400; font-size: 13px; line-height: 20px; letter-spacing: 0; }
+@utility sp-mini      { font-family: var(--font-body); font-weight: 500; font-size: 11px; line-height: 16px; letter-spacing: 0.01em; }
+@utility sp-data-xs   { font-family: var(--font-mono); font-weight: 400; font-size: 10px; line-height: 14px; letter-spacing: 0.02em; }
+@utility sp-detail    { font-family: var(--font-body); font-weight: 400; font-size: 10px; line-height: 14px; letter-spacing: 0.01em; }
+@utility sp-micro     { font-family: var(--font-body); font-weight: 400; font-size: 9px; line-height: 12px; letter-spacing: 0.02em; }
+@utility sp-micro-sm  { font-family: var(--font-body); font-weight: 400; font-size: 8px; line-height: 10px; letter-spacing: 0.02em; }
+@utility sp-micro-xs  { font-family: var(--font-body); font-weight: 400; font-size: 7px; line-height: 10px; letter-spacing: 0.02em; }
+@utility sp-micro-2xs { font-family: var(--font-body); font-weight: 400; font-size: 6px; line-height: 8px; letter-spacing: 0.02em; }
 
 /* ---- SprouX Paragraph (kept for component compatibility) ---- */
 

@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
@@ -214,7 +215,7 @@ export default function GeneralSettingsPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Changes may not be saved.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -230,12 +231,12 @@ export default function GeneralSettingsPage() {
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">General</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
+          <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -265,13 +266,13 @@ export default function GeneralSettingsPage() {
                   <div className="relative group">
                     <Avatar className="size-[64px]">
                       <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-[18px] font-semibold">{currentUser.avatar}</AvatarFallback>
+                      <AvatarFallback className="bg-primary text-primary-foreground sp-body-lg font-semibold">{currentUser.avatar}</AvatarFallback>
                     </Avatar>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={handleUploadAvatar}
-                      className="absolute inset-0 size-auto rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-black/60"
+                      className="absolute inset-0 size-auto rounded-full bg-backdrop flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-backdrop"
                       aria-label="Upload avatar"
                     >
                       <Camera className="size-[18px] text-white" />
@@ -314,9 +315,7 @@ export default function GeneralSettingsPage() {
             {/* Password & Security */}
             <DCard>
               <div className="flex items-center gap-sm mb-lg">
-                <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                  <Key className="size-[18px] text-primary" />
-                </div>
+                <Thumbnail type="icon" color="primary" icon={<Key className="size-[18px]" />} />
                 <div>
                   <h3 className="sp-h4 text-foreground">Password & Security</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">Manage your password and security settings</p>
@@ -335,10 +334,10 @@ export default function GeneralSettingsPage() {
                     />
                     <Button
                       variant="ghost"
-                      size="icon"
+                      size="icon-xs"
                       type="button"
                       onClick={() => setShowCurrentPw(!showCurrentPw)}
-                      className="absolute right-xs top-1/2 -translate-y-1/2 size-[28px] text-muted-foreground hover:text-foreground"
+                      className="absolute right-xs top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                       aria-label={showCurrentPw ? "Hide password" : "Show password"}
                     >
                       {showCurrentPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
@@ -358,10 +357,10 @@ export default function GeneralSettingsPage() {
                       />
                       <Button
                         variant="ghost"
-                        size="icon"
+                        size="icon-xs"
                         type="button"
                         onClick={() => setShowNewPw(!showNewPw)}
-                        className="absolute right-xs top-1/2 -translate-y-1/2 size-[28px] text-muted-foreground hover:text-foreground"
+                        className="absolute right-xs top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         aria-label={showNewPw ? "Hide password" : "Show password"}
                       >
                         {showNewPw ? <EyeOff className="size-[14px]" /> : <Eye className="size-[14px]" />}
@@ -401,9 +400,7 @@ export default function GeneralSettingsPage() {
                 {/* 2FA */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-sm">
-                    <div className="size-[36px] rounded-lg bg-success-subtle flex items-center justify-center">
-                      <Shield className="size-[18px] text-success" />
-                    </div>
+                    <Thumbnail type="icon" color="success" icon={<Shield className="size-[18px]" />} />
                     <div>
                       <p className="sp-body-semibold text-foreground">Two-Factor Authentication</p>
                       <p className="sp-caption text-muted-foreground mt-2xs">Add an extra layer of security to your account</p>
@@ -416,7 +413,7 @@ export default function GeneralSettingsPage() {
                   />
                 </div>
                 {twoFactorEnabled && (
-                  <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-success-subtle border border-success-border/20 text-success-subtle-foreground">
+                  <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-success-subtle border border-success-border text-success-subtle-foreground">
                     <Shield className="size-[14px] shrink-0" />
                     <p className="sp-caption">2FA is active via authenticator app. Last verified 2 days ago.</p>
                   </div>
@@ -428,9 +425,7 @@ export default function GeneralSettingsPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <Clock className="size-[18px] text-primary" />
-                  </div>
+                  <Thumbnail type="icon" color="primary" icon={<Clock className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">Active Sessions</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">{sessions.length} devices logged in</p>
@@ -450,14 +445,12 @@ export default function GeneralSettingsPage() {
                   <div key={session.id}>
                     <div className="flex items-center justify-between py-md">
                       <div className="flex items-center gap-sm">
-                        <div className="size-[36px] rounded-lg bg-muted flex items-center justify-center">
-                          <session.icon className="size-[18px] text-muted-foreground" />
-                        </div>
+                        <Thumbnail type="icon" icon={<session.icon className="size-[18px] text-muted-foreground" />} />
                         <div>
                           <div className="flex items-center gap-xs">
                             <p className="sp-body-semibold text-foreground">{session.device}</p>
                             {session.current && (
-                              <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-success-subtle text-success-subtle-foreground border border-success-border/20 sp-caption font-medium">
+                              <span className="inline-flex items-center gap-xs px-sm py-3xs rounded-full bg-success-subtle text-success-subtle-foreground border border-success-border sp-caption font-medium">
                                 <span className="size-[5px] rounded-full bg-success" />
                                 This device
                               </span>
@@ -472,7 +465,7 @@ export default function GeneralSettingsPage() {
                         <Button
                           variant="ghost"
                           size="xs"
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className="text-destructive hover:text-destructive hover:bg-destructive-subtle"
                           onClick={() => setRevokeDialog(session.id)}
                           aria-label="Revoke session"
                         >
@@ -529,7 +522,7 @@ export default function GeneralSettingsPage() {
                       <Label
                         key={opt.value}
                         htmlFor={`theme-${opt.value}`}
-                        className="flex flex-col items-center gap-sm rounded-xl border border-border/60 dark:border-border-subtle p-lg cursor-pointer hover:bg-muted/50 has-[button[data-state=checked]]:border-primary has-[button[data-state=checked]]:bg-primary/5 transition-colors"
+                        className="flex flex-col items-center gap-sm rounded-xl border border-border dark:border-border-subtle p-lg cursor-pointer hover:bg-surface-raised has-[button[data-state=checked]]:border-primary has-[button[data-state=checked]]:bg-primary-10 transition-colors"
                       >
                         <opt.icon className="size-[20px] text-muted-foreground" />
                         <RadioGroupItem value={opt.value} id={`theme-${opt.value}`} className="sr-only" />
@@ -575,14 +568,14 @@ export default function GeneralSettingsPage() {
             </DCard>
 
             {/* Danger Zone */}
-            <DCard className="!border-destructive/30">
+            <DCard className="!border-destructive-border">
               <h3 className="sp-h4 text-destructive flex items-center gap-xs">
                 <AlertTriangle className="size-[16px]" />
                 Danger Zone
               </h3>
               <p className="sp-caption text-muted-foreground mt-3xs mb-lg">Irreversible actions</p>
               <div className="flex flex-col gap-md">
-                <div className="flex items-center justify-between rounded-xl border border-border/60 dark:border-border-subtle p-lg">
+                <div className="flex items-center justify-between rounded-xl border border-border dark:border-border-subtle p-lg">
                   <div>
                     <p className="sp-body-semibold text-foreground">Export Data</p>
                     <p className="sp-caption text-muted-foreground mt-2xs">Download all your data as a JSON file</p>
@@ -591,7 +584,7 @@ export default function GeneralSettingsPage() {
                     <Download className="size-[14px] mr-xs" /> Export
                   </Button>
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-destructive/30 p-lg">
+                <div className="flex items-center justify-between rounded-xl border border-destructive-border p-lg">
                   <div>
                     <p className="sp-body-semibold text-foreground">Delete Account</p>
                     <p className="sp-caption text-muted-foreground mt-2xs">Permanently delete your account and all data</p>
@@ -616,7 +609,7 @@ export default function GeneralSettingsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleDelete}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleDelete}>
                 Delete Everything
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -634,7 +627,7 @@ export default function GeneralSettingsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleRevokeSession}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleRevokeSession}>
                 Revoke Session
               </AlertDialogAction>
             </AlertDialogFooter>

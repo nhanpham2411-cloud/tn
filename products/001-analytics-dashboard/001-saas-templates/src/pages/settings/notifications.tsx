@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -159,7 +160,7 @@ export default function NotificationsPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Changes may not be saved.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -175,13 +176,13 @@ export default function NotificationsPage() {
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">Notifications</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
           <div className="flex items-center gap-sm shrink-0">
-            <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+            <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
               <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
             </Button>
             <Button onClick={handleSavePreferences} disabled={saving}>
@@ -207,9 +208,7 @@ export default function NotificationsPage() {
             {/* Delivery Preferences */}
             <DCard>
               <div className="flex items-center gap-sm mb-lg">
-                <div className="size-[36px] rounded-lg bg-muted flex items-center justify-center">
-                  <Clock className="size-[18px] text-muted-foreground" />
-                </div>
+                <Thumbnail type="icon" icon={<Clock className="size-[18px] text-muted-foreground" />} />
                 <div>
                   <h3 className="sp-h4 text-foreground">Delivery Preferences</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">Control when and how you receive notifications</p>
@@ -228,7 +227,7 @@ export default function NotificationsPage() {
                         <SelectItem value="weekly">Weekly digest</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="sp-caption text-muted-foreground/60">
+                    <p className="sp-caption text-muted-foreground">
                       {digestFrequency === "realtime" ? "You'll receive emails immediately" : `Notifications grouped into a ${digestFrequency} summary`}
                     </p>
                   </div>
@@ -248,10 +247,10 @@ export default function NotificationsPage() {
                         <Input type="time" value={quietEnd} onChange={(e) => setQuietEnd(e.target.value)} className="flex-1" />
                       </div>
                     ) : (
-                      <p className="sp-caption text-muted-foreground/60 mt-xs">Push notifications sent 24/7</p>
+                      <p className="sp-caption text-muted-foreground mt-xs">Push notifications sent 24/7</p>
                     )}
                     {quietHoursEnabled && (
-                      <p className="sp-caption text-muted-foreground/60">Push notifications muted during this window</p>
+                      <p className="sp-caption text-muted-foreground">Push notifications muted during this window</p>
                     )}
                   </div>
                 </div>
@@ -262,9 +261,7 @@ export default function NotificationsPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <Mail className="size-[18px] text-primary" />
-                  </div>
+                  <Thumbnail type="icon" color="primary" icon={<Mail className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">Email Notifications</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">{emailCount} of {settings.length} enabled</p>
@@ -304,9 +301,7 @@ export default function NotificationsPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <Bell className="size-[18px] text-primary" />
-                  </div>
+                  <Thumbnail type="icon" color="primary" icon={<Bell className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">Push Notifications</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">{pushCount} of {settings.length} enabled</p>
@@ -323,7 +318,7 @@ export default function NotificationsPage() {
                 </Button>
               </div>
               {quietHoursEnabled && (
-                <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-muted/50 border border-border/40 text-muted-foreground mb-md">
+                <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-muted border border-border-subtle text-muted-foreground mb-md">
                   <Clock className="size-[14px] shrink-0" />
                   <p className="sp-caption">Quiet hours active: push notifications muted {quietStart} – {quietEnd}</p>
                 </div>
@@ -352,9 +347,7 @@ export default function NotificationsPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-warning-subtle flex items-center justify-center">
-                    <Smartphone className="size-[18px] text-warning" />
-                  </div>
+                  <Thumbnail type="icon" color="warning" icon={<Smartphone className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">In-App Notifications</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">{inAppCount} of {settings.length} enabled</p>
@@ -394,9 +387,7 @@ export default function NotificationsPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-success-subtle flex items-center justify-center">
-                    <Webhook className="size-[18px] text-success" />
-                  </div>
+                  <Thumbnail type="icon" color="success" icon={<Webhook className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">Webhooks</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">Send real-time notifications to external services</p>
@@ -421,7 +412,7 @@ export default function NotificationsPage() {
                         value={webhookUrl}
                         onChange={(e) => setWebhookUrl(e.target.value)}
                       />
-                      <p className="sp-caption text-muted-foreground/60">
+                      <p className="sp-caption text-muted-foreground">
                         We'll send POST requests with JSON payloads to this URL
                       </p>
                     </div>

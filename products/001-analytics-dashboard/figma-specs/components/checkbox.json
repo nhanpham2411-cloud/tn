@@ -15,6 +15,8 @@
         "Show Label": ["Yes", "No"]
       },
 
+      "fixedIcons": true,
+
       "base": {
         "layout": "horizontal",
         "primaryAlign": "center",
@@ -23,6 +25,8 @@
         "indicator": {
           "width": 16,
           "height": 16,
+          "widthVar": "checkbox",
+          "heightVar": "checkbox",
           "radius": "sm",
           "clipsContent": true
         },
@@ -37,20 +41,20 @@
 
       "variantStyles": {
         "Value=Unchecked": {},
-        "Value=Checked": { "fill": "primary", "stroke": "primary", "iconLeft": true, "iconLeftName": "Check" },
-        "Value=Indeterminate": { "fill": "primary", "stroke": "primary", "iconLeft": true, "iconLeftName": "Minus" },
+        "Value=Checked": { "fill": "primary", "stroke": "primary-border", "iconLeft": true, "iconLeftName": "Check" },
+        "Value=Indeterminate": { "fill": "primary", "stroke": "primary-border", "iconLeft": true, "iconLeftName": "Minus" },
 
         "State=Default": {},
-        "State=Hover": { "stroke": "primary", "strokeOpacity": 0.6 },
+        "State=Hover": { "stroke": "primary-border" },
         "State=Focus": { "focusRing": "ring" },
         "State=Disabled": { "opacity": 0.5 },
 
-        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary" },
-        "Value=Indeterminate,State=Hover": { "fill": "primary", "stroke": "primary" },
-        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
-        "Value=Indeterminate,State=Focus": { "fill": "primary", "stroke": "primary", "focusRing": "ring" },
-        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 },
-        "Value=Indeterminate,State=Disabled": { "fill": "primary", "stroke": "primary", "opacity": 0.5 },
+        "Value=Checked,State=Hover": { "fill": "primary", "stroke": "primary-border" },
+        "Value=Indeterminate,State=Hover": { "fill": "primary", "stroke": "primary-border" },
+        "Value=Checked,State=Focus": { "fill": "primary", "stroke": "primary-border", "focusRing": "ring" },
+        "Value=Indeterminate,State=Focus": { "fill": "primary", "stroke": "primary-border", "focusRing": "ring" },
+        "Value=Checked,State=Disabled": { "fill": "primary", "stroke": "primary-border", "opacity": 0.5 },
+        "Value=Indeterminate,State=Disabled": { "fill": "primary", "stroke": "primary-border", "opacity": 0.5 },
 
         "Show Label=Yes": {},
         "Show Label=No": { "hideLabel": true }
@@ -89,6 +93,7 @@
 
       "designTokens": [
         { "token": "--primary", "value": "violet-600", "description": "Checked background and indeterminate background" },
+        { "token": "--primary-border", "value": "violet-500", "description": "Hover border and checked/indeterminate border" },
         { "token": "--primary-foreground", "value": "white", "description": "Check and minus icon color" },
         { "token": "--border-strong", "value": "zinc-400", "description": "Unchecked border" },
         { "token": "--input", "value": "transparent", "description": "Unchecked background" },
@@ -107,9 +112,9 @@
       "figmaMapping": [
         { "figma": "Indicator", "value": "16×16 rounded-sm", "code": "Checkbox Root", "codeValue": "size-md rounded-sm border border-border-strong bg-input" },
         { "figma": "Value=Unchecked", "value": "bg-input, border-strong", "code": "unchecked", "codeValue": "No icon" },
-        { "figma": "Value=Checked", "value": "bg-primary, border-primary, Check icon", "code": "checked={true}", "codeValue": "data-[state=checked]:bg-primary" },
-        { "figma": "Value=Indeterminate", "value": "bg-primary, border-primary, Minus icon", "code": "checked=\"indeterminate\"", "codeValue": "data-[state=indeterminate]:bg-primary" },
-        { "figma": "State=Hover", "value": "border-primary/60", "code": "hover:", "codeValue": "hover:border-primary/60" },
+        { "figma": "Value=Checked", "value": "bg-primary, border-primary-border, Check icon", "code": "checked={true}", "codeValue": "data-[state=checked]:bg-primary" },
+        { "figma": "Value=Indeterminate", "value": "bg-primary, border-primary-border, Minus icon", "code": "checked=\"indeterminate\"", "codeValue": "data-[state=indeterminate]:bg-primary" },
+        { "figma": "State=Hover", "value": "border-primary-border", "code": "hover:", "codeValue": "hover:border-primary-border" },
         { "figma": "State=Focus", "value": "ring 3px ring-ring", "code": "focus-visible:", "codeValue": "focus-visible:ring-[3px] ring-ring" },
         { "figma": "State=Disabled", "value": "opacity 50%", "code": "disabled", "codeValue": "disabled:opacity-50" },
         { "figma": "Show Label=Yes", "value": "Label text visible", "code": "children", "codeValue": "<Label>Accept terms</Label>" },

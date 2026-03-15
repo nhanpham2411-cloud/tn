@@ -17,6 +17,70 @@ The **web React SaaS app** (`products/{NNN}/001-saas-templates/`) is the **singl
 
 Before writing or editing any JSON spec, **always check the corresponding web source code first** (components in `src/components/ui/`, pages in `src/pages/`, styles in `src/index.css`).
 
+### ⛔ ABSOLUTE RULE — 100% Foundation Token Binding (common-mistake #177)
+
+**MỌI visual property** trên TOÀN BỘ hệ thống — web React, Figma JSON, plugin output — PHẢI 100% bind từ **foundation tokens**. TUYỆT ĐỐI KHÔNG:
+- ❌ Raw hex/rgb/hsl (`#7C3AED`, `rgb(124, 58, 237)`)
+- ❌ Tailwind color scale names (`bg-violet-600`, `text-zinc-400`, `border-amber-500`)
+- ❌ Hardcoded pixel values (`gap-[12px]`, `p-[16px]`)
+- ❌ Manual font override (`node.fontSize = 14`, `node.fontName = ...`)
+- ❌ Manual effect creation (`type: 'DROP_SHADOW'` thay vì effect style)
+
+**PHẢI dùng**:
+- ✅ **Web**: Semantic tokens (`text-primary`, `bg-card`, `border-border`, `gap-xs`, `rounded-lg`, `sp-body-semibold`)
+- ✅ **JSON**: Token names (`"fill": "primary"`, `"stroke": "border"`, `"gap": "xs"`, `"textStyle": "SP/Body"`)
+- ✅ **Plugin**: Binding functions (`bindFloat()`, `setTextStyleIdAsync()`, `setEffectStyleIdAsync()`, `setBoundVariableForPaint()`)
+
+**Foundation = SINGLE SOURCE OF TRUTH**. Nếu cần token chưa có → TẠO MỚI trong foundation (`index.css` → Figma variables) TRƯỚC, rồi mới dùng. KHÔNG BAO GIỜ bypass bằng raw value.
+
+### Universal Token Binding Rule (Variables + Text Styles + Effects)
+
+**MỌI UI element** tạo bởi EITHER plugin (HTML-to-Figma hoặc Generate SaaS Template) PHẢI bind design tokens hoàn toàn:
+
+#### 1. Variable Tokens (Gap, Padding, Radius)
+
+**MỌI frame** PHẢI bind variable token cho:
+- **Gap** (`itemSpacing`) — kể cả 0px → `spacing/none`
+- **Padding** (`paddingTop/Right/Bottom/Left`) — kể cả 0px → `spacing/none`
+- **Border radius** (`cornerRadius`, `topLeftRadius`, etc.) — kể cả 0px → `border radius/none`
+
+KHÔNG BAO GIỜ dùng raw number assignment (`frame.itemSpacing = 6`). LUÔN qua binding function:
+- **HTML-to-Figma**: `bindSpacing(node, field, token, px)` / `bindRadius(node, field, token, px)` — auto-resolve px → token name
+- **Generate SaaS Template**: `bindFloat(node, field, varName, px)` / `_bindSp(node, px)` / `_bindRad(node, px)`
+
+#### 2. Text Style Binding (No Raw Font Override)
+
+**MỌI text node** PHẢI bind text style via `setTextStyleIdAsync(styleId)`.
+- **KHÔNG BAO GIỜ** override `node.fontSize` / `node.fontName` sau binding — sẽ detach style từ Figma
+- Nếu cần font khác → chọn text style khác từ foundation (`SP/Caption` 12px thay vì `SP/Overline` 10px)
+- Áp dụng cho: showcase text (component name, section headers), foundation docs labels, installation code blocks
+
+#### 3. Effect Style Binding (Rings, Shadows, Glows)
+
+**MỌI decorative effect** PHẢI bind effect style:
+- **Ring effects** (focus state) → `setEffectStyleIdAsync("Ring/default")` (KHÔNG manual DROP_SHADOW)
+- **Shadow effects** (card elevation) → `setEffectStyleIdAsync("Shadow/sm")`
+- **Glow effects** → `setEffectStyleIdAsync("Glow/primary")`
+- Effect styles PHẢI tồn tại trong Figma (create via `foundation-effects.json`)
+
+#### 4. Color Token Scope (Border ≠ Fill ≠ Text)
+
+**MỌI `stroke` property** trong JSON PHẢI dùng token có Figma scope `STROKE_COLOR`:
+- Border tokens (suffix `-border`): `border-strong`, `primary-border`, `destructive-border`, `toast-border`, `success-border`, `warning-border`
+- **KHÔNG BAO GIỜ** dùng fill/text token cho stroke: ~~`"stroke": "primary"`~~, ~~`"stroke": "foreground"`~~, ~~`"stroke": "destructive"`~~
+- Pattern: `-border` token = color scale nhẹ hơn fill 1 bậc (VD: `primary` = violet-600 → `primary-border` = violet-500)
+- Nếu thiếu border token → tạo mới trong CSS (`--primary-border`) + foundation-variables.json (scope `STROKE_COLOR`) + colors.json docs
+
+Web tương ứng: `border-primary-border` ✅, `border-primary` ❌ (dùng fill token cho border CSS)
+
+**(common-mistake #167)**
+
+#### Code Paths (All Apply)
+
+Binding rules cover: component gen, showcase frames (header/grid/installation), foundation docs, icon assets, fallback frames, Sonner toasts, indicator styling — **MỌI thứ plugin tạo**.
+
+**(common-mistake #153, #159, #167, #168)**
+
 ### Figma Component = Web Variant 1:1 Principle
 
 A Figma ComponentSet is a **flat matrix** of all property combinations. Each **Figma variant** (one cell in the matrix) must be **visually identical** to the web component rendered with the same property values.
@@ -412,6 +476,7 @@ Use `variantRestrictions` to filter out invalid combinations from the full cross
   - `iconLeftName: "Plus"` — Lucide icon name (must exist in Icons foundation)
   - `iconRightName: "ChevronRight"` — Lucide icon name
   - Setting only `iconLeftName`/`iconRightName` WITHOUT `iconLeft: true`/`iconRight: true` will NOT render icons
+- `fixedIcons: true` — **top-level** (sibling of `base`). Prevents INSTANCE_SWAP property creation for icon instances. Use for indicator components where icons represent STATE (Checkbox Check/Minus) — designer must NOT swap these. Omit for swappable icons (Toggle, Button).
 - `hideLabel: true` — hides the text node (for icon-only variants, or image-fill variants like Avatar). **Do NOT use** for form components (Input/Select/Textarea) — their label IS the placeholder/value text and must be visible.
 - `imageUrl: "https://..."` — fetches external image and sets as IMAGE fill on the component frame. URL must be **direct** (no redirects) — Figma plugin sandbox blocks cross-domain redirects. Pre-fetched by UI before sending to plugin.
 - `clipsContent: true` — clips content to frame shape. **TWO use cases**: (1) Avatar/rounded cards with image — clip for circular/rounded shape. (2) **Components with `focusRing`** — Figma requires clip content enabled for DROP_SHADOW effect styles to render. Set in `base`. Plugin reads from spec (`!!merged.clipsContent`), defaults to `false`. **Rule: if component has ANY `focusRing` in variantStyles → `base` MUST have `"clipsContent": true`**.
@@ -473,7 +538,7 @@ For components that need structured multi-section content (Card, Dialog, Alert D
 **Child types**:
 - `"text"` — Text node with `textStyle`, `textContent`, `textFill`
 - `"frame"` — Auto-layout frame with nested `children`. Supports `layout`, `primaryAlign`, `counterAlign`, `gap`, `width`, `height`, `radius`, `fill`, `stroke`
-- `"icon"` — Icon instance with `iconName`, `iconSize`, `iconFill`
+- `"icon"` — Icon instance with `iconName`, `iconSize`, `iconFill`. Add `"skipIconFill": true` for brand icons with gradient fills that must NOT be overridden (e.g., ShopPulse logo mark)
 - `"divider"` — 1px separator line with `fill` (defaults to `"border"`)
 - `"instance"` — Instance of an existing ComponentSet. See **Instance children rule** below.
 
@@ -526,8 +591,9 @@ When an instance contains **nested sub-instances** (2+ levels deep), use `overri
 | `overrides.iconSwap` | Swap icon instances by name | `{ "IconNodeName": "NewIconName" }` |
 | `overrides.boolean` | Toggle boolean properties | `{ "PropertyName": true }` |
 | `overrides.text` | Change direct text nodes | `{ "TextNodeName": "new value" }` |
+| `overrides.imageOverrides` | Change image fill on nested nodes | `{ "NodeName": "https://image-url" }` |
 
-**How it works**: Plugin uses `findAll()` (recursive) to locate nodes by name, then applies changes. `nestedVariants` finds INSTANCE nodes → calls `setProperties()`. `nested` finds parent nodes → finds TEXT nodes inside.
+**How it works**: Plugin uses `findAll()` (recursive) to locate nodes by name, then applies changes. `nestedVariants` finds INSTANCE nodes → calls `setProperties()`. `nested` finds parent nodes → finds TEXT nodes inside. `imageOverrides` finds nodes by name (INSTANCE/FRAME/RECTANGLE) → sets IMAGE fill with FILL scaleMode. UI `collectImageUrls()` also scans `imageOverrides` values for pre-fetch.
 
 **Example — App Header with Navigation Menu**:
 
@@ -575,6 +641,18 @@ After (CORRECT — component instance):
 ```json
 { "name": "Cancel", "type": "instance", "component": "Button", "variants": { "Variant": "Outline", "Size": "Small", "State": "Default", "Icon": "No Icon" }, "textOverrides": { "Label": "Cancel" } }
 ```
+
+### Raw Element → DS Component (common-mistake #186-187)
+
+EVERY visual element in web AND JSON MUST use DS components — including small indicators:
+- Dots/indicators → `<BadgeDot>` / Badge instance `Type=Dot`
+- Text labels → `<Badge>` / Badge instance
+- Counts → `<BadgeRound>` / Badge instance `Type=Round`
+- Icons → `<Thumbnail>` or icon children
+
+JSON MUST mirror web component usage 1:1. If web uses `<BadgeDot>`, JSON uses Badge instance `Type=Dot`.
+
+**Why**: Components ensure consistency, bind variables (color, size), support dark mode, and keep Figma/web in sync. Manual frames/text create design drift and make future updates harder.
 
 ### Instance Swap Properties (Swappable Sub-components)
 
@@ -655,6 +733,67 @@ Table, Calendar, DatePicker, Tabs, Input OTP, Navigation Menu, Breadcrumb, Pagin
 | Accordion items (state × type × end item) | `Accordion Item` | `accordion.json` (index 0, same file as Accordion) | Accordion |
 | Alert Dialog icon circle | Icon instance (from Icons foundation) | — | Alert Dialog |
 
+### No Boolean Property Pattern — Elements Must Use `children` + `showWhen`
+
+**CRITICAL RULE**: ComponentSet properties CANNOT be boolean flags. When a variant doesn't include a feature (icon, prefix, suffix, etc.), **that element must NOT EXIST in the variant** — not hidden, but absent from the DOM.
+
+**WRONG** ❌ — using `iconLeft`/`iconRight` boolean flags:
+```json
+"base": {
+  "iconLeft": false,  // WRONG — element still exists, just invisible
+  "iconLeftName": "Search"
+},
+"Type=None": {
+  "iconLeft": false   // Hidden, but node still takes space or clips
+}
+```
+
+**CORRECT** ✅ — using `children` array with `showWhen`:
+```json
+"base": {
+  "children": [
+    { "name": "Icon", "type": "icon", "iconName": "Search", "showWhen": "Left=Icon" },
+    { "name": "Label", "type": "text", "textContent": "...", "fillWidth": true }
+  ]
+},
+"Left=None": {
+  // Icon child NOT in children array or use showWhen: "Left=Icon" to hide
+}
+```
+
+**Applies to**: Input (Left/Right icon options), Dropdown Item (with/without icon), Context Menu Item (conditional icons), any component where a visual element is optional per variant.
+
+**Why**: Figma ComponentSet is a **flat property matrix**. When a property value doesn't visually include a feature, creating the element and hiding it causes:
+1. Layout issues (hidden elements still occupy space in auto-layout)
+2. Overlapping/clipping with adjacent elements
+3. Variant visual inconsistency across Figma
+
+**Solution**: Use `children` array with `showWhen` conditions so elements are created/destroyed per variant, not just visibility-toggled.
+
+### Plugin Icon Upsert — MUST Swap Component + NO Hidden Instances
+
+**CRITICAL**: Plugin upsert cho native `iconLeft`/`iconRight` flow (indicator components như Checkbox, Toggle) có 2 quy tắc:
+
+1. **SWAP on upsert**: Khi "Icon Left"/"Icon Right" instance ĐÃ TỒN TẠI → plugin PHẢI so sánh `mainComponent.id` với `findIconComponent(_iconLeftName)` → nếu khác thì `swapComponent()`. KHÔNG chỉ toggle visibility + recolor.
+
+2. **NO hidden instances**: Khi variant KHÔNG cần icon (`_showIconLeft = false`) → **XÓA** node (`leftExist.remove()`). KHÔNG BAO GIỜ tạo hidden instance cho "swap property consistency". Full variant model = mỗi variant chứa đúng elements cần thiết.
+
+**Applies to**: Checkbox (Check/Minus per Value), Toggle (always icon), bất kỳ indicator component dùng `iconLeft`/`iconRight` với icon name thay đổi giữa variants.
+
+### No Mixed Native Icon + Children Array
+
+**CRITICAL**: Khi variant dùng `children` array chứa icon element → KHÔNG thêm native `iconRight`/`iconLeft` flags cùng lúc. Chọn MỘT approach:
+
+| Scenario | Approach |
+|----------|----------|
+| Base dùng `children`, variant KHÔNG có addon | Dùng `children` (override full array) |
+| Base dùng `children`, variant CÓ addon (`textLeft`/`textRight`) | Addon disable children → dùng native `iconRight`/`iconLeft` |
+| Base dùng native icon, tất cả variants cần icon | Dùng native `iconLeft: true` + `iconLeftName` |
+
+**Exception duy nhất**: Addon variants (`textLeft`/`textRight`) tự động disable `children` (plugin rule: `_hasChildren = !!(merged.children) && !_hasAddon`). Khi addon active → PHẢI dùng native icon flow.
+
+---
+
 ### Menu/Overlay Component Pattern (Dropdown, Context Menu, Command)
 
 Menu components share a common structure. Follow these rules to avoid recurring mistakes:
@@ -697,7 +836,14 @@ Optional `showcase` object controls which sections appear in the auto-generated 
 
 **Section keys**: `header`, `component`, `explore`, `installation`, `examples`, `props`, `designTokens`, `bestPractices`, `figmaMapping`, `accessibility`, `related`
 
-**Standard rule**: Every component JSON MUST set `showcase.sections` to `["header", "component", "installation"]`. The Figma plugin only generates these 3 sections:
+**3 tiers** (common-mistake #154):
+1. **Standard components** (có `installation` data): `["header", "component", "installation"]` — BẮT BUỘC cả 3 sections
+2. **Sub-components** (item/cell, KHÔNG có `installation`): `["header", "component"]` — chỉ 2 sections (VD: Dropdown Item, Cell Row, Cell Header)
+3. **Slot components** (internal): `[]` — không tạo showcase
+
+**CRITICAL**: Khi JSON có field `"installation"` → `showcase.sections` PHẢI chứa `"installation"`. Thiếu = plugin skip section → Figma output thiếu import code card.
+
+The Figma plugin only generates these 3 sections:
 1. **header** — component name, category, description
 2. **component** — ComponentSet grid (all variants from Explore Behavior)
 3. **installation** — import code card
@@ -751,9 +897,10 @@ Components must be generated in **dependency order** — leaf components first, 
 | Empty/wrong text on component | Plugin reads `merged.textContent`, NOT `merged.text`. Always use `"textContent"` in JSON base and variantStyles. |
 | Text style not applied | `textStyle` must be exact Figma text style name (`"SP/Body"`), not CSS class (`"sp-paragraph-sm"`, `"typo-paragraph-sm"`). Check `foundation-text-styles.json` for valid names. |
 | Form component shows no placeholder | `hideLabel: true` suppresses the label text node entirely. For Input/Select/Textarea the label IS the placeholder — never use `hideLabel` on form components. |
-| Icon variant not rendering | Setting only `iconLeftName: "Search"` is insufficient. Must ALSO set `iconLeft: true` — plugin checks boolean flag `merged.iconLeft` before rendering. Same for `iconRight`. |
+| Icon variant not rendering | **Three approaches**: (1) **Always-present swappable icons** (ALL variants, designer can swap): use native `iconLeft: true` + `iconLeftName: "Search"` in `base` → creates INSTANCE_SWAP property. (2) **Conditional icons** (only some variants, e.g. Tabs Icon=Yes, Nav Menu Type=Trigger): use `children` array with `"type": "icon"` + `showWhen`. NEVER native flags for conditional icons. (3) **Fixed non-swappable icons** (ALL variants, icon never changes, e.g. Select's ChevronDown, Combobox's ChevronsUpDown): use `children` array with `"type": "icon"` (no `showWhen`) → NO INSTANCE_SWAP property created. Avoids polluting ComponentSet with swap properties for icons that should never be swapped. |
 | Gap hardcoded 8px without variable | Plugin defaults `gap` to `8` (raw number) when omitted. Set `"gap": 0` explicitly for no-gap components (Input/Textarea). Use string tokens (`"xs"`, `"sm"`) for variable binding. |
-| `children` array breaks icon+label flow | Plugin rendering paths are **mutually exclusive**: `children`, `addon`, `indicator`, and default icon+label flow. When `children` is present, the default text label (`textContent`) and icon (`iconLeft`/`iconRight`) are **completely skipped**. **Two valid approaches**: (1) For items with simple always-on icons (e.g. Tabs Item, Nav Menu Item) → use `iconLeft`/`iconRight` in variantStyles. (2) For items with conditional icons per variant (e.g. Dropdown Item, Context Menu Item) → use `children` array with `"type": "icon"` + `showWhen` + `"type": "text"` for label. Parent/group components always use `children` with `"type": "instance"`. |
+| `children` array breaks icon+label flow | Plugin rendering paths are **mutually exclusive**: `children`, `addon`, `indicator`, and default icon+label flow. When `children` is present, the default text label (`textContent`) and icon (`iconLeft`/`iconRight`) are **completely skipped**. **When to use `children`**: (1) **Conditional icons** per variant (Tabs Icon=Yes, Nav Menu Type=Trigger, Dropdown Item) → `children` + `"type": "icon"` + `showWhen`. (2) **Fixed non-swappable icons** (Select ChevronDown, Combobox ChevronsUpDown) → `children` + `"type": "icon"` (no showWhen, no INSTANCE_SWAP). (3) Parent/group → `children` + `"type": "instance"`. **When to use native icon+label flow**: ONLY when icons are **always present AND designer-swappable** (e.g. SearchBox search icon, Toggle icon) → `iconLeft`/`iconRight` + name in `base` → creates INSTANCE_SWAP. |
+| Stale INSTANCE_SWAP properties after JSON restructure | When switching a component from native icon+label flow to `children` array (e.g. Select removing `iconRight`/`iconRightName`), the old INSTANCE_SWAP properties ("Icon Left", "Icon Right") persist on the ComponentSet even after regeneration — because plugin upsert doesn't auto-remove component properties that no longer have referencing instances. **Plugin step 3d** auto-cleans: after step 3c (icon swap linking), it scans all INSTANCE_SWAP properties → checks if ANY instance in ANY variant references that property key → deletes unreferenced ones. If stale properties remain after regen, re-run plugin on the same component. |
 | Frame child defaults to FILL width | Plugin line 2274: `frm.layoutSizingHorizontal = cs.widthMode === "fixed" ? "FIXED" : cs.widthMode === "hug" ? "HUG" : "FILL"`. Frame children without `widthMode` default to **FILL**. Fixed-size elements (icon placeholders 16×16, handle bars) MUST set `"widthMode": "fixed"` to prevent stretching to parent width. |
 | Instance child defaults to FIXED width | Plugin line 2502: `_inst.layoutSizingHorizontal = cs.fillWidth ? "FILL" : cs.widthMode === "hug" ? "HUG" : "FIXED"`. Instance children without `fillWidth` or `widthMode` default to **FIXED**. Buttons that should hug content MUST set `"widthMode": "hug"`. |
 | Text children ignore padding | Plugin `_processChildren` for `type: "text"` (line 2225-2236) only sets text content, fill, and sizing. `paddingX`/`paddingY` on text children are **silently ignored**. To add padding around text, wrap it in a `"type": "frame"` child with `layout` and put the text as a nested child. |
@@ -799,7 +946,7 @@ These are the **13 proven component archetypes** extracted from working JSON spe
 
 **Key rules**:
 - `textContent` + `textFill` + `textStyle` for label (NO `children` array)
-- `iconLeft`/`iconRight` boolean + name for icons
+- `iconLeft`/`iconRight` boolean + name for **always-present** icons (all variants). **Conditional icons** (some variants only) → use `children` + `showWhen`
 - `hideLabel: true` for icon-only variants
 - `clipsContent: true` when ANY variant has `focusRing`
 - Compound keys for cross-axis overrides (`Variant=X,State=Y`)
@@ -1200,10 +1347,30 @@ These are the **13 proven component archetypes** extracted from working JSON spe
 **Key rules**:
 - `position: "absolute"` + `x`/`y` coordinates
 - MUST set `widthMode: "fixed"` + `heightMode: "fixed"` (prevent auto-stretch)
-- `constraints`: `MIN` (pin to left/top), `MAX` (pin to right/bottom), `CENTER`, `STRETCH`
+- `constraints`: `MIN` (pin to left/top), `MAX` (pin to right/bottom), `CENTER`, `STRETCH`, `SCALE` (proportional)
+- `SCALE` constraint: element width/position scale proportionally when parent resizes — use for Progress indicators, proportional fills
+- Parent MUST have auto-layout (`layout: "horizontal"/"vertical"`) — Figma requires `layoutMode !== NONE` for absolute children
 - Parent MUST have `heightMode: "fixed"` for absolute children
+- Plugin re-applies `resize()` AFTER `layoutPositioning = "ABSOLUTE"` to prevent auto-layout override — applies to ALL node types: frames, instances (all 3 code paths: new/swap/update), icons, text (common-mistake #149, #185)
 - variantStyles overrides need FULL children array (each value position has different thumb x)
 - Focus state adds `effectStyleName: "Ring/default"` to thumb elements
+
+**Progress bar** (proportional indicator with SCALE):
+```json
+{
+  "name": "Track", "type": "frame", "layout": "horizontal",
+  "height": 6, "heightMode": "fixed", "widthMode": "fill",
+  "radius": "full", "fill": "muted", "clipsContent": true,
+  "children": [
+    { "name": "Indicator 50", "type": "frame",
+      "width": 160, "height": 6, "heightMode": "fixed",
+      "fill": "primary", "radius": "full",
+      "position": "absolute", "x": 0, "y": 0,
+      "constraints": { "horizontal": "SCALE", "vertical": "STRETCH" },
+      "showWhen": "Value=50" }
+  ]
+}
+```
 
 ---
 
@@ -1335,6 +1502,83 @@ These are the **13 proven component archetypes** extracted from working JSON spe
 - `clipsContent: true` clips image to rounded shape
 - UI pre-fetches image bytes before sending to plugin (`_prefetchedImages`)
 
+### Image CORS Compatibility
+
+Plugin UI `fetch()` runs in iframe context — requires CORS headers from image server. Services verified:
+- `cdn.dummyjson.com` ✅ CORS (`Access-Control-Allow-Origin: *`)
+- `avatars.githubusercontent.com` ✅ CORS
+- `i.pravatar.cc` ❌ no CORS (needs proxy fallback)
+- `ui-avatars.com` ✅ CORS
+
+Plugin UI has `fetchWithCorsProxy()` — tries direct fetch first, falls back to `corsproxy.io` → `api.allorigins.win`. Manifest `allowedDomains` must include proxy domains.
+
+**Check before adding new image service**: `curl -sI <url> | grep access-control`. No header = needs proxy.
+
+### Instance imageUrl + combineAsVariants (common-mistake #189)
+
+`combineAsVariants` resets instance fill overrides. Plugin has post-combine step that re-applies `imageUrl` from spec on instance children. BUT for group parent instances (Item List → Order Item rows), ALWAYS use `overrides.imageOverrides` instead of relying on component base `imageUrl`. `imageOverrides` is more reliable because it runs via `applyComponentOverrides` which targets nodes by name via `findAll`.
+
+Pattern for group instances with custom images:
+
+```json
+{
+  "name": "Row 1",
+  "type": "instance",
+  "component": "Order Item",
+  "variants": { "State": "Default", "Value": "Image" },
+  "fillWidth": true,
+  "overrides": {
+    "imageOverrides": { "Avatar": "https://i.pravatar.cc/80?img=12" }
+  }
+}
+```
+
+---
+
+#### Archetype 14: Branding Panel (standalone showcase-only)
+
+**When**: Component is a standalone branding/illustration panel, used inside layouts but NOT generated as screen. Showcase-only on web DS, JSON for Figma component generation only.
+**Files**: `illustration.json`
+
+```json
+{
+  "name": "Illustration",
+  "properties": { "Type": ["Auth"] },
+  "base": {
+    "layout": "vertical", "primaryAlign": "space-between", "counterAlign": "center",
+    "width": 480, "height": 700, "heightMode": "fixed",
+    "fill": "background", "clipsContent": true,
+    "paddingX": "2xl", "paddingY": "2xl", "gap": "xl",
+    "hideLabel": true,
+    "children": [
+      { "name": "Logo", "type": "instance", "component": "Logo", "variants": { "Type": "Full", "Size": "Default" } },
+      { "name": "Center", "type": "frame", "layout": "vertical", "counterAlign": "center", "gap": "lg", "fillWidth": true,
+        "children": [
+          { "name": "Illustration Placeholder", "type": "frame", "width": 280, "height": 200, "fill": "muted", "radius": "xl", "fillOpacity": 0.3 },
+          { "name": "Heading", "type": "text", "textContent": "Tagline", "textStyle": "SP/H3", "textFill": "foreground" },
+          { "name": "Description", "type": "text", "textContent": "Description text", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+        ]
+      },
+      { "name": "Footer", "type": "frame", "layout": "horizontal", "counterAlign": "center", "gap": "sm", "fillWidth": true,
+        "children": [
+          { "name": "Stat 1", "type": "text", "textContent": "10K+", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+          { "name": "Sep 1", "type": "instance", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+          { "name": "Stat 2", "type": "text", "textContent": "99.9%", "textStyle": "SP/Body Semibold", "textFill": "foreground" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Key rules**:
+- `heightMode: "fixed"` — MUST set explicitly when `height` + `children` both present (common-mistake #heightMode)
+- `clipsContent: true` — clips any overflow from decorative elements
+- Instance children (`Logo`, `Separator`) reference existing ComponentSets
+- `primaryAlign: "space-between"` distributes children vertically
+- This component is NOT used for screen generation (screens → HTML-to-Figma pipeline)
+- `showcase.sections: ["header", "component", "installation"]` — standard 3-section showcase
+
 ---
 
 #### Archetype Summary Table
@@ -1354,8 +1598,11 @@ These are the **13 proven component archetypes** extracted from working JSON spe
 | 11 | Per-side strokes | Borders on specific sides | `input-otp.json` |
 | 12 | Variant restrictions | Invalid property combinations | `app-header.json` |
 | 13 | Image fill | Image variant instead of text | `avatar.json` |
+| 14 | Branding panel | Standalone showcase-only panel | `illustration.json` |
 
 **Combination rule**: Many components use MULTIPLE archetypes. Example: `dialog.json` = #3 (children layout) + #5 (instances) + #6 (swap slot) + #11 (per-side strokes). Identify ALL applicable archetypes before writing JSON.
+
+> **Note**: Screen JSON spec đã bị xóa — Screen component chỉ tồn tại trên web DS page (showcase layout structure). Actual screens → HTML-to-Figma pipeline. KHÔNG tạo JSON spec cho Screen. Xem common-mistake #157.
 
 ---
 
@@ -1442,13 +1689,14 @@ Kiểm tra cấu trúc JSON có đúng format plugin yêu cầu:
 | 3 | `radius` dùng **string token** (`"lg"`, `"full"`) | Số → không bind variable |
 | 4 | `textContent` (KHÔNG phải `text`) | `text` tạo node trống |
 | 5 | `textStyle` = tên Figma (`"SP/Body"`) | KHÔNG dùng CSS class (`"typo-paragraph-sm"`) |
-| 6 | Icon cần CẢ boolean + name: `iconLeft: true` + `iconLeftName: "Search"` | Chỉ name → icon không hiện |
+| 6 | **Always-present icons**: `iconLeft: true` + `iconLeftName: "Search"` trong `base`. **Conditional icons** (chỉ 1 số variant): dùng `children` + `showWhen` — KHÔNG dùng native boolean flag | Native flag → hidden elements trong non-matching variants |
 | 7 | `width`/`height` là **number** | String sẽ gây `resize()` error |
 | 8 | Compound key KHÔNG có space: `"A=X,B=Y"` | `"A=X, B=Y"` → plugin split sai |
 | 9 | `fill`/`stroke`/`textFill` dùng semantic token | KHÔNG hex, KHÔNG scale (`violet-600`) |
 | 10 | `showcase.sections` = `["header", "component", "installation"]` | Thiếu → plugin không biết render gì |
 | 11 | Icon names trong children `"component": "Icon / X"` match `foundation-icons.json` | Lucide rename: AlertCircle→CircleAlert, CheckCircle2→CircleCheck, AlertTriangle→TriangleAlert |
 | 12 | Children icon instances có `iconFill` theo variant | Thiếu → icon kế thừa default color, không khớp variant |
+| 13 | `radius` PHẢI explicit: web `rounded-lg` → `"lg"`, no rounded → `"none"` | Omit → plugin default `"lg"` (8px) — sai cho flat components (common-mistake #176) |
 
 ### Bước 2: Web Source Cross-Check (Spec Accuracy)
 
@@ -1472,6 +1720,7 @@ So sánh JSON spec với React source code. Đọc 3 file:
 | 9 | `gap` match web spacing (absolute pos icon = gap "xs" cho 8px visual offset) | Check web layout: autolayout vs absolute position |
 | 10 | `examples` match web Examples section (same groups, same items) | So sánh web Examples với JSON examples |
 | 11 | Property migration safe: default value (first in array) phải là giá trị "neutral" — existing instances sẽ nhận default khi property mới được thêm | VD: `"Show Label": ["Yes", "No"]` → existing variants nhận `Show Label=Yes` (giữ nguyên hành vi cũ). Nếu default = "No" → label biến mất trên tất cả existing instances |
+| 12 | Brand/gradient icons có `skipIconFill: true` | Icon fill-based (logo mark, brand icons) bị override thành foreground nếu thiếu → common-mistake #160 |
 
 ### Bước 3: Visual Diff Prediction (Mental Render)
 
@@ -1513,6 +1762,129 @@ Nếu có issue → fix TRƯỚC khi giao user. Report lại sau fix.
 
 ---
 
+## Screenshot Verification Protocol (MANDATORY)
+
+**🔴 BẮT BUỘC TUYỆT ĐỐI**: MỖI khi Claude viết/chỉnh sửa JSON spec (component hoặc foundation), spec PHẢI qua đủ 4 bước dưới đây trước khi mark DONE. Không skip bước nào.
+
+### Bước 1: Spec Content Cross-Check (Claude)
+
+So sánh JSON spec vs React web source để verify text, variants, data, overrides khớp 100%:
+
+**Cần kiểm tra**:
+- [ ] Component properties (names + values) = web Explore controls 100% (không thừa, không thiếu)
+- [ ] Variant text labels (VD: `"Variant": ["Outline", "Ghost", "Solid"]`) = web options 100%
+- [ ] Boolean property values `"Yes"/"No"` (KHÔNG `"True"/"False"`)
+- [ ] `base` specs match web default CSS
+- [ ] Mỗi `variantStyles` entry match exact web CSS cho property value đó
+- [ ] Children array: types (`frame`/`instance`/`icon`/`text`) match web component structure
+- [ ] Instance `component`/`variants` names match Figma ComponentSet names 100%
+- [ ] Text style names match Figma text style names (`"SP/Body"`, KHÔNG CSS class `"sp-body"`)
+- [ ] Icon names match `foundation-icons.json` (watch for Lucide renames: AlertCircle→CircleAlert)
+- [ ] Color tokens match foundation (`"fill": "primary"`, `"stroke": "border"`, KHÔNG hex)
+- [ ] Sizing: `height`/`width` match web (`h-9`=36px, `h-3xl`=40px, etc.)
+- [ ] Padding: `paddingX`/`paddingY` match web (`px-md`=16px, `p-sm`=12px, etc.)
+- [ ] Gap: spacing tokens match web layout
+- [ ] Showcase sections đúng: component có `"installation"` data → `sections: ["header","component","installation"]`
+
+**Output**: ✅ PASS / ❌ {N issues}. Nếu có issue → fix spec hoặc web TRƯỚC bước 2.
+
+### Bước 2: User Plugin Run + Claude Self-Screenshot
+
+1. User chạy "Generate SaaS Template" Figma plugin với spec JSON
+2. Plugin tạo Figma nodes (ComponentSet, frames, text styles binding, effect styles, variable binding, v.v.)
+3. **Claude TỰ chụp screenshot** bằng Figma MCP `get_screenshot` tool:
+   - Cần `fileKey` và `nodeId` của component/foundation vừa tạo
+   - User có thể cung cấp node URL hoặc Claude dùng `get_metadata` để tìm
+   - Nếu component: chụp ComponentSet (showing tất cả variants)
+   - Nếu foundation: chụp full section
+   - **KHÔNG BAO GIỜ yêu cầu user chụp hình thay mình**
+
+**Output**: Figma screenshot từ MCP tool cho Claude tự verify.
+
+### Bước 3: Visual Accuracy Verification (Claude tự thực hiện)
+
+Claude TỰ so sánh Figma screenshot (từ `get_screenshot`) vs web React source code:
+
+**Cần kiểm tra**:
+- [ ] **Content accuracy**: Mỗi text node trong Figma = web (no truncation, no overflow, font size/weight đúng)
+- [ ] **Variant values**: Component variants + text labels trong Figma = web Explore panel
+- [ ] **Visual fidelity**:
+  - Colors: fill, stroke, text color trong Figma = web rendering (semantic tokens resolve correctly)
+  - Spacing: padding, gap, margins visually match web
+  - Sizing: component width/height match web
+  - Border: stroke weight, color, style correct (dashed, solid)
+  - Border radius: rounded corners match web
+  - Typography: font family, size, weight, line-height match web text style
+  - Effects: ring/shadow/glow effects appear + look correct (no artifacts)
+- [ ] **Layout structure**: children frame arrangement match web (flex direction, alignment, distribution)
+- [ ] **State variants**: Figma variants representing different states (hover, focus, disabled) show correct styling
+- [ ] **Instance substitution**: If using instances (buttons in dialog, items in menu), verify instance visual match component
+- [ ] **No regressions**: Figma output doesn't have visual artifacts (overlapping text, hidden elements, misaligned borders)
+
+**Compare method**:
+1. Claude chụp **web screenshot** bằng Playwright/browser tool (hoặc dev server screenshot) để có benchmark visual
+2. Claude chụp **Figma screenshot** bằng `get_screenshot` (Figma MCP) để xem output plugin
+3. Claude so sánh 2 screenshots: web vs Figma → báo cáo mismatches (content, styling, layout, sizing)
+4. Nếu cần kiểm tra chi tiết hơn → dùng `get_design_context` để xem Figma node properties
+
+**Output**: ✅ VERIFIED / ⚠️ {N visual mismatches}
+
+### Bước 4: Iterate & Mark Done (Claude + User)
+
+**If visual verification PASS**:
+- Mark spec DONE
+- Report: "✅ Screenshot verification PASS"
+
+**If visual mismatches found** (content, styling, effects):
+1. Claude identifies the exact mismatch:
+   - VD: "Button Outline State=Hover → Figma shows gray fill, web shows transparent + border-strong"
+   - VD: "Typography: Figma text size 12px, web shows 14px"
+2. Fix source:
+   - If JSON spec wrong → update JSON spec in `figma-specs/`
+   - If web rendering wrong → update React component/CSS in `src/`
+   - If foundation token wrong → update CSS var + foundation JSON + plugin will re-bind
+3. User re-run plugin (or re-start dev server if web fix)
+4. Take new screenshot
+5. Claude re-verify → loop until PASS
+
+**Output**: Updated spec file → screenshot verification report → DONE marker
+
+### Report Template
+
+```
+## Screenshot Verification: {ComponentName}
+
+### Step 1: Spec Cross-Check
+- ✅ Properties match: 8/8 checks
+- ✅ Variant values match: 12/12
+- ✅ Base specs accurate
+- ✅ variantStyles accurate
+- ✅ Colors, sizing, padding correct
+**Result: ✅ PASS** → proceed to step 2
+
+### Step 2: Plugin Run
+- User ran plugin at {time}
+- Screenshot taken: {filename}
+
+### Step 3: Visual Verification
+- ✅ Content accuracy: text, labels, values match web
+- ✅ Variant styling: each variant looks correct
+- ✅ Colors: fill, stroke, text match semantic tokens
+- ✅ Typography: font, size, weight match web
+- ✅ Spacing: padding, gap match web
+- ✅ Sizing: width, height match web
+- ✅ Effects: ring/shadow appear + look correct
+- ✅ Layout: frame structure correct
+- ✅ States: hover/focus/disabled correct
+- ✅ Instances: sub-components render correctly
+**Result: ✅ VERIFIED**
+
+### Conclusion
+✅ **{ComponentName} spec DONE** — ready for publication
+```
+
+---
+
 ## ComponentSet Visual Standard
 
 Mỗi ComponentSet được tạo trên Figma PHẢI tuân theo các quy tắc visual sau:
@@ -1540,6 +1912,22 @@ Plugin upsert xử lý 4 case khi ComponentSet (CS) đã tồn tại trên Figma
 4. **CS bị auto-delete** (Figma xóa CS khi variant cuối bị remove): Fallback `combineAsVariants()` + `_layoutVariantsInGrid()` + restore position
 
 **CRITICAL**: `combineAsVariants()` phá hủy toàn bộ layout — CHỈ gọi khi tạo mới hoặc CS bị auto-delete. Khi CS còn tồn tại → update in-place. **KHÔNG BAO GIỜ** xóa tất cả variant rồi tạo lại khi property keys thay đổi.
+
+### ⛔ CRITICAL: Plugin Upsert KHÔNG BAO GIỜ Xóa Children (common-mistake #192)
+
+Upsert variant PHẢI giữ nguyên children đã tồn tại. `_processChildren` và native icon+label flow tìm child by name → update in-place. Cleanup step (sau `_processChildren`) chỉ xóa children KHÔNG CÒN trong spec.
+
+**TUYỆT ĐỐI KHÔNG**: thêm code `comp.children[i].remove()` loop trong upsert path. Xóa children = phá hủy internal IDs → TẤT CẢ instances của component trong TOÀN FILE mất text/icon overrides.
+
+**Impact cascade**: Core component (Button) bị lỗi → 9+ dependent components (Dialog, Sheet, Card, Alert Dialog, App Header, Item List, Date Picker, Popover, Drawer) mất overrides. Recovery = re-run TẤT CẢ dependent JSONs.
+
+**Plugin code guard**: Line 3806-3811 in `code.js` — upsert path PHẢI là:
+```js
+comp = existingVarMap[_normVnameStr];
+_seenVars[_normVnameStr] = true;
+// DO NOT remove children
+comp.opacity = 1; comp.fills = []; comp.strokes = []; comp.effects = [];
+```
 
 ### Variant Grid Layout (`_layoutVariantsInGrid`)
 Helper function sắp xếp variants theo lưới property-based:
@@ -1906,6 +2294,7 @@ Screens use `"type": "component"` to create instances from existing ComponentSet
 - `overrides.boolean` — show/hide: `{ "Show Icon": true }`
 - `overrides.nested` — nested text: `{ "childName": { "Label": "text" } }`
 - `overrides.nestedVariants` — nested variant swap: `{ "childName": { "Size": "Small" } }`
+- `overrides.imageOverrides` — image fill swap: `{ "Avatar": "https://..." }`
 - `slots` — shorthand for text overrides
 
 ### State Variants per Screen Type
@@ -1984,6 +2373,8 @@ React Page (.tsx) → Screen JSON (.json) → Figma Frame
 - [ ] `examples` items include ALL property axes in props (web-only, not rendered in Figma)
 - [ ] `installation` field present with `import` (required). Add `dependencies` with `pnpm add PACKAGE` when component has external deps (Radix, input-otp, vaul, etc.). Omit `dependencies` for built-in components with no external pkg. Other fields (`props`, `designTokens`, `bestPractices`, `figmaMapping`, `accessibility`, `related`, `examples`) are optional — web documentation only
 - [ ] `iconLeftName`/`iconRightName` match icons in foundation — **ALWAYS verify name in `foundation-icons.json`** (Lucide renames icons between versions: AlertCircle→CircleAlert, CheckCircle2→CircleCheck, AlertTriangle→TriangleAlert)
+- [ ] Variants dùng `iconLeftName`/`iconRightName` khác nhau → plugin swap đúng (KHÔNG giữ icon cũ trên upsert). Variant KHÔNG cần icon → node bị xóa, KHÔNG hidden (common-mistake #172-173)
+- [ ] KHÔNG mix native `iconRight`/`iconLeft` + `children` array icon cùng variant. Exception: addon variants (textLeft/textRight) (common-mistake #174)
 - [ ] Children icon instances (`"type": "instance", "component": "Icon / ..."`) set `iconFill` to match variant-specific color (e.g. `"iconFill": "destructive-subtle-foreground"` for error variant). Without `iconFill`, icon inherits master component default color
 - [ ] Total variant count < 600
 - [ ] Compound components (Checkbox/Switch/Radio) use `indicator` pattern with `iconFill` for icon color
@@ -1991,16 +2382,16 @@ React Page (.tsx) → Screen JSON (.json) → Figma Frame
 - [ ] Multi-section components (Card/Dialog/AlertDialog/Collapsible) use `children` array with `hideLabel: true`
 - [ ] `children` items with conditional visibility use `showWhen` matching property axis values
 - [ ] **Instance rule**: Any sub-element that corresponds to an existing ComponentSet (Button, Checkbox, Switch, Toggle, Badge, etc.) uses `"type": "instance"` with `component`/`variants`/`textOverrides` — NEVER manual `"type": "frame"` recreating that component's visual
-- [ ] `showcase.sections` set to `["header", "component", "installation"]` — plugin only generates these 3 sections (header, component grid from Explore, installation). All other sections (examples, props, designTokens, bestPractices, figmaMapping, accessibility, related) are **web-only** — NOT generated in Figma
+- [ ] `showcase.sections` follows 3-tier rule (#154): có `installation` data → `["header", "component", "installation"]`, sub-component (no installation) → `["header", "component"]`, slot → `[]`. **Khi JSON có field `"installation"` → sections PHẢI chứa `"installation"`**
 - [ ] Components with `imageUrl` use **direct URLs** (no redirects) and domain is in `manifest.json` `networkAccess.allowedDomains`
 - [ ] Components needing content clipping (circular Avatar, rounded cards with image) set `clipsContent: true` in `base`
 - [ ] **Components with `focusRing`** in variantStyles MUST have `clipsContent: true` in `base` — Figma requires clip content ON for effect style DROP_SHADOW to render
 - [ ] `textContent` used for all text values (NOT `text` — plugin reads `merged.textContent`)
 - [ ] `textStyle` uses Figma text style names (`"SP/Body"`, NOT CSS class names like `"sp-paragraph-sm"`)
-- [ ] `gap` explicitly set (omitting defaults to hardcoded `8` without variable binding — use `"none"` for zero gap, `"auto"` for space-between auto)
+- [ ] `gap` explicitly set (omitting defaults to hardcoded `8` without variable binding — use `"none"` for zero gap, `"auto"` for space-between auto). `"auto"` = Figma Auto layout (itemSpacing=0 + **unbind variable from previous runs**). Plugin MUST call `setBoundVariable("itemSpacing", null)` ở cả 4 code paths (main comp, addon innerF, indicator, children frame) để clear stale binding từ previous plugin runs (common-mistake #178)
 - [ ] **ComponentSet visual**: border inside 1px DASH foreground, radius 16px, variants xếp lưới gọn gàng (xem "ComponentSet Visual Standard")
 - [ ] **Property 1:1**: `properties` keys + values khớp 100% React Explore controls (tên, số lượng, Title Case)
-- [ ] Icon variants set BOTH `iconLeft: true` AND `iconLeftName` (boolean flag required for rendering)
+- [ ] **Always-present icons** (all variants) use `iconLeft: true` + `iconLeftName` in `base`. **Conditional icons** (some variants only) use `children` array with `"type": "icon"` + `showWhen` — NEVER native boolean flags for conditional icons (causes hidden elements in ComponentSet)
 - [ ] Form components (Input/Select/Textarea) do NOT use `hideLabel: true` — label is the placeholder/value text
 - [ ] Focus states use `effectStyleName: "Ring/default"` (preferred) or `focusRing: "ring"` (for indicators)
 - [ ] **All `radius` values use string tokens** (`"none"`, `"full"`, `"lg"`, `"md"`, `"sm"`, etc.) — NEVER raw numbers like `9999`, `16`, `8`. Applies to `base.radius`, `variantStyles.radius`, `children[].radius`, `indicator.radius`. Plugin auto-binds `border radius/none` for number `0` as safety net, but string `"none"` is preferred for explicit zero radius.
@@ -2055,6 +2446,47 @@ React Page (.tsx) → Screen JSON (.json) → Figma Frame
 - **Input width from wrapper**: Use parent wrapper dimensions for sizing, not the `<input>` element itself
 - **Single-child flattening**: Skip wrapper divs with no visual properties (but preserve if has bg/stroke/data-slot)
 - **Background screenshots**: Decorative elements (gradients, glow, grid) captured as base64 images
+
+### Brand Icon / SVG Icon Handling
+- **svgIcons extraction**: DOM walker extracts `<svg>` children inside `data-figma` components as `svgIcons` array (name, svgContent, width, height)
+- **Icon name from `data-icon`**: `getIconName()` reads `data-icon` attribute on SVG → used as component name ("Icon / Google", "Icon / Facebook")
+- **Component creation**: If `findComponent("Icon / {name}")` fails → `createNodeFromSvg(svgContent)` → move vectors into `figma.createComponent()` → place on page
+- **Swap into icon slot**: `instance.findOne()` searches for INSTANCE child named "Icon"/"Icon Left"/"Icon Right" → `swapComponent(logoComp)`
+- **Fill-based vs stroke-based detection (common-mistake #127)**: After swap, scan target component's vectors — if any have SOLID fills visible → fill-based (brand logo) → clear inherited strokes from instance vectors. Lucide icons are stroke-based → keep strokes. Detection checks `logoComp.findAll()` vectors, NOT a creation-time flag (flag breaks on subsequent runs when component already exists).
+- **Generic "Icon" skip**: `svgIcons` with `name === "Icon"` (unidentified SVGs) are skipped to avoid creating "Icon / Icon" components
+- **Brand SVG in component JSON (common-mistake #158)**: Brand marks (logos) PHẢI tồn tại trong `foundation-icons.json` với `"brand": true` + gradient fill hardcoded trong SVG. Component JSON reference qua `"type": "icon"` children + `"iconName": "ShopPulse"` (KHÔNG thêm `iconFill` — giữ gradient gốc). KHÔNG dùng `"type": "frame"` cho visual SVG content — frame trống = mất SVG khi plugin upsert rebuild children.
+
+### Size Variable Binding (heightVar / widthVar / minWidthVar / minHeightVar)
+
+**Collection**: `size` — 5th Figma variable collection, separate from spacing. `scopes: ["WIDTH_HEIGHT"]`, FLOAT type. Contains component height/width tokens derived from web CSS.
+
+**Helper functions**:
+```javascript
+findSizeVar(name)     // finds variable with "size/" prefix
+bindSizeVar(node, field, varName)  // setBoundVariable only, NO fallback
+```
+
+**JSON properties**:
+- `heightVar: "height/default"` → bind `size/height/default` to node height (FIXED sizing only)
+- `widthVar: "badge-round/default"` → bind `size/badge-round/default` to node width (FIXED sizing only)
+- `minWidthVar: "width/input"` → bind `size/width/input` to node minWidth (form components that fill container)
+- `minHeightVar: "height/textarea"` → bind `size/height/textarea` to node minHeight
+
+**3 code paths** (NOT inner children):
+1. **Addon comp** — outer wrapper only (innerF NEVER gets size bindings)
+2. **Indicator** — `indicator.widthVar` / `indicator.heightVar`
+3. **Default path** — main component (ONLY when `layoutSizingHorizontal === "FIXED"`)
+
+**Rules**:
+- `widthVar`/`heightVar` → FIXED size components (Badge, BadgeRound, icon-only Button, Checkbox, Switch)
+- `minWidthVar`/`minHeightVar` → form components that fill container (Input, Select, Textarea, Combobox, SearchBox)
+- **Mutual exclusion**: `minWidthVar` present → skip `widthVar` binding. `minHeightVar` present → skip `heightVar` binding. NEVER bind both min AND fixed on same axis (common-mistake #166)
+- **Inner children NO size binding**: Addon innerF NEVER gets size variables — only the variant comp itself. Inner frames with size constraints cause overflow/clipping in auto-layout (common-mistake #166)
+- Type-specific variables for components with vastly different sizes per Type (badge/*, badge-round/*, badge-dot/*)
+- Compound keys MUST override BOTH `height` AND `heightVar` — omitting heightVar causes Pass 1 variable to persist (common-mistake #162)
+- NO pixel fallback in bindSizeVar — resize() already sets pixel value (common-mistake #164)
+
+**Variable naming convention**: `size/{component}/{tier}` — e.g., `size/height/default` (36px), `size/badge-dot/sm` (4px), `size/switch/track-w` (33px)
 
 ### Plugin UI Patterns
 - **Collapsible states**: State items rendered flat in page list with `style.display` toggle (no wrapper div — Figma sandbox CSS limitations)

@@ -3,6 +3,7 @@ import { format, subDays, startOfYear, startOfMonth, endOfMonth, subMonths } fro
 import { CalendarIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -38,11 +39,15 @@ function DatePickerTrigger({
     <button
       data-slot="date-picker-trigger"
       disabled={isDisabled}
+      {...figma("Date Picker Trigger", {
+        State: state === "disable" ? "Disable" : state === "error" ? "Error" : state === "hover" ? "Hover" : "Default",
+        Value: isFilled ? "Filled" : "Placeholder",
+      })}
       className={cn(
         "flex h-9 w-full sm:w-[280px] items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
         !isFilled && "text-muted-foreground",
         state === "hover" && "border-border-strong",
-        state === "error" && "border-destructive ring-[3px] ring-destructive/30",
+        state === "error" && "border-destructive-border ring-[3px] ring-ring-error",
         className
       )}
     >
@@ -84,6 +89,10 @@ function DatePicker({
       <PopoverTrigger asChild>
         <button
           data-slot="date-picker-trigger"
+          {...figma("Date Picker Trigger", {
+            State: "Default",
+            Value: selected ? "Filled" : "Placeholder",
+          })}
           className={cn(
             "flex h-9 w-full sm:w-[280px] items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
             !selected && "text-muted-foreground",
@@ -185,6 +194,10 @@ function DateRangePicker({
       <PopoverTrigger asChild>
         <button
           data-slot="date-range-picker-trigger"
+          {...figma("Date Picker Trigger", {
+            State: "Default",
+            Value: committed.from ? "Filled" : "Placeholder",
+          })}
           className={cn(
             "flex h-9 w-full sm:w-[280px] items-center gap-xs rounded-lg border border-border bg-input px-sm typo-paragraph-sm text-foreground transition-colors focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
             !committed.from && "text-muted-foreground",
@@ -208,8 +221,8 @@ function DateRangePicker({
       <PopoverContent className="w-auto p-0" align="start">
         <div className="flex">
           {presets && (
-            <div className="flex flex-col gap-3xs border-r border-border/30 dark:border-white/[0.06] p-sm min-w-[140px]">
-              <p className="sp-label text-muted-foreground/60 uppercase tracking-wider px-sm pt-xs pb-2xs">Presets</p>
+            <div className="flex flex-col gap-3xs border-r border-border-subtle dark:border-white/[0.06] p-sm min-w-[140px]">
+              <p className="sp-label text-muted-foreground uppercase tracking-wider px-sm pt-xs pb-2xs">Presets</p>
               {RANGE_PRESETS.map((preset) => (
                 <button
                   key={preset.label}
@@ -233,7 +246,7 @@ function DateRangePicker({
               numberOfMonths={2}
               initialFocus
             />
-            <div className="flex items-center justify-between border-t border-border/30 dark:border-white/[0.06] px-md py-sm">
+            <div className="flex items-center justify-between border-t border-border-subtle dark:border-white/[0.06] px-md py-sm">
               <p className="sp-caption text-muted-foreground">
                 {pending.from && pending.to
                   ? `${format(pending.from, "MMM d")} – ${format(pending.to, "MMM d, yyyy")}`

@@ -87,7 +87,7 @@ export const topProducts = [
   { name: "Rolex Datejust", sku: "RDJ-003", sales: 1456, revenue: "$43,680", growth: "+12.1%", price: "$4,999.99", stock: 567, imageUrl: "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp" },
   { name: "Nike Air Jordan 1", sku: "NAJ-012", sales: 1234, revenue: "$24,680", growth: "+8.7%", price: "$179.99", stock: 892, imageUrl: "https://cdn.dummyjson.com/product-images/mens-shoes/nike-air-jordan-1-red-and-black/1.webp" },
   { name: "MacBook Pro 14\"", sku: "MBP-045", sales: 986, revenue: "$19,720", growth: "+25.4%", price: "$1,999.99", stock: 145, imageUrl: "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp" },
-  { name: "Black Sun Glasses", sku: "CSG-023", sales: 754, revenue: "$15,080", growth: "+6.2%", price: "$89.99", stock: 78, imageUrl: "https://cdn.dummyjson.com/product-images/sunglasses/black-sun-glasses/1.webp" },
+  { name: "Prada Women Bag", sku: "PWB-023", sales: 754, revenue: "$15,080", growth: "+6.2%", price: "$129.99", stock: 78, imageUrl: "https://cdn.dummyjson.com/product-images/womens-bags/prada-women-bag/1.webp" },
 ]
 
 // Customer satisfaction scores for radial chart

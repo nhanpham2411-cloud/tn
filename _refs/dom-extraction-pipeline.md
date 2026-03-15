@@ -604,3 +604,95 @@ Extract → So sánh visual (web vs Figma) → Identify gaps → Fix mapper/walk
 **5. Playwright `force: true` unreliable on Mobile**
 - Problem: Decorative blur div intercepts pointer events on Mobile viewport. `force: true` clicks don't trigger form validation reliably.
 - Fix: Use `evaluate` action with `document.querySelector().click()` to bypass Playwright event dispatch entirely.
+
+### v0.6 Password input masking & dual-walker sync
+
+**1. Password input value NOT masked (common-mistake #128)**
+- Problem: `dom-walker.ts` extracted `inputEl.value` directly without checking `type="password"` → plain text visible in Figma. `raw-dom-walker.ts` had mask code but `extract.ts` uses `DOM_WALKER_SCRIPT` from `dom-walker.ts` (different file).
+- Fix: Both walkers now check `inputEl.getAttribute("type") || inputEl.type === "password"` → replace value with `"\u2022".repeat(value.length)`. Use `\u2022` escape (not `•` literal) because walker code is inside template literal string.
+- **Critical rule**: When adding input handling logic → MUST update BOTH walker files (`dom-walker.ts` + `raw-dom-walker.ts`). `extract.ts` uses `DOM_WALKER_SCRIPT`, `html-to-figma.ts` uses `RAW_DOM_WALKER_SCRIPT`.
+
+**2. Password field icon pattern (common-mistake #129)**
+- Password input MUST have `iconRight` toggle: default `showPassword=false` → `type="password"` + Eye icon → masked bullets. Toggle → `type="text"` + EyeOff icon → plain text visible.
+- DOM extraction: filled state extracts default (password hidden) → icon = Eye, Label = bullets.
+- States config can add `show-password` state if needed: toggle click → extract with EyeOff icon + plain text.
+
+**3. Form input textOverrides key mapping (common-mistake #130)**
+- Problem: Walker always set `textOverrides["Label"]` for ALL components. But Input/Select/Textarea/Combobox Figma components use text node named **"Value"** (not "Label"). Plugin `findOne(n.name === "Label")` → miss → default "Placeholder text" shown.
+- Fix: Walker detects form input components → uses `textOverrides["Value"]` instead. Plugin has fallback: if "Label" not found → try "Value", and vice versa.
+- Rule: textOverrides key MUST match Figma text node name. Check component JSON spec `children[].name` when adding new components to pipeline.
+
+**4. SVG icon extraction in data-figma components (common-mistake #131)**
+- Problem: dom-walker.ts skipped SVGs with `continue` inside leaf component extraction → Button Icon variant always "None", icons missing on Figma. raw-dom-walker.ts already handled this correctly.
+- Fix: Both walkers now extract SVG icon data via `getIconName()` instead of skipping. Override `variants.Icon = "Left"` when Button has SVGs + `Icon === "None"`. Also scan nested elements (`querySelectorAll("svg")`) for `asChild` patterns (Button > a > svg). Added parent wrapper SVG scan for native `<input>` elements.
+- Rule: NEVER skip SVGs inside data-figma components. Both walker files MUST extract icon presence and override Button Icon variant.
+
+**5. Mixed content extraction — text nodes + non-inline elements (common-mistake #132)**
+- Problem: `<p>Text <button>click</button></p>` — walker used `el.children` (HTMLCollection) which only returns element nodes. Text nodes (nodeType 3) invisible. `BUTTON` not in `INLINE_TAGS` → `isMixedInline()` false → falls to layout frame path → text lost.
+- Fix: Added section 5c (raw-dom-walker) / 4b (dom-walker): detect `el.childNodes` has both text nodes AND non-inline element children → iterate `childNodes` → text nodes become text frames, elements recurse. Output: horizontal frame `wrap: true, gap: 4`.
+- Rule: ALWAYS use `el.childNodes` when capturing mixed text + element children. `el.children` only returns elements.
+
+**6. Small square frames lose fixed height (common-mistake #133)**
+- Problem: json-builder rule "frames with children never get fixed height" → icon container `size-[48px]` with icon child only gets `width: fixed:48`, no height → parent stretches it into a bar. Also `selfAlign: "center"` from `mx-auto` not propagated.
+- Fix: json-builder detects small square frames (w ≈ h, ≤100px, has children) → keeps fixed height. selfAlign propagated in both convertFrame and convertInstance.
+- Rule: Small square frames (icon containers, avatar wrappers) MUST keep fixed height despite having children.
+
+**7. Horizontal flex fillWidth not detected (common-mistake #134)**
+- Problem: `getFlexGrow()` only checked column flex parents. Row flex children with `w-full` → `getComputedStyle().width` returns pixels (never "100%") → missed. Buttons in horizontal flex containers rendered FIXED width instead of FILL.
+- Fix: Added `if (!isCol && fills) return true` — detect row flex children whose computed width ≈ parent content width. Both walkers synced.
+- Rule: `getFlexGrow()` MUST detect fillWidth for BOTH column AND row flex parents.
+
+**8. Visual frame margin distorts shape (common-mistake #135)**
+- Problem: Walker converts CSS `marginBottom` to `paddingBottom` on child frame + increases height. For visual frames (rounded, filled, ≤100px) — e.g. 48×48 icon circle with `mb-sm` → becomes 48×60 oval on Figma.
+- Fix: Detect visual frames (radius > 0, fill, ≤100px) → wrap in transparent frame with margin as wrapper padding. Child frame keeps original dimensions. Inherit selfAlign/fillWidth from child to wrapper.
+- Rule: NEVER add margin as internal padding to visual frames. Always wrap.
+
+**9. Mixed inline text-align center lost (common-mistake #136)**
+- Problem: Mixed inline content (colored spans, links) creates horizontal frame for text runs. Parent `text-align: center` only mapped to `textAlign` on text nodes — frame doesn't get `primaryAlign: center`.
+- Fix: Check `style.textAlign === "center"` → set `primaryAlign: "center"` on mixed inline/content frames. Both code paths (hasColoredInlineChildren, mixed content handler) and both walkers synced.
+- Rule: When creating frames from mixed inline content, ALWAYS propagate parent `text-align` as frame `primaryAlign`.
+
+**10. HUG false positive for explicit-size elements (common-mistake #137)**
+- Problem: `getHugWidth`/`getHugHeight` returns true for elements with explicit CSS dimensions (e.g. `size-[48px]`) when in a flex parent with `align-items: center`. Plugin sets `layoutSizing = "HUG"` → frame collapses to content size (48×48 → 24×24), background circle disappears.
+- Fix: Added `hasExplicitWidth(el)`/`hasExplicitHeight(el)` helpers that compare element dimension with total children dimension. If element > content + 2px → explicit CSS sizing → returns FIXED, not HUG.
+- Rule: Before returning HUG from flex context checks, ALWAYS verify content is not smaller than element. Elements with explicit dimensions (icon containers, avatar wrappers) must be FIXED.
+
+**11. Plugin `primaryAxisSizingMode` hardcode AUTO (common-mistake #138)**
+- Problem: Plugin `createFrame()` hardcodes `primaryAxisSizingMode = "AUTO"` (hug content) for ALL frames. Frame 48×48 horizontal with 24×24 icon → width collapses to 24px. `primaryAxisSizingMode` = frame's OWN sizing (different from `layoutSizingHorizontal` = sizing in PARENT).
+- Fix: Set `primaryAxisSizingMode`/`counterAxisSizingMode` dynamically based on `hugWidth`/`hugHeight`/`fillWidth`/`fillHeight` flags. Map by layout direction: horizontal → primary=width, counter=height; vertical → reverse. HUG/FILL → AUTO, FIXED (default) → FIXED.
+- Rule: `primaryAxisSizingMode` must match frame's sizing intent. NEVER hardcode AUTO for all frames.
+
+**12. Visual frame margin wrapper sizing (common-mistake #135 update)**
+- Problem: Original wrapper used fixed width/height matching child dimensions. This creates rigid frames that don't adapt to parent layout. Icon container 48×60 fixed inside CardHeader → doesn't fill width → alignment issues.
+- Fix: Wrapper now uses `fillWidth: true` (fill parent width) + `hugHeight: true` (hug content) + `counterAlign: "center"` (center child). Child's `selfAlign` removed since wrapper handles centering. This matches web behavior where icon container is a block element in normal flow.
+- Rule: Margin wrappers should be transparent layout helpers — fill parent width, hug content height, center child via counterAlign.
+
+**13. `isTextOnly()` skips visual properties — text-only elements lose bg/stroke/radius (common-mistake #140)**
+- Problem: Walker `isTextOnly()` returns TEXT node immediately when `childElementCount === 0`. Step indicator circles (28×28 bg-primary rounded-full + text "1") extracted as plain text, losing all visual properties. Affects ALL text-only elements with visual decoration.
+- Fix: Before returning text node, check for `normalizeColor(bg)`, `getStrokeInfo()`, `extractBorderRadius()`. If any visual property exists → return frame with fill/stroke/radius + text child. Set primaryAlign/counterAlign based on flex+center.
+- Rule: `isTextOnly()` early return only for pure text leaves. Visual elements MUST be wrapped in frames.
+
+**14. Component instance built-in label collision (common-mistake #141)**
+- Problem: Figma components with `Show Label` property default to showing label. Web renders label as separate sibling element. Extraction creates instance without `Show Label: No` → both built-in label AND sibling text appear. E.g., Radio "Option label" + "1-10".
+- Fix: Add visibility variant to `figma()` data attributes: `"Show Label": "No"`. Review ALL components with label/visibility properties (Radio, Checkbox, Switch).
+- Rule: When Figma component has built-in text that web renders separately, set hide variant in `figma()` call.
+
+**15. Margin handling skips non-frame types (common-mistake #142)**
+- Problem: Margin-to-padding conversion only processes `type === "frame"` children. Instance (Progress, Button), text, icon, svg nodes with CSS margins (`mb-md`, `mr-sm`) are completely ignored. Result: Figma only has parent gap between items, missing the extra margin spacing.
+- Fix: Handle ALL node types. Frame: add padding directly (or wrap if visual frame). Instance/text/icon/svg: wrap in transparent frame with margin as padding. Wrapper inherits fillWidth from child, uses hugHeight/hugWidth.
+- Rule: Margin conversion must not filter by node type. Every child with CSS margin must be handled.
+
+**16. Radix `data-state` not reflected in figma variants (common-mistake #143)**
+- Problem: `figma()` sets Value variant statically at render time. Radix updates `data-state` attribute dynamically on DOM. Walker only reads `data-figma-variants` (static) → all Radio/Checkbox/Switch extracted as Unchecked regardless of actual state.
+- Fix: After parsing `data-figma-variants`, check `el.getAttribute("data-state")`. If present and variants has `Value` key → override: checked→Checked, unchecked→Unchecked, indeterminate→Indeterminate.
+- Rule: Always read DOM `data-state` to override static figma variants for Radix primitives.
+
+**17b. Form input Value variant not detected from DOM state (common-mistake #161)**
+- Problem: `figma("Select", { Value: "Placeholder" })` is static. Playwright actions select option → text changes but `data-figma-variants` stays `Placeholder`. Walker trusts static attribute → extracts wrong variant. Affects: Select, Combobox, Input, Textarea.
+- Fix: After parsing variants, detect actual DOM state: (1) Select/Combobox: scan child `<span>` for `data-placeholder` attribute — absent + has text → `Value = "Filled"`. (2) Input/Textarea: check `inputEl.value` — has value → `Value = "Filled"`.
+- Rule: **figma() static annotation divergence pattern** — 3 cases: checked state (data-state for Checkbox/Switch/Radio #143), filled state (DOM content for form inputs #161), open state (future). Walker must always verify runtime DOM state, not trust static attributes.
+
+**18. Frames default FIXED height instead of HUG (common-mistake #152)**
+- Problem: `getHugHeight()` only checks specific flex parent cases. Row-flex with `align-items: stretch` (default) + auto-height parent → both `getFillHeight` and `getHugHeight` return false → plugin defaults `layoutSizingVertical = "FIXED"`. Many content-driven divs get FIXED height.
+- Fix: Added `isContentSizedHeight(el)` fallback — if element has visible flow children AND height ≈ content height → `hugHeight = true`. Applied as: `hugHeight: getHugHeight(el) || (!getFillHeight(el) && isContentSizedHeight(el))`. Also fixed `getFillHeight` for row-flex stretch: compares sibling heights instead of requiring parent explicit height.
+- Rule: Content-driven frames must be HUG in Figma. Only FIXED when explicit CSS height (h-9, size-[48px]). `isContentSizedHeight` is a safety net for edge cases.

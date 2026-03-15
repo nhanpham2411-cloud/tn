@@ -54,11 +54,15 @@ tn/
 ## Critical Rules
 1. **SprouX Independence**: Each product forks SprouX — NEVER modify the source SprouX repo
 2. **Typography**: Use product prefix (`sp-*`) — `text-*` gets stripped by tailwind-merge
-3. **Tokens only**: No hardcoded hex/rgb **or color scale names** (violet-*, amber-*, zinc-*) in className — use semantic tokens (`text-primary`, `text-warning`, `bg-primary/10`). No `opacity-*` to dim individual element colors — use semantic token (`text-muted-foreground`) or `color-mix()` instead. Exception: `disabled:opacity-50` (whole component) and `opacity-0/100` (visibility toggle) are OK.
+3. **⛔ 100% Foundation Token Binding (ABSOLUTE)**: MỌI visual property (color, spacing, radius, typography, effect) PHẢI 100% bind từ foundation tokens — web React, Figma JSON, plugin output. TUYỆT ĐỐI KHÔNG: raw hex/rgb, Tailwind color scale names (violet-*, zinc-*, amber-*), hardcoded pixel (`gap-[12px]`), manual font override. Foundation = SINGLE SOURCE OF TRUTH. Nếu cần token chưa có → TẠO MỚI trong foundation TRƯỚC. No `opacity-*` to dim individual element colors — use semantic token (`text-muted-foreground`) or `color-mix()`. Exception: `disabled:opacity-50` (whole component), `opacity-0/100` (visibility toggle), installation code blocks (cosmetic hardcoded). (common-mistake #177)
 4. **DS components only**: `<Button>` not `<button>`, `<Input>` not `<input>`
 5. **Management pages**: Must have loading skeleton, offline banner, bulk select, empty state, save guard
 6. **Read `common-mistakes.md`** before touching React app code
 7. **Component docs**: ALWAYS read `_refs/component-docs-pattern.md` before adjusting any component in the design system page
+8. **Image/asset consistency**: All images (product, avatar, icon) must use the SAME source across web app, DS page, and Figma JSON. Product=`cdn.dummyjson.com`, Avatar=`i.pravatar.cc`. No mixing services (common-mistake #181). CORS check: `curl -sI url | grep access-control` — plugin has `fetchWithCorsProxy()` fallback (common-mistake #188)
+9. **No raw indicators**: Mọi visual element (dot, badge, label) PHẢI dùng DS component — `<BadgeDot>` not raw `<div>`, Badge instance not raw frame. JSON mirror web 1:1 (common-mistake #186-187)
+10. **Group instance imageOverrides**: Item trong group parent (Item List, Table) có custom image PHẢI có explicit `overrides.imageOverrides` — không dựa vào component base `imageUrl` (common-mistake #190)
+11. **⛔ Plugin upsert KHÔNG BAO GIỜ xóa children**: Upsert variant giữ nguyên children — `_processChildren` tìm by name → update in-place. Xóa children = phá hủy TẤT CẢ instances của component trong toàn file. KHÔNG BAO GIỜ thêm code `comp.children[i].remove()` trong upsert path (common-mistake #192)
 
 ## Skills (slash commands)
 | Command | Role |

@@ -21,6 +21,7 @@ import { SearchBox } from "@/components/ui/search-box"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -35,6 +36,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCard,
+  TableCardRow,
 } from "@/components/ui/table"
 import {
   DropdownMenu,
@@ -100,9 +103,7 @@ function InvoicesSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -133,22 +134,22 @@ const statusConfig: Record<Invoice["status"], { label: string; dotClass: string;
   paid: {
     label: "Paid",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   pending: {
     label: "Pending",
     dotClass: "bg-warning",
-    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20",
+    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border",
   },
   overdue: {
     label: "Overdue",
     dotClass: "bg-destructive animate-pulse",
-    badgeClass: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20",
+    badgeClass: "bg-destructive-subtle text-destructive border-destructive-border",
   },
   cancelled: {
     label: "Cancelled",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
 }
 
@@ -281,7 +282,7 @@ export default function InvoicesPage() {
   const InvoiceActions = ({ invoice }: { invoice: Invoice }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+        <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -315,7 +316,7 @@ export default function InvoicesPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -331,7 +332,7 @@ export default function InvoicesPage() {
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Invoices</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -349,16 +350,14 @@ export default function InvoicesPage() {
         {/* KPI summary cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
-            { icon: FileText, label: "Total Invoices", value: totalInvoices, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: CheckCircle2, label: "Paid", value: `$${(totalPaid / 1_000).toFixed(1)}K`, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: Clock, label: "Pending", value: `$${(totalPending / 1_000).toFixed(1)}K`, iconBg: "bg-warning-subtle", iconColor: "text-warning" },
-            { icon: AlertTriangle, label: "Overdue", value: `$${(totalOverdue / 1_000).toFixed(1)}K`, iconBg: "bg-destructive/10 dark:bg-destructive/20", iconColor: "text-destructive" },
+            { icon: FileText, label: "Total Invoices", value: totalInvoices, color: "primary" as const },
+            { icon: CheckCircle2, label: "Paid", value: `$${(totalPaid / 1_000).toFixed(1)}K`, color: "success" as const },
+            { icon: Clock, label: "Pending", value: `$${(totalPending / 1_000).toFixed(1)}K`, color: "warning" as const },
+            { icon: AlertTriangle, label: "Overdue", value: `$${(totalOverdue / 1_000).toFixed(1)}K`, color: "destructive" as const },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
-                <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                  <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                </div>
+                <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                 <div>
                   <p className="sp-kpi-md text-foreground">{kpi.value}</p>
                   <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -378,7 +377,7 @@ export default function InvoicesPage() {
                   <h3 className="sp-h4 text-foreground">All Invoices</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} invoices found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+                <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -414,7 +413,7 @@ export default function InvoicesPage() {
                   <Button variant="outline" size="sm" onClick={handleBulkExport}>
                     <Download className="size-[13px] mr-xs" /> Export
                   </Button>
-                  <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleBulkCancel}>
+                  <Button variant="outline" size="sm" className="text-destructive border-destructive-subtle hover:bg-destructive-subtle" onClick={handleBulkCancel}>
                     <XCircle className="size-[13px] mr-xs" /> Cancel
                   </Button>
                   <Button variant="ghost" size="xs" onClick={() => setSelected(new Set())}>
@@ -447,30 +446,26 @@ export default function InvoicesPage() {
             ) : (
               <div className="flex flex-col gap-sm">
                 {paginated.map((invoice) => (
-                  <div
-                    key={invoice.id}
-                    className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
-                    onClick={() => setDetailSheet(invoice.id)}
-                  >
-                    <div className="flex items-center justify-between">
+                  <TableCard key={invoice.id} onClick={() => setDetailSheet(invoice.id)}>
+                    <TableCardRow>
                       <div>
                         <span className="sp-body-semibold text-primary">{invoice.id}</span>
-                        <span className="sp-caption text-muted-foreground/60 ml-xs">{invoice.orderId}</span>
+                        <span className="sp-caption text-muted-foreground ml-xs">{invoice.orderId}</span>
                       </div>
                       <StatusBadge status={invoice.status} />
-                    </div>
-                    <div className="flex items-center justify-between">
+                    </TableCardRow>
+                    <TableCardRow>
                       <div className="min-w-0 flex-1">
                         <p className="sp-body-medium text-foreground truncate">{invoice.customerName}</p>
-                        <p className="sp-caption text-muted-foreground/60 truncate">{invoice.customerEmail}</p>
+                        <p className="sp-caption text-muted-foreground truncate">{invoice.customerEmail}</p>
                       </div>
                       <p className="sp-body-semibold text-foreground ml-md">${invoice.total.toFixed(2)}</p>
-                    </div>
-                    <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                    </TableCardRow>
+                    <TableCardRow className="sp-caption text-muted-foreground">
                       <span>Issued {invoice.issuedAt}</span>
                       <span>Due {invoice.dueDate}</span>
-                    </div>
-                  </div>
+                    </TableCardRow>
+                  </TableCard>
                 ))}
               </div>
             )}
@@ -505,23 +500,20 @@ export default function InvoicesPage() {
                   </TableRow>
                 ) : (
                   paginated.map((invoice) => (
-                    <TableRow key={invoice.id} className="group" data-state={selected.has(invoice.id) ? "selected" : undefined}>
-                      <TableCell className="!p-0 text-center">
+                    <TableRow key={invoice.id} className="group cursor-pointer" data-state={selected.has(invoice.id) ? "selected" : undefined} onClick={() => setDetailSheet(invoice.id)}>
+                      <TableCell className="!p-0 text-center" onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={selected.has(invoice.id)} onCheckedChange={() => toggleOne(invoice.id)} aria-label={`Select ${invoice.id}`} />
                       </TableCell>
                       <TableCell>
-                        <button
-                          className="sp-body-semibold text-primary hover:underline text-left"
-                          onClick={() => setDetailSheet(invoice.id)}
-                        >
+                        <span className="sp-body-semibold text-primary">
                           {invoice.id}
-                        </button>
-                        <p className="sp-caption text-muted-foreground/60">{invoice.orderId}</p>
+                        </span>
+                        <p className="sp-caption text-muted-foreground">{invoice.orderId}</p>
                       </TableCell>
                       <TableCell>
                         <div className="min-w-0">
                           <p className="sp-body-semibold text-foreground truncate">{invoice.customerName}</p>
-                          <p className="sp-caption text-muted-foreground/60 truncate">{invoice.customerEmail}</p>
+                          <p className="sp-caption text-muted-foreground truncate">{invoice.customerEmail}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -539,7 +531,7 @@ export default function InvoicesPage() {
                       <TableCell className="sp-caption text-muted-foreground">
                         {invoice.dueDate}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <InvoiceActions invoice={invoice} />
                       </TableCell>
                     </TableRow>
@@ -550,7 +542,7 @@ export default function InvoicesPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border mt-md">
                 <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
@@ -603,14 +595,14 @@ export default function InvoicesPage() {
                   <StatusBadge status={detailInvoice.status} />
 
                   {/* Customer */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <p className="sp-label text-muted-foreground mb-sm">Customer</p>
                     <p className="sp-body-semibold text-foreground">{detailInvoice.customerName}</p>
                     <p className="sp-caption text-muted-foreground">{detailInvoice.customerEmail}</p>
                   </div>
 
                   {/* Amounts */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <p className="sp-label text-muted-foreground mb-sm">Breakdown</p>
                     <div className="flex flex-col gap-xs">
                       <div className="flex items-center justify-between">
@@ -621,7 +613,7 @@ export default function InvoicesPage() {
                         <span className="sp-body text-muted-foreground">Tax</span>
                         <span className="sp-body text-foreground">${detailInvoice.tax.toFixed(2)}</span>
                       </div>
-                      <div className="border-t border-border/40 pt-xs mt-xs flex items-center justify-between">
+                      <div className="border-t border-border pt-xs mt-xs flex items-center justify-between">
                         <span className="sp-body-semibold text-foreground">Total</span>
                         <span className="sp-body-semibold text-foreground">${detailInvoice.total.toFixed(2)}</span>
                       </div>
@@ -636,7 +628,7 @@ export default function InvoicesPage() {
                       { label: "Due Date", value: detailInvoice.dueDate },
                       { label: "Paid At", value: detailInvoice.paidAt ?? "—" },
                     ].map((meta) => (
-                      <div key={meta.label} className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                      <div key={meta.label} className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                         <p className="sp-caption text-muted-foreground">{meta.label}</p>
                         <p className="sp-body-semibold text-foreground mt-2xs">{meta.value}</p>
                       </div>
@@ -655,7 +647,7 @@ export default function InvoicesPage() {
                   {detailInvoice.status !== "cancelled" && detailInvoice.status !== "paid" && (
                     <Button
                       variant="outline"
-                      className="w-full text-destructive border-destructive/30 hover:bg-destructive/10"
+                      className="w-full text-destructive border-destructive-subtle hover:bg-destructive-subtle"
                       onClick={() => { setDetailSheet(null); const inv = detailInvoice; setTimeout(() => setCancelTarget(invoices.find((x) => x.id === inv.id) ?? null), 100) }}
                     >
                       <XCircle className="size-[13px] mr-xs" /> Cancel Invoice
@@ -678,7 +670,7 @@ export default function InvoicesPage() {
                 </SheetHeader>
                 <div className="mt-xl flex flex-col gap-lg">
                   {/* Customer info (read-only) */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <p className="sp-body-semibold text-foreground">{editInvoice.customerName}</p>
                     <p className="sp-caption text-muted-foreground">{editInvoice.customerEmail}</p>
                     <p className="sp-caption text-muted-foreground mt-xs">
@@ -725,7 +717,7 @@ export default function InvoicesPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Keep Invoice</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleCancelConfirm}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleCancelConfirm}>
                 <XCircle className="size-[14px] mr-xs" /> Cancel Invoice
               </AlertDialogAction>
             </AlertDialogFooter>

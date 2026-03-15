@@ -27,11 +27,16 @@ export const BUTTON_VARIANT: Record<string, string> = {
   default: "Default", secondary: "Secondary", outline: "Outline",
   ghost: "Ghost", "ghost-muted": "Ghost Muted",
   destructive: "Destructive", "destructive-secondary": "Destructive Secondary",
+  special: "Special",
 }
 
 export const BUTTON_SIZE: Record<string, string> = {
   lg: "Large", default: "Default", sm: "Small", xs: "Mini",
-  icon: "Icon Only", "icon-sm": "Icon Only", "icon-lg": "Icon Only",
+  icon: "Default", "icon-sm": "Small", "icon-xs": "Mini", "icon-lg": "Large",
+}
+
+export const BUTTON_ICON: Record<string, string> = {
+  icon: "Icon Only", "icon-sm": "Icon Only", "icon-xs": "Icon Only", "icon-lg": "Icon Only",
 }
 
 export const BADGE_VARIANT: Record<string, string> = {
@@ -77,6 +82,25 @@ export const TOGGLE_VALUE: Record<string, string> = {
 // ── Avatar ──
 export const AVATAR_SIZE: Record<string, string> = {
   sm: "SM", default: "Default", lg: "LG",
+}
+
+// ── Thumbnail ──
+export const THUMBNAIL_TYPE: Record<string, string> = {
+  image: "Image", icon: "Icon", text: "Text",
+}
+
+export const THUMBNAIL_SIZE: Record<string, string> = {
+  xs: "XS", sm: "SM", default: "Default", lg: "LG", xl: "XL",
+}
+
+export const THUMBNAIL_SHAPE: Record<string, string> = {
+  square: "Square", circle: "Circle",
+}
+
+export const THUMBNAIL_COLOR: Record<string, string> = {
+  default: "Default", primary: "Primary", "primary-solid": "Primary Solid",
+  success: "Success", destructive: "Destructive", warning: "Warning",
+  outline: "Outline", surface: "Surface",
 }
 
 // ── Progress ──

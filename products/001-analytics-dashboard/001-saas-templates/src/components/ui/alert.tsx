@@ -63,11 +63,23 @@ function Alert({
   className,
   variant,
   inCard,
+  showTitle = true,
+  showSubtitle = true,
+  showIcon = true,
+  dismissable = false,
   ...props
 }: React.ComponentProps<"div"> &
   VariantProps<typeof alertVariants> & {
     /** Use when Alert sits inside a Card — removes border, tightens padding, neutral uses card-subtle bg */
     inCard?: boolean
+    /** Figma property: Show Title (default true) */
+    showTitle?: boolean
+    /** Figma property: Show Subtitle (default true) */
+    showSubtitle?: boolean
+    /** Figma property: Show Icon (default true) */
+    showIcon?: boolean
+    /** Figma property: Dismissable (default false) */
+    dismissable?: boolean
   }) {
   return (
     <div
@@ -75,7 +87,10 @@ function Alert({
       role="alert"
       {...figma("Alert", {
         Type: ALERT_TYPE[variant ?? "default"] ?? "Neutral",
-        "In Card": inCard ? "True" : "False",
+        "In Card": inCard ? "Yes" : "No",
+        "Show Title": showTitle ? "Yes" : "No",
+        "Show Description": showSubtitle ? "Yes" : "No",
+        "Show Icon": showIcon ? "Yes" : "No",
       })}
       className={cn(
         alertVariants({ variant }),

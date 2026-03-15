@@ -46,6 +46,8 @@ import {
   LineChart,
 } from "recharts"
 
+import { ListItem } from "@/components/ui/list-item"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -74,8 +76,9 @@ import {
 } from "@/data/chart-data"
 import { useChartColors } from "@/hooks/use-chart-colors"
 import { SalesGlobe } from "@/components/charts/sales-globe"
-import { countryFlag } from "@/components/charts/sales-map"
+import { CountryFlag } from "@/components/charts/sales-map"
 import { DateRangePicker } from "@/components/ui/date-picker"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { format, subDays } from "date-fns"
 import {
   Sheet,
@@ -91,7 +94,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Progress } from "@/components/ui/progress"
+import { Progress, type ProgressType } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
@@ -169,9 +172,7 @@ function Sparkline({ dataKey, color }: { dataKey: string; color: string; up?: bo
 function ErrorCard({ title, onRetry }: { title: string; onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[44px] rounded-full bg-destructive/10 dark:bg-destructive/20 flex items-center justify-center mb-md">
-        <WifiOff className="size-[20px] text-destructive" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="lg" color="destructive" icon={<WifiOff className="size-[20px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">Failed to load {title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">Check your connection and try again.</p>
       <Button variant="outline" size="sm" className="mt-lg gap-xs" onClick={onRetry}>
@@ -188,7 +189,7 @@ function ErrorCard({ title, onRetry }: { title: string; onRetry: () => void }) {
 /* Card wrapper — dashboard-specific: 2xl radius, softer border, no shadow */
 function DCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={`rounded-2xl border-border/60 dark:border-border-subtle shadow-none ${className}`}>
+    <Card className={`rounded-2xl border-border dark:border-border-subtle shadow-none ${className}`}>
       {children}
     </Card>
   )
@@ -238,9 +239,7 @@ function DashboardSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -349,7 +348,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
         <div className="flex items-center gap-xs">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+              <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-foreground" aria-label="More options">
                 <MoreHorizontal className="size-[14px]" />
               </Button>
             </DropdownMenuTrigger>
@@ -376,9 +375,9 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
             </DropdownMenuContent>
           </DropdownMenu>
           <Tabs value={tab} onValueChange={(v) => { setTab(v as TabKey); if (v !== "Days") setActiveDay(null) }}>
-            <TabsList className="rounded-full">
+            <TabsList variant="pill">
               {(["Days", "Weeks", "Months"] as TabKey[]).map((t) => (
-                <TabsTrigger key={t} value={t} className="rounded-full">{t}</TabsTrigger>
+                <TabsTrigger key={t} value={t}>{t}</TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
@@ -420,7 +419,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
         <div className="flex items-center gap-md">
           {tab === "Days" && activeDay !== null ? (
             <>
-              <span className="inline-flex items-center gap-2xs px-sm py-3xs rounded-full bg-primary/10 dark:bg-primary/20 sp-caption font-semibold text-primary">
+              <span className="inline-flex items-center gap-2xs px-sm py-3xs rounded-full bg-primary-10 dark:bg-primary-20 sp-caption font-semibold text-primary">
                 Day {String(activeDay + 1).padStart(2, "0")} ({DAY_LABELS[activeDay]})
               </span>
               <span className="sp-body-semibold text-foreground">
@@ -430,9 +429,9 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
             </>
           ) : (
             <>
-              <span className="inline-flex items-center gap-2xs px-sm py-3xs rounded-full bg-success-subtle sp-caption font-semibold text-success-subtle-foreground">
+              <Badge variant="success" level="secondary" size="sm">
                 {summary.pct} <ArrowUpRight className="size-[11px]" />
-              </span>
+              </Badge>
               <span className="sp-body text-muted-foreground">+ {summary.amount} increased</span>
             </>
           )}
@@ -480,7 +479,7 @@ function StatsChart({ colors }: { colors: Record<string, string> }) {
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null
                 return (
-                  <div className="rounded-xl border border-border/30 bg-card/95 backdrop-blur-xl px-lg py-sm shadow-lg">
+                  <div className="rounded-xl border border-border-subtle bg-card backdrop-blur-xl px-lg py-sm shadow-lg">
                     <p className="sp-label text-muted-foreground mb-xs">{label}</p>
                     <div className="flex flex-col gap-3xs">
                       {SEGMENTS.map((s) => {
@@ -637,7 +636,7 @@ export default function DashboardOverviewPage() {
 
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -663,28 +662,19 @@ export default function DashboardOverviewPage() {
             />
 
             {/* Compare period */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-xs px-md py-2xs rounded-lg border border-border/40 dark:border-outline-hover bg-card hover:bg-surface-raised hover:border-border-strong transition-colors sp-body-medium text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" aria-label="Compare period">
-                  <BarChart3 className="size-[14px] text-muted-foreground" />
-                  <span className="hidden sm:inline">Compare:</span>
-                  <span>{comparePeriod === "previous" ? "Previous period" : "Same period last year"}</span>
-                  <ChevronDown className="size-[12px] text-muted-foreground/50" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuLabel>Compare to</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => { setComparePeriod("previous"); toast("Comparing with previous period") }}>
-                  <span className={comparePeriod === "previous" ? "font-semibold" : ""}>Previous period</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => { setComparePeriod("last-year"); toast("Comparing with same period last year") }}>
-                  <span className={comparePeriod === "last-year" ? "font-semibold" : ""}>Same period last year</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Select value={comparePeriod} onValueChange={(val) => { setComparePeriod(val); toast(val === "previous" ? "Comparing with previous period" : "Comparing with same period last year") }}>
+              <SelectTrigger className="w-auto" showIcon showLabel>
+                <BarChart3 className="size-md text-muted-foreground shrink-0" />
+                <span className="hidden sm:inline sp-body-medium text-foreground shrink-0">Compare:</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="previous">Previous period</SelectItem>
+                <SelectItem value="last-year">Same period last year</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50">
+          <div className="hidden sm:flex items-center gap-2xs text-muted-foreground">
             <div className="size-[6px] rounded-full bg-success animate-pulse" />
             <span className="sp-caption">Updated just now</span>
           </div>
@@ -697,7 +687,7 @@ export default function DashboardOverviewPage() {
           <div className="lg:col-span-8 flex flex-col gap-lg">
             <div className="grid grid-cols-1 md:grid-cols-[3fr_5fr] gap-lg">
               {/* Total Revenue */}
-              <div className="rounded-2xl border border-border/60 dark:border-border-subtle bg-card p-lg relative overflow-hidden flex flex-col gap-md">
+              <div className="rounded-2xl border border-border dark:border-border-subtle bg-card p-lg relative overflow-hidden flex flex-col gap-md">
                 <div className="pointer-events-none absolute -top-[60px] -right-[40px] size-[160px] rounded-full blur-[80px] opacity-15 dark:opacity-[0.06]" style={{ backgroundColor: accent }} />
                 <div className="relative flex items-center justify-between">
                   <div className="min-w-0">
@@ -745,7 +735,7 @@ export default function DashboardOverviewPage() {
                             {d.change}
                           </span>
                         </div>
-                        <p className="sp-caption text-muted-foreground/60 mt-2xs">{d.desc}</p>
+                        <p className="sp-caption text-muted-foreground mt-2xs">{d.desc}</p>
                       </>
                     )
                   })()}
@@ -762,8 +752,8 @@ export default function DashboardOverviewPage() {
                           onClick={() => setActiveCategory(cat.label)}
                           className={`flex-1 flex flex-col items-center gap-xs py-sm rounded-xl border transition-all ${
                             activeCategory === cat.label
-                              ? "border-border/60 bg-background dark:border-border-subtle dark:bg-outline-hover"
-                              : "border-transparent bg-muted/30 hover:bg-muted/50 dark:bg-surface-inset/50 dark:hover:bg-surface-inset"
+                              ? "border-border bg-background dark:border-border-subtle dark:bg-outline-hover"
+                              : "border-transparent bg-surface-inset hover:bg-muted dark:bg-surface-inset dark:hover:bg-surface-raised"
                           }`}
                         >
                           <cat.icon className={`size-[18px] ${activeCategory === cat.label ? "text-foreground" : "text-muted-foreground"}`} />
@@ -788,16 +778,14 @@ export default function DashboardOverviewPage() {
                     <div className="flex items-center gap-sm">
                       <TT>
                         <TooltipTrigger asChild>
-                          <div className="size-[28px] rounded-full bg-outline-hover flex items-center justify-center shrink-0 cursor-help">
-                            <metric.icon className="size-[14px] text-muted-foreground" />
-                          </div>
+                          <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<metric.icon className="size-[14px]" />} className="cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent side="bottom">{metric.desc}</TooltipContent>
                       </TT>
                       <span className="sp-label text-muted-foreground truncate flex-1">{metric.label}</span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="xs" className="size-[24px] p-0 text-muted-foreground/50 hover:text-muted-foreground shrink-0" aria-label="More options">
+                          <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-foreground shrink-0" aria-label="More options">
                             <MoreHorizontal className="size-[14px]" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -849,7 +837,7 @@ export default function DashboardOverviewPage() {
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+                    <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-foreground" aria-label="More options">
                       <MoreHorizontal className="size-[14px]" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -885,19 +873,21 @@ export default function DashboardOverviewPage() {
                     <path d="M14 3L24 10L14 25L4 10Z" fill="white" fillOpacity="0.25" stroke="white" strokeWidth="1" strokeOpacity="0.4"/>
                     <path d="M14 7L20 11.5L14 22L8 11.5Z" fill="white" fillOpacity="0.5"/>
                   </svg>
-                  <span className="sp-body-semibold text-white">ShopPulse<sup className="text-[9px] text-white/50 ml-[2px]">&reg;</sup></span>
+                  <span className="sp-body-semibold text-white">ShopPulse<sup className="sp-micro text-foreground-subtle ml-4xs">&reg;</sup></span>
                 </div>
                 <div>
                   <h3 className="sp-h3 text-white leading-tight">Advanced Analytics Suite</h3>
-                  <p className="sp-body text-white/60 mt-xs line-clamp-1">Unlock deeper e-commerce insights, real-time reports & predictive trends.</p>
+                  <p className="sp-body text-muted-foreground mt-xs line-clamp-1">Unlock deeper e-commerce insights, real-time reports & predictive trends.</p>
                 </div>
-                <button
-                  className="flex items-center justify-center gap-xs w-full py-sm rounded-xl sp-body-semibold text-primary-hover bg-white transition-all hover:bg-white/90 shadow-[0_2px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
+                <Button
+                  variant="special"
+                  size="lg"
+                  className="w-full rounded-xl"
                   onClick={() => navigate("/settings/billing")}
                 >
                   Upgrade
                   <Sparkles className="size-[14px]" />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -916,7 +906,7 @@ export default function DashboardOverviewPage() {
               <div className="flex items-center gap-2xs">
                 <TT>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefreshOrders} aria-label="Refresh">
+                    <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-foreground" onClick={handleRefreshOrders} aria-label="Refresh">
                       <RefreshCw className={`size-[13px] ${refreshingOrders ? "animate-spin" : ""}`} />
                     </Button>
                   </TooltipTrigger>
@@ -947,27 +937,19 @@ export default function DashboardOverviewPage() {
                 {recentOrders.slice(0, 4).map((order) => (
                   <DropdownMenu key={order.id}>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-sm py-xs px-sm -mx-sm rounded-xl transition-colors hover:bg-surface-inset w-full text-left">
-                        <Avatar className="size-[38px] ring-1 ring-border/20">
-                          <AvatarImage src={order.avatarUrl} alt={order.customer} />
-                          <AvatarFallback className="sp-label bg-muted/30 text-muted-foreground">{order.avatar}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="sp-body-semibold text-foreground truncate">{order.customer}</p>
-                          <div className="flex items-center gap-2xs mt-3xs">
-                            <span className="sp-data-sm text-muted-foreground">{order.id}</span>
-                            <span className="text-muted-foreground/50">&middot;</span>
-                            <Clock className="size-[11px] text-muted-foreground/60" />
-                            <span className="sp-data-sm text-muted-foreground/50">{order.time}</span>
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-end gap-2xs">
-                          <span className="sp-data text-foreground font-medium">{order.amount}</span>
-                          <Badge variant={statusBadge[order.status]?.variant || "secondary"} level="secondary" size="sm">
-                            {order.status}
-                          </Badge>
-                        </div>
-                      </button>
+                      <div>
+                        <ListItem
+                          type="order"
+                          avatarUrl={order.avatarUrl}
+                          avatarFallback={order.avatar}
+                          title={order.customer}
+                          orderId={order.id}
+                          time={order.time}
+                          amount={order.amount}
+                          status={order.status}
+                          statusVariant={statusBadge[order.status]?.variant || "secondary"}
+                        />
+                      </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>{order.id}</DropdownMenuLabel>
@@ -1038,31 +1020,17 @@ export default function DashboardOverviewPage() {
                 {topProducts.slice(0, 4).map((prod, idx) => (
                   <DropdownMenu key={prod.sku}>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-sm py-xs px-sm -mx-sm rounded-xl transition-colors hover:bg-surface-inset group w-full text-left">
-                        <div className="size-[40px] shrink-0 rounded-lg overflow-hidden bg-surface-raised relative">
-                          <img src={prod.imageUrl} alt={prod.name} className="size-full object-cover" />
-                          {idx === 0 && (
-                            <div className="absolute -top-[1px] -right-[1px] size-[16px] rounded-bl-md bg-warning flex items-center justify-center">
-                              <Star className="size-[9px] text-white fill-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="sp-body-medium text-foreground truncate">{prod.name}</p>
-                          <div className="flex items-center gap-2xs">
-                            <span className="sp-data-sm text-muted-foreground">{prod.sales.toLocaleString()} sold</span>
-                            <span className="text-muted-foreground/50">&middot;</span>
-                            <span className="sp-data-sm text-muted-foreground">{prod.price}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3xs">
-                          {prod.growth.startsWith("+")
-                            ? <ArrowUpRight className="size-[12px] text-success" />
-                            : <ArrowDownRight className="size-[12px] text-destructive" />
-                          }
-                          <span className={`sp-data-sm ${prod.growth.startsWith("+") ? "text-success" : "text-destructive"}`}>{prod.growth}</span>
-                        </div>
-                      </button>
+                      <div>
+                        <ListItem
+                          type="product"
+                          imageUrl={prod.imageUrl}
+                          title={prod.name}
+                          sales={`${prod.sales.toLocaleString()} sold`}
+                          price={prod.price}
+                          growth={prod.growth}
+                          showStar={idx === 0}
+                        />
+                      </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>{prod.name}</DropdownMenuLabel>
@@ -1093,7 +1061,7 @@ export default function DashboardOverviewPage() {
               <h3 className="sp-h4 text-foreground">Sales Channels</h3>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="xs" className="text-muted-foreground/50 hover:text-muted-foreground" aria-label="More options">
+                  <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
                     <MoreHorizontal className="size-sm" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -1123,9 +1091,7 @@ export default function DashboardOverviewPage() {
                   <div className="flex items-center gap-sm mb-xs">
                     <TT>
                       <TooltipTrigger asChild>
-                        <div className="size-[28px] shrink-0 rounded-md bg-surface-raised flex items-center justify-center cursor-help">
-                          <ch.Icon className="size-[14px] text-muted-foreground" />
-                        </div>
+                        <Thumbnail type="icon" size="sm" color="surface" icon={<ch.Icon className="size-[14px]" />} />
                       </TooltipTrigger>
                       <TooltipContent>{ch.subtitle}</TooltipContent>
                     </TT>
@@ -1140,15 +1106,7 @@ export default function DashboardOverviewPage() {
                   {/* Row 2: progress bar */}
                   <TT>
                     <TooltipTrigger asChild>
-                      <div className="relative h-[10px] w-full rounded-sm bg-surface-inset overflow-hidden cursor-help">
-                        <div
-                          className="absolute inset-y-0 left-0 rounded-sm transition-all duration-500 group-hover:brightness-125"
-                          style={{
-                            width: `${ch.value}%`,
-                            backgroundColor: p[i],
-                          }}
-                        />
-                      </div>
+                      <Progress value={ch.value} type={`chart-${i + 1}` as ProgressType} className="h-[10px] cursor-help [&>div]:rounded-sm" />
                     </TooltipTrigger>
                     <TooltipContent>{ch.value}% of target reached</TooltipContent>
                   </TT>
@@ -1227,7 +1185,7 @@ export default function DashboardOverviewPage() {
                   <p className="sp-body-medium text-foreground">{cmp.period}</p>
                   <div className="flex items-center gap-sm mt-2xs">
                     <span className="sp-data text-muted-foreground">{cmp.previous}</span>
-                    <ArrowRight className="size-[12px] text-muted-foreground/60" />
+                    <ArrowRight className="size-[12px] text-muted-foreground" />
                     <span className="sp-data text-foreground font-semibold">{cmp.current}</span>
                   </div>
                 </div>
@@ -1307,7 +1265,7 @@ export default function DashboardOverviewPage() {
                 ].map((step, i) => (
                   <div key={i} className="flex items-center gap-sm">
                     <div className={`size-[8px] rounded-full shrink-0 ${step.done ? "bg-success" : "bg-border"}`} />
-                    <span className={`sp-body-medium flex-1 ${step.done ? "text-foreground" : "text-muted-foreground/50"}`}>{step.label}</span>
+                    <span className={`sp-body-medium flex-1 ${step.done ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                     <span className="sp-caption text-muted-foreground">{step.time}</span>
                   </div>
                 ))}
@@ -1363,7 +1321,7 @@ export default function DashboardOverviewPage() {
             {salesLocations.map((loc, i) => (
               <div key={loc.city} className="flex items-center gap-sm rounded-xl border border-border-card p-lg">
                 <div className="size-[36px] rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${p[i % p.length]}15` }}>
-                  <span className="text-[18px] leading-none">{countryFlag(loc.country)}</span>
+                  <CountryFlag code={loc.country} size={24} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="sp-body-medium text-foreground">{loc.city}</p>
@@ -1437,7 +1395,7 @@ export default function DashboardOverviewPage() {
                     { icon: Smartphone, label: "Mobile App", desc: "In-app purchases" },
                     { icon: Package, label: "Wholesale", desc: "B2B distribution" },
                   ].map((type) => (
-                    <label key={type.label} className="flex items-center gap-sm rounded-xl border border-border/30 dark:border-border-subtle p-md cursor-pointer hover:bg-muted/30 dark:hover:bg-muted/10 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/[0.04]">
+                    <label key={type.label} className="flex items-center gap-sm rounded-xl border border-border-subtle dark:border-border-subtle p-md cursor-pointer hover:bg-surface-raised dark:hover:bg-surface-raised transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-10">
                       <input type="radio" name="channelType" value={type.label} className="sr-only" defaultChecked={type.label === "E-Commerce"} />
                       <type.icon className="size-[16px] text-muted-foreground shrink-0" />
                       <div>

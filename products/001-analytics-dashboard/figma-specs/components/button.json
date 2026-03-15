@@ -2,7 +2,7 @@
   "components": [
     {
       "name": "Button",
-      "description": "Displays a button or a component that looks like a button. Supports 7 variants, 4 sizes, and icon compositions.",
+      "description": "Displays a button or a component that looks like a button. Supports 8 variants, 4 sizes, and icon compositions.",
       "category": "Actions",
       "installation": {
         "dependencies": "pnpm add @radix-ui/react-slot",
@@ -10,7 +10,7 @@
       },
 
       "properties": {
-        "Variant": ["Default", "Secondary", "Outline", "Ghost", "Ghost Muted", "Destructive", "Destructive Secondary"],
+        "Variant": ["Default", "Secondary", "Outline", "Ghost", "Ghost Muted", "Destructive", "Destructive Secondary", "Special"],
         "Size": ["Large", "Default", "Small", "Mini"],
         "State": ["Default", "Hover", "Focus", "Disabled"],
         "Icon": ["None", "Left", "Right", "Both", "Icon Only"]
@@ -20,18 +20,23 @@
         "layout": "horizontal",
         "primaryAlign": "center",
         "counterAlign": "center",
-        "width": 120,
         "height": 36,
+        "heightVar": "height/default",
+        "widthMode": "hug",
         "gap": "xs",
         "fill": "primary",
         "radius": "lg",
         "paddingX": "md",
         "paddingY": "none",
+        "heightMode": "fixed",
         "textStyle": "SP/Body Semibold",
-        "textContent": "Button",
         "textFill": "primary-foreground",
         "iconSize": 16,
-        "clipsContent": true
+        "clipsContent": true,
+        "hideLabel": true,
+        "children": [
+          { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Button" }
+        ]
       },
 
       "variantStyles": {
@@ -42,11 +47,12 @@
         "Variant=Ghost Muted": { "fill": "ghost", "textFill": "ghost-foreground", "iconFill": "ghost-foreground" },
         "Variant=Destructive": { "fill": "destructive", "textFill": "destructive-foreground", "iconFill": "destructive-foreground" },
         "Variant=Destructive Secondary": { "fill": "destructive-subtle", "stroke": "destructive-border", "textFill": "destructive-subtle-foreground", "iconFill": "destructive-subtle-foreground" },
+        "Variant=Special": { "fill": "foreground", "textFill": "primary-hover", "iconFill": "primary-hover", "effectStyleName": "Shadows/sm" },
 
-        "Size=Large": { "height": 40, "paddingX": "xl", "gap": "xs" },
+        "Size=Large": { "height": 40, "heightVar": "height/large", "paddingX": "xl", "gap": "xs" },
         "Size=Default": {},
-        "Size=Small": { "height": 32, "paddingX": "sm", "gap": "2xs" },
-        "Size=Mini": { "height": 24, "paddingX": "xs", "gap": "2xs", "textStyle": "SP/Label" },
+        "Size=Small": { "height": 32, "heightVar": "height/small", "paddingX": "sm", "gap": "2xs" },
+        "Size=Mini": { "height": 24, "heightVar": "height/mini", "paddingX": "xs", "gap": "2xs", "textStyle": "SP/Label" },
 
         "State=Default": {},
         "State=Hover": {},
@@ -54,10 +60,31 @@
         "State=Disabled": { "opacity": 0.5 },
 
         "Icon=None": {},
-        "Icon=Left": { "iconLeft": true, "iconLeftName": "Plus" },
-        "Icon=Right": { "iconRight": true, "iconRightName": "ChevronRight" },
-        "Icon=Both": { "iconLeft": true, "iconRight": true, "iconLeftName": "Plus", "iconRightName": "ChevronRight" },
-        "Icon=Icon Only": { "iconLeft": true, "iconLeftName": "Plus", "hideLabel": true, "paddingX": "none", "paddingY": "none", "gap": "none" },
+        "Icon=Left": {
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Plus", "iconSize": 16 },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Button" }
+          ]
+        },
+        "Icon=Right": {
+          "children": [
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Button" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ChevronRight", "iconSize": 16 }
+          ]
+        },
+        "Icon=Both": {
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Plus", "iconSize": 16 },
+            { "name": "Label", "type": "text", "textStyle": "SP/Body Semibold", "textContent": "Button" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ChevronRight", "iconSize": 16 }
+          ]
+        },
+        "Icon=Icon Only": {
+          "paddingX": "none", "paddingY": "none", "gap": "none",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Plus", "iconSize": 16 }
+          ]
+        },
 
         "Variant=Default,State=Hover": { "fill": "primary-hover" },
         "Variant=Secondary,State=Hover": { "fill": "secondary-hover" },
@@ -66,6 +93,7 @@
         "Variant=Ghost Muted,State=Hover": { "fill": "ghost-hover", "textFill": "foreground", "iconFill": "foreground" },
         "Variant=Destructive,State=Hover": {},
         "Variant=Destructive Secondary,State=Hover": {},
+        "Variant=Special,State=Hover": {},
 
         "Variant=Default,State=Focus": { "focusRing": "ring" },
         "Variant=Secondary,State=Focus": { "focusRing": "ring" },
@@ -74,17 +102,18 @@
         "Variant=Ghost Muted,State=Focus": { "focusRing": "ring", "fill": "ghost" },
         "Variant=Destructive,State=Focus": { "focusRing": "ring-error" },
         "Variant=Destructive Secondary,State=Focus": { "focusRing": "ring-error" },
+        "Variant=Special,State=Focus": { "focusRing": "ring" },
 
-        "Size=Large,Icon=Icon Only": { "width": 40 },
-        "Size=Default,Icon=Icon Only": { "width": 36 },
-        "Size=Small,Icon=Icon Only": { "width": 32 },
-        "Size=Mini,Icon=Icon Only": { "width": 24 }
+        "Size=Large,Icon=Icon Only": { "width": 40, "widthMode": "fixed", "widthVar": "icon/large", "heightVar": "icon/large" },
+        "Size=Default,Icon=Icon Only": { "width": 36, "widthMode": "fixed", "widthVar": "icon/default", "heightVar": "icon/default" },
+        "Size=Small,Icon=Icon Only": { "width": 32, "widthMode": "fixed", "widthVar": "icon/small", "heightVar": "icon/small" },
+        "Size=Mini,Icon=Icon Only": { "width": 24, "widthMode": "fixed", "widthVar": "icon/mini", "heightVar": "icon/mini" }
       },
 
       "examples": [
         {
           "name":"Variants",
-          "description": "All 7 visual variants at default size.",
+          "description": "All 8 visual variants at default size.",
           "layout": "horizontal",
           "items": [
             { "label": "Default", "props": { "Variant": "Default", "Size": "Default", "State": "Default", "Icon": "None" } },
@@ -93,7 +122,8 @@
             { "label": "Ghost", "props": { "Variant": "Ghost", "Size": "Default", "State": "Default", "Icon": "None" } },
             { "label": "Ghost Muted", "props": { "Variant": "Ghost Muted", "Size": "Default", "State": "Default", "Icon": "None" } },
             { "label": "Destructive", "props": { "Variant": "Destructive", "Size": "Default", "State": "Default", "Icon": "None" } },
-            { "label": "Destructive Secondary", "props": { "Variant": "Destructive Secondary", "Size": "Default", "State": "Default", "Icon": "None" } }
+            { "label": "Destructive Secondary", "props": { "Variant": "Destructive Secondary", "Size": "Default", "State": "Default", "Icon": "None" } },
+            { "label": "Special", "props": { "Variant": "Special", "Size": "Default", "State": "Default", "Icon": "None" } }
           ]
         },
         {
@@ -152,7 +182,7 @@
       ],
 
       "props": [
-        { "name": "variant", "type": "\"default\" | \"secondary\" | \"outline\" | \"ghost\" | \"ghost-muted\" | \"destructive\" | \"destructive-secondary\"", "default": "\"default\"", "description": "Visual style variant" },
+        { "name": "variant", "type": "\"default\" | \"secondary\" | \"outline\" | \"ghost\" | \"ghost-muted\" | \"destructive\" | \"destructive-secondary\" | \"special\"", "default": "\"default\"", "description": "Visual style variant" },
         { "name": "size", "type": "\"lg\" | \"default\" | \"sm\" | \"xs\" | \"icon\" | \"icon-sm\" | \"icon-lg\"", "default": "\"default\"", "description": "Button size" },
         { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the button" },
         { "name": "asChild", "type": "boolean", "default": "false", "description": "Render as child element (Radix Slot)" },
@@ -193,6 +223,7 @@
         { "figma": "Variant=Ghost Muted", "value": "bg-ghost", "code": "variant", "codeValue": "\"ghost-muted\"" },
         { "figma": "Variant=Destructive", "value": "bg-destructive", "code": "variant", "codeValue": "\"destructive\"" },
         { "figma": "Variant=Destructive Secondary", "value": "bg-destructive-subtle + border", "code": "variant", "codeValue": "\"destructive-secondary\"" },
+        { "figma": "Variant=Special", "value": "bg-foreground + shadow", "code": "variant", "codeValue": "\"special\"" },
         { "figma": "Size=Large (40px)", "value": "h-3xl px-xl", "code": "size", "codeValue": "\"lg\"" },
         { "figma": "Size=Default (36px)", "value": "h-9 px-md", "code": "size", "codeValue": "\"default\"" },
         { "figma": "Size=Small (32px)", "value": "h-2xl px-sm", "code": "size", "codeValue": "\"sm\"" },

@@ -38,6 +38,7 @@ import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,7 +61,7 @@ import {
   salesLocations,
 } from "@/data/chart-data"
 import { useChartColors } from "@/hooks/use-chart-colors"
-import { SalesMap, countryFlag } from "@/components/charts/sales-map"
+import { SalesMap, CountryFlag } from "@/components/charts/sales-map"
 import { toast } from "sonner"
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -79,7 +80,7 @@ function CardActions({ onExport, onCopy }: { onExport?: () => void; onCopy?: () 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+        <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -134,9 +135,7 @@ function AnalyticsSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -150,9 +149,7 @@ function EmptyState({ icon: Icon, title, description }: { icon: React.ElementTyp
 function ErrorCard({ title, onRetry }: { title: string; onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[44px] rounded-full bg-destructive/10 dark:bg-destructive/20 flex items-center justify-center mb-md">
-        <WifiOff className="size-[20px] text-destructive" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="lg" color="destructive" icon={<WifiOff className="size-[20px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">Failed to load {title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">Check your connection and try again.</p>
       <Button variant="outline" size="sm" className="mt-lg gap-xs" onClick={onRetry}>
@@ -171,7 +168,7 @@ function ChartTooltipContent({ active, payload, label, formatter }: {
 }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-xl border border-border/30 bg-card/95 backdrop-blur-xl px-lg py-sm shadow-lg">
+    <div className="rounded-xl border border-border-subtle bg-card backdrop-blur-xl px-lg py-sm shadow-lg">
       <p className="sp-label text-muted-foreground mb-xs">{label}</p>
       <div className="flex flex-col gap-3xs">
         {payload.map((entry) => (
@@ -321,11 +318,11 @@ function GeographySection({ error, onRetry }: { error?: boolean; onRetry?: () =>
               className={`${!isLastCol2 ? "border-r" : ""} ${!isLastRow2 ? "border-b" : ""} ${isLastCol2 && !isLastCol4 ? "md:border-r" : ""} ${isLastRow2 && !isLastRow4 ? "md:border-b" : ""} ${isLastCol4 ? "md:border-r-0" : ""} ${isLastRow4 ? "md:border-b-0" : ""} border-border-card px-md md:px-lg py-md`}
             >
               <button
-                className={`flex items-center gap-sm text-left rounded-xl px-sm py-xs w-full transition-colors ${isActive ? "bg-surface-raised" : "hover:bg-surface-raised/50"}`}
+                className={`flex items-center gap-sm text-left rounded-xl px-sm py-xs w-full transition-colors ${isActive ? "bg-surface-raised" : "hover:bg-surface-raised"}`}
                 onPointerEnter={() => setHighlightCity(loc.city)}
                 onPointerLeave={() => setHighlightCity(null)}
               >
-                <span className="text-[15px] leading-none shrink-0">{countryFlag(loc.country)}</span>
+                <CountryFlag code={loc.country} size={24} />
                 <div className="flex flex-col gap-4xs min-w-0 flex-1">
                   <span className="sp-body-medium text-foreground truncate">{loc.city}</span>
                   <span className="sp-caption text-muted-foreground">${(loc.sales / 1000).toFixed(1)}k</span>
@@ -371,7 +368,7 @@ function RevenueOverview({ p }: { p: string[] }) {
       <p className="sp-kpi-lg text-foreground mb-lg">${totalRevenue.toLocaleString()}</p>
 
       {/* Stacked horizontal bar — segments with gaps */}
-      <div className="flex gap-[3px] h-[12px] mb-xl">
+      <div className="flex gap-3xs h-[12px] mb-xl">
         {channelTotals.map((ch) => (
           <div
             key={ch.name}
@@ -508,7 +505,7 @@ function TrafficSources({ p }: { p: string[] }) {
             return (
               <button
                 key={ch.name}
-                className={`flex items-center gap-sm rounded-lg px-sm py-xs -mx-sm transition-all ${isActive ? "bg-surface-raised" : "hover:bg-surface-raised/50"}`}
+                className={`flex items-center flex-wrap gap-x-sm gap-y-2xs rounded-lg px-sm py-xs -mx-sm transition-all ${isActive ? "bg-surface-raised" : "hover:bg-surface-raised"}`}
                 onPointerEnter={() => setActiveIdx(i)}
                 onPointerLeave={() => setActiveIdx(null)}
               >
@@ -517,7 +514,7 @@ function TrafficSources({ p }: { p: string[] }) {
                   style={{ backgroundColor: p[i], opacity: isDimmed ? 0.4 : 1 }}
                 />
                 <span className={`sp-body-medium flex-1 truncate text-left transition-colors ${isDimmed ? "text-muted-foreground" : "text-foreground"}`}>{ch.name}</span>
-                <span className={`sp-data font-semibold transition-colors ${isDimmed ? "text-muted-foreground" : "text-foreground"}`}>{ch.value}%</span>
+                <span className={`sp-data font-semibold shrink-0 transition-colors ${isDimmed ? "text-muted-foreground" : "text-foreground"}`}>{ch.value}%</span>
               </button>
             )
           })}
@@ -614,7 +611,7 @@ function ConversionFunnel({ colors, p, refreshing, onRefresh }: { colors: Record
           {onRefresh && (
             <TT>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="xs" className="text-muted-foreground/60 hover:text-muted-foreground" onClick={onRefresh} aria-label="Refresh">
+                <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={onRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </TooltipTrigger>
@@ -672,7 +669,7 @@ function ConversionFunnel({ colors, p, refreshing, onRefresh }: { colors: Record
         {funnelWithDropoff.map((stage, i) => (
           <div key={stage.stage} className="flex items-center gap-sm px-xs">
             <div className="size-[24px] rounded-md flex items-center justify-center shrink-0" style={{ backgroundColor: `${p[i % p.length]}15` }}>
-              <span className="text-[11px] font-semibold" style={{ color: p[i % p.length] }}>{i + 1}</span>
+              <span className="sp-mini font-semibold" style={{ color: p[i % p.length] }}>{i + 1}</span>
             </div>
             <span className="sp-body-medium text-foreground truncate flex-1 min-w-0">{stage.stage}</span>
             <span className="sp-caption text-muted-foreground shrink-0">{stage.value.toLocaleString()}</span>
@@ -776,9 +773,7 @@ function ProductCategories({ p }: { p: string[] }) {
           return (
             <div key={cat.name} className="group py-xs">
               <div className="flex items-center gap-sm mb-xs">
-                <div className="size-[28px] shrink-0 rounded-md bg-surface-raised flex items-center justify-center">
-                  <Icon className="size-[14px] text-muted-foreground" />
-                </div>
+                <Thumbnail type="icon" size="sm" color="surface" icon={<Icon className="size-[14px]" />} />
                 <div className="flex-1 min-w-0">
                   <p className="sp-body-medium text-foreground">{cat.name}</p>
                 </div>
@@ -873,7 +868,7 @@ export default function AnalyticsPage() {
 
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -889,7 +884,7 @@ export default function AnalyticsPage() {
           <DCard key={m.label} className="md:col-span-3 lg:col-span-3 flex flex-col justify-center gap-xs">
             <div className="flex items-center justify-between">
               <p className="sp-caption text-muted-foreground">{m.label}</p>
-              <m.icon className="size-[14px] text-muted-foreground/50" />
+              <m.icon className="size-[14px] text-muted-foreground" />
             </div>
             <p className="sp-kpi-lg text-foreground">{m.value}</p>
             <div className="flex items-end justify-between">
@@ -903,14 +898,14 @@ export default function AnalyticsPage() {
           </DCard>
         ))}
 
-        {/* ── Row 2-3: Revenue Overview (5) + Traffic Sources (4) + Product Categories (3) ── */}
-        <div className="md:col-span-6 lg:col-span-5 lg:row-span-2">
+        {/* ── Row 2-3: Revenue Overview + Traffic Sources + Product Categories (equal width) ── */}
+        <div className="md:col-span-6 lg:col-span-4 lg:row-span-2">
           <RevenueOverview p={p} />
         </div>
         <div className="md:col-span-3 lg:col-span-4 lg:row-span-2">
           <TrafficSources p={p} />
         </div>
-        <div className="md:col-span-3 lg:col-span-3 lg:row-span-2">
+        <div className="md:col-span-3 lg:col-span-4 lg:row-span-2">
           <ProductCategories p={p} />
         </div>
 
@@ -934,7 +929,7 @@ export default function AnalyticsPage() {
         {INSIGHTS.map((insight) => (
           <DCard key={insight.label} className="md:col-span-3 lg:col-span-3 flex flex-col gap-sm">
             <div className="flex items-center justify-between">
-              <insight.icon className="size-[16px] text-muted-foreground/60" />
+              <insight.icon className="size-[16px] text-muted-foreground" />
               <span className="inline-flex items-center gap-4xs sp-caption font-semibold text-success">
                 <ArrowUpRight className="size-[11px]" /> {insight.change}
               </span>

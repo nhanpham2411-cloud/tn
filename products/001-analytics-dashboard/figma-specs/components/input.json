@@ -25,6 +25,7 @@
         "width": 320,
         "height": 36,
         "heightMode": "fixed",
+        "heightVar": "height/default",
         "radius": "lg",
         "stroke": "border",
         "strokeWidth": 1,
@@ -32,8 +33,50 @@
         "textContent": "Placeholder text",
         "textStyle": "SP/Body",
         "textFill": "muted-foreground",
-        "iconFill": "muted-foreground",
-        "labelFill": true
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Icon Left",
+            "type": "icon",
+            "iconName": "Search",
+            "iconSize": 16,
+            "iconFill": "muted-foreground",
+            "showWhen": "Left=Icon"
+          },
+          {
+            "name": "Prefix",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "$",
+            "textFill": "muted-foreground",
+            "showWhen": "Left=Prefix"
+          },
+          {
+            "name": "Value",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "Placeholder text",
+            "textFill": "muted-foreground",
+            "fillWidth": true,
+            "truncate": true
+          },
+          {
+            "name": "Suffix",
+            "type": "text",
+            "textStyle": "SP/Body",
+            "textContent": "kg",
+            "textFill": "muted-foreground",
+            "showWhen": "Right=Suffix"
+          },
+          {
+            "name": "Icon Right",
+            "type": "icon",
+            "iconName": "ArrowRight",
+            "iconSize": 16,
+            "iconFill": "muted-foreground",
+            "showWhen": "Right=Icon"
+          }
+        ]
       },
 
       "variantStyles": {
@@ -52,31 +95,33 @@
         },
         "Value=Filled": {
           "textContent": "name@example.com",
-          "textFill": "foreground"
+          "textFill": "foreground",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Search", "iconSize": 16, "iconFill": "muted-foreground", "showWhen": "Left=Icon" },
+            { "name": "Prefix", "type": "text", "textStyle": "SP/Body", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+            { "name": "Value", "type": "text", "textStyle": "SP/Body", "textContent": "name@example.com", "textFill": "foreground", "fillWidth": true, "truncate": true },
+            { "name": "Suffix", "type": "text", "textStyle": "SP/Body", "textContent": "kg", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ArrowRight", "iconSize": 16, "iconFill": "muted-foreground", "showWhen": "Right=Icon" }
+          ]
         },
         "Value=Empty": {
           "textContent": " ",
-          "textFill": "foreground"
-        },
-        "Left=Icon": {
-          "iconLeft": true,
-          "iconLeftName": "Search"
-        },
-        "Left=Prefix": {
-          "prefix": "$"
+          "textFill": "foreground",
+          "children": [
+            { "name": "Icon Left", "type": "icon", "iconName": "Search", "iconSize": 16, "iconFill": "muted-foreground", "showWhen": "Left=Icon" },
+            { "name": "Prefix", "type": "text", "textStyle": "SP/Body", "textContent": "$", "textFill": "muted-foreground", "showWhen": "Left=Prefix" },
+            { "name": "Value", "type": "text", "textStyle": "SP/Body", "textContent": " ", "textFill": "foreground", "fillWidth": true, "truncate": true },
+            { "name": "Suffix", "type": "text", "textStyle": "SP/Body", "textContent": "kg", "textFill": "muted-foreground", "showWhen": "Right=Suffix" },
+            { "name": "Icon Right", "type": "icon", "iconName": "ArrowRight", "iconSize": 16, "iconFill": "muted-foreground", "showWhen": "Right=Icon" }
+          ]
         },
         "Left=Text Left": {
-          "textLeft": "https://"
-        },
-        "Right=Icon": {
-          "iconRight": true,
-          "iconRightName": "ArrowRight"
-        },
-        "Right=Suffix": {
-          "suffix": "kg"
+          "textLeft": "https://",
+          "hideLabel": false
         },
         "Right=Text Right": {
-          "textRight": ".com"
+          "textRight": ".com",
+          "hideLabel": false
         }
       },
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Check, Loader2 } from "lucide-react"
+import { Check, CircleCheck, Loader2, X } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Progress } from "@/components/ui/progress"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import { Thumbnail } from "@/components/ui/thumbnail"
 
 const steps = [
   { title: "Company Info", description: "Tell us about your organization" },
@@ -81,15 +83,17 @@ export default function OnboardingPage() {
         <div className="flex items-center gap-sm mb-md">
           {steps.map((step, i) => (
             <div key={step.title} className="flex items-center gap-xs">
-              <div
-                className={`flex size-[28px] items-center justify-center rounded-full sp-caption font-semibold transition-colors ${
-                  i <= currentStep
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {i < currentStep ? <Check className="size-sm" /> : i + 1}
-              </div>
+              {i < currentStep ? (
+                <Thumbnail type="icon" shape="circle" size="sm" color="primary-solid" icon={<Check className="size-sm" />} />
+              ) : (
+                <Thumbnail
+                  type="text"
+                  size="sm"
+                  text={i + 1}
+                  color={i === currentStep ? "primary-solid" : "default"}
+                  className="sp-caption font-semibold"
+                />
+              )}
               {i < steps.length - 1 && (
                 <div className={`h-0.5 w-lg transition-colors ${i < currentStep ? "bg-primary" : "bg-muted"}`} />
               )}
@@ -107,7 +111,7 @@ export default function OnboardingPage() {
         {/* Step 1: Company Info */}
         {currentStep === 0 && (
           <div className="flex flex-col gap-md">
-            <div className="flex flex-col gap-xs">
+            <div className="flex flex-col gap-3xs">
               <Label htmlFor="company">Company Name</Label>
               <Input
                 id="company"
@@ -117,7 +121,7 @@ export default function OnboardingPage() {
               />
             </div>
 
-            <div className="flex flex-col gap-xs">
+            <div className="flex flex-col gap-3xs">
               <Label>Industry</Label>
               <Select value={industry} onValueChange={setIndustry}>
                 <SelectTrigger>
@@ -134,7 +138,7 @@ export default function OnboardingPage() {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-xs">
+            <div className="flex flex-col gap-3xs">
               <Label>Team Size</Label>
               <RadioGroup value={teamSize} onValueChange={setTeamSize} className="flex flex-wrap gap-md">
                 {["1-10", "11-50", "51-200", "200+"].map((size) => (
@@ -164,8 +168,8 @@ export default function OnboardingPage() {
                   aria-label={`Team member email ${i + 1}`}
                 />
                 {emails.length > 1 && (
-                  <Button variant="ghost" size="sm" onClick={() => removeEmail(i)} aria-label="Remove email">
-                    ×
+                  <Button variant="ghost" size="icon-sm" onClick={() => removeEmail(i)} aria-label="Remove email">
+                    <X className="size-sm" />
                   </Button>
                 )}
               </div>
@@ -179,7 +183,7 @@ export default function OnboardingPage() {
         {/* Step 3: Preferences */}
         {currentStep === 2 && (
           <div className="flex flex-col gap-md">
-            <div className="flex flex-col gap-xs">
+            <div className="flex flex-col gap-3xs">
               <Label>Timezone</Label>
               <Select value={timezone} onValueChange={setTimezone}>
                 <SelectTrigger>
@@ -196,12 +200,13 @@ export default function OnboardingPage() {
               </Select>
             </div>
 
-            <div className="rounded-xl border border-success-subtle bg-success-subtle p-lg">
-              <h4 className="sp-body-semibold text-foreground mb-xs">You're all set!</h4>
-              <p className="sp-body text-muted-foreground">
+            <Alert variant="success" inCard>
+              <CircleCheck />
+              <AlertTitle>You're all set!</AlertTitle>
+              <AlertDescription>
                 Click "Get Started" to access your ShopPulse dashboard. You can update these settings anytime from your profile.
-              </p>
-            </div>
+              </AlertDescription>
+            </Alert>
           </div>
         )}
       </CardContent>

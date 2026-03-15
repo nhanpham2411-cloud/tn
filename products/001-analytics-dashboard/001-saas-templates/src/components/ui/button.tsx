@@ -12,7 +12,7 @@ import { figma, BUTTON_VARIANT, BUTTON_SIZE } from "@/lib/figma-dev"
  * Shadcn: @shadcn/button (Slot pattern + CVA)
  *
  * Figma Variant Properties:
- *   Variant:    Primary | Secondary | Outline | Ghost | Ghost Muted | Destructive | Destructive Secondary
+ *   Variant:    Primary | Secondary | Outline | Ghost | Ghost Muted | Destructive | Destructive Secondary | Special
  *   Size:       Large (40px) | Regular (36px) | Small (32px) | Mini (24px)
  *   State:      Default | Hover & Active | Focus | Disabled
  *   Show left icon / Show right icon: Boolean (instance swap)
@@ -21,11 +21,12 @@ import { figma, BUTTON_VARIANT, BUTTON_SIZE } from "@/lib/figma-dev"
  * Code Variant Mapping:
  *   default → Primary, secondary → Secondary, outline → Outline,
  *   ghost → Ghost, ghost-muted → Ghost Muted,
- *   destructive → Destructive, destructive-secondary → Destructive Secondary
+ *   destructive → Destructive, destructive-secondary → Destructive Secondary,
+ *   special → Special
  *
  * Code Size Mapping:
  *   lg → Large, default → Regular, sm → Small, xs → Mini,
- *   icon / icon-sm / icon-lg → icon-only variants
+ *   icon / icon-xs / icon-sm / icon-lg → icon-only variants
  *
  * Merged specs (Shadcn structure + Figma tokens):
  *   Container: rounded-lg (8px), gap-xs (8px) or gap-2xs (6px)
@@ -35,7 +36,7 @@ import { figma, BUTTON_VARIANT, BUTTON_SIZE } from "@/lib/figma-dev"
  *   Disabled:  opacity-50
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 shrink-0",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 shrink-0",
   {
     variants: {
       variant: {
@@ -53,6 +54,8 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground hover:bg-destructive active:bg-destructive focus-visible:ring-ring-error",
         "destructive-secondary":
           "bg-destructive-subtle text-destructive-subtle-foreground border border-destructive-border hover:bg-destructive-subtle active:bg-destructive-subtle focus-visible:ring-ring-error",
+        special:
+          "bg-foreground text-primary-hover shadow-[0_2px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.5)] hover:bg-foreground active:bg-foreground focus-visible:ring-ring",
       },
       size: {
         lg: "h-3xl px-xl gap-xs typo-paragraph-sm-bold [&_svg:not([class*='size-'])]:size-md",
@@ -61,6 +64,7 @@ const buttonVariants = cva(
         xs: "h-xl px-xs gap-2xs typo-paragraph-mini-bold [&_svg:not([class*='size-'])]:size-md",
         icon: "size-9 [&_svg:not([class*='size-'])]:size-md",
         "icon-sm": "size-2xl [&_svg:not([class*='size-'])]:size-md",
+        "icon-xs": "size-xl [&_svg:not([class*='size-'])]:size-md",
         "icon-lg": "size-3xl [&_svg:not([class*='size-'])]:size-md",
       },
     },

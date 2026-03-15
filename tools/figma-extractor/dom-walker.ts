@@ -72,6 +72,7 @@ export const DOM_WALKER_SCRIPT = `
   // Container components: recurse into children instead of treating as opaque instance
   const CONTAINER_COMPONENTS = new Set([
     "Card", "Dialog", "Sheet", "Drawer", "Collapsible", "Accordion",
+    "Screen", "Illustration",
   ]);
 
   // Generate a CSS selector path for an element (for Playwright screenshot)
@@ -274,6 +275,8 @@ export const DOM_WALKER_SCRIPT = `
           const parentStretch = !alignItems || alignItems === "stretch" || alignItems === "normal";
           if (selfStretch && parentStretch) return true;
         }
+        // Horizontal flex: child with w-full (width matches parent content width)
+        if (!isColumnParent && fills) return true;
       }
 
       // 2. Block-level child in block/flow parent — fills width naturally
@@ -462,6 +465,30 @@ export const DOM_WALKER_SCRIPT = `
       const variantsStr = el.getAttribute("data-figma-variants");
       const variants = variantsStr ? JSON.parse(variantsStr) : {};
 
+      // Detect inline text link: Button/element styled as inline text (p-0, h-auto, text-primary)
+      // Extract as text node instead of instance so color is preserved
+      const isInlineTextLink = !CONTAINER_COMPONENTS.has(figmaComp) && (() => {
+        const cs = getComputedStyle(el);
+        const vPad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+        const hPad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        const hasText = el.textContent && el.textContent.trim().length > 0;
+        return vPad < 4 && hPad < 4 && hasText && rect.height < 28;
+      })();
+      if (isInlineTextLink) {
+        const cs = getComputedStyle(el);
+        return {
+          type: "text",
+          textContent: el.textContent.trim(),
+          fontFamily: cs.fontFamily.split(",")[0].replace(/['"]/g, "").trim(),
+          fontWeight: parseFloat(cs.fontWeight) || 400,
+          fontSize: parseFloat(cs.fontSize) || 14,
+          color: parseRGBA(cs.color),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+          fillWidth: getFlexGrow(el) || undefined,
+        };
+      }
+
       // Container components (Card, Dialog, etc.) → recurse into children
       if (CONTAINER_COMPONENTS.has(figmaComp)) {
         // Fall through to layout frame logic below, but mark as instance frame
@@ -470,14 +497,26 @@ export const DOM_WALKER_SCRIPT = `
         // Leaf component (Button, Input, Badge, etc.) → opaque instance
         const textOverrides = {};
         const directText = [];
+        const svgIcons = [];
         for (const child of el.childNodes) {
           if (child.nodeType === 3) { // TEXT_NODE
             const t = child.textContent.trim();
             if (t) directText.push(t);
           } else if (child.nodeType === 1) { // ELEMENT_NODE
             const childEl = child;
-            if (childEl.tagName === "svg" || childEl.tagName === "SVG") continue;
+            if (childEl.tagName === "svg" || childEl.tagName === "SVG") {
+              // Extract SVG icon data instead of skipping
+              const iconName = getIconName(childEl);
+              svgIcons.push({ name: iconName || "Icon" });
+              continue;
+            }
             if (getComputedStyle(childEl).display === "none") continue;
+            // Recurse into child elements to find nested SVGs (e.g. Button > a > svg)
+            const nestedSvgs = childEl.querySelectorAll("svg");
+            for (const svg of nestedSvgs) {
+              const iconName = getIconName(svg);
+              svgIcons.push({ name: iconName || "Icon" });
+            }
             const t = childEl.textContent?.trim();
             if (t) directText.push(t);
           }
@@ -485,25 +524,83 @@ export const DOM_WALKER_SCRIPT = `
         if (directText.length > 0) {
           textOverrides["Label"] = directText.join(" ");
         }
+        // Override Button Icon variant when SVG icons are present
+        if (figmaComp === "Button" && svgIcons.length > 0 && variants.Icon === "None") {
+          if (directText.length === 0) {
+            // No text content = icon-only button (dev forgot to use icon size)
+            variants.Icon = "Icon Only";
+          } else {
+            // Has text + icon — detect position (last child SVG = Right, else Left)
+            var _lastChild = el.lastElementChild;
+            var _isLastSvg = _lastChild && (_lastChild.tagName === "svg" || _lastChild.tagName === "SVG");
+            variants.Icon = (_isLastSvg && svgIcons.length === 1) ? "Right" : "Left";
+          }
+        }
+        // Select/Combobox: detect filled state from Radix data-placeholder attribute
+        if ((figmaComp === "Select" || figmaComp === "Combobox") && variants.Value === "Placeholder") {
+          var _hasPlaceholder = false;
+          for (var _si = 0; _si < el.children.length; _si++) {
+            if (el.children[_si].tagName === "SPAN" && el.children[_si].hasAttribute("data-placeholder")) {
+              _hasPlaceholder = true; break;
+            }
+          }
+          if (!_hasPlaceholder && el.textContent && el.textContent.trim().length > 0) {
+            variants.Value = "Filled";
+          }
+        }
         // Extract placeholder from input/textarea elements
+        // Input/Select/Textarea/Combobox use "Value" text node, others use "Label"
+        const isFormInput = figmaComp === "Input" || figmaComp === "Select" || figmaComp === "Textarea" || figmaComp === "Combobox";
+        const textKey = isFormInput ? "Value" : "Label";
+        if (isFormInput && textOverrides["Label"]) {
+          textOverrides[textKey] = textOverrides["Label"];
+          delete textOverrides["Label"];
+        }
         const inputEl = el.tagName === "INPUT" || el.tagName === "TEXTAREA"
           ? el
           : el.querySelector("input, textarea");
         if (inputEl) {
           const placeholder = inputEl.getAttribute("placeholder");
-          if (placeholder) textOverrides["Label"] = placeholder;
-          const value = inputEl.value || "";
-          if (value) textOverrides["Label"] = value;
+          if (placeholder) textOverrides[textKey] = placeholder;
+          if (inputEl.value) {
+            // Mask password fields with bullet characters
+            const inputType = inputEl.getAttribute("type") || inputEl.type;
+            textOverrides[textKey] = inputType === "password"
+              ? "\u2022".repeat(inputEl.value.length)
+              : inputEl.value;
+            // Override Value variant to "Filled" when input has value
+            if (variants.Value === "Placeholder") variants.Value = "Filled";
+          }
         }
+
+        // For native <input>/<textarea> data-figma elements: scan parent wrapper for sibling SVG icons
+        const isNativeInput = el.tagName === "INPUT" || el.tagName === "TEXTAREA";
+        if (isNativeInput && svgIcons.length === 0 && el.parentElement) {
+          const wrapper = el.parentElement;
+          const wrapperStyle = getComputedStyle(wrapper);
+          const isInputWrapper = wrapperStyle.position === "relative" &&
+            (wrapperStyle.display === "flex" || wrapperStyle.display === "inline-flex");
+          const allSvgs = isInputWrapper ? wrapper.querySelectorAll("svg") : [];
+          for (const svg of allSvgs) {
+            const iconName = getIconName(svg);
+            svgIcons.push({ name: iconName || "Icon" });
+          }
+        }
+
+        // For native input inside a relative wrapper, use wrapper dimensions
+        const hasWrapper = isNativeInput && el.parentElement &&
+          getComputedStyle(el.parentElement).position === "relative";
+        const sizeEl = hasWrapper ? el.parentElement : el;
+        const sizeRect = hasWrapper ? el.parentElement.getBoundingClientRect() : rect;
 
         return {
           type: "instance",
           component: figmaComp,
           variants,
           textOverrides: Object.keys(textOverrides).length > 0 ? textOverrides : undefined,
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
-          fillWidth: getFlexGrow(el),
+          width: Math.round(sizeRect.width),
+          height: Math.round(sizeRect.height),
+          fillWidth: getFlexGrow(sizeEl),
           selfAlign: getSelfAlign(el) || undefined,
           tagName: el.tagName,
           dataSlot: el.getAttribute("data-slot") || undefined,
@@ -561,6 +658,44 @@ export const DOM_WALKER_SCRIPT = `
     if (isTextOnly(el)) {
       const text = el.textContent?.trim();
       if (!text) return null;
+
+      // If element has visual properties (bg, stroke, radius), wrap text in frame
+      const _leafBg = normalizeColor(style.backgroundColor);
+      const _leafStroke = getStrokeInfo(style);
+      const _leafRadius = extractBorderRadius(style);
+      if (_leafBg || _leafStroke || _leafRadius > 0) {
+        const _isFlex = style.display === "flex" || style.display === "inline-flex";
+        const textChild = {
+          type: "text",
+          textContent: text,
+          fontFamily: style.fontFamily,
+          fontWeight: parseInt(style.fontWeight) || 400,
+          fontSize: parseFloat(style.fontSize) || 14,
+          lineHeight: parseFloat(style.lineHeight) || undefined,
+          color: parseRGBA(style.color),
+        };
+        return {
+          type: "frame",
+          layout: "horizontal",
+          gap: 0,
+          paddingTop: parseFloat(style.paddingTop) || 0,
+          paddingRight: parseFloat(style.paddingRight) || 0,
+          paddingBottom: parseFloat(style.paddingBottom) || 0,
+          paddingLeft: parseFloat(style.paddingLeft) || 0,
+          primaryAlign: _isFlex && (style.justifyContent === "center" || style.justifyContent === "space-around") ? "center" : undefined,
+          counterAlign: _isFlex && style.alignItems === "center" ? "center" : undefined,
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+          fill: _leafBg || undefined,
+          stroke: _leafStroke ? _leafStroke.color : undefined,
+          strokeWidth: _leafStroke ? _leafStroke.width : undefined,
+          radius: _leafRadius || undefined,
+          fillWidth: getFlexGrow(el),
+          fillHeight: getFillHeight(el) || undefined,
+          children: [textChild],
+        };
+      }
+
       return {
         type: "text",
         textContent: text,
@@ -599,6 +734,74 @@ export const DOM_WALKER_SCRIPT = `
           tagName: el.tagName,
           dataSlot: el.getAttribute("data-slot") || undefined,
         };
+      }
+    }
+
+    // 4b. Mixed content: text nodes + non-inline element children (e.g. <p>text <button>link</button></p>)
+    // isMixedInline() misses this because BUTTON/DIV are not in INLINE_TAGS
+    if (el.childElementCount > 0) {
+      var hasDirectText = false;
+      var hasNonInlineChild = false;
+      for (var mci = 0; mci < el.childNodes.length; mci++) {
+        var mcNode = el.childNodes[mci];
+        if (mcNode.nodeType === 3 && mcNode.textContent.trim()) hasDirectText = true;
+        if (mcNode.nodeType === 1 && !INLINE_TAGS.has(mcNode.tagName)) hasNonInlineChild = true;
+      }
+      if (hasDirectText && hasNonInlineChild) {
+        var mixedChildren = [];
+        for (var mci2 = 0; mci2 < el.childNodes.length; mci2++) {
+          var mcn = el.childNodes[mci2];
+          if (mcn.nodeType === 3) {
+            var txt = mcn.textContent.replace(/\\s+/g, " ").trim();
+            if (txt) {
+              mixedChildren.push({
+                type: "text",
+                textContent: txt,
+                fontFamily: style.fontFamily,
+                fontWeight: parseInt(style.fontWeight) || 400,
+                fontSize: parseFloat(style.fontSize) || 14,
+                lineHeight: parseFloat(style.lineHeight) || undefined,
+                color: parseRGBA(style.color),
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+              });
+            }
+          } else if (mcn.nodeType === 1) {
+            if (INLINE_TAGS.has(mcn.tagName)) {
+              var inlineTxt = mcn.textContent.trim();
+              if (inlineTxt) {
+                var inlineStyle = getComputedStyle(mcn);
+                mixedChildren.push({
+                  type: "text",
+                  textContent: inlineTxt,
+                  fontFamily: inlineStyle.fontFamily,
+                  fontWeight: parseInt(inlineStyle.fontWeight) || 400,
+                  fontSize: parseFloat(inlineStyle.fontSize) || 14,
+                  lineHeight: parseFloat(inlineStyle.lineHeight) || undefined,
+                  color: parseRGBA(inlineStyle.color),
+                });
+              }
+            } else {
+              var childNode = walkDOM(mcn, depth + 1);
+              if (childNode) mixedChildren.push(childNode);
+            }
+          }
+        }
+        if (mixedChildren.length > 0) {
+          return {
+            type: "frame",
+            layout: "horizontal",
+            wrap: true,
+            gap: 4,
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            fillWidth: getFlexGrow(el),
+            selfAlign: getSelfAlign(el) || undefined,
+            primaryAlign: style.textAlign === "center" ? "center" : undefined,
+            children: mixedChildren,
+            tagName: el.tagName,
+          };
+        }
       }
     }
 

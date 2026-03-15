@@ -77,7 +77,7 @@ export default function SignInPage() {
       <CardContent>
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
           {/* Email */}
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -94,7 +94,7 @@ export default function SignInPage() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"

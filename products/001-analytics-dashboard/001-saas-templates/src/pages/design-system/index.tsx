@@ -9,7 +9,7 @@ import {
   Search, Bold, Italic, Underline, ChevronsUpDown, CalendarIcon,
   AlertCircle, CheckCircle2, AlertTriangle, Info, Loader2,
   User, Bell, Settings, ChevronDown, MoreHorizontal,
-  ArrowRight, Pencil, Share, Star, Package, BarChart3, Eye, Palette,
+  ArrowRight, Pencil, Share, Star, Package, BarChart3, Eye, Palette, Globe,
   XCircle, Sparkles, Clock, ArrowUp, ArrowDown, Menu,
 } from "lucide-react"
 import * as LucideIcons from "lucide-react"
@@ -31,6 +31,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import { ShopPulseLogo, AuthIllustration } from "@/components/layout/auth-layout"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
@@ -62,7 +63,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion"
 import {
-  Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow,
+  Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableCard, TableCardRow,
 } from "@/components/ui/table"
 import {
   Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
@@ -95,6 +96,7 @@ import {
   NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink,
   NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { ListItem, ItemList } from "@/components/ui/list-item"
 import { toast } from "sonner"
 
 // ============================================================
@@ -109,9 +111,9 @@ function CodeBlock({ code }: { code: string }) {
     setTimeout(() => setCopied(false), 2000)
   }, [code])
   return (
-    <div className="group relative rounded-lg bg-zinc-950 text-zinc-100 text-[13px] p-sm overflow-x-auto">
+    <div className="group relative rounded-lg bg-code text-code-foreground sp-code p-sm overflow-x-auto">
       <pre className="font-mono whitespace-pre-wrap">{code}</pre>
-      <button onClick={copy} className="absolute top-2 right-2 p-1 rounded bg-zinc-800/80 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button onClick={copy} className="absolute top-2 right-2 p-1 rounded bg-muted/60 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
         {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
       </button>
     </div>
@@ -206,7 +208,7 @@ function AccessibilityInfo({ keyboard, notes }: { keyboard: [string, string][]; 
             <tbody>
               {keyboard.map(([key, action], i) => (
                 <tr key={i} className="border-b border-border last:border-0">
-                  <td className="pr-lg py-1.5"><kbd className="bg-muted border border-border rounded px-1.5 py-0.5 text-[10px] font-mono">{key}</kbd></td>
+                  <td className="pr-lg py-1.5"><kbd className="bg-muted border border-border rounded px-1.5 py-0.5 sp-data-xs">{key}</kbd></td>
                   <td className="py-1.5 text-muted-foreground">{action}</td>
                 </tr>
               ))}
@@ -237,7 +239,7 @@ function RelatedComponents({ items }: { items: { name: string; desc: string }[] 
               <p className="font-semibold text-sm">{item.name}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
             </div>
-            <span className="text-[10px] font-mono bg-muted text-muted-foreground px-2 py-0.5 rounded shrink-0">Available</span>
+            <span className="sp-data-xs bg-muted text-muted-foreground px-2 py-0.5 rounded shrink-0">Available</span>
           </div>
         ))}
       </div>
@@ -278,7 +280,7 @@ function ExploreBehavior({ controls = [], children, flush = false }: { controls?
                     <div className="flex flex-wrap gap-xs">
                       {c.options!.map(o => (
                         <button key={o} onClick={() => c.onChange(o)} disabled={c.disabled} className={cn(
-                          "px-xs py-[4px] rounded-md text-xs font-body border transition-colors",
+                          "px-xs py-3xs rounded-md text-xs font-body border transition-colors",
                           String(c.value) === o
                             ? "bg-primary text-primary-foreground border-primary"
                             : "bg-card text-foreground border-border hover:bg-accent"
@@ -318,7 +320,7 @@ function CodeBlockFlush({ code }: { code: string }) {
     setTimeout(() => setCopied(false), 2000)
   }, [code])
   return (
-    <div className="group relative bg-code text-code-foreground text-[13px] p-md overflow-x-auto border-t border-border">
+    <div className="group relative bg-code text-code-foreground sp-code p-md overflow-x-auto border-t border-border">
       <pre className="font-mono whitespace-pre-wrap">{code}</pre>
       <button onClick={copy} className="absolute top-2 right-2 p-1 rounded bg-muted/60 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
         {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
@@ -424,7 +426,7 @@ function ButtonDocs() {
       </header>
 
       <ExploreBehavior controls={[
-        { label: "Variant", type: "select", options: ["default","secondary","outline","ghost","ghost-muted","destructive","destructive-secondary"], value: v, onChange: setV },
+        { label: "Variant", type: "select", options: ["default","secondary","outline","ghost","ghost-muted","destructive","destructive-secondary","special"], value: v, onChange: setV },
         { label: "Size", type: "select", options: ["lg","default","sm","xs"], value: sz, onChange: setSz },
         { label: "State", type: "select", options: ["default","hover","focus","disabled"], value: state, onChange: setState },
         { label: "Icon", type: "select", options: ["none","left","right","both","icon-only"], value: ico, onChange: setIco },
@@ -472,6 +474,12 @@ function ButtonDocs() {
 
         <Example title="Destructive Secondary" description="Softer destructive variant." code={`<Button variant="destructive-secondary">Remove</Button>`}>
           <Button variant="destructive-secondary">Remove</Button>
+        </Example>
+
+        <Example title="Special" description="Premium CTA button with elevated shadow, used for upgrade/promotional actions." code={`<Button variant="special">Upgrade <Sparkles className="size-4" /></Button>`}>
+          <div className="rounded-xl bg-gradient-to-br from-primary via-primary-hover to-violet-800 p-xl">
+            <Button variant="special" size="lg" className="w-full rounded-xl">Upgrade <Sparkles className="size-[14px]" /></Button>
+          </div>
         </Example>
 
         <Example title="All Sizes" description="lg, default, sm, xs" code={`<Button size="lg">Large</Button>\n<Button>Default</Button>\n<Button size="sm">Small</Button>\n<Button size="xs">XSmall</Button>`}>
@@ -530,7 +538,7 @@ function ButtonDocs() {
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Props</h2>
         <PropsTable rows={[
-          ["variant", '"default" | "secondary" | "outline" | "ghost" | "ghost-muted" | "destructive" | "destructive-secondary"', '"default"', "Visual style variant"],
+          ["variant", '"default" | "secondary" | "outline" | "ghost" | "ghost-muted" | "destructive" | "destructive-secondary" | "special"', '"default"', "Visual style variant"],
           ["size", '"lg" | "default" | "sm" | "xs" | "icon" | "icon-sm" | "icon-lg"', '"default"', "Button size"],
           ["disabled", "boolean", "false", "Disables the button"],
           ["asChild", "boolean", "false", "Render as child element (Radix Slot)"],
@@ -1058,6 +1066,7 @@ function CheckboxDocs() {
 function SwitchDocs() {
   const [value, setValue] = useState("off")
   const [state, setState] = useState("default")
+  const [showLabel, setShowLabel] = useState(true)
   const isOn = value === "on"
   const isDisabled = state === "disabled"
   const isHover = state === "hover"
@@ -1073,6 +1082,7 @@ function SwitchDocs() {
       <ExploreBehavior controls={[
         { label: "Value", type: "select", options: ["off", "on"], value: value, onChange: setValue },
         { label: "State", type: "select", options: ["default","hover","focus","disabled"], value: state, onChange: setState },
+        { label: "Show Label", type: "toggle", value: showLabel, onChange: setShowLabel },
       ]}>
         <div className="flex items-center gap-xs">
           <Switch
@@ -1084,7 +1094,7 @@ function SwitchDocs() {
               isFocus && "ring-[3px] ring-ring outline-none",
             )}
           />
-          <Label>{isOn ? "On" : "Off"}</Label>
+          {showLabel && <Label>{isOn ? "On" : "Off"}</Label>}
         </div>
       </ExploreBehavior>
 
@@ -1582,7 +1592,7 @@ function SonnerDocs() {
   function showToast(title: string, type: string = "default", opts?: { description?: string; action?: { label: string; onClick: () => void } }) {
     const cfg = toastIcons[type] || toastIcons.default
     toast.custom((id) => (
-      <div data-toast-type={type} className="w-[356px] rounded-lg border border-foreground/10 bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
+      <div data-toast-type={type} className="w-[356px] rounded-lg border border-toast-border bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
         {cfg.icon && <div className={cfg.iconColor}>{cfg.icon}</div>}
         <div className="flex-1 min-w-0">
           <p data-title="" className="text-sm font-medium text-background">{title}</p>
@@ -1627,7 +1637,7 @@ function SonnerDocs() {
       ]}>
         <div className="flex items-center justify-center">
           {/* Static toast mock matching sonner's rendered output */}
-          <div className="w-[356px] rounded-lg border border-foreground/10 bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
+          <div className="w-[356px] rounded-lg border border-toast-border bg-foreground py-sm px-md shadow-lg flex items-center gap-2xs">
             {cfg.icon && <div className={cfg.iconColor}>{cfg.icon}</div>}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-background">{cfg.title}</p>
@@ -1729,7 +1739,7 @@ function SonnerDocs() {
       <DesignTokensTable rows={[
         ["--color-foreground", "zinc-900 / zinc-50", "Toast background — inverted (bg-foreground: dark on light, white on dark)"],
         ["--color-background", "white / zinc-950", "Toast text — inverted (text-background)"],
-        ["foreground/10", "10% opacity border", "Toast border (border-foreground/10)"],
+        ["--color-toast-border", "foreground 90%", "Toast border (border-toast-border)"],
         ["background/70", "70% opacity text", "Description text (text-background/70)"],
         ["--color-background", "white / zinc-950", "Action button background (bg-background)"],
         ["--color-foreground", "zinc-900 / zinc-50", "Action button text (text-foreground)"],
@@ -1798,6 +1808,8 @@ function SonnerDocs() {
 function SelectDocs() {
   const [state, setState] = useState("default")
   const [valMode, setValMode] = useState("placeholder")
+  const [showIcon, setShowIcon] = useState(false)
+  const [showLabel, setShowLabel] = useState(false)
   const [selectVal, setSelectVal] = useState<string | undefined>(undefined)
   const handleValMode = (mode: string) => {
     setValMode(mode)
@@ -1817,12 +1829,16 @@ function SelectDocs() {
       <ExploreBehavior controls={[
         { label: "State", type: "select", options: ["default","hover","focus","error","disabled"], value: state, onChange: setState },
         { label: "Value", type: "select", options: ["placeholder","filled"], value: valMode, onChange: handleValMode },
+        { label: "Show Icon", type: "toggle", value: showIcon, onChange: setShowIcon },
+        { label: "Show Label", type: "toggle", value: showLabel, onChange: setShowLabel },
       ]}>
         <Select disabled={isDisabled} value={selectVal} onValueChange={setSelectVal}>
-          <SelectTrigger aria-invalid={isError || undefined} className={cn("w-[200px]", isHover && "border-border-strong", isFocus && "ring-[3px] ring-ring")}>
+          <SelectTrigger aria-invalid={isError || undefined} className={cn("w-[200px]", isHover && "border-border-strong", isFocus && "ring-[3px] ring-ring", (showIcon || showLabel) && "w-auto")}>
+            {showIcon && <BarChart3 className="size-md text-muted-foreground shrink-0" />}
+            {showLabel && <span className="sp-body-medium text-foreground shrink-0">Compare:</span>}
             <SelectValue placeholder="Select option" />
           </SelectTrigger>
-          <SelectContent><SelectItem value="a">Option A</SelectItem><SelectItem value="b">Option B</SelectItem></SelectContent>
+          <SelectContent><SelectItem value="a">Previous period</SelectItem><SelectItem value="b">Same period last year</SelectItem></SelectContent>
         </Select>
       </ExploreBehavior>
       <InstallationSection pkg={["@radix-ui/react-select"]} importCode={`import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from "@/components/ui/select"`} />
@@ -1904,6 +1920,7 @@ function SelectDocs() {
 function ProgressDocs() {
   const [value, setValue] = useState(45)
   const [showLabel, setShowLabel] = useState(true)
+  const [type, setType] = useState<import("@/components/ui/progress").ProgressType>("primary")
   return (
     <div className="space-y-3xl">
 
@@ -1918,7 +1935,8 @@ function ProgressDocs() {
 
       {/* 2. ExploreBehavior */}
       <ExploreBehavior controls={[
-        { label: "Value", type: "select", options: ["0", "25", "50", "75", "100"], value: String(value), onChange: (v: string) => setValue(Number(v)) },
+        { label: "Value", type: "select", options: ["0","5","10","15","20","25","30","35","40","45","50","55","60","65","70","75","80","85","90","95","100"], value: String(value), onChange: (v: string) => setValue(Number(v)) },
+        { label: "Type", type: "select", options: ["primary","chart-1","chart-2","chart-3","chart-4","chart-5","chart-6","chart-7","chart-8"], value: type, onChange: (v: string) => setType(v as import("@/components/ui/progress").ProgressType) },
         { label: "Show Label", type: "toggle", value: showLabel, onChange: setShowLabel },
       ]}>
         <div className="w-full max-w-sm space-y-xs">
@@ -1928,7 +1946,7 @@ function ProgressDocs() {
               <span className="text-muted-foreground">{value}%</span>
             </div>
           )}
-          <Progress value={value} aria-label="Progress" />
+          <Progress value={value} type={type} aria-label="Progress" />
         </div>
       </ExploreBehavior>
 
@@ -2006,6 +2024,29 @@ function ProgressDocs() {
               ))}
             </div>
           </Example>
+
+          <Example
+            title="Chart Colors"
+            description="Use type prop for chart-colored progress bars. Ideal for dashboards showing multiple KPIs or sales channel performance."
+            code={`<Progress value={85} type="chart-1" />\n<Progress value={60} type="chart-2" />\n<Progress value={45} type="chart-3" />\n<Progress value={30} type="chart-4" />`}
+          >
+            <div className="w-full max-w-sm space-y-md">
+              {([
+                { label: "Online Store", value: 85, type: "chart-1" as const },
+                { label: "Marketplace", value: 60, type: "chart-2" as const },
+                { label: "Social Media", value: 45, type: "chart-3" as const },
+                { label: "Wholesale", value: 30, type: "chart-4" as const },
+              ]).map(item => (
+                <div key={item.label} className="space-y-xs">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-foreground">{item.label}</span>
+                    <span className="text-muted-foreground">{item.value}%</span>
+                  </div>
+                  <Progress value={item.value} type={item.type} aria-label={`${item.label} progress`} />
+                </div>
+              ))}
+            </div>
+          </Example>
         </div>
       </section>
 
@@ -2017,6 +2058,7 @@ function ProgressDocs() {
         </p>
         <PropsTable rows={[
           ["value", "number | null", "0", "Completion percentage 0–100. Pass null for indeterminate state"],
+          ["type", "ProgressType", '"primary"', "Indicator color — primary (default) or chart-1..8 for dashboard KPI colors"],
           ["max", "number", "100", "Maximum value — change when working with non-percentage units"],
           ["aria-label", "string", "—", "Screen reader label describing what is progressing (required when no visible label)"],
           ["className", "string", '""', "Additional CSS classes — use h-* to change track height"],
@@ -2025,7 +2067,8 @@ function ProgressDocs() {
 
       {/* 6. Design Tokens */}
       <DesignTokensTable rows={[
-        ["--color-primary", "violet-600", "Indicator fill (bg-primary)"],
+        ["--color-primary", "violet-600", "Indicator fill — default type (bg-primary)"],
+        ["--color-chart-1..8", "chart palette", "Indicator fill — chart types (bg-chart-1..8)"],
         ["--color-muted", "zinc-100 / zinc-800", "Track background (bg-muted)"],
         ["--radius-full", "9999px", "Track and indicator border radius (rounded-full)"],
         ["--transition-all", "150ms ease", "Indicator transition animation (transition-all)"],
@@ -2200,6 +2243,200 @@ function AvatarDocs() {
         {name:"BadgeDot",desc:"Overlay a status dot on Avatar to indicate user presence (online/away/offline)."},
         {name:"HoverCard",desc:"Trigger a rich user profile card when hovering over an Avatar."},
         {name:"Badge",desc:"Pair with Avatar in list rows to display user role or plan tier."},
+      ]} />
+    </div>
+  )
+}
+
+function ThumbnailDocs() {
+  const [thType, setThType] = useState("image")
+  const [thSize, setThSize] = useState("default")
+  const [thColor, setThColor] = useState("default")
+  const [thShape, setThShape] = useState("square")
+  const sizeOptions = (thType === "icon" && thShape === "square") ? ["xs","sm","default","lg"] : ["xs","sm","default","lg","xl"]
+  const colorOptions = ["default","primary","primary-solid","success","destructive","warning","outline","surface"]
+  const effectiveSize = (thType === "icon" && thShape === "square" && thSize === "xl") ? "default" : thSize
+  const effectiveColor = thColor as "default"|"primary"|"primary-solid"|"success"|"destructive"|"warning"|"outline"|"surface"
+  return (
+    <div className="space-y-3xl">
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Data Display</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Thumbnail</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Visual element for product images, icon boxes, and text badges. All three types support Shape (square or circle). Image defaults to square, Icon defaults to square, Text defaults to circle. Use the color prop for semantic background + foreground on Icon and Text types.</p>
+      </header>
+      <ExploreBehavior controls={[
+        { label: "Type", type: "select", options: ["image","icon","text"], value: thType, onChange: (v: string) => { setThType(v); if (v === "icon" && thShape === "square" && thSize === "xl") setThSize("default"); setThShape(v === "text" ? "circle" : "square") } },
+        { label: "Size", type: "select", options: sizeOptions, value: effectiveSize, onChange: setThSize },
+        { label: "Shape", type: "select", options: ["square", "circle"], value: thShape, onChange: setThShape },
+        { label: "Color", type: "select", options: thType === "image" ? ["default"] : colorOptions, value: thType === "image" ? "default" : thColor, onChange: setThColor },
+      ]}>
+
+        {thType === "image" ? (
+          <Thumbnail type="image" size={effectiveSize as "xs"|"sm"|"default"|"lg"|"xl"} shape={thShape as "square"|"circle"} color={effectiveColor} src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="Apple AirPods" />
+        ) : thType === "icon" ? (
+          <Thumbnail type="icon" size={effectiveSize as "xs"|"sm"|"default"|"lg"|"xl"} color={effectiveColor} shape={thShape as "square"|"circle"} icon={<Package className={cn(effectiveSize === "xs" ? "size-[12px]" : effectiveSize === "sm" ? "size-[14px]" : effectiveSize === "lg" ? "size-[20px]" : effectiveSize === "xl" ? "size-[24px]" : "size-[18px]")} />} />
+        ) : (
+          <Thumbnail type="text" size={effectiveSize as "xs"|"sm"|"default"|"lg"|"xl"} color={effectiveColor} shape={thShape as "square"|"circle"} text="AB" />
+        )}
+      </ExploreBehavior>
+
+      <InstallationSection pkg={[]} importCode={`import { Thumbnail } from "@/components/ui/thumbnail"`} />
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+        <Example title="Image Sizes" description="Product thumbnails — XS (24px), SM (32px), Default (40px), LG (48px), XL (64px)." code={`<Thumbnail type="image" size="xs" src="..." alt="Product" />\n<Thumbnail type="image" size="sm" src="..." alt="Product" />\n<Thumbnail type="image" src="..." alt="Product" />\n<Thumbnail type="image" size="lg" src="..." alt="Product" />\n<Thumbnail type="image" size="xl" src="..." alt="Product" />`}>
+          <div className="flex items-end gap-md">
+            <Thumbnail type="image" size="xs" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" size="sm" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" size="lg" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" size="xl" src="https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp" alt="Rolex" />
+          </div>
+        </Example>
+        <Example title="Image Circle" description="Circular product thumbnails — use shape=&quot;circle&quot; for round images." code={`<Thumbnail type="image" shape="circle" size="sm" src="..." />\n<Thumbnail type="image" shape="circle" src="..." />\n<Thumbnail type="image" shape="circle" size="lg" src="..." />\n<Thumbnail type="image" shape="circle" size="xl" src="..." />`}>
+          <div className="flex items-end gap-md">
+            <Thumbnail type="image" shape="circle" size="sm" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" shape="circle" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" shape="circle" size="lg" src="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" alt="AirPods" />
+            <Thumbnail type="image" shape="circle" size="xl" src="https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp" alt="Rolex" />
+          </div>
+        </Example>
+        <Example title="Icon Sizes" description="Square icon boxes — XS (24px), SM (28px), Default (36px), LG (44px)." code={`<Thumbnail type="icon" size="xs" icon={<Globe />} />\n<Thumbnail type="icon" size="sm" icon={<Package />} />\n<Thumbnail type="icon" icon={<Package />} />\n<Thumbnail type="icon" size="lg" color="primary" icon={<Package />} />`}>
+          <div className="flex items-end gap-md">
+            <Thumbnail type="icon" size="xs" icon={<Globe className="size-[12px]" />} />
+            <Thumbnail type="icon" size="sm" icon={<Package className="size-[14px]" />} />
+            <Thumbnail type="icon" icon={<Package className="size-[18px]" />} />
+            <Thumbnail type="icon" size="lg" color="primary" icon={<Package className="size-[20px]" />} />
+          </div>
+        </Example>
+        <Example title="Icon Circle Shapes" description="Circular icon containers — XS (24px), SM (28px), Default (40px), LG (48px), XL (64px)." code={`<Thumbnail type="icon" shape="circle" size="xs" icon={<Star />} />\n<Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<Star />} />\n<Thumbnail type="icon" shape="circle" color="surface" icon={<Package />} />\n<Thumbnail type="icon" shape="circle" size="lg" color="success" icon={<CheckCircle2 />} />\n<Thumbnail type="icon" shape="circle" size="lg" color="destructive" icon={<AlertCircle />} />`}>
+          <div className="flex items-end gap-md">
+            <Thumbnail type="icon" shape="circle" size="xs" icon={<Star className="size-[12px]" />} />
+            <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<Star className="size-[14px]" />} />
+            <Thumbnail type="icon" shape="circle" color="surface" icon={<Package className="size-[18px]" />} />
+            <Thumbnail type="icon" shape="circle" size="lg" color="success" icon={<CheckCircle2 className="size-[22px]" />} />
+            <Thumbnail type="icon" shape="circle" size="lg" color="destructive" icon={<AlertCircle className="size-[24px]" />} />
+          </div>
+        </Example>
+        <Example title="Text Sizes" description="Circular text/initials badges — XS (24px), SM (28px), Default (40px), LG (48px), XL (64px)." code={`<Thumbnail type="text" size="xs" text={1} />\n<Thumbnail type="text" size="sm" text="AB" />\n<Thumbnail type="text" text="NK" />\n<Thumbnail type="text" size="lg" text="JD" />`}>
+          <div className="flex items-end gap-md">
+            <Thumbnail type="text" size="xs" text={1} />
+            <Thumbnail type="text" size="sm" text="AB" />
+            <Thumbnail type="text" text="NK" />
+            <Thumbnail type="text" size="lg" text="JD" />
+            <Thumbnail type="text" size="xl" text="BR" />
+          </div>
+        </Example>
+        <Example title="Text with Colors" description="Semantic text badges — step indicators, numbered lists, status initials." code={`<Thumbnail type="text" size="sm" color="primary-solid" text={1} />\n<Thumbnail type="text" size="sm" color="primary-solid" text={2} />\n<Thumbnail type="text" size="sm" text={3} />\n<Thumbnail type="text" size="sm" color="success" text="OK" />`}>
+          <div className="flex items-center gap-md">
+            <Thumbnail type="text" size="sm" color="primary-solid" text={1} />
+            <Thumbnail type="text" size="sm" color="primary-solid" text={2} />
+            <Thumbnail type="text" size="sm" text={3} />
+            <Thumbnail type="text" size="sm" color="success" text="OK" />
+          </div>
+        </Example>
+        <Example title="Image Fallback" description="When no src is provided or the image fails to load, display 1-3 character fallback text." code={`<Thumbnail type="image" fallback="AP" />\n<Thumbnail type="image" fallback="RX" />`}>
+          <div className="flex items-center gap-md">
+            <Thumbnail type="image" fallback="AP" />
+            <Thumbnail type="image" fallback="RX" />
+            <Thumbnail type="image" size="lg" fallback="WB" />
+          </div>
+        </Example>
+        <Example title="Semantic Colors (Icon)" description="Use color prop for semantic meaning — success, destructive, primary, warning." code={`<Thumbnail type="icon" color="success" icon={<ArrowUp />} />\n<Thumbnail type="icon" color="destructive" icon={<ArrowDown />} />\n<Thumbnail type="icon" color="primary" icon={<BarChart3 />} />\n<Thumbnail type="icon" color="warning" icon={<AlertTriangle />} />`}>
+          <div className="flex items-center gap-md">
+            <Thumbnail type="icon" color="success" icon={<ArrowUp className="size-[18px]" />} />
+            <Thumbnail type="icon" color="destructive" icon={<ArrowDown className="size-[18px]" />} />
+            <Thumbnail type="icon" color="primary" icon={<BarChart3 className="size-[18px]" />} />
+            <Thumbnail type="icon" color="warning" icon={<AlertTriangle className="size-[18px]" />} />
+          </div>
+        </Example>
+        <Example title="KPI Card Icons (Circle SM)" description="Circular icons for metric/KPI cards — SM size (28px) with outline background." code={`<Thumbnail type="icon" shape="circle" size="sm" color="outline"\n  icon={<DollarSign className="size-[14px]" />} />`}>
+          <div className="flex items-center gap-md">
+            <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<Star className="size-[14px]" />} />
+            <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<BarChart3 className="size-[14px]" />} />
+            <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<ArrowUp className="size-[14px]" />} />
+            <Thumbnail type="icon" shape="circle" size="sm" color="outline" icon={<Package className="size-[14px]" />} />
+          </div>
+        </Example>
+        </div>
+      </section>
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <h3 className="font-semibold text-sm">Image Type</h3>
+        <PropsTable rows={[
+          ["type", '"image" | "icon" | "text"', '"image"', "Visual style — square image, icon box, or text badge"],
+          ["size", '"xs" | "sm" | "default" | "lg" | "xl"', '"default"', "Size preset (varies per type)"],
+          ["shape", '"square" | "circle"', '"square"', "Shape — square with rounded corners or fully circular"],
+          ["src", "string", "—", "Image source URL (Image type only)"],
+          ["alt", "string", "—", "Accessible alt text (Image type only)"],
+          ["fallback", "string", "—", "Fallback text when image fails (1-3 chars, Image type only)"],
+          ["className", "string", "—", "Additional CSS classes"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">Icon Type</h3>
+        <PropsTable rows={[
+          ["type", '"icon"', "—", "Required — icon container"],
+          ["size", '"xs" | "sm" | "default" | "lg"', '"default"', "XS 24px, SM 28px, Default 36px, LG 44px"],
+          ["shape", '"square" | "circle"', '"square"', "Shape style — square with rounded corners or fully circular"],
+          ["color", '"default" | "primary" | "primary-solid" | "success" | "destructive" | "warning" | "outline" | "surface"', '"default"', "Semantic color preset — controls background and icon color (via currentColor)"],
+          ["icon", "ReactNode", "—", "Icon element with size classes (color inherited from color prop)"],
+          ["className", "string", "—", "Additional CSS classes"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">Text Type</h3>
+        <PropsTable rows={[
+          ["type", '"text"', "—", "Required — text/initials badge"],
+          ["size", '"xs" | "sm" | "default" | "lg" | "xl"', '"default"', "XS 24px, SM 28px, Default 40px, LG 48px, XL 64px"],
+          ["shape", '"square" | "circle"', '"circle"', "Shape style — square with rounded corners or fully circular"],
+          ["color", '"default" | "primary" | "primary-solid" | "success" | "destructive" | "warning" | "outline" | "surface"', '"default"', "Semantic color preset — controls background and text color"],
+          ["text", "string | number", "—", "Text content (initials, numbers, 1-3 chars)"],
+          ["className", "string", "—", "Additional CSS classes"],
+        ]} />
+      </section>
+
+      <DesignTokensTable rows={[
+        ["--color-muted","zinc-100 / zinc-800","color=\"default\" background"],
+        ["--color-primary-10","violet-600/10","color=\"primary\" background (light)"],
+        ["--color-primary-20","violet-600/20","color=\"primary\" background (dark)"],
+        ["--color-primary","violet-600","color=\"primary-solid\" background"],
+        ["--color-success-subtle","green-50 / green-950","color=\"success\" background"],
+        ["--color-destructive-subtle","red-50 / red-950","color=\"destructive\" background"],
+        ["--color-warning-subtle","amber-50 / amber-950","color=\"warning\" background"],
+        ["--color-outline-hover","zinc-800/8 / white/8","color=\"outline\" background"],
+        ["--color-surface-raised","zinc-50 / zinc-900","color=\"surface\" background + Image fallback bg"],
+        ["--color-muted-foreground","zinc-500 / zinc-400","Default icon/text foreground color"],
+        ["--color-border","zinc-200 / zinc-800","Image thumbnail ring border"],
+      ]} />
+      <BestPractices items={[
+        {do:"Use Image type for product thumbnails with a short fallback string.",dont:"Use Avatar for square product images — Avatar is circular, Thumbnail Image is square."},
+        {do:"Use Icon type with shape=\"square\" for status/category indicators in list rows.",dont:"Hardcode icon box structure inline — use Thumbnail for consistency."},
+        {do:"Use Icon type with shape=\"circle\" for circular icon containers in KPI cards, empty states, and success/error modals.",dont:"Manually create rounded-full div + icon inline — use Thumbnail instead."},
+        {do:"Use Text type for step indicators, numbered badges, and initials.",dont:"Create custom div + span for numbered circles — use Thumbnail Text instead."},
+        {do:"Use the color prop for semantic colors — color=\"primary\", color=\"success\", color=\"destructive\".",dont:"Use className to set background colors — use the color prop instead for consistency."},
+      ]} />
+      <FigmaMapping rows={[
+        ["Type","Image","type",'"image" (default) — Product photo with ring border'],
+        ["Type","Icon","type",'"icon" — Icon container'],
+        ["Type","Text","type",'"text" — Text/initials badge'],
+        ["Shape","Square","shape",'"square" (default for image/icon) — Rounded corners'],
+        ["Shape","Circle","shape",'"circle" (default for text) — Fully circular'],
+        ["Size","XS","size",'"xs" — 24px all types'],
+        ["Size","SM","size",'"sm" — 32/28/28px per type'],
+        ["Size","Default","size",'"default" — 40/36/40px per type'],
+        ["Size","LG","size",'"lg" — 48/44/48px per type'],
+        ["Size","XL","size",'"xl" — 64px (Image/Text only)'],
+      ]} />
+      <AccessibilityInfo
+        keyboard={[["—","Thumbnail is non-interactive — wrap in a button if a click action is needed"]]}
+        notes={[
+          "Image type: pass alt prop for screen readers.",
+          "Icon type: icon is decorative — parent element should provide accessible label.",
+          "Text type: text content is visible — ensure parent context provides meaning.",
+        ]}
+      />
+      <RelatedComponents items={[
+        {name:"Avatar",desc:"Circular image element for user photos — use Thumbnail for icons and product images."},
+        {name:"List Item",desc:"Uses Thumbnail Image for products and Thumbnail Icon for transaction icons."},
       ]} />
     </div>
   )
@@ -2864,7 +3101,7 @@ function TabsDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Variant</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "pill"].map(v => (
-                        <button key={v} onClick={() => setItemVariant(v)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemVariant === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
+                        <button key={v} onClick={() => setItemVariant(v)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemVariant === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -2872,7 +3109,7 @@ function TabsDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "active", "disabled"].map(s => (
-                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -3218,6 +3455,7 @@ function TextareaDocs() {
 function RadioDocs() {
   const [radioValue, setRadioValue] = useState("checked")
   const [state, setState] = useState("default")
+  const [showLabel, setShowLabel] = useState(true)
   const isDisabled = state === "disabled"
   const isHover = state === "hover"
   const isFocus = state === "focus"
@@ -3233,6 +3471,7 @@ function RadioDocs() {
       <ExploreBehavior controls={[
         { label: "Value", type: "select", options: ["unchecked","checked"], value: radioValue, onChange: setRadioValue },
         { label: "State", type: "select", options: ["default","hover","focus","disabled"], value: state, onChange: setState },
+        { label: "Show Label", type: "toggle", value: showLabel, onChange: setShowLabel },
       ]}>
         <RadioGroup value={isChecked ? "on" : undefined} disabled={isDisabled}>
           <div className="flex items-center gap-xs">
@@ -3244,7 +3483,7 @@ function RadioDocs() {
                 isFocus && "ring-[3px] ring-ring outline-none",
               )}
             />
-            <Label htmlFor="eb-radio">Option label</Label>
+            {showLabel && <Label htmlFor="eb-radio">Option label</Label>}
           </div>
         </RadioGroup>
       </ExploreBehavior>
@@ -3494,7 +3733,7 @@ function TooltipDocs() {
           <Example
             title="With Keyboard Shortcut"
             description="Tooltip content can include a kbd element to surface keyboard shortcuts alongside the action name."
-            code={`<TooltipContent className="flex items-center gap-xs">\n  Copy link\n  <kbd className="px-1 py-0.5 bg-white/20 rounded text-[10px] font-mono">⌘C</kbd>\n</TooltipContent>`}
+            code={`<TooltipContent className="flex items-center gap-xs">\n  Copy link\n  <kbd className="px-1 py-0.5 bg-white/20 rounded sp-data-xs">⌘C</kbd>\n</TooltipContent>`}
           >
             <div className="flex items-center justify-center py-3xl pointer-events-none">
               <TooltipProvider delayDuration={0}>
@@ -3505,7 +3744,7 @@ function TooltipDocs() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="flex items-center gap-xs">
-                    Copy link <kbd className="px-1 py-0.5 bg-white/20 rounded text-[10px] font-mono">⌘C</kbd>
+                    Copy link <kbd className="px-1 py-0.5 bg-white/20 rounded sp-data-xs">⌘C</kbd>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -3563,7 +3802,7 @@ function TooltipDocs() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="flex items-center gap-xs">
-                    Copy link <kbd className="px-1 py-0.5 bg-white/20 rounded text-[10px] font-mono">⌘C</kbd>
+                    Copy link <kbd className="px-1 py-0.5 bg-white/20 rounded sp-data-xs">⌘C</kbd>
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -4566,7 +4805,7 @@ function DropdownDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Type</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["default", "with-icon", "destructive", "with-shortcut"].map(t => (
-                          <button key={t} onClick={() => setDdItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", ddItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
+                          <button key={t} onClick={() => setDdItemType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", ddItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
                         ))}
                       </div>
                     </div>
@@ -4574,7 +4813,7 @@ function DropdownDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["default", "hover", "disabled"].map(s => (
-                          <button key={s} onClick={() => setDdItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", ddItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setDdItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", ddItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -5052,7 +5291,7 @@ function AccordionDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "focus", "disabled"].map(s => (
-                        <button key={s} onClick={() => setState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", state === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", state === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5085,7 +5324,7 @@ function AccordionDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "focus", "disabled"].map(s => (
-                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5093,7 +5332,7 @@ function AccordionDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Type</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["open", "closed"].map(t => (
-                        <button key={t} onClick={() => setItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t}</button>
+                        <button key={t} onClick={() => setItemType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t}</button>
                       ))}
                     </div>
                   </div>
@@ -5361,12 +5600,14 @@ function TableDocs() {
   const [cellRowWeight, setCellRowWeight] = useState("regular")
   // Table Row border state
   const [rowBorder, setRowBorder] = useState(true)
+  // Table Card explore state
+  const [cardState, setCardState] = useState("default")
   return (
     <div className="space-y-3xl">
       <header>
         <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Data Display</p>
         <h1 className="text-2xl font-bold font-heading mt-xs">Table</h1>
-        <p className="text-muted-foreground mt-xs max-w-2xl font-body">A semantic HTML table for displaying structured, multi-column data with built-in hover, selected, and striped row states. Composed from eight sub-components: Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, and TableCaption.</p>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">A semantic HTML table for displaying structured, multi-column data with built-in hover, selected, and striped row states. Composed from ten sub-components: Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption, TableCard, and TableCardRow.</p>
       </header>
 
       {/* 2. Explore Behavior — tabbed: Table | Table Row */}
@@ -5380,6 +5621,8 @@ function TableDocs() {
             <TabsTrigger value="table-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table Row</TabsTrigger>
             <TabsTrigger value="cell-header" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Cell Header</TabsTrigger>
             <TabsTrigger value="cell-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Cell Row</TabsTrigger>
+            <TabsTrigger value="table-card-row" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table Card Row</TabsTrigger>
+            <TabsTrigger value="table-card" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Table Card</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Table */}
@@ -5444,7 +5687,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover"].map(s => (
-                        <button key={s} onClick={() => setHeaderState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", headerState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setHeaderState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", headerState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5491,7 +5734,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "selected"].map(s => (
-                        <button key={s} onClick={() => setRowState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", rowState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setRowState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", rowState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5538,7 +5781,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Type</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["text", "checkbox"].map(s => (
-                        <button key={s} onClick={() => { setCellHeaderType(s); if (s === "checkbox") setCellHeaderAlignment("left"); }} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cellHeaderType === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => { setCellHeaderType(s); if (s === "checkbox") setCellHeaderAlignment("left"); }} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cellHeaderType === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5546,7 +5789,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Alignment</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(cellHeaderType === "checkbox" ? ["left"] : ["left", "right"]).map(s => (
-                        <button key={s} onClick={() => setCellHeaderAlignment(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cellHeaderAlignment === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setCellHeaderAlignment(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cellHeaderAlignment === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5579,7 +5822,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Type</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["text", "checkbox"].map(s => (
-                        <button key={s} onClick={() => { setCellRowType(s); if (s === "checkbox") { setCellRowAlignment("left"); setCellRowWeight("regular"); } }} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cellRowType === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => { setCellRowType(s); if (s === "checkbox") { setCellRowAlignment("left"); setCellRowWeight("regular"); } }} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cellRowType === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5587,7 +5830,7 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Alignment</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(cellRowType === "checkbox" ? ["left"] : ["left", "right"]).map(s => (
-                        <button key={s} onClick={() => setCellRowAlignment(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cellRowAlignment === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setCellRowAlignment(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cellRowAlignment === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -5595,9 +5838,60 @@ function TableDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Weight</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(cellRowType === "checkbox" ? ["regular"] : ["regular", "medium"]).map(s => (
-                        <button key={s} onClick={() => setCellRowWeight(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cellRowWeight === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setCellRowWeight(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cellRowWeight === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Tab 6: Table Card Row */}
+          <TabsContent value="table-card-row" className="mt-0">
+            <div>
+              <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                <div className="w-full max-w-sm">
+                  <TableCardRow>
+                    <span className="sp-body text-muted-foreground">Status</span>
+                    <span className="sp-body-medium text-foreground">Paid</span>
+                  </TableCardRow>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Tab 7: Table Card */}
+          <TabsContent value="table-card" className="mt-0">
+            <div>
+              <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                <div className="w-full max-w-sm">
+                  <TableCard className={cn(cardState === "hover" && "bg-surface-raised")}>
+                    <TableCardRow>
+                      <span className="sp-body-semibold text-primary">#ORD-7291</span>
+                      <Badge variant="success" level="secondary" size="sm">Paid</Badge>
+                    </TableCardRow>
+                    <TableCardRow>
+                      <div className="min-w-0 flex-1">
+                        <p className="sp-body-medium text-foreground truncate">Sarah Wilson</p>
+                        <p className="sp-caption text-muted-foreground truncate">sarah@example.com</p>
+                      </div>
+                      <p className="sp-body-semibold text-foreground ml-md">$284.00</p>
+                    </TableCardRow>
+                    <TableCardRow className="sp-caption text-muted-foreground">
+                      <span>3 items · Credit Card</span>
+                      <span>Mar 12, 2025</span>
+                    </TableCardRow>
+                  </TableCard>
+                </div>
+              </div>
+              <div className="border-t border-border p-md bg-muted/10">
+                <div className="space-y-xs">
+                  <Label className="text-xs text-muted-foreground font-body">State</Label>
+                  <div className="flex flex-wrap gap-xs">
+                    {["default", "hover"].map(s => (
+                      <button key={s} onClick={() => setCardState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cardState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -5607,7 +5901,7 @@ function TableDocs() {
         </Tabs>
       </section>
 
-      <InstallationSection pkg={[]} importCode={`import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n} from "@/components/ui/table"`} />
+      <InstallationSection pkg={[]} importCode={`import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n  TableCard, TableCardRow,\n} from "@/components/ui/table"`} />
 
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Examples</h2>
@@ -5643,16 +5937,16 @@ function TableDocs() {
                 <TableCell className="font-medium">Alice Johnson</TableCell>
                 <TableCell><Badge level="secondary">Admin</Badge></TableCell>
                 <TableCell className="text-right space-x-1">
-                  <Button variant="ghost" size="sm"><Pencil className="size-4" /></Button>
-                  <Button variant="ghost" size="sm"><Trash2 className="size-4 text-destructive" /></Button>
+                  <Button variant="ghost" size="icon-sm"><Pencil className="size-4" /></Button>
+                  <Button variant="ghost" size="icon-sm"><Trash2 className="size-4 text-destructive" /></Button>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Bob Smith</TableCell>
                 <TableCell><Badge variant="secondary" level="secondary">Member</Badge></TableCell>
                 <TableCell className="text-right space-x-1">
-                  <Button variant="ghost" size="sm"><Pencil className="size-4" /></Button>
-                  <Button variant="ghost" size="sm"><Trash2 className="size-4 text-destructive" /></Button>
+                  <Button variant="ghost" size="icon-sm"><Pencil className="size-4" /></Button>
+                  <Button variant="ghost" size="icon-sm"><Trash2 className="size-4 text-destructive" /></Button>
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -5667,6 +5961,44 @@ function TableDocs() {
               <TableRow><TableCell className="font-medium">INV002</TableCell><TableCell>Pending</TableCell><TableCell className="text-right">$150.00</TableCell></TableRow>
             </TableBody>
           </Table>
+        </Example>
+        <Example title="Mobile Card" description="Use TableCard + TableCardRow below the md breakpoint as a responsive alternative to full table rows — shows the same data in a stacked card layout." code={`<TableCard onClick={handleClick}>\n  <TableCardRow>\n    <span className="sp-body-semibold text-primary">#ORD-7291</span>\n    <Badge variant="success" level="secondary" size="sm">Paid</Badge>\n  </TableCardRow>\n  <TableCardRow>\n    <div className="min-w-0 flex-1">\n      <p className="sp-body-medium">Sarah Wilson</p>\n      <p className="sp-caption text-muted-foreground">sarah@example.com</p>\n    </div>\n    <p className="sp-body-semibold ml-md">$284.00</p>\n  </TableCardRow>\n</TableCard>`}>
+          <div className="max-w-sm w-full space-y-sm">
+            <TableCard>
+              <TableCardRow>
+                <span className="sp-body-semibold text-primary">#ORD-7291</span>
+                <Badge variant="success" level="secondary" size="sm">Paid</Badge>
+              </TableCardRow>
+              <TableCardRow>
+                <div className="min-w-0 flex-1">
+                  <p className="sp-body-medium text-foreground truncate">Sarah Wilson</p>
+                  <p className="sp-caption text-muted-foreground truncate">sarah@example.com</p>
+                </div>
+                <p className="sp-body-semibold text-foreground ml-md">$284.00</p>
+              </TableCardRow>
+              <TableCardRow className="sp-caption text-muted-foreground">
+                <span>3 items · Credit Card</span>
+                <span>Mar 12, 2025</span>
+              </TableCardRow>
+            </TableCard>
+            <TableCard>
+              <TableCardRow>
+                <span className="sp-body-semibold text-primary">#ORD-7290</span>
+                <Badge variant="warning" level="secondary" size="sm">Pending</Badge>
+              </TableCardRow>
+              <TableCardRow>
+                <div className="min-w-0 flex-1">
+                  <p className="sp-body-medium text-foreground truncate">James Chen</p>
+                  <p className="sp-caption text-muted-foreground truncate">james@example.com</p>
+                </div>
+                <p className="sp-body-semibold text-foreground ml-md">$150.00</p>
+              </TableCardRow>
+              <TableCardRow className="sp-caption text-muted-foreground">
+                <span>1 item · PayPal</span>
+                <span>Mar 11, 2025</span>
+              </TableCardRow>
+            </TableCard>
+          </div>
         </Example>
         <SortableTableExample />
         <TooltipHeaderTableExample />
@@ -5709,14 +6041,18 @@ function TableDocs() {
           ["TableHead", "scope='col', h-3xl px-md, text-muted-foreground", "—", "scope='col' added automatically for accessibility"],
           ["TableCell", "p-md align-middle", "—", "Standard cell padding; use className to override"],
           ["TableCaption", "mt-md text-sm text-muted-foreground", "—", "Renders below the table as a visible description"],
+          ["TableCard", "rounded-xl border p-md flex flex-col gap-sm hover:bg-surface-raised", "—", "Mobile card representation of a table row; use below md breakpoint"],
+          ["TableCardRow", "flex items-center justify-between", "—", "A justify-between row inside TableCard for key-value pairs"],
         ]} />
       </section>
 
       <DesignTokensTable rows={[
         ["--border","zinc-200","TableRow bottom border, TableFooter top border"],
+        ["--border-subtle","zinc-200/50","TableCard border"],
         ["--muted","zinc-100","TableRow hover background, TableFooter background"],
         ["--muted-foreground","zinc-500","TableHead text color"],
         ["--foreground","zinc-900","TableCell text color"],
+        ["--surface-raised","zinc-50","TableCard hover background"],
       ]} />
       <BestPractices items={[
         {do:"Use semantic Table sub-components for all multi-column data — screen readers announce column headers to each cell.",dont:"Use div/grid layouts to simulate a table — they lose the row/column relationship for assistive technology."},
@@ -5734,6 +6070,9 @@ function TableDocs() {
         ["Table / Striped","Alternating row tint","className","even:bg-muted/30 on rows"],
         ["Footer","Summary row","TableFooter","wrap rows in TableFooter"],
         ["Caption","Table label","TableCaption","place inside Table, renders below"],
+        ["Card / State","Default","—","TableCard default state"],
+        ["Card / State","Hover","hover:bg-surface-raised","built-in hover background"],
+        ["Card Row","Justify-between row","TableCardRow","flex row for key-value pairs"],
       ]} />
       <AccessibilityInfo
         keyboard={[
@@ -5807,7 +6146,7 @@ function BreadcrumbDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Items</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["2","3","4","5"].map(n => (
-                          <button key={n} onClick={() => setItems(n)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors", items === n ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{n}</button>
+                          <button key={n} onClick={() => setItems(n)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", items === n ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{n}</button>
                         ))}
                       </div>
                     </div>
@@ -5815,7 +6154,7 @@ function BreadcrumbDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Separator</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["chevron","slash"].map(s => (
-                          <button key={s} onClick={() => setSeparator(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", separator === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setSeparator(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", separator === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -5850,7 +6189,7 @@ function BreadcrumbDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Type</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["link", "current"].map(t => (
-                          <button key={t} onClick={() => { setBcItemType(t); if (t === "current") setBcItemState("default"); }} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors", bcItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t === "current" ? "Current Page" : "Link"}</button>
+                          <button key={t} onClick={() => { setBcItemType(t); if (t === "current") setBcItemState("default"); }} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", bcItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t === "current" ? "Current Page" : "Link"}</button>
                         ))}
                       </div>
                     </div>
@@ -5858,7 +6197,7 @@ function BreadcrumbDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(bcItemType === "current" ? ["default"] : ["default", "hover"]).map(s => (
-                          <button key={s} onClick={() => setBcItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", bcItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setBcItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", bcItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -6065,7 +6404,7 @@ function PaginationDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Active Page</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["1","2","3","4","5"].map(p => (
-                          <button key={p} onClick={() => setActivePage(p)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors", activePage === p ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{p}</button>
+                          <button key={p} onClick={() => setActivePage(p)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", activePage === p ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{p}</button>
                         ))}
                       </div>
                     </div>
@@ -6111,7 +6450,7 @@ function PaginationDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Type</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["page", "previous", "next", "ellipsis"].map(type => (
-                          <button key={type} onClick={() => { setPgItemType(type); if (type !== "page") setPgItemActive(false); if (type === "ellipsis") setPgItemState("default") }} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", pgItemType === type ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{type}</button>
+                          <button key={type} onClick={() => { setPgItemType(type); if (type !== "page") setPgItemActive(false); if (type === "ellipsis") setPgItemState("default") }} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", pgItemType === type ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{type}</button>
                         ))}
                       </div>
                     </div>
@@ -6119,7 +6458,7 @@ function PaginationDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(pgItemType === "ellipsis" ? ["default"] : ["default", "hover", "disabled"]).map(s => (
-                          <button key={s} onClick={() => setPgItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", pgItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setPgItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", pgItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -7320,7 +7659,7 @@ function DatePickerDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Mode</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(["single", "range"] as const).map(m => (
-                        <button key={m} onClick={() => setMode(m)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", mode === m ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{m}</button>
+                        <button key={m} onClick={() => setMode(m)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", mode === m ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{m}</button>
                       ))}
                     </div>
                   </div>
@@ -7344,7 +7683,7 @@ function DatePickerDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(["default", "hover", "error", "disable"] as const).map(s => (
-                          <button key={s} onClick={() => setTriggerState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", triggerState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setTriggerState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", triggerState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -7352,7 +7691,7 @@ function DatePickerDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Value</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(["placeholder", "filled"] as const).map(v => (
-                          <button key={v} onClick={() => setTriggerValue(v)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", triggerValue === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
+                          <button key={v} onClick={() => setTriggerValue(v)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", triggerValue === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
                         ))}
                       </div>
                     </div>
@@ -7375,7 +7714,7 @@ function DatePickerDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(["default", "hover", "today", "selected", "outside", "disabled", "range-start", "range-middle", "range-end", "range-hover"] as DayCellState[]).map(s => (
-                          <button key={s} onClick={() => setDayCellState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", dayCellState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s.replace("-", " ")}</button>
+                          <button key={s} onClick={() => setDayCellState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", dayCellState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s.replace("-", " ")}</button>
                         ))}
                       </div>
                     </div>
@@ -7396,7 +7735,7 @@ function DatePickerDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(["default", "hover", "active"] as PresetItemState[]).map(s => (
-                          <button key={s} onClick={() => setPresetItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", presetItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setPresetItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", presetItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -7801,7 +8140,7 @@ function InputOTPDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Length</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["4","6","8"].map(v => (
-                          <button key={v} onClick={() => setOtpLength(v)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors", otpLength === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
+                          <button key={v} onClick={() => setOtpLength(v)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", otpLength === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
                         ))}
                       </div>
                     </div>
@@ -7809,7 +8148,7 @@ function InputOTPDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Value</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["empty","partial","filled"].map(v => (
-                          <button key={v} onClick={() => setOtpFillMode(v)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", otpFillMode === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
+                          <button key={v} onClick={() => setOtpFillMode(v)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", otpFillMode === v ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{v}</button>
                         ))}
                       </div>
                     </div>
@@ -7842,7 +8181,7 @@ function InputOTPDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Position</Label>
                       <div className="flex flex-wrap gap-xs">
                         {(["first","middle","last"] as const).map(p => (
-                          <button key={p} onClick={() => setOtpSlotPosition(p)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", otpSlotPosition === p ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{p}</button>
+                          <button key={p} onClick={() => setOtpSlotPosition(p)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", otpSlotPosition === p ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{p}</button>
                         ))}
                       </div>
                     </div>
@@ -7850,7 +8189,7 @@ function InputOTPDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["default","active","filled","disabled"].map(s => (
-                          <button key={s} onClick={() => setOtpSlotState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", otpSlotState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setOtpSlotState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", otpSlotState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -8448,7 +8787,7 @@ function CalendarDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Mode</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(["single", "range"] as const).map(m => (
-                        <button key={m} onClick={() => setCalMode(m)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", calMode === m ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{m}</button>
+                        <button key={m} onClick={() => setCalMode(m)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", calMode === m ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{m}</button>
                       ))}
                     </div>
                   </div>
@@ -8477,7 +8816,7 @@ function CalendarDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {(["default", "hover", "today", "selected", "outside", "disabled", "range-start", "range-middle", "range-end", "range-hover"] as DayCellState[]).map(s => (
-                        <button key={s} onClick={() => setCalDayCellState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", calDayCellState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s.replace("-", " ")}</button>
+                        <button key={s} onClick={() => setCalDayCellState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", calDayCellState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s.replace("-", " ")}</button>
                       ))}
                     </div>
                   </div>
@@ -8640,7 +8979,7 @@ function ContextMenuDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Type</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "with-icon", "destructive", "with-shortcut"].map(t => (
-                        <button key={t} onClick={() => setCmItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cmItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
+                        <button key={t} onClick={() => setCmItemType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cmItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
                       ))}
                     </div>
                   </div>
@@ -8648,7 +8987,7 @@ function ContextMenuDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "disabled"].map(s => (
-                        <button key={s} onClick={() => setCmItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cmItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setCmItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cmItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -8849,8 +9188,8 @@ function ColorsDocs() {
             <div className="h-16" style={{ backgroundColor: `var(--${c.var})` }} />
             <div className="p-xs">
               <p className="font-semibold text-xs">{c.name}</p>
-              <p className="text-[10px] font-mono text-muted-foreground">--{c.var}</p>
-              <p className="text-[10px] font-mono text-muted-foreground">{c.tw}</p>
+              <p className="sp-data-xs text-muted-foreground">--{c.var}</p>
+              <p className="sp-data-xs text-muted-foreground">{c.tw}</p>
             </div>
           </div>
         ))}
@@ -9033,7 +9372,7 @@ function ColorsDocs() {
             </div>
             <div className="flex gap-1">
               {[50,100,200,300,400,500,600,700,800,900,950].map(shade => (
-                <p key={shade} className="flex-1 text-[9px] text-center text-muted-foreground">{shade}</p>
+                <p key={shade} className="flex-1 sp-micro text-center text-muted-foreground">{shade}</p>
               ))}
             </div>
           </div>
@@ -9084,7 +9423,7 @@ function TypographyDocs() {
             </div>
             <div className="shrink-0 text-right">
               <span className="text-xs font-mono text-muted-foreground bg-muted px-sm py-1 rounded">{t.name}</span>
-              <p className="text-[10px] font-mono text-muted-foreground mt-3xs">{t.cls}</p>
+              <p className="sp-data-xs text-muted-foreground mt-3xs">{t.cls}</p>
             </div>
           </div>
         ))}
@@ -9135,8 +9474,8 @@ function TypographyDocs() {
             <div key={name} className="border border-border rounded-lg p-md text-center">
               <p className={`text-xl ${family === "Inter" ? "font-body" : "font-heading"} ${cls}`}>Aa</p>
               <p className="text-xs text-muted-foreground mt-xs">{name}</p>
-              <p className="text-[10px] font-mono text-muted-foreground">{cls}</p>
-              <p className="text-[10px] text-muted-foreground">{family}</p>
+              <p className="sp-data-xs text-muted-foreground">{cls}</p>
+              <p className="sp-detail text-muted-foreground">{family}</p>
             </div>
           ))}
         </div>
@@ -9213,8 +9552,8 @@ function BorderRadiusDocs() {
             <div key={r.name} className="border border-border rounded-lg p-md flex flex-col items-center gap-xs">
               <div className="size-16 bg-primary" style={{ borderRadius: r.value }} />
               <p className="font-semibold text-xs">{r.name}</p>
-              <p className="text-[10px] font-mono text-muted-foreground">{r.value}</p>
-              <p className="text-[10px] font-mono text-muted-foreground">{r.tw}</p>
+              <p className="sp-data-xs text-muted-foreground">{r.value}</p>
+              <p className="sp-data-xs text-muted-foreground">{r.tw}</p>
             </div>
           ))}
         </div>
@@ -9266,7 +9605,7 @@ function ShadowsDocs() {
             <div key={s.name} className={`bg-card border border-border rounded-xl p-lg ${s.tw}`}>
               <p className="font-semibold text-sm">{s.name}</p>
               <p className="text-xs font-mono text-muted-foreground mt-xs">{s.tw}</p>
-              <p className="text-[10px] text-muted-foreground mt-3xs">{s.desc}</p>
+              <p className="sp-detail text-muted-foreground mt-3xs">{s.desc}</p>
             </div>
           ))}
         </div>
@@ -9278,7 +9617,7 @@ function ShadowsDocs() {
             <div key={g.name} className={`border border-border rounded-xl p-lg ${g.tw}`} style={{ backgroundColor: "rgba(124,58,237,0.08)" }}>
               <p className="font-semibold text-sm">{g.name}</p>
               <p className="text-xs font-mono text-muted-foreground mt-xs">{g.tw}</p>
-              <p className="text-[10px] text-muted-foreground mt-3xs">{g.desc}</p>
+              <p className="sp-detail text-muted-foreground mt-3xs">{g.desc}</p>
             </div>
           ))}
         </div>
@@ -9289,7 +9628,7 @@ function ShadowsDocs() {
           {glows.map(g => (
             <div key={g.name} className="bg-card border border-border rounded-xl p-lg" style={g.style}>
               <p className="font-semibold text-sm">{g.name}</p>
-              <p className="text-[10px] text-muted-foreground mt-3xs">{g.desc}</p>
+              <p className="sp-detail text-muted-foreground mt-3xs">{g.desc}</p>
             </div>
           ))}
         </div>
@@ -9301,7 +9640,7 @@ function ShadowsDocs() {
             <div key={r.name} className="bg-card border border-border rounded-xl p-lg" style={{ boxShadow: `0 0 0 3px ${r.color}` }}>
               <p className="font-semibold text-sm">{r.name}</p>
               <p className="text-xs font-mono text-muted-foreground mt-xs">{r.tw}</p>
-              <p className="text-[10px] text-muted-foreground mt-3xs">{r.desc}</p>
+              <p className="sp-detail text-muted-foreground mt-3xs">{r.desc}</p>
             </div>
           ))}
         </div>
@@ -9346,8 +9685,8 @@ function IconsDocs() {
           {[["size-4","16px"],["size-5","20px"],["size-6","24px"],["size-8","32px"]].map(([cls,px]) => (
             <div key={cls} className="flex flex-col items-center gap-xs">
               <Star className={cls} />
-              <p className="text-[10px] font-mono text-muted-foreground">{cls}</p>
-              <p className="text-[10px] text-muted-foreground">{px}</p>
+              <p className="sp-data-xs text-muted-foreground">{cls}</p>
+              <p className="sp-detail text-muted-foreground">{px}</p>
             </div>
           ))}
         </div>
@@ -9362,7 +9701,7 @@ function IconsDocs() {
           {filteredIcons.slice(0, 500).map(({ name, Icon }) => (
             <div key={name} className="border border-border rounded-md p-xs flex flex-col items-center gap-3xs hover:bg-muted/50 transition-colors cursor-default" title={name}>
               <Icon className="size-5" />
-              <p className="text-[8px] font-mono text-muted-foreground truncate w-full text-center">{name}</p>
+              <p className="sp-micro-sm font-mono text-muted-foreground truncate w-full text-center">{name}</p>
             </div>
           ))}
         </div>
@@ -9377,7 +9716,30 @@ function IconsDocs() {
               <div className="size-10 rounded-lg bg-muted/50 flex items-center justify-center">
                 <Icon />
               </div>
-              <p className="text-xs font-mono text-muted-foreground">{name}</p>
+              <p className="text-xs font-mono text-muted-foreground whitespace-nowrap">{name}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Country Flags</h2>
+        <p className="text-sm text-muted-foreground">Circular SVG flags for regional data. Source: <a href="https://github.com/HatScripts/circle-flags" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">circle-flags</a> (MIT).</p>
+        <div className="flex flex-wrap gap-md">
+          {[
+            { code: "US", label: "United States" }, { code: "GB", label: "United Kingdom" },
+            { code: "FR", label: "France" }, { code: "JP", label: "Japan" },
+            { code: "AU", label: "Australia" }, { code: "SG", label: "Singapore" },
+            { code: "AE", label: "UAE" }, { code: "BR", label: "Brazil" },
+            { code: "DE", label: "Germany" }, { code: "CA", label: "Canada" },
+            { code: "KR", label: "South Korea" }, { code: "CN", label: "China" },
+            { code: "IN", label: "India" }, { code: "MX", label: "Mexico" },
+            { code: "NL", label: "Netherlands" }, { code: "IT", label: "Italy" },
+            { code: "ES", label: "Spain" }, { code: "NG", label: "Nigeria" },
+            { code: "ZA", label: "South Africa" },
+          ].map(({ code, label }) => (
+            <div key={code} className="border border-border rounded-md p-md flex flex-col items-center gap-xs min-w-[80px]">
+              <img src={`/flags/${code.toLowerCase()}.svg`} alt={label} width={32} height={32} className="rounded-full" />
+              <p className="text-xs font-mono text-muted-foreground">{code}</p>
             </div>
           ))}
         </div>
@@ -9386,7 +9748,7 @@ function IconsDocs() {
         <h2 className="text-lg font-semibold font-heading">Usage</h2>
         <div className="border border-border rounded-lg p-md space-y-sm">
           <p className="text-sm text-muted-foreground">Import from <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">lucide-react</code> and use as React components:</p>
-          <div className="bg-zinc-950 text-zinc-100 p-sm rounded-lg text-xs font-mono">
+          <div className="bg-code text-code-foreground p-sm rounded-lg sp-code">
             {`import { Search, Plus, Check } from "lucide-react"
 
 <Search className="size-4" />
@@ -9538,7 +9900,7 @@ function CommandDocs() {
                       <Label className="text-xs text-muted-foreground font-body">Type</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["default", "with-icon", "with-shortcut"].map(t => (
-                          <button key={t} onClick={() => setCmdItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cmdItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
+                          <button key={t} onClick={() => setCmdItemType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cmdItemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t.replace("with-", "with ")}</button>
                         ))}
                       </div>
                     </div>
@@ -9546,7 +9908,7 @@ function CommandDocs() {
                       <Label className="text-xs text-muted-foreground font-body">State</Label>
                       <div className="flex flex-wrap gap-xs">
                         {["default", "hover", "disabled"].map(s => (
-                          <button key={s} onClick={() => setCmdItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", cmdItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                          <button key={s} onClick={() => setCmdItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", cmdItemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                         ))}
                       </div>
                     </div>
@@ -9941,7 +10303,7 @@ function NavigationMenuDocs() {
                     <Label className="text-xs text-muted-foreground font-body">Type</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["link", "trigger"].map(t => (
-                        <button key={t} onClick={() => setItemType(t)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors", itemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t === "link" ? "Link" : "Trigger"}</button>
+                        <button key={t} onClick={() => setItemType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", itemType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t === "link" ? "Link" : "Trigger"}</button>
                       ))}
                     </div>
                   </div>
@@ -9949,7 +10311,7 @@ function NavigationMenuDocs() {
                     <Label className="text-xs text-muted-foreground font-body">State</Label>
                     <div className="flex flex-wrap gap-xs">
                       {["default", "hover", "active"].map(s => (
-                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-[4px] rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
                       ))}
                     </div>
                   </div>
@@ -10290,6 +10652,519 @@ function NavigationMenuDocs() {
 }
 
 // ============================================================
+// ITEM LIST
+// ============================================================
+
+// Value maps per type — now using string value names
+const ilValueMaps = {
+  order: ["image", "fallback", "image", "fallback"] as const,
+  product: ["star", "default", "default", "negative"] as const,
+  user: ["image", "image", "fallback", "fallback"] as const,
+  transaction: ["positive", "negative", "positive", "negative"] as const,
+  notification: ["unread", "unread", "read", "read"] as const,
+}
+const ilValueLabels: Record<string, string[]> = { order: ["Image", "Fallback"], product: ["Default", "Star", "Negative"], user: ["Image", "Fallback"], transaction: ["Positive", "Negative"], notification: ["Unread", "Read"] }
+const ilPreviewIdx: Record<string, number[]> = { order: [0, 1], product: [1, 0, 3], user: [0, 2], transaction: [0, 1], notification: [0, 3] }
+const ilOrderData = [
+  { avatarUrl: "https://i.pravatar.cc/80?img=12", avatarFallback: "EJ", title: "Emma Johnson", orderId: "#ORD-7842", time: "2 min ago", amount: "$284.00", status: "Processing", statusVariant: "warning" as const },
+  { avatarUrl: "", avatarFallback: "MW", title: "Michael Wang", orderId: "#ORD-7841", time: "15 min ago", amount: "$156.50", status: "Shipped", statusVariant: "success" as const },
+  { avatarUrl: "https://i.pravatar.cc/80?img=35", avatarFallback: "AP", title: "Ava Patel", orderId: "#ORD-7840", time: "1 hr ago", amount: "$432.00", status: "Pending", statusVariant: "secondary" as const },
+  { avatarUrl: "", avatarFallback: "RK", title: "Robert Kim", orderId: "#ORD-7839", time: "3 hrs ago", amount: "$89.99", status: "Delivered", statusVariant: "success" as const },
+]
+const ilProductData = [
+  { imageUrl: "https://cdn.dummyjson.com/product-images/mens-watches/rolex-datejust/1.webp", title: "Rolex Datejust", sales: "1,456 sold", price: "$4,999.99", growth: "+12.1%" },
+  { imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp", title: "Apple AirPods Pro", sales: "1,842 sold", price: "$249.99", growth: "+18.3%" },
+  { imageUrl: "https://cdn.dummyjson.com/product-images/mens-shoes/nike-air-jordan-1-red-and-black/1.webp", title: "Nike Air Jordan 1", sales: "1,234 sold", price: "$179.99", growth: "+8.7%" },
+  { imageUrl: "https://cdn.dummyjson.com/product-images/womens-bags/prada-women-bag/1.webp", title: "Prada Women Bag", sales: "754 sold", price: "$129.99", growth: "-4.2%" },
+]
+const ilUserData = [
+  { avatarUrl: "https://i.pravatar.cc/80?img=32", avatarFallback: "SL", title: "Sarah Lee", email: "sarah@example.com", role: "Admin", status: "Active", statusVariant: "success" as const },
+  { avatarUrl: "https://i.pravatar.cc/80?img=44", avatarFallback: "JD", title: "James Davis", email: "james@example.com", role: "Editor", status: "Active", statusVariant: "success" as const },
+  { avatarUrl: "", avatarFallback: "MR", title: "Maria Rodriguez", email: "maria@example.com", role: "Viewer", status: "Inactive", statusVariant: "secondary" as const },
+  { avatarUrl: "", avatarFallback: "TN", title: "Tom Nguyen", email: "tom@example.com", role: "Editor", status: "Pending", statusVariant: "warning" as const },
+]
+const ilTransactionData = [
+  { icon: <ArrowUp className="size-4 text-success" />, title: "Payment Received", subtitle: "Stripe — Visa ****4242", amount: "+$1,200.00", positive: true, time: "Today, 2:30 PM" },
+  { icon: <ArrowDown className="size-4 text-destructive" />, title: "Refund Issued", subtitle: "Order #ORD-7801", amount: "-$450.00", positive: false, time: "Yesterday, 4:15 PM" },
+  { icon: <ArrowUp className="size-4 text-success" />, title: "Subscription", subtitle: "Monthly plan — Pro", amount: "+$49.00", positive: true, time: "Mar 1, 9:00 AM" },
+  { icon: <ArrowDown className="size-4 text-destructive" />, title: "Platform Fee", subtitle: "Stripe processing", amount: "-$12.40", positive: false, time: "Mar 1, 9:00 AM" },
+]
+const ilNotificationData = [
+  { icon: <LucideIcons.ShoppingCart className="size-[15px]" />, title: "New order #SP-4821", description: "Emily Zhang placed a $284.00 order", time: "2 min ago", unread: true, category: "order" as const },
+  { icon: <LucideIcons.AlertTriangle className="size-[15px]" />, title: "Low stock alert", description: "MacBook Pro 14\" has only 12 units left", time: "18 min ago", unread: true, category: "warning" as const },
+  { icon: <LucideIcons.TrendingUp className="size-[15px]" />, title: "Revenue milestone", description: "Monthly revenue crossed $100k!", time: "1h ago", unread: false, category: "success" as const },
+  { icon: <LucideIcons.MessageSquare className="size-[15px]" />, title: "New review", description: "5-star review on Apple AirPods Pro", time: "2h ago", unread: false, category: "info" as const },
+]
+
+function ItemListDocs() {
+  type ILType = "order" | "product" | "user" | "transaction" | "notification"
+  // Item List (Tab 1) state
+  const [listType, setListType] = useState<ILType>("order")
+  // Per-type item state — each tab has its own controls
+  const [itemState, setItemState] = useState<"default" | "hover">("default")
+  const [orderValue, setOrderValue] = useState<string>("image")
+  const [productValue, setProductValue] = useState<string>("default")
+  const [userValue, setUserValue] = useState<string>("image")
+  const [transactionValue, setTransactionValue] = useState<string>("positive")
+  const [notificationValue, setNotificationValue] = useState<string>("unread")
+
+  // Helper to get current value per type
+  const getValueState = (t: ILType) => t === "order" ? orderValue : t === "product" ? productValue : t === "user" ? userValue : t === "transaction" ? transactionValue : notificationValue
+  const setValueState = (t: ILType, v: string) => t === "order" ? setOrderValue(v) : t === "product" ? setProductValue(v) : t === "user" ? setUserValue(v) : t === "transaction" ? setTransactionValue(v) : setNotificationValue(v)
+
+  // Synced index — second item in the list reflects Tab 2 state
+  const syncedIdx = 1
+
+  return (
+    <div className="space-y-3xl">
+
+      {/* 1. Header */}
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Data Display</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Item List</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Interactive list rows for dashboards and management pages with a consistent [Leading] — [Title + Subtitle] — [Trailing] structure. Five content types — Order, Product, User, Transaction, Notification — each as a separate component, composed inside an ItemList container.</p>
+      </header>
+
+      {/* 2. Explore Behavior — Group + per-type tabs */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Explore Behavior</h2>
+        <Tabs defaultValue="il-group" className="w-full">
+          <div className="border border-border rounded-xl overflow-hidden">
+            <TabsList className="w-full justify-start bg-transparent rounded-none h-auto p-0 border-b border-border flex-wrap">
+              <TabsTrigger value="il-group" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Item List</TabsTrigger>
+              <TabsTrigger value="il-order" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Order Item</TabsTrigger>
+              <TabsTrigger value="il-product" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Product Item</TabsTrigger>
+              <TabsTrigger value="il-user" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">User Item</TabsTrigger>
+              <TabsTrigger value="il-transaction" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Transaction Item</TabsTrigger>
+              <TabsTrigger value="il-notification" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none -mb-px px-lg py-sm text-sm">Notification Item</TabsTrigger>
+            </TabsList>
+
+            {/* Tab: Item List (group) */}
+            <TabsContent value="il-group" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    <ItemList>
+                      {listType === "order" && ilOrderData.map((d, i) => (
+                        <ListItem key={i} type="order" value={ilValueMaps.order[i]} avatarUrl={d.avatarUrl || undefined} avatarFallback={d.avatarFallback} title={d.title} orderId={d.orderId} time={d.time} amount={d.amount} status={d.status} statusVariant={d.statusVariant} />
+                      ))}
+                      {listType === "product" && ilProductData.map((d, i) => (
+                        <ListItem key={i} type="product" value={ilValueMaps.product[i]} imageUrl={d.imageUrl || undefined} title={d.title} sales={d.sales} price={d.price} growth={d.growth} showStar={ilValueMaps.product[i] === "star"} />
+                      ))}
+                      {listType === "user" && ilUserData.map((d, i) => (
+                        <ListItem key={i} type="user" value={ilValueMaps.user[i]} avatarUrl={d.avatarUrl || undefined} avatarFallback={d.avatarFallback} title={d.title} email={d.email} role={d.role} status={d.status} statusVariant={d.statusVariant} />
+                      ))}
+                      {listType === "transaction" && ilTransactionData.map((d, i) => (
+                        <ListItem key={i} type="transaction" value={ilValueMaps.transaction[i]} icon={d.icon} title={d.title} subtitle={d.subtitle} amount={d.amount} positive={d.positive} time={d.time} />
+                      ))}
+                      {listType === "notification" && ilNotificationData.map((d, i) => (
+                        <ListItem key={i} type="notification" value={ilValueMaps.notification[i]} icon={d.icon} title={d.title} description={d.description} time={d.time} unread={d.unread} category={d.category} />
+                      ))}
+                    </ItemList>
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Type</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["order", "product", "user", "transaction", "notification"] as const).map(t => (
+                          <button key={t} onClick={() => setListType(t)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", listType === t ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{t}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Order Item */}
+            <TabsContent value="il-order" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    {(() => { const idx = orderValue === "image" ? 0 : 1; const d = ilOrderData[ilPreviewIdx.order[idx]]; return (
+                      <ListItem type="order" state={itemState} value={orderValue as "image" | "fallback"} avatarUrl={d.avatarUrl || undefined} avatarFallback={d.avatarFallback} title={d.title} orderId={d.orderId} time={d.time} amount={d.amount} status={d.status} statusVariant={d.statusVariant} />
+                    )})()}
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover"] as const).map(s => (
+                          <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {ilValueLabels.order.map(label => (
+                          <button key={label} onClick={() => setOrderValue(label.toLowerCase())} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", orderValue === label.toLowerCase() ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Product Item */}
+            <TabsContent value="il-product" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    {(() => { const idx = productValue === "default" ? 0 : productValue === "star" ? 1 : 2; const d = ilProductData[ilPreviewIdx.product[idx]]; return (
+                      <ListItem type="product" state={itemState} value={productValue as "default" | "star" | "negative"} imageUrl={d.imageUrl || undefined} title={d.title} sales={d.sales} price={d.price} growth={d.growth} showStar={productValue === "star"} />
+                    )})()}
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover"] as const).map(s => (
+                          <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {ilValueLabels.product.map(label => (
+                          <button key={label} onClick={() => setProductValue(label.toLowerCase())} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", productValue === label.toLowerCase() ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: User Item */}
+            <TabsContent value="il-user" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    {(() => { const idx = userValue === "image" ? 0 : 1; const d = ilUserData[ilPreviewIdx.user[idx]]; return (
+                      <ListItem type="user" state={itemState} value={userValue as "image" | "fallback"} avatarUrl={d.avatarUrl || undefined} avatarFallback={d.avatarFallback} title={d.title} email={d.email} role={d.role} status={d.status} statusVariant={d.statusVariant} />
+                    )})()}
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover"] as const).map(s => (
+                          <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {ilValueLabels.user.map(label => (
+                          <button key={label} onClick={() => setUserValue(label.toLowerCase())} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", userValue === label.toLowerCase() ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Transaction Item */}
+            <TabsContent value="il-transaction" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    {(() => { const idx = transactionValue === "positive" ? 0 : 1; const d = ilTransactionData[ilPreviewIdx.transaction[idx]]; return (
+                      <ListItem type="transaction" state={itemState} value={transactionValue as "positive" | "negative"} icon={d.icon} title={d.title} subtitle={d.subtitle} amount={d.amount} positive={d.positive} time={d.time} />
+                    )})()}
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover"] as const).map(s => (
+                          <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {ilValueLabels.transaction.map(label => (
+                          <button key={label} onClick={() => setTransactionValue(label.toLowerCase())} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", transactionValue === label.toLowerCase() ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Notification Item */}
+            <TabsContent value="il-notification" className="mt-0">
+              <div>
+                <div className="px-2xl py-2xl flex items-center justify-center bg-muted/20">
+                  <div className="w-full max-w-md">
+                    {(() => { const idx = notificationValue === "unread" ? 0 : 1; const d = ilNotificationData[ilPreviewIdx.notification[idx]]; return (
+                      <ListItem type="notification" state={itemState} value={notificationValue as "unread" | "read"} icon={d.icon} title={d.title} description={d.description} time={d.time} unread={notificationValue === "unread"} category={d.category} />
+                    )})()}
+                  </div>
+                </div>
+                <div className="border-t border-border p-md bg-muted/10">
+                  <div className="flex flex-col gap-md">
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">State</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {(["default", "hover"] as const).map(s => (
+                          <button key={s} onClick={() => setItemState(s)} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors capitalize", itemState === s ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-xs">
+                      <Label className="text-xs text-muted-foreground font-body">Value</Label>
+                      <div className="flex flex-wrap gap-xs">
+                        {ilValueLabels.notification.map(label => (
+                          <button key={label} onClick={() => setNotificationValue(label.toLowerCase())} className={cn("px-xs py-3xs rounded-md text-xs font-body border transition-colors", notificationValue === label.toLowerCase() ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent")}>{label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </section>
+
+      {/* 3. Installation */}
+      <InstallationSection pkg={[]} importCode={`import { ListItem, ItemList } from "@/components/ui/list-item"`} />
+
+      {/* 4. Examples */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Examples</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
+          <Example title="Recent Orders" description="Dashboard card content — avatar, customer name, order ID with time, amount and status badge." code={`<ItemList>\n  <ListItem type="order" avatarFallback="EJ" title="Emma Johnson"\n    orderId="#ORD-7842" time="2 min ago" amount="$284.00"\n    status="Processing" statusVariant="warning" />\n  <ListItem type="order" avatarFallback="MW" title="Michael Wang"\n    orderId="#ORD-7841" time="15 min ago" amount="$156.50"\n    status="Shipped" statusVariant="success" />\n</ItemList>`}>
+            <div className="w-full">
+              <ItemList>
+                <ListItem type="order" avatarUrl="https://i.pravatar.cc/80?img=12" avatarFallback="EJ" title="Emma Johnson" orderId="#ORD-7842" time="2 min ago" amount="$284.00" status="Processing" statusVariant="warning" />
+                <ListItem type="order" avatarUrl="https://i.pravatar.cc/80?img=23" avatarFallback="MW" title="Michael Wang" orderId="#ORD-7841" time="15 min ago" amount="$156.50" status="Shipped" statusVariant="success" />
+              </ItemList>
+            </div>
+          </Example>
+          <Example title="Top Products" description="Product thumbnail with sales count, price, and growth trend indicator." code={`<ItemList>\n  <ListItem type="product" title="Premium Watch"\n    sales="1,842 sold" price="$249.99" growth="+18.3%" />\n  <ListItem type="product" title="Basic Tee"\n    sales="342 sold" price="$29.99" growth="-4.2%" />\n</ItemList>`}>
+            <div className="w-full">
+              <ItemList>
+                <ListItem type="product" imageUrl="https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods/1.webp" title="Apple AirPods Pro" sales="1,842 sold" price="$249.99" growth="+18.3%" />
+                <ListItem type="product" imageUrl="https://cdn.dummyjson.com/product-images/womens-bags/prada-women-bag/1.webp" title="Prada Women Bag" sales="342 sold" price="$29.99" growth="-4.2%" />
+              </ItemList>
+            </div>
+          </Example>
+          <Example title="User Management" description="User avatar with name, email, role badge and status badge — common in admin panels." code={`<ItemList>\n  <ListItem type="user" avatarFallback="SL" title="Sarah Lee"\n    email="sarah@example.com" role="Admin"\n    status="Active" statusVariant="success" />\n  <ListItem type="user" avatarFallback="TN" title="Tom Nguyen"\n    email="tom@example.com" role="Viewer"\n    status="Pending" statusVariant="warning" />\n</ItemList>`}>
+            <div className="w-full">
+              <ItemList>
+                <ListItem type="user" avatarUrl="https://i.pravatar.cc/80?img=32" avatarFallback="SL" title="Sarah Lee" email="sarah@example.com" role="Admin" status="Active" statusVariant="success" />
+                <ListItem type="user" avatarFallback="TN" title="Tom Nguyen" email="tom@example.com" role="Viewer" status="Pending" statusVariant="warning" />
+              </ItemList>
+            </div>
+          </Example>
+          <Example title="Transaction History" description="Icon-led rows for payment activity — positive amounts in success color, negative in foreground." code={`<ItemList>\n  <ListItem type="transaction"\n    icon={<ArrowUp className="size-4 text-success" />}\n    title="Payment Received" subtitle="Stripe — Visa ****4242"\n    amount="+$1,200.00" positive time="Today, 2:30 PM" />\n  <ListItem type="transaction"\n    icon={<ArrowDown className="size-4 text-destructive" />}\n    title="Refund Issued" subtitle="Order #ORD-7801"\n    amount="-$450.00" positive={false} time="Yesterday" />\n</ItemList>`}>
+            <div className="w-full">
+              <ItemList>
+                <ListItem type="transaction" icon={<ArrowUp className="size-4 text-success" />} title="Payment Received" subtitle="Stripe — Visa ****4242" amount="+$1,200.00" positive time="Today, 2:30 PM" />
+                <ListItem type="transaction" icon={<ArrowDown className="size-4 text-destructive" />} title="Refund Issued" subtitle="Order #ORD-7801" amount="-$450.00" positive={false} time="Yesterday, 4:15 PM" />
+              </ItemList>
+            </div>
+          </Example>
+          <Example title="Inside a Card" description="Wrap ItemList in a Card for dashboard sections — add header with title, badge count, and action menu." code={`<Card>\n  <CardHeader>\n    <CardTitle>Recent Orders</CardTitle>\n  </CardHeader>\n  <CardContent>\n    <ItemList>\n      <ListItem type="order" ... />\n    </ItemList>\n  </CardContent>\n</Card>`}>
+            <div className="w-full">
+              <Card>
+                <div className="p-md pb-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-xs">
+                      <span className="sp-h4 text-foreground">Recent Orders</span>
+                      <Badge variant="default" level="secondary" size="sm">4</Badge>
+                    </div>
+                    <Button variant="ghost" size="xs" className="text-muted-foreground"><MoreHorizontal className="size-4" /></Button>
+                  </div>
+                </div>
+                <div className="p-md">
+                  <ItemList>
+                    <ListItem type="order" avatarUrl="https://i.pravatar.cc/80?img=12" avatarFallback="EJ" title="Emma Johnson" orderId="#ORD-7842" time="2 min ago" amount="$284.00" status="Processing" statusVariant="warning" />
+                    <ListItem type="order" avatarUrl="https://i.pravatar.cc/80?img=23" avatarFallback="MW" title="Michael Wang" orderId="#ORD-7841" time="15 min ago" amount="$156.50" status="Shipped" statusVariant="success" />
+                  </ItemList>
+                </div>
+              </Card>
+            </div>
+          </Example>
+          <Example title="With Dropdown Actions" description="Wrap each ListItem in a DropdownMenuTrigger for contextual actions on click." code={`<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button variant="ghost" className="h-auto w-full p-0 justify-start">\n      <ListItem type="order" title="Emma Johnson" ... />\n    </Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent align="end">\n    <DropdownMenuItem>View Details</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>`}>
+            <div className="w-full">
+              <ItemList>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center h-auto w-full p-0 justify-start rounded-xl">
+                      <ListItem type="order" avatarUrl="https://i.pravatar.cc/80?img=12" avatarFallback="EJ" title="Emma Johnson" orderId="#ORD-7842" time="2 min ago" amount="$284.00" status="Processing" statusVariant="warning" className="w-full" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem><Eye className="size-[14px]" /> View Details</DropdownMenuItem>
+                    <DropdownMenuItem><Package className="size-[14px]" /> Track Shipment</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </ItemList>
+            </div>
+          </Example>
+          <Example title="Notifications" description="Notification items with unread indicators, category-colored icons, and time stamps." code={`<ItemList>\n  <ListItem type="notification"\n    icon={<ShoppingCart className="size-4 text-primary" />}\n    title="New order #SP-4821"\n    description="Emily Zhang placed a $284.00 order"\n    time="2 min ago" unread category="order" />\n  <ListItem type="notification"\n    icon={<MessageSquare className="size-4 text-muted-foreground" />}\n    title="New review" description="5-star review"\n    time="2h ago" value="read" category="info" />\n</ItemList>`}>
+            <div className="w-full">
+              <ItemList>
+                <ListItem type="notification" icon={<LucideIcons.ShoppingCart className="size-4 text-primary" />} title="New order #SP-4821" description="Emily Zhang placed a $284.00 order" time="2 min ago" unread category="order" />
+                <ListItem type="notification" icon={<LucideIcons.AlertTriangle className="size-4 text-warning" />} title="Low stock alert" description="MacBook Pro 14&quot; has only 12 units left" time="18 min ago" unread category="warning" />
+                <ListItem type="notification" icon={<LucideIcons.MessageSquare className="size-4 text-muted-foreground" />} title="New review" description="5-star review on Apple AirPods Pro" time="2h ago" value="read" category="info" />
+              </ItemList>
+            </div>
+          </Example>
+        </div>
+      </section>
+
+      {/* 5. Props */}
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground font-body">ListItem uses a discriminated union — available props change based on the <code className="text-xs bg-muted px-1 py-0.5 rounded font-mono">type</code> value. Each type maps to a separate Figma component.</p>
+        <h3 className="font-semibold text-sm">ItemList</h3>
+        <PropsTable rows={[
+          ["children", "ReactNode", "—", "One or more ListItem components"],
+          ["className", "string", '""', "Additional CSS classes on the flex-col container"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — Common</h3>
+        <PropsTable rows={[
+          ["type", '"order" | "product" | "user" | "transaction" | "notification"', '"order"', "Content layout type — each maps to a separate Figma component"],
+          ["state", '"default" | "hover"', '"default"', "Controlled visual state for DS preview"],
+          ["className", "string", '""', "Additional CSS classes"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — Order</h3>
+        <PropsTable rows={[
+          ["avatarUrl", "string", "—", "Customer avatar image URL"],
+          ["avatarFallback", "string", '"?"', "Fallback initials for avatar"],
+          ["title", "string", "—", "Customer name (required)"],
+          ["orderId", "string", "—", "Order ID label (e.g. #ORD-7842)"],
+          ["time", "string", "—", "Time label (e.g. 2 min ago)"],
+          ["amount", "string", "—", "Amount display (e.g. $284.00)"],
+          ["status", "string", "—", "Status text for badge"],
+          ["statusVariant", '"success" | "warning" | "destructive" | "primary" | "secondary"', '"secondary"', "Badge color variant"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — Product</h3>
+        <PropsTable rows={[
+          ["imageUrl", "string", "—", "Product thumbnail URL"],
+          ["title", "string", "—", "Product name (required)"],
+          ["sales", "string", "—", "Sales count label (e.g. 1,842 sold)"],
+          ["price", "string", "—", "Price label (e.g. $249.99)"],
+          ["growth", "string", "—", "Growth percentage — + prefix = success, - prefix = destructive"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — User</h3>
+        <PropsTable rows={[
+          ["avatarUrl", "string", "—", "User avatar URL"],
+          ["avatarFallback", "string", '"?"', "Fallback initials"],
+          ["title", "string", "—", "User name (required)"],
+          ["email", "string", "—", "Email address"],
+          ["role", "string", "—", "Role label for outline badge (e.g. Admin)"],
+          ["status", "string", "—", "Status text for badge"],
+          ["statusVariant", '"success" | "warning" | "destructive" | "primary" | "secondary"', '"secondary"', "Badge color variant"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — Transaction</h3>
+        <PropsTable rows={[
+          ["icon", "ReactNode", "—", "Leading icon element"],
+          ["title", "string", "—", "Transaction title (required)"],
+          ["subtitle", "string", "—", "Description / source"],
+          ["amount", "string", "—", "Amount display (e.g. +$1,200 or -$450)"],
+          ["positive", "boolean", "true", "true = text-success, false = text-foreground"],
+          ["time", "string", "—", "Time label"],
+        ]} />
+        <h3 className="font-semibold text-sm mt-md">ListItem — Notification</h3>
+        <PropsTable rows={[
+          ["value", '"unread" | "read"', '"unread"', "Unread shows blue dot + bold title"],
+          ["icon", "ReactNode", "—", "Leading icon element"],
+          ["title", "string", "—", "Notification title (required)"],
+          ["description", "string", "—", "Notification description text"],
+          ["time", "string", "—", "Time label (e.g. 2 min ago)"],
+          ["unread", "boolean", "false", "Show unread dot indicator"],
+          ["category", '"order" | "warning" | "success" | "info"', '"info"', "Icon color category"],
+        ]} />
+      </section>
+
+      {/* 6. Design Tokens */}
+      <DesignTokensTable rows={[
+        ["--foreground", "zinc-50 / zinc-950", "Title text, amount text, avatar fallback"],
+        ["--muted", "zinc-800 / zinc-200", "Hover row background (bg-muted)"],
+        ["--muted-foreground", "zinc-400 / zinc-500", "Subtitle, time, order ID, sales, price text"],
+        ["--border", "zinc-800 / zinc-200", "Avatar ring border (ring-border)"],
+        ["--success", "green-500", "Positive growth arrow + text, active status badge"],
+        ["--destructive", "red-500", "Negative growth arrow + text"],
+        ["--warning", "amber-500", "Processing status badge"],
+        ["--surface-raised", "zinc-900 / zinc-100", "Product image placeholder background"],
+      ]} />
+
+      {/* 7. Best Practices */}
+      <BestPractices items={[
+        { title: "Content", do: "Use **ItemList** as the container for all list rows — it provides consistent flex-col spacing and semantic grouping.", dont: "Scatter standalone ListItems without an ItemList wrapper — spacing and structure become inconsistent." },
+        { title: "Content", do: "Keep status text to **1–2 words** (Shipped, Active, Pending) — the Badge is sized for quick scanning, not sentences.", dont: "Use long descriptions in the status badge — put details in a tooltip, sheet, or detail page instead." },
+        { title: "Structure", do: "Wrap each ListItem in a **DropdownMenuTrigger** or navigation link for contextual actions — the cursor-pointer and hover state support this natively.", dont: "Add onClick directly on ListItem for navigation — use proper routing (Link, navigate) or overlay triggers for consistent UX." },
+        { title: "Responsive", do: "Use ListItem for **scannable preview lists** (4–8 items) inside dashboard cards. Switch to **Table** when the data exceeds ~10 rows or needs sorting/filtering.", dont: "Use ItemList for dense tabular data with many columns — Table provides better alignment, sorting, and bulk selection." },
+      ]} />
+
+      {/* 8. Figma Mapping */}
+      <FigmaMapping rows={[
+        ["Component", "Order Item", "type", '"order" — Avatar + Name + ID·Time + Amount + Badge. Figma: Order Item ComponentSet'],
+        ["Component", "Product Item", "type", '"product" — Thumbnail + Name + Sales·Price + Growth. Figma: Product Item ComponentSet'],
+        ["Component", "User Item", "type", '"user" — Avatar + Name + Email + Role + Status. Figma: User Item ComponentSet'],
+        ["Component", "Transaction Item", "type", '"transaction" — Icon + Title + Subtitle + Amount + Time. Figma: Transaction Item ComponentSet'],
+        ["Component", "Notification Item", "type", '"notification" — Icon + Title + Description + Time + Unread dot. Figma: Notification Item ComponentSet'],
+        ["State", "Default / Hover", "state", '"default" | "hover" — hover shows bg-muted'],
+        ["Value (Order)", "Image / Fallback", "value", '"image" = avatar photo, "fallback" = initials'],
+        ["Value (Product)", "Default / Star / Negative", "value", '"default" | "star" (badge) | "negative" (red growth)'],
+        ["Value (User)", "Image / Fallback", "value", '"image" = avatar photo, "fallback" = initials'],
+        ["Value (Transaction)", "Positive / Negative", "value", '"positive" = +amount success, "negative" = -amount'],
+        ["Value (Notification)", "Unread / Read", "value", '"unread" = blue dot + bold, "read" = muted title'],
+      ]} />
+
+      {/* 9. Accessibility */}
+      <AccessibilityInfo
+        keyboard={[
+          ["Tab", "Move focus to the next interactive list item (when wrapped in button/anchor)"],
+          ["Enter / Space", "Activate the focused item — open dropdown or navigate"],
+          ["Arrow Down / Up", "Move between menu items when DropdownMenu is open"],
+          ["Escape", "Close open DropdownMenu and return focus to trigger"],
+        ]}
+        notes={[
+          "ListItem renders as a non-interactive div — always wrap in a Button, anchor, or DropdownMenuTrigger for keyboard accessibility.",
+          "When used with DropdownMenuTrigger asChild, the trigger handles focus management and keyboard events automatically.",
+          "Avatar images use the title prop as alt text — ensure meaningful names for screen readers.",
+          "ItemList should be wrapped in a landmark or labeled section (e.g., Card with CardTitle) for screen reader context.",
+        ]}
+      />
+
+      {/* 10. Related Components */}
+      <RelatedComponents items={[
+        { name: "Avatar", desc: "Used inside Order and User items for profile images with fallback initials." },
+        { name: "Thumbnail", desc: "Used inside Product items for product images and Transaction/Notification items for icon containers." },
+        { name: "Badge", desc: "Displays status and role labels in the trailing section of each item." },
+        { name: "Dropdown Menu", desc: "Wrap ListItem in DropdownMenuTrigger for contextual actions (view, edit, delete)." },
+        { name: "Card", desc: "ItemList is typically placed inside a Card for dashboard sections with title and actions." },
+        { name: "Table", desc: "Use Table for dense multi-column data with sorting and filtering. Use ItemList for scannable preview lists." },
+      ]} />
+    </div>
+  )
+}
+
+// ============================================================
 // LOGO
 // ============================================================
 
@@ -10406,10 +11281,195 @@ function LogoDocs() {
 }
 
 // ============================================================
+// ILLUSTRATION
+// ============================================================
+
+function AuthBrandingPanel() {
+  return (
+    <div className="flex flex-col items-center justify-between bg-[#0c0a1a] relative overflow-hidden p-2xl h-full" style={{ minHeight: 700 }}>
+      {/* Gradient background */}
+      <div className="absolute inset-0">
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
+        <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-primary/[0.06] blur-[80px]" />
+        <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-primary/[0.04] blur-[60px]" />
+      </div>
+      {/* Grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#c4b5fd 1px, transparent 1px), linear-gradient(90deg, #c4b5fd 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+
+      {/* Logo */}
+      <div className="relative z-10 flex items-center gap-sm">
+        <ShopPulseLogo size={28} />
+        <span className="text-white/90 font-heading text-lg font-bold tracking-tight">ShopPulse</span>
+      </div>
+
+      {/* Illustration + Tagline */}
+      <div className="relative z-10 flex flex-col items-center gap-lg">
+        <AuthIllustration />
+        <div className="text-center max-w-[360px]">
+          <h2 className="sp-h2 text-white/90 leading-tight mb-xs">
+            Powerful analytics for<br />modern e-commerce
+          </h2>
+          <p className="sp-body text-white/50 leading-relaxed">
+            Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.
+          </p>
+        </div>
+      </div>
+
+      {/* Stats + Copyright */}
+      <div className="relative z-10 flex flex-col items-center gap-md w-full">
+        <div className="flex items-center gap-xl">
+          <div className="text-center">
+            <p className="text-white/90 font-heading text-lg font-bold">10K+</p>
+            <p className="sp-caption text-white/40">Active Users</p>
+          </div>
+          <div className="w-px h-lg bg-white/10" />
+          <div className="text-center">
+            <p className="text-white/90 font-heading text-lg font-bold">99.9%</p>
+            <p className="sp-caption text-white/40">Uptime</p>
+          </div>
+          <div className="w-px h-lg bg-white/10" />
+          <div className="text-center">
+            <p className="text-white/90 font-heading text-lg font-bold">4.9★</p>
+            <p className="sp-caption text-white/40">Rating</p>
+          </div>
+        </div>
+        <p className="sp-caption text-white/30">&copy; 2026 ShopPulse. All rights reserved.</p>
+      </div>
+    </div>
+  )
+}
+
+function IllustrationBrandingDocs() {
+  const [illusType, setIllusType] = useState<"auth">("auth")
+  return (
+    <div className="space-y-3xl">
+      <header>
+        <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
+        <h1 className="text-2xl font-bold font-heading mt-xs">Illustration</h1>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Full branding illustration panels used across the product. Each type renders a complete decorative section with ambient glow, grid pattern, logo, animated SVG illustration, tagline, and social proof stats.</p>
+      </header>
+
+      <ExploreBehavior flush controls={[
+        { label: "Type", type: "select", options: ["auth"], value: illusType, onChange: (v: string) => setIllusType(v as "auth") },
+      ]}>
+        {illusType === "auth" && <AuthBrandingPanel />}
+      </ExploreBehavior>
+
+      <InstallationSection pkg={[]} importCode={`import { AuthIllustration, ShopPulseLogo } from "@/components/layout/auth-layout"`} />
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Anatomy</h2>
+        <div className="border border-border rounded-lg p-md space-y-sm text-sm text-muted-foreground">
+          <p><strong className="text-foreground">Background</strong> — #0c0a1a base + 3 ambient glow orbs (primary/indigo/purple at low opacity) + grid pattern overlay</p>
+          <p><strong className="text-foreground">Logo</strong> — ShopPulseLogo (28px) + wordmark, top of panel</p>
+          <p><strong className="text-foreground">Illustration</strong> — AuthIllustration SVG: glassmorphism dashboard mockup with animated charts, sidebar, KPI cards, floating toast + cursor</p>
+          <p><strong className="text-foreground">Tagline</strong> — Heading (24px heading bold) + description (body muted), centered below illustration</p>
+          <p><strong className="text-foreground">Stats</strong> — 3 social proof metrics (Active Users, Uptime, Rating) separated by vertical dividers</p>
+          <p><strong className="text-foreground">Copyright</strong> — Caption text at bottom</p>
+        </div>
+      </section>
+
+      <section className="space-y-md">
+        <h2 className="text-lg font-semibold font-heading">Props</h2>
+        <p className="text-sm text-muted-foreground">AuthIllustration is a zero-prop component. The full branding panel is composed in <code>AuthLayout</code> from <code>auth-layout.tsx</code>.</p>
+        <PropsTable rows={[
+          ["—", "—", "—", "No props — renders the animated SVG dashboard illustration at max-w-[440px] with 11:9 aspect ratio"],
+        ]} />
+      </section>
+
+      <DesignTokensTable rows={[
+        ["#0c0a1a", "—", "Panel background — near-black with violet undertone"],
+        ["--primary", "violet-600", "Ambient glow orbs, illustration accent fills"],
+        ["#c4b5fd", "violet-300", "Grid pattern lines, illustration light accents, sparkle particles"],
+        ["#7c3aed", "violet-600", "Chart bar fills, sidebar highlights, donut ring"],
+        ["#818cf8", "indigo-400", "Secondary chart elements, donut segment"],
+        ["#22c55e", "green-500", "Positive metric badges and sparklines in illustration"],
+      ]} />
+
+      <BestPractices items={[
+        { do: "Use exclusively on auth flow pages (sign-in, sign-up, forgot-password, onboarding) — provides brand identity context while user authenticates.", dont: "Use inside dashboard pages or non-auth contexts — the dark branding panel conflicts with the app's adaptive theme." },
+        { do: "Hide on mobile breakpoints (< lg) — the split-screen layout doesn't fit narrow screens. Mobile auth shows logo in the form card header instead.", dont: "Show on mobile or tablet portrait — it pushes the form below the fold and hurts conversion." },
+        { do: "Keep illustration SVG animated — the subtle motion (floating cards, pulsing bars, sparkle particles) adds premium feel without distraction.", dont: "Add click handlers or interactivity to the illustration — it's decorative only, not functional." },
+      ]} />
+
+      <FigmaMapping rows={[
+        ["Type", "Auth", "—", "Full branding panel with dashboard mockup illustration — used in Screen (Auth) left side"],
+      ]} />
+
+      <AccessibilityInfo
+        keyboard={[["—", "Decorative panel — not focusable or interactive"]]}
+        notes={[
+          "The entire left panel is hidden on mobile (lg:hidden) — screen readers on mobile see only the auth form.",
+          "All SVG elements are decorative — they should have aria-hidden='true' to avoid confusing screen reader output.",
+          "The animated SVG uses CSS animations (not JS-driven) so it respects prefers-reduced-motion when a media query is added.",
+        ]}
+      />
+
+      <RelatedComponents items={[
+        { name: "Logo", desc: "ShopPulseLogo is used inside the branding panel header. See Logo docs for mark/wordmark variants." },
+        { name: "Screen", desc: "Screen component shows the full AuthLayout (Illustration panel + form area together)." },
+      ]} />
+    </div>
+  )
+}
+
+// ============================================================
 // TOP HEADER
 // ============================================================
 
 const headerNavTabs = ["Dashboard", "Analytics", "Reports", "Users", "Products", "Orders"]
+
+function AppHeaderPreview({ breakpoint, activePage = "Dashboard" }: { breakpoint: "desktop" | "tablet" | "mobile"; activePage?: string }) {
+  const isDesktop = breakpoint === "desktop"
+  const isMobile = breakpoint === "mobile"
+  return (
+    <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-md gap-lg" : "px-md pt-md gap-sm")}>
+      {/* Row 1: Logo + Nav + Actions */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-xs">
+          {!isDesktop && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>}
+          <div className="flex items-center gap-sm">
+            <ShopPulseLogo size={isMobile ? 24 : 28} />
+            {!isMobile && <span className="sp-h4 text-foreground">ShopPulse</span>}
+          </div>
+        </div>
+        {isDesktop && (
+          <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs" aria-label="Main navigation">
+            {headerNavTabs.map(tab => (
+              <span key={tab} className={cn("px-lg py-xs rounded-full sp-label transition-all",
+                tab === activePage ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:bg-muted/40 hover:text-foreground cursor-default"
+              )}>{tab}</span>
+            ))}
+          </nav>
+        )}
+        <div className="flex items-center gap-3xs">
+          {isMobile && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>}
+          <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
+          <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
+          <div className="relative">
+            <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
+            <span className="absolute top-3xs right-3xs size-[16px] rounded-full bg-destructive text-destructive-foreground sp-micro font-bold flex items-center justify-center ring-2 ring-background">3</span>
+          </div>
+          <div className="relative">
+            <Avatar className="size-[36px] ring-2 ring-primary/30">
+              <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
+              <AvatarFallback className="bg-primary text-primary-foreground sp-caption font-semibold">LN</AvatarFallback>
+            </Avatar>
+            <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
+          </div>
+        </div>
+      </div>
+      {/* Row 2: Greeting + SearchBox */}
+      <div className={cn("flex gap-sm", isMobile ? "flex-col" : "flex-row items-end justify-between")}>
+        <div className="min-w-0">
+          <h1 className={cn(isMobile ? "sp-h3" : "sp-h2", "text-foreground")}>Good morning, Linh</h1>
+          {!isMobile && <p className={cn(isDesktop ? "sp-body" : "sp-caption", "text-muted-foreground mt-3xs")}>Stay on top of your tasks, monitor progress, and track status.</p>}
+        </div>
+        {!isMobile && <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />}
+      </div>
+    </div>
+  )
+}
 
 function TopHeaderDocs() {
   const [breakpoint, setBreakpoint] = useState<"desktop" | "tablet" | "mobile">("desktop")
@@ -10428,59 +11488,7 @@ function TopHeaderDocs() {
         { label: "Breakpoint", type: "select", options: ["desktop", "tablet", "mobile"], value: breakpoint, onChange: (v: string) => setBreakpoint(v as "desktop" | "tablet" | "mobile") },
       ]}>
         <div className={cn(containerWidth, "overflow-hidden bg-background", !isDesktop && "mx-auto")}>
-          <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-md gap-lg" : "px-md pt-md gap-sm")}>
-            {/* Row 1: Logo + Nav + Actions — 3-column justify-between */}
-            <div className="flex items-center justify-between">
-              {/* Left: hamburger + logo */}
-              <div className="flex items-center gap-xs">
-                {/* Hamburger — tablet & mobile (md:hidden in real app) */}
-                {!isDesktop && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>}
-                {/* Logo */}
-                <div className="flex items-center gap-sm">
-                  <ShopPulseLogo size={isMobile ? 24 : 28} />
-                  {!isMobile && <span className="sp-h4 text-foreground">ShopPulse</span>}
-                </div>
-              </div>
-              {/* Center: nav tabs — desktop only */}
-              {isDesktop && (
-                <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs" aria-label="Main navigation">
-                  {headerNavTabs.map(tab => (
-                    <span key={tab} className={cn("px-lg py-xs rounded-full sp-label transition-all",
-                      tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:bg-muted/40 hover:text-foreground cursor-default"
-                    )}>{tab}</span>
-                  ))}
-                </nav>
-              )}
-              {/* Right: action buttons */}
-              <div className="flex items-center gap-3xs">
-                {isMobile && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>}
-                <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
-                <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
-                <div className="relative">
-                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
-                  <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
-                </div>
-                <div className="relative">
-                  <Avatar className="size-[36px] ring-2 ring-primary/30">
-                    <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
-                  </Avatar>
-                  <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
-                </div>
-              </div>
-            </div>
-            {/* Row 2: Greeting + SearchBox */}
-            <div className={cn("flex gap-sm", isMobile ? "flex-col" : "flex-row items-end justify-between")}>
-              <div className="min-w-0">
-                <h1 className={cn(isMobile ? "sp-h3" : "sp-h2", "text-foreground")}>Good morning, Linh</h1>
-                {!isMobile && <p className={cn(isDesktop ? "sp-body" : "sp-caption", "text-muted-foreground mt-3xs")}>Stay on top of your tasks, monitor progress, and track status.</p>}
-              </div>
-              {!isMobile && (
-                <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />
-              )}
-            </div>
-          </div>
-          {/* Bottom spacing to match real header pb */}
+          <AppHeaderPreview breakpoint={breakpoint} />
           <div className={cn(isDesktop ? "h-lg" : "h-sm")} />
         </div>
       </ExploreBehavior>
@@ -10512,12 +11520,12 @@ function TopHeaderDocs() {
                     <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
                     <div className="relative">
                       <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
-                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                      <span className="absolute top-3xs right-3xs size-[16px] rounded-full bg-destructive text-destructive-foreground sp-micro font-bold flex items-center justify-center ring-2 ring-background">3</span>
                     </div>
                     <div className="relative">
                       <Avatar className="size-[36px] ring-2 ring-primary/30">
                         <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground sp-caption font-semibold">LN</AvatarFallback>
                       </Avatar>
                       <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
                     </div>
@@ -10550,12 +11558,12 @@ function TopHeaderDocs() {
                     <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
                     <div className="relative">
                       <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
-                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                      <span className="absolute top-3xs right-3xs size-[16px] rounded-full bg-destructive text-destructive-foreground sp-micro font-bold flex items-center justify-center ring-2 ring-background">3</span>
                     </div>
                     <div className="relative">
                       <Avatar className="size-[36px] ring-2 ring-primary/30">
                         <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground sp-caption font-semibold">LN</AvatarFallback>
                       </Avatar>
                       <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
                     </div>
@@ -10586,12 +11594,12 @@ function TopHeaderDocs() {
                     <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
                     <div className="relative">
                       <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
-                      <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
+                      <span className="absolute top-3xs right-3xs size-[16px] rounded-full bg-destructive text-destructive-foreground sp-micro font-bold flex items-center justify-center ring-2 ring-background">3</span>
                     </div>
                     <div className="relative">
                       <Avatar className="size-[36px] ring-2 ring-primary/30">
                         <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
+                        <AvatarFallback className="bg-primary text-primary-foreground sp-caption font-semibold">LN</AvatarFallback>
                       </Avatar>
                       <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
                     </div>
@@ -10677,187 +11685,250 @@ function TopHeaderDocs() {
 
 function ScreenDocs() {
   const [screenType, setScreenType] = useState<"dashboard" | "auth">("dashboard")
+  const [page, setPage] = useState<string>("Dashboard")
   const [breakpoint, setBreakpoint] = useState<"desktop" | "tablet" | "mobile">("desktop")
   const isDesktop = breakpoint === "desktop"
   const isMobile = breakpoint === "mobile"
   const containerWidth = isMobile ? "w-[375px]" : breakpoint === "tablet" ? "w-[768px]" : ""
+
+  // Page-specific content configs
+  const pageConfigs: Record<string, { kpis: { label: string; value: string; change: string }[]; contentLabel: string; contentIcon: React.ReactNode; tableHeaders?: string[] }> = {
+    Dashboard: {
+      kpis: [
+        { label: "Total Revenue", value: "$48,520", change: "+12.5%" },
+        { label: "Total Orders", value: "1,284", change: "+8.3%" },
+        { label: "Conversion Rate", value: "3.24%", change: "+2.1%" },
+      ],
+      contentLabel: "Revenue Chart Area",
+      contentIcon: <BarChart3 className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+    },
+    Analytics: {
+      kpis: [
+        { label: "Total Revenue", value: "$48,520", change: "+12.5%" },
+        { label: "Total Orders", value: "1,284", change: "+8.3%" },
+        { label: "Net Profit", value: "$12,650", change: "+15.2%" },
+      ],
+      contentLabel: "Analytics Charts Area",
+      contentIcon: <LucideIcons.TrendingUp className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+    },
+    Reports: {
+      kpis: [
+        { label: "Total Reports", value: "156", change: "+24" },
+        { label: "Completed", value: "142", change: "+18" },
+        { label: "Processing", value: "8", change: "-3" },
+      ],
+      contentLabel: "Reports Table",
+      contentIcon: <LucideIcons.FileText className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+      tableHeaders: ["Name", "Type", "Status", "Date", "Format"],
+    },
+    Users: {
+      kpis: [
+        { label: "Total Users", value: "2,847", change: "+156" },
+        { label: "Active", value: "2,103", change: "+89" },
+        { label: "Inactive", value: "744", change: "-12" },
+      ],
+      contentLabel: "Users Table",
+      contentIcon: <LucideIcons.Users className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+      tableHeaders: ["User", "Role", "Status", "Plan", "Last Active"],
+    },
+    Products: {
+      kpis: [
+        { label: "Total Products", value: "438", change: "+32" },
+        { label: "Revenue", value: "$126K", change: "+18.4%" },
+        { label: "Low Stock", value: "23", change: "+5" },
+      ],
+      contentLabel: "Products Grid",
+      contentIcon: <LucideIcons.Package className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+      tableHeaders: ["Product", "Category", "Price", "Stock", "Supplier"],
+    },
+    Orders: {
+      kpis: [
+        { label: "Total Orders", value: "3,842", change: "+284" },
+        { label: "Revenue", value: "$198K", change: "+22.1%" },
+        { label: "Pending", value: "47", change: "-8" },
+      ],
+      contentLabel: "Orders Table",
+      contentIcon: <LucideIcons.ShoppingCart className="size-8 text-muted-foreground/30 mx-auto mb-xs" />,
+      tableHeaders: ["Order ID", "Customer", "Status", "Items", "Total"],
+    },
+  }
+
+  const currentPage = pageConfigs[page] ?? pageConfigs.Dashboard
+
   return (
     <div className="space-y-3xl">
       <header>
         <p className="text-xs text-muted-foreground font-mono uppercase tracking-wide">Components / Branding</p>
         <h1 className="text-2xl font-bold font-heading mt-xs">Screen</h1>
-        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Full-page layout wrapper for the application. Two layout types: Dashboard (header + content area with ambient gradient orbs) and Auth (split-screen with branding illustration left + form right). Each layout wraps page content via React Router Outlet.</p>
+        <p className="text-muted-foreground mt-xs max-w-2xl font-body">Full-page layout wrapper for the application. Two layout types: Dashboard (header + content area with ambient gradient orbs) and Auth (split-screen with branding illustration left + form right). Dashboard supports all 6 page routes with matching App Header nav tab highlighting.</p>
       </header>
 
       <ExploreBehavior flush controls={[
-        { label: "Type", type: "select", options: ["dashboard", "auth"], value: screenType, onChange: (v: string) => setScreenType(v as "dashboard" | "auth") },
+        { label: "Type", type: "select", options: ["dashboard", "auth"], value: screenType, onChange: (v: string) => { setScreenType(v as "dashboard" | "auth"); if (v === "auth") setPage("Dashboard") } },
+        ...(screenType === "dashboard" ? [{ label: "Page", type: "select" as const, options: ["Dashboard", "Analytics", "Reports", "Users", "Products", "Orders"], value: page, onChange: (v: string) => setPage(v) }] : []),
         { label: "Breakpoint", type: "select", options: ["desktop", "tablet", "mobile"], value: breakpoint, onChange: (v: string) => setBreakpoint(v as "desktop" | "tablet" | "mobile") },
       ]}>
         {screenType === "dashboard" ? (
           /* ── Dashboard Layout: AppHeader + content area ── */
           <div className={cn(containerWidth, "overflow-hidden bg-background flex flex-col", !isDesktop && "mx-auto")}>
-            {/* Top Header instance */}
-            <div className={cn("flex flex-col", isDesktop ? "px-2xl pt-md gap-lg" : "px-md pt-md gap-sm")}>
-              {/* Row 1: Logo + Nav + Actions */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-xs">
-                  {!isDesktop && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Menu className="size-[20px]" /></Button>}
-                  <div className="flex items-center gap-sm">
-                    <ShopPulseLogo size={isMobile ? 24 : 28} />
-                    {!isMobile && <span className="sp-h4 text-foreground">ShopPulse</span>}
-                  </div>
-                </div>
-                {isDesktop && (
-                  <nav className="flex items-center gap-3xs bg-muted dark:bg-white/[0.04] rounded-full px-2xs py-2xs">
-                    {headerNavTabs.slice(0, 4).map(tab => (
-                      <span key={tab} className={cn("px-lg py-xs rounded-full sp-label cursor-default",
-                        tab === "Dashboard" ? "bg-foreground text-background shadow-sm" : "text-muted-foreground"
-                      )}>{tab}</span>
-                    ))}
-                  </nav>
-                )}
-                <div className="flex items-center gap-3xs">
-                  {isMobile && <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Search className="size-[18px]" /></Button>}
-                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Palette className="size-[18px]" /></Button>
-                  <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Sun className="size-[18px]" /></Button>
-                  <div className="relative">
-                    <Button variant="ghost" size="icon" className="size-[36px] rounded-full text-muted-foreground"><Bell className="size-[18px]" /></Button>
-                    <span className="absolute top-[4px] right-[4px] size-[16px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center ring-2 ring-background">3</span>
-                  </div>
-                  <div className="relative">
-                    <Avatar className="size-[36px] ring-2 ring-primary/30">
-                      <AvatarImage src="https://i.pravatar.cc/80?img=47" alt="Linh Nguyen" />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-[12px] font-semibold">LN</AvatarFallback>
-                    </Avatar>
-                    <span className="absolute bottom-0 right-0 size-[10px] rounded-full bg-success ring-[1.5px] ring-background" />
-                  </div>
-                </div>
-              </div>
-              {/* Row 2: Greeting + SearchBox */}
-              <div className={cn("flex gap-sm", isMobile ? "flex-col" : "flex-row items-end justify-between")}>
-                <div className="min-w-0">
-                  <h1 className={cn(isMobile ? "sp-h3" : "sp-h2", "text-foreground")}>Good morning, Linh</h1>
-                  {!isMobile && <p className={cn(isDesktop ? "sp-body" : "sp-caption", "text-muted-foreground mt-3xs")}>Stay on top of your tasks, monitor progress, and track status.</p>}
-                </div>
-                {!isMobile && <SearchBox placeholder="Search product" shortcut readOnly className="w-[280px] cursor-pointer" />}
-              </div>
-            </div>
+            {/* App Header instance — active tab matches selected page */}
+            <AppHeaderPreview breakpoint={breakpoint} activePage={page} />
             <div className={cn(isDesktop ? "h-lg" : "h-sm")} />
             {/* Main content area */}
             <main className={cn("relative flex-1 overflow-hidden", isDesktop ? "p-2xl" : "p-md")}>
               <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden" aria-hidden="true">
                 <div className="absolute -top-[200px] -right-[100px] size-[500px] rounded-full bg-primary/[0.03] blur-[200px]" />
-                <div className="absolute top-[40%] -left-[150px] size-[350px] rounded-full bg-indigo-500/[0.02] blur-[180px]" />
+                <div className="absolute top-[40%] -left-[150px] size-[350px] rounded-full bg-primary/[0.02] blur-[180px]" />
               </div>
               <div className="relative flex flex-col gap-xl w-full max-w-[1440px] mx-auto">
+                {/* KPI Row */}
                 <div className={cn("grid gap-lg", isMobile ? "grid-cols-1" : "grid-cols-3")}>
-                  {[
-                    { label: "Total Revenue", value: "$48,520", change: "+12.5%" },
-                    { label: "Total Orders", value: "1,284", change: "+8.3%" },
-                    { label: "Conversion Rate", value: "3.24%", change: "+2.1%" },
-                  ].map(kpi => (
+                  {currentPage.kpis.map(kpi => (
                     <div key={kpi.label} className="rounded-2xl border border-border/60 dark:border-border bg-card p-xl">
                       <p className="sp-caption text-muted-foreground">{kpi.label}</p>
                       <div className="flex items-end justify-between mt-xs">
                         <p className="sp-h2 text-foreground">{kpi.value}</p>
-                        <Badge variant="outline" className="text-success border-success/20 bg-success/10">{kpi.change}</Badge>
+                        <Badge variant="outline" className={cn(
+                          kpi.change.startsWith("+") ? "text-success border-success/20 bg-success/10" : "text-warning border-warning/20 bg-warning/10"
+                        )}>{kpi.change}</Badge>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="rounded-2xl border border-border/60 dark:border-border bg-card p-xl h-[200px] flex items-center justify-center">
-                  <div className="text-center">
-                    <BarChart3 className="size-8 text-muted-foreground/30 mx-auto mb-xs" />
-                    <p className="sp-caption text-muted-foreground/50">Revenue Chart Area</p>
+                {/* Content Area — table or chart depending on page */}
+                {currentPage.tableHeaders ? (
+                  <div className="rounded-2xl border border-border/60 dark:border-border bg-card overflow-hidden">
+                    {/* Table header with search */}
+                    <div className="flex items-center justify-between p-lg border-b border-border/60">
+                      <p className="sp-body-semibold text-foreground">{page}</p>
+                      <div className="flex items-center gap-xs">
+                        <div className="h-[36px] w-[200px] rounded-lg border border-border bg-background px-sm flex items-center gap-xs">
+                          <Search className="size-[14px] text-muted-foreground" />
+                          <span className="sp-body text-muted-foreground">Search...</span>
+                        </div>
+                        <Button size="sm" variant="outline">Filter</Button>
+                      </div>
+                    </div>
+                    {/* Table rows */}
+                    <div className="divide-y divide-border/60">
+                      {/* Header row */}
+                      <div className="grid items-center gap-md px-lg py-sm bg-muted/30" style={{ gridTemplateColumns: `repeat(${currentPage.tableHeaders.length}, minmax(0, 1fr))` }}>
+                        {currentPage.tableHeaders.map(h => (
+                          <p key={h} className="sp-caption text-muted-foreground font-medium">{h}</p>
+                        ))}
+                      </div>
+                      {/* Data rows */}
+                      {[0, 1, 2].map(i => (
+                        <div key={i} className="grid items-center gap-md px-lg py-sm" style={{ gridTemplateColumns: `repeat(${currentPage.tableHeaders!.length}, minmax(0, 1fr))` }}>
+                          {currentPage.tableHeaders!.map((_, ci) => (
+                            <div key={ci} className={cn("h-[14px] rounded bg-muted-foreground/10", ci === 0 ? "w-3/4" : "w-1/2")} />
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Pagination */}
+                    <div className="flex items-center justify-between px-lg py-sm border-t border-border/60">
+                      <span className="sp-caption text-muted-foreground">Showing 1–5 of 50</span>
+                      <div className="flex gap-2xs">
+                        <Button size="sm" variant="outline" disabled>Prev</Button>
+                        <Button size="sm" variant="outline">Next</Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="rounded-2xl border border-border/60 dark:border-border bg-card p-xl h-[200px] flex items-center justify-center">
+                    <div className="text-center">
+                      {currentPage.contentIcon}
+                      <p className="sp-caption text-muted-foreground/50">{currentPage.contentLabel}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </main>
           </div>
         ) : (
           /* ── Auth Layout: split-screen branding + form ── */
           <div className={cn(containerWidth, "overflow-hidden flex", !isDesktop && "mx-auto", isDesktop ? "" : "flex-col")} style={{ minHeight: 600 }}>
-            {/* Left — branding panel (hidden on mobile, visible desktop+tablet) */}
-            {!isMobile && (
-              <div className={cn("flex flex-col items-center justify-between bg-[#0c0a1a] relative overflow-hidden", isDesktop ? "flex-1 p-2xl" : "p-xl")}>
-                <div className="absolute inset-0">
-                  <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-primary/[0.08] blur-[100px]" />
-                  <div className="absolute bottom-[15%] left-[20%] w-[350px] h-[250px] rounded-full bg-indigo-500/[0.06] blur-[80px]" />
-                  <div className="absolute top-[60%] right-[10%] w-[200px] h-[200px] rounded-full bg-purple-500/[0.04] blur-[60px]" />
-                </div>
-                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(#c4b5fd 1px, transparent 1px), linear-gradient(90deg, #c4b5fd 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-                <div className="relative z-10 flex items-center gap-sm">
-                  <ShopPulseLogo size={28} />
-                  <span className="text-white/90 font-heading text-lg font-bold tracking-tight">ShopPulse</span>
-                </div>
-                <div className="relative z-10 flex flex-col items-center gap-lg">
-                  <AuthIllustration />
-                  <div className="text-center max-w-[360px]">
-                    <h2 className="text-[24px] font-heading font-bold text-white/90 leading-tight tracking-tight mb-xs">
-                      Powerful analytics for<br />modern e-commerce
-                    </h2>
-                    <p className="sp-body text-white/35 leading-relaxed">
-                      Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative z-10 flex flex-col items-center gap-md w-full">
-                  <div className="flex items-center gap-xl">
-                    <div className="text-center">
-                      <p className="text-white/80 font-heading text-lg font-bold">10K+</p>
-                      <p className="sp-caption text-white/25">Active Users</p>
-                    </div>
-                    <div className="w-px h-lg bg-white/[0.08]" />
-                    <div className="text-center">
-                      <p className="text-white/80 font-heading text-lg font-bold">99.9%</p>
-                      <p className="sp-caption text-white/25">Uptime</p>
-                    </div>
-                    <div className="w-px h-lg bg-white/[0.08]" />
-                    <div className="text-center">
-                      <p className="text-white/80 font-heading text-lg font-bold">4.9★</p>
-                      <p className="sp-caption text-white/25">Rating</p>
-                    </div>
-                  </div>
-                  <p className="sp-caption text-white/15">&copy; 2026 ShopPulse. All rights reserved.</p>
-                </div>
+            {/* Left — branding panel (desktop only, matching lg:flex in auth-layout) */}
+            {isDesktop && (
+              <div className="flex-1">
+                <AuthBrandingPanel />
               </div>
             )}
             {/* Right — form area */}
             <div className={cn("flex items-center justify-center bg-background relative overflow-hidden", isDesktop ? "flex-1 p-xl" : "p-lg")}>
               <div className="absolute top-0 left-0 w-[400px] h-[300px] rounded-full bg-primary/[0.03] blur-[100px] dark:bg-primary/[0.04]" />
-              <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-indigo-500/[0.02] blur-[80px] dark:bg-indigo-500/[0.03]" />
-              <div className="relative z-10 w-full max-w-[440px] space-y-xl">
-                {isMobile && (
-                  <div className="flex items-center justify-center gap-sm mb-md">
-                    <ShopPulseLogo size={24} />
-                    <span className="sp-h4 text-foreground">ShopPulse</span>
+              <div className="absolute bottom-0 right-0 w-[300px] h-[250px] rounded-full bg-primary/[0.02] blur-[80px] dark:bg-primary/[0.03]" />
+              <Card className="relative z-10 w-full max-w-[440px] border-0 shadow-none sm:border sm:shadow-sm">
+                <CardHeader className="gap-md">
+                  {!isDesktop && (
+                    <div className="flex w-fit items-center gap-xs">
+                      <ShopPulseLogo size={32} />
+                      <span className="font-heading text-lg font-bold text-foreground">ShopPulse</span>
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-3xs">
+                    <CardTitle className="sp-h2">Welcome back</CardTitle>
+                    <CardDescription>Sign in to your account to continue</CardDescription>
                   </div>
-                )}
-                <div className="text-center">
-                  <h2 className="sp-h2 text-foreground">Welcome back</h2>
-                  <p className="sp-body text-muted-foreground mt-3xs">Sign in to your account to continue</p>
-                </div>
-                <div className="space-y-md">
-                  <div className="space-y-3xs">
-                    <Label>Email</Label>
-                    <Input placeholder="name@example.com" readOnly />
+                </CardHeader>
+
+                <CardContent>
+                  <div className="flex flex-col gap-md">
+                    <div className="flex flex-col gap-3xs">
+                      <Label>Email</Label>
+                      <Input placeholder="name@example.com" readOnly />
+                    </div>
+                    <div className="flex flex-col gap-3xs">
+                      <Label>Password</Label>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        readOnly
+                        iconRight={
+                          <span className="pointer-events-none">
+                            <LucideIcons.Eye />
+                          </span>
+                        }
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-xs">
+                        <Checkbox id="screen-remember" />
+                        <Label htmlFor="screen-remember" className="sp-body cursor-pointer">Remember me</Label>
+                      </div>
+                      <span className="sp-body text-primary">Forgot password?</span>
+                    </div>
+                    <Button className="w-full">Sign In</Button>
                   </div>
-                  <div className="space-y-3xs">
-                    <Label>Password</Label>
-                    <Input type="password" placeholder="Enter your password" readOnly />
+                </CardContent>
+
+                <CardContent className="pt-0">
+                  <div className="flex items-center gap-md">
+                    <Separator className="flex-1" />
+                    <span className="sp-caption text-muted-foreground whitespace-nowrap">or continue with</span>
+                    <Separator className="flex-1" />
                   </div>
-                  <Button className="w-full">Sign In</Button>
-                </div>
-                <div className="flex items-center gap-xs">
-                  <Separator className="flex-1" />
-                  <span className="sp-caption text-muted-foreground">or continue with</span>
-                  <Separator className="flex-1" />
-                </div>
-                <div className="grid grid-cols-2 gap-sm">
-                  <Button variant="outline" className="w-full">Google</Button>
-                  <Button variant="outline" className="w-full">GitHub</Button>
-                </div>
-              </div>
+                </CardContent>
+
+                <CardContent className="grid grid-cols-2 gap-sm pt-0">
+                  <Button variant="outline" className="w-full">
+                    <GoogleIcon />
+                    <span>Google</span>
+                  </Button>
+                  <Button variant="outline" className="w-full">
+                    <FacebookIcon />
+                    <span>Facebook</span>
+                  </Button>
+                </CardContent>
+
+                <CardFooter>
+                  <p className="sp-body text-muted-foreground">
+                    Don't have an account?{" "}
+                    <span className="text-primary font-medium">Sign up</span>
+                  </p>
+                </CardFooter>
+              </Card>
             </div>
           </div>
         )}
@@ -10868,17 +11939,17 @@ function ScreenDocs() {
       <section className="space-y-md">
         <h2 className="text-lg font-semibold font-heading">Examples</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-md">
-          <Example title="Dashboard Layout" description="Full app shell: Top Header (3-column with nav tabs) + content area with ambient gradient orbs (dark mode only). max-w-[1440px] content constraint. Content renders via React Router Outlet." code={`// In router config:\n<Route element={<DashboardLayout />}>\n  <Route path="/" element={<Overview />} />\n  <Route path="/analytics" element={<Analytics />} />\n</Route>\n\n// DashboardLayout renders:\n// <div className="min-h-svh flex flex-col bg-background">\n//   <AppHeader />\n//   <main className="relative flex-1 p-md sm:p-xl lg:p-2xl overflow-hidden">\n//     <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden">\n//       <div className="absolute ... bg-primary/[0.03] blur-[200px]" />\n//       <div className="absolute ... bg-indigo-500/[0.02] blur-[180px]" />\n//     </div>\n//     <div className="relative flex flex-col gap-xl max-w-[1440px] mx-auto">\n//       <PageTransition><Outlet /></PageTransition>\n//     </div>\n//   </main>\n// </div>`}>
+          <Example title="Dashboard Layout" description="Full app shell: Top Header (3-column with nav tabs) + content area with ambient gradient orbs (dark mode only). max-w-[1440px] content constraint. Content renders via React Router Outlet." code={`// In router config:\n<Route element={<DashboardLayout />}>\n  <Route path="/" element={<Overview />} />\n  <Route path="/analytics" element={<Analytics />} />\n</Route>\n\n// DashboardLayout renders:\n// <div className="min-h-svh flex flex-col bg-background">\n//   <AppHeader />\n//   <main className="relative flex-1 p-md sm:p-xl lg:p-2xl overflow-hidden">\n//     <div className="pointer-events-none absolute inset-0 overflow-hidden dark:block hidden">\n//       <div className="absolute ... bg-primary/[0.03] blur-[200px]" />\n//       <div className="absolute ... bg-primary/[0.02] blur-[180px]" />\n//     </div>\n//     <div className="relative flex flex-col gap-xl max-w-[1440px] mx-auto">\n//       <PageTransition><Outlet /></PageTransition>\n//     </div>\n//   </main>\n// </div>`}>
             <div className="w-full aspect-video border border-border rounded-lg overflow-hidden bg-background flex flex-col">
               {/* Mini header */}
               <div className="px-sm py-xs border-b border-border/60 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2xs">
                   <ShopPulseLogo size={12} />
-                  <span className="text-[9px] font-semibold text-foreground">ShopPulse</span>
+                  <span className="sp-micro font-semibold text-foreground">ShopPulse</span>
                 </div>
-                <div className="flex gap-[3px]">
+                <div className="flex gap-3xs">
                   {["Dashboard", "Analytics", "Reports"].map(t => (
-                    <span key={t} className={cn("text-[7px] px-[5px] py-[2px] rounded-full",
+                    <span key={t} className={cn("sp-micro-xs px-2xs py-4xs rounded-full",
                       t === "Dashboard" ? "bg-foreground text-background" : "text-muted-foreground"
                     )}>{t}</span>
                   ))}
@@ -10886,22 +11957,22 @@ function ScreenDocs() {
                 <div className="flex gap-1 items-center">
                   <div className="size-3 rounded-full bg-muted/50" />
                   <div className="size-3 rounded-full bg-muted/50" />
-                  <Avatar className="size-3"><AvatarFallback className="text-[6px]">LN</AvatarFallback></Avatar>
+                  <Avatar className="size-3"><AvatarFallback className="sp-micro-2xs">LN</AvatarFallback></Avatar>
                 </div>
               </div>
               {/* Mini greeting */}
               <div className="px-sm pt-xs">
-                <p className="text-[9px] font-semibold text-foreground">Good morning, Linh</p>
-                <p className="text-[7px] text-muted-foreground">Stay on top of your tasks</p>
+                <p className="sp-micro font-semibold text-foreground">Good morning, Linh</p>
+                <p className="sp-micro-xs text-muted-foreground">Stay on top of your tasks</p>
               </div>
               {/* Content with ambient orbs */}
               <div className="flex-1 p-sm pt-xs relative overflow-hidden">
                 <div className="pointer-events-none absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] dark:block hidden" />
                 <div className="grid grid-cols-3 gap-1 mb-1">
                   {["$48.5K", "1,284", "3.24%"].map(v => (
-                    <div key={v} className="rounded bg-card border border-border p-[4px]">
-                      <div className="h-1 w-6 bg-muted-foreground/20 rounded mb-[2px]" />
-                      <p className="text-[8px] font-semibold text-foreground">{v}</p>
+                    <div key={v} className="rounded bg-card border border-border p-3xs">
+                      <div className="h-1 w-6 bg-muted-foreground/20 rounded mb-4xs" />
+                      <p className="sp-micro-sm font-semibold text-foreground">{v}</p>
                     </div>
                   ))}
                 </div>
@@ -10919,28 +11990,28 @@ function ScreenDocs() {
                 <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-32 h-24 rounded-full bg-primary/[0.08] blur-[40px]" />
                 <div className="relative z-10 flex items-center gap-2xs">
                   <ShopPulseLogo size={12} />
-                  <span className="text-[9px] text-white/90 font-bold">ShopPulse</span>
+                  <span className="sp-micro text-white/90 font-bold">ShopPulse</span>
                 </div>
                 <div className="relative z-10 flex flex-col items-center gap-xs">
                   <div className="w-24 h-16 rounded bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
                     <BarChart3 className="size-5 text-primary/40" />
                   </div>
-                  <p className="text-[7px] text-white/35 text-center leading-tight">Powerful analytics for<br />modern e-commerce</p>
+                  <p className="sp-micro-xs text-white/35 text-center leading-tight">Powerful analytics for<br />modern e-commerce</p>
                 </div>
                 <div className="relative z-10 flex gap-sm text-center">
                   <div>
-                    <p className="text-[8px] text-white/80 font-bold">10K+</p>
-                    <p className="text-[6px] text-white/25">Users</p>
+                    <p className="sp-micro-sm text-white/80 font-bold">10K+</p>
+                    <p className="sp-micro-2xs text-white/25">Users</p>
                   </div>
                   <div className="w-px h-3 bg-white/[0.08]" />
                   <div>
-                    <p className="text-[8px] text-white/80 font-bold">99.9%</p>
-                    <p className="text-[6px] text-white/25">Uptime</p>
+                    <p className="sp-micro-sm text-white/80 font-bold">99.9%</p>
+                    <p className="sp-micro-2xs text-white/25">Uptime</p>
                   </div>
                   <div className="w-px h-3 bg-white/[0.08]" />
                   <div>
-                    <p className="text-[8px] text-white/80 font-bold">4.9★</p>
-                    <p className="text-[6px] text-white/25">Rating</p>
+                    <p className="sp-micro-sm text-white/80 font-bold">4.9★</p>
+                    <p className="sp-micro-2xs text-white/25">Rating</p>
                   </div>
                 </div>
               </div>
@@ -10948,18 +12019,18 @@ function ScreenDocs() {
               <div className="flex-1 flex items-center justify-center p-sm">
                 <div className="space-y-1 w-20">
                   <div className="text-center mb-1">
-                    <div className="h-1.5 w-12 bg-foreground/20 rounded mx-auto mb-[2px]" />
+                    <div className="h-1.5 w-12 bg-foreground/20 rounded mx-auto mb-4xs" />
                     <div className="h-1 w-16 bg-muted-foreground/15 rounded mx-auto" />
                   </div>
                   <div className="h-4 w-full bg-muted/30 border border-border rounded" />
                   <div className="h-4 w-full bg-muted/30 border border-border rounded" />
                   <div className="h-4 w-full bg-primary rounded" />
-                  <div className="grid grid-cols-2 gap-[2px] mt-1">
+                  <div className="grid grid-cols-2 gap-4xs mt-1">
                     <div className="h-3 rounded border border-border flex items-center justify-center">
-                      <span className="text-[6px] text-muted-foreground">Google</span>
+                      <span className="sp-micro-2xs text-muted-foreground">Google</span>
                     </div>
                     <div className="h-3 rounded border border-border flex items-center justify-center">
-                      <span className="text-[6px] text-muted-foreground">GitHub</span>
+                      <span className="sp-micro-2xs text-muted-foreground">GitHub</span>
                     </div>
                   </div>
                 </div>
@@ -10999,9 +12070,10 @@ function ScreenDocs() {
       <FigmaMapping rows={[
         ["Type", "Dashboard", "component", "DashboardLayout — header + content area"],
         ["Type", "Auth", "component", "AuthLayout — split-screen branding + form"],
+        ["Page", "Dashboard / Analytics / Reports / Users / Products / Orders", "nav tab", "App Header active tab matches selected page"],
         ["Content", "Header", "instance", "App Header component (Dashboard type only)"],
+        ["Content", "Illustration", "instance", "Illustration component (Auth type, desktop only)"],
         ["Content", "Logo", "instance", "ShopPulseLogo in both layout types"],
-        ["Dimensions", "1440 × 900", "root frame", "Desktop viewport size for Figma frames"],
       ]} />
 
       <AccessibilityInfo
@@ -11037,6 +12109,7 @@ const componentGroups = [
     label: "Branding",
     items: [
       { id: "logo", label: "Logo" },
+      { id: "illustration", label: "Illustration" },
       { id: "app-header", label: "App Header" },
       { id: "screen", label: "Screen" },
     ],
@@ -11080,6 +12153,8 @@ const componentGroups = [
       { id: "avatar", label: "Avatar" },
       { id: "accordion", label: "Accordion" },
       { id: "collapsible", label: "Collapsible" },
+      { id: "thumbnail", label: "Thumbnail" },
+      { id: "item-list", label: "Item List" },
       { id: "table", label: "Table" },
       { id: "card", label: "Card" },
       { id: "hover-card", label: "Hover Card" },
@@ -11129,6 +12204,7 @@ const componentGroups = [
 
 const componentDocs: Record<string, () => ReactNode> = {
   logo: LogoDocs,
+  illustration: IllustrationBrandingDocs,
   "app-header": TopHeaderDocs,
   screen: ScreenDocs,
   colors: ColorsDocs,
@@ -11151,6 +12227,8 @@ const componentDocs: Record<string, () => ReactNode> = {
   slider: SliderDocs,
   label: LabelDocs,
   avatar: AvatarDocs,
+  thumbnail: ThumbnailDocs,
+  "item-list": ItemListDocs,
   accordion: AccordionDocs,
   table: TableDocs,
   card: CardDocs,
@@ -11236,14 +12314,14 @@ export default function DesignSystem() {
             <nav className="py-md">
               {componentGroups.map((group, gi) => (
                 <div key={group.label} className={cn(gi > 0 && "mt-lg")}>
-                  <p className="px-lg mb-3xs text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest font-heading">{group.label}</p>
+                  <p className="px-lg mb-3xs sp-overline text-muted-foreground/60 tracking-widest font-heading">{group.label}</p>
                   <div>
                     {group.items.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => navigate(item.id)}
                         className={cn(
-                          "w-full text-left px-lg py-[5px] text-[13px] font-body transition-colors duration-150 border-l-2",
+                          "w-full text-left px-lg py-2xs sp-body-sm transition-colors duration-150 border-l-2",
                           active === item.id
                             ? "border-l-primary text-primary font-medium bg-primary/5"
                             : "border-l-transparent text-muted-foreground hover:text-foreground hover:border-l-border"

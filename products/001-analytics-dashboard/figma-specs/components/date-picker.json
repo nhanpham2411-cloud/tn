@@ -43,8 +43,7 @@
           "fill": "ghost-hover"
         },
         "State=Today": {
-          "stroke": "primary",
-          "strokeOpacity": 0.4,
+          "stroke": "primary-border",
           "strokeAlign": "inside"
         },
         "State=Selected": {
@@ -191,7 +190,7 @@
         { "figma": "Day Cell", "value": "48×48, center aligned", "code": "DayCell", "codeValue": "size-[48px] flex items-center justify-center" },
         { "figma": "State=Default", "value": "transparent bg, foreground text", "code": "default", "codeValue": "rounded-sm text-foreground bg-transparent" },
         { "figma": "State=Hover", "value": "ghost-hover bg", "code": "hover", "codeValue": "rounded-sm bg-ghost-hover" },
-        { "figma": "State=Today", "value": "ring-1 primary/40", "code": "today", "codeValue": "ring-1 ring-primary/40" },
+        { "figma": "State=Today", "value": "border primary-border", "code": "today", "codeValue": "border border-primary-border" },
         { "figma": "State=Selected", "value": "primary bg, primary-foreground text", "code": "selected", "codeValue": "bg-primary text-primary-foreground" },
         { "figma": "State=Range Start", "value": "rounded-l-sm, primary bg", "code": "range-start", "codeValue": "rounded-l-sm bg-primary text-primary-foreground" },
         { "figma": "State=Range Middle", "value": "no radius, primary/10 bg", "code": "range-middle", "codeValue": "bg-primary/10 text-foreground" },
@@ -1011,7 +1010,7 @@
         { "figma": "Caption", "value": "SP/Body Semibold, center", "code": "caption_label", "codeValue": "typo-paragraph-sm font-semibold" },
         { "figma": "Weekday", "value": "48×32, SP/Mini, muted-fg", "code": "weekday", "codeValue": "w-[48px] h-[32px] text-[12px] text-muted-foreground" },
         { "figma": "Day Cell", "value": "48×48, Day Cell instance", "code": "day_button", "codeValue": "size-[48px] rounded-sm p-xs" },
-        { "figma": "Today", "value": "ring-1 primary/40", "code": "today", "codeValue": "ring-1 ring-primary/40 rounded-sm" },
+        { "figma": "Today", "value": "border primary-border", "code": "today", "codeValue": "border border-primary-border rounded-sm" },
         { "figma": "Selected", "value": "bg-primary, primary-fg", "code": "selected", "codeValue": "bg-primary text-primary-foreground rounded-sm" },
         { "figma": "Range", "value": "start/middle/end styling", "code": "range_start/middle/end", "codeValue": "rounded-l-sm | bg-primary/10 | rounded-r-sm" }
       ],
@@ -1062,6 +1061,7 @@
         "layout": "horizontal",
         "width": 280,
         "height": 36,
+        "heightVar": "height/default",
         "heightMode": "fixed",
         "primaryAlign": "start",
         "counterAlign": "center",
@@ -1097,7 +1097,7 @@
           "stroke": "border-strong"
         },
         "State=Error": {
-          "stroke": "destructive",
+          "stroke": "destructive-border",
           "focusRing": "ring-error"
         },
         "State=Disable": {
@@ -1255,8 +1255,7 @@
               "paddingY": "sm",
               "gap": "3xs",
               "strokeSides": "right",
-              "stroke": "border",
-              "strokeOpacity": 0.3,
+              "stroke": "border-subtle",
               "counterAlign": "start",
               "children": [
                 {
@@ -1766,8 +1765,7 @@
                   "paddingY": "sm",
                   "gap": "sm",
                   "strokeSides": "top",
-                  "stroke": "border",
-                  "strokeOpacity": 0.3,
+                  "stroke": "border-subtle",
                   "children": [
                     {
                       "name": "Range Label",

@@ -38,6 +38,7 @@
   "card-subtle-foreground": "rgb(161, 161, 170)",
   "popover": "rgb(24, 24, 27)",
   "popover-foreground": "rgb(250, 250, 250)",
+  "ghost": "rgba(0, 0, 0, 0.01)",
   "ghost-foreground": "rgb(161, 161, 170)",
   "ghost-hover": "rgba(255, 255, 255, 0.06)",
   "outline": "rgba(255, 255, 255, 0.04)",

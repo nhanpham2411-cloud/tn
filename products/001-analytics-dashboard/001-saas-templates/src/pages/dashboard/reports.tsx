@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +47,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCard,
+  TableCardRow,
 } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -109,9 +112,7 @@ function ReportsSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -167,27 +168,27 @@ const reports: Report[] = [
 ]
 
 const typeConfig: Record<string, { label: string; color: string; dotColor: string }> = {
-  revenue: { label: "Revenue", color: "text-violet-600 dark:text-violet-400", dotColor: "bg-violet-500" },
-  customers: { label: "Customers", color: "text-cyan-600 dark:text-cyan-400", dotColor: "bg-cyan-500" },
-  products: { label: "Products", color: "text-amber-600 dark:text-amber-400", dotColor: "bg-amber-500" },
-  channels: { label: "Channels", color: "text-rose-600 dark:text-rose-400", dotColor: "bg-rose-500" },
+  revenue: { label: "Revenue", color: "text-chart-1", dotColor: "bg-chart-1" },
+  customers: { label: "Customers", color: "text-chart-7", dotColor: "bg-chart-7" },
+  products: { label: "Products", color: "text-chart-3", dotColor: "bg-chart-3" },
+  channels: { label: "Channels", color: "text-chart-8", dotColor: "bg-chart-8" },
 }
 
 const statusConfig: Record<string, { label: string; dotClass: string; badgeClass: string }> = {
   completed: {
     label: "Completed",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   processing: {
     label: "Processing",
     dotClass: "bg-warning animate-pulse",
-    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20",
+    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border",
   },
   scheduled: {
     label: "Scheduled",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
 }
 
@@ -294,7 +295,7 @@ export default function ReportsPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -310,7 +311,7 @@ export default function ReportsPage() {
               <p className="sp-caption text-muted-foreground">Dashboard</p>
               <h1 className="sp-h3 text-foreground">Reports</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -332,16 +333,14 @@ export default function ReportsPage() {
         {/* KPI summary cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
-            { icon: FileText, label: "Total Reports", value: totalCount, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: CheckCircle2, label: "Completed", value: completedCount, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: Clock, label: "Processing", value: processingCount, iconBg: "bg-warning-subtle", iconColor: "text-warning" },
-            { icon: CalendarClock, label: "Scheduled", value: scheduledCount, iconBg: "bg-muted", iconColor: "text-muted-foreground" },
+            { icon: FileText, label: "Total Reports", value: totalCount, color: "primary" as const },
+            { icon: CheckCircle2, label: "Completed", value: completedCount, color: "success" as const },
+            { icon: Clock, label: "Processing", value: processingCount, color: "warning" as const },
+            { icon: CalendarClock, label: "Scheduled", value: scheduledCount, color: "default" as const },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
-                <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                  <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                </div>
+                <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                 <div>
                   <p className="sp-kpi-md text-foreground">{kpi.value}</p>
                   <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -362,8 +361,8 @@ export default function ReportsPage() {
               </div>
               <Button
                 variant="ghost"
-                size="xs"
-                className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground"
+                size="icon-xs"
+                className="text-muted-foreground hover:text-muted-foreground"
                 onClick={handleRefresh}
                 aria-label="Refresh"
               >
@@ -398,7 +397,7 @@ export default function ReportsPage() {
           {/* Search + Status filter */}
           <div className="px-md sm:px-xl pt-lg flex flex-col sm:flex-row items-stretch sm:items-center gap-sm">
             <div className="relative flex-1">
-              <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground/50" />
+              <Search className="absolute left-md top-1/2 -translate-y-1/2 size-[14px] text-muted-foreground" />
               <Input
                 placeholder="Search reports..."
                 value={search}
@@ -434,12 +433,8 @@ export default function ReportsPage() {
                   const type = typeConfig[report.type]
                   const status = statusConfig[report.status]
                   return (
-                    <div
-                      key={report.id}
-                      className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
-                      onClick={() => setDetailSheet(report.id)}
-                    >
-                      <div className="flex items-start justify-between gap-sm">
+                    <TableCard key={report.id} onClick={() => setDetailSheet(report.id)}>
+                      <TableCardRow className="items-start gap-sm">
                         <div className="min-w-0 flex-1">
                           <p className="sp-body-semibold text-foreground truncate">{report.name}</p>
                           <span className={`inline-flex items-center gap-xs sp-caption mt-3xs ${type.color}`}>
@@ -451,12 +446,12 @@ export default function ReportsPage() {
                           <span className={`size-[5px] rounded-full ${status.dotClass}`} />
                           {status.label}
                         </span>
-                      </div>
-                      <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                      </TableCardRow>
+                      <TableCardRow className="sp-caption text-muted-foreground">
                         <span>{report.date} · <Badge variant="outline" className="sp-caption">{report.format}</Badge></span>
                         <span>{report.size}</span>
-                      </div>
-                    </div>
+                      </TableCardRow>
+                    </TableCard>
                   )
                 })}
               </div>
@@ -495,15 +490,12 @@ export default function ReportsPage() {
                     const type = typeConfig[report.type]
                     const status = statusConfig[report.status]
                     return (
-                      <TableRow key={report.id} className="group">
+                      <TableRow key={report.id} className="group cursor-pointer" onClick={() => setDetailSheet(report.id)}>
                         <TableCell>
-                          <button
-                            className="sp-body-semibold text-foreground hover:text-primary transition-colors text-left"
-                            onClick={() => setDetailSheet(report.id)}
-                          >
+                          <span className="sp-body-semibold text-foreground">
                             {report.name}
-                          </button>
-                          <p className="sp-caption text-muted-foreground/60 mt-3xs">{report.id}</p>
+                          </span>
+                          <p className="sp-caption text-muted-foreground mt-3xs">{report.id}</p>
                         </TableCell>
                         <TableCell>
                           <span className={`inline-flex items-center gap-xs sp-caption ${type.color}`}>
@@ -522,13 +514,13 @@ export default function ReportsPage() {
                           <Badge variant="outline" className="sp-caption">{report.format}</Badge>
                         </TableCell>
                         <TableCell className="text-right sp-caption text-muted-foreground">{report.size}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant="ghost"
-                                size="xs"
-                                className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground"
+                                size="icon-xs"
+                                className="text-muted-foreground hover:text-muted-foreground"
                                 aria-label="More options"
                               >
                                 <MoreHorizontal className="size-[14px]" />
@@ -562,7 +554,7 @@ export default function ReportsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border mt-md">
                 <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
@@ -638,7 +630,7 @@ export default function ReportsPage() {
                       { label: "Format", value: detailReport.format },
                       { label: "Size", value: detailReport.size },
                     ].map((meta) => (
-                      <div key={meta.label} className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                      <div key={meta.label} className="rounded-xl bg-surface-raised p-lg">
                         <p className="sp-caption text-muted-foreground">{meta.label}</p>
                         <p className="sp-body-semibold text-foreground mt-2xs">{meta.value}</p>
                       </div>
@@ -646,8 +638,8 @@ export default function ReportsPage() {
                   </div>
 
                   {/* Preview placeholder */}
-                  <div className="rounded-xl border border-border/40 dark:border-border-subtle bg-muted/30 dark:bg-surface-inset/30 h-[200px] flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-sm text-muted-foreground/50">
+                  <div className="rounded-xl border border-border bg-surface-inset h-[200px] flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-sm text-muted-foreground">
                       <FileText className="size-[32px]" />
                       <p className="sp-caption">Report preview</p>
                     </div>
@@ -678,7 +670,7 @@ export default function ReportsPage() {
                   )}
 
                   {detailReport.status === "processing" && (
-                    <div className="flex flex-col gap-md p-lg rounded-xl bg-warning-subtle border border-warning-border/20">
+                    <div className="flex flex-col gap-md p-lg rounded-xl bg-warning-subtle border border-warning-border">
                       <div className="flex items-center gap-sm">
                         <Loader2 className="size-[16px] text-warning animate-spin" />
                         <p className="sp-body-medium text-warning-subtle-foreground flex-1">Generating report...</p>
@@ -689,7 +681,7 @@ export default function ReportsPage() {
                   )}
 
                   {detailReport.status === "scheduled" && (
-                    <div className="flex items-center gap-sm p-lg rounded-xl bg-muted border border-border/40">
+                    <div className="flex items-center gap-sm p-lg rounded-xl bg-surface-inset border border-border">
                       <CalendarClock className="size-[16px] text-muted-foreground" />
                       <p className="sp-body-medium text-muted-foreground">Scheduled for {detailReport.date}</p>
                     </div>
@@ -712,7 +704,7 @@ export default function ReportsPage() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="bg-destructive text-destructive-foreground hover:bg-destructive"
                 onClick={handleDeleteConfirm}
               >
                 <Trash2 className="size-[14px] mr-xs" />

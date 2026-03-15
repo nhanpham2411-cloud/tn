@@ -17,6 +17,7 @@
         "layout": "horizontal",
         "primaryAlign": "center",
         "counterAlign": "center",
+        "radius": "none",
         "gap": "none",
         "paddingX": "none",
         "paddingY": "none",

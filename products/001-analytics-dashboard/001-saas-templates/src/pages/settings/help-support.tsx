@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -82,24 +83,21 @@ const quickLinks = [
     title: "Documentation",
     description: "Browse our comprehensive guides and API docs",
     action: "View Docs",
-    bg: "bg-primary/10 dark:bg-primary/20",
-    color: "text-primary",
+    color: "primary" as const,
   },
   {
     icon: Video,
     title: "Video Tutorials",
     description: "Watch step-by-step walkthroughs",
     action: "Watch Now",
-    bg: "bg-primary/10 dark:bg-primary/20",
-    color: "text-primary",
+    color: "primary" as const,
   },
   {
     icon: MessageSquare,
     title: "Community Forum",
     description: "Connect with other ShopPulse users",
     action: "Join Forum",
-    bg: "bg-success-subtle",
-    color: "text-success",
+    color: "success" as const,
   },
 ]
 
@@ -217,7 +215,7 @@ export default function HelpSupportPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some help content may not be available.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -233,12 +231,12 @@ export default function HelpSupportPage() {
               <p className="sp-caption text-muted-foreground">Settings</p>
               <h1 className="sp-h3 text-foreground">Help & Support</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
           </div>
-          <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
+          <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground shrink-0" onClick={handleRefresh} aria-label="Refresh">
             <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
           </Button>
         </div>
@@ -271,9 +269,7 @@ export default function HelpSupportPage() {
               {quickLinks.map((link) => (
                 <DCard key={link.title} className="flex flex-col gap-md cursor-pointer hover:border-border dark:hover:border-border transition-colors">
                   <div className="flex items-center gap-sm">
-                    <div className={`size-[36px] rounded-lg ${link.bg} flex items-center justify-center`}>
-                      <link.icon className={`size-[18px] ${link.color}`} />
-                    </div>
+                    <Thumbnail type="icon" color={link.color} icon={<link.icon className="size-[18px]" />} />
                     <div className="flex-1">
                       <h3 className="sp-body-semibold text-foreground">{link.title}</h3>
                       <p className="sp-caption text-muted-foreground mt-2xs">{link.description}</p>
@@ -294,9 +290,7 @@ export default function HelpSupportPage() {
             {/* FAQ */}
             <DCard>
               <div className="flex items-center gap-sm mb-lg">
-                <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                  <HelpCircle className="size-[18px] text-primary" />
-                </div>
+                <Thumbnail type="icon" color="primary" icon={<HelpCircle className="size-[18px]" />} />
                 <div>
                   <h3 className="sp-h4 text-foreground">Frequently Asked Questions</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">
@@ -316,8 +310,8 @@ export default function HelpSupportPage() {
                       onClick={() => setFaqCategory(cat.value)}
                       className={`inline-flex items-center gap-xs rounded-full sp-caption font-medium transition-colors ${
                         faqCategory === cat.value
-                          ? "bg-foreground text-background hover:bg-foreground/90 hover:text-background"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                          ? "bg-foreground text-background hover:bg-foreground hover:text-background"
+                          : "bg-muted text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                     >
                       <cat.icon className="size-[13px]" />
@@ -330,16 +324,14 @@ export default function HelpSupportPage() {
               {/* FAQ items */}
               {filteredFaqs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-2xl text-center">
-                  <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-                    <FileText className="size-[18px] text-muted-foreground" />
-                  </div>
+                  <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<FileText className="size-[18px]" />} className="mb-md" />
                   <p className="sp-body-semibold text-foreground">No articles found</p>
                   <p className="sp-caption text-muted-foreground mt-2xs">Try a different search term or browse categories</p>
                 </div>
               ) : (
                 <Accordion type="single" collapsible className="w-full">
                   {filteredFaqs.map((faq, i) => (
-                    <AccordionItem key={i} value={`faq-${i}`} className="border-border/40">
+                    <AccordionItem key={i} value={`faq-${i}`} className="border-border-subtle">
                       <AccordionTrigger className="sp-body-semibold text-foreground text-left hover:no-underline py-md">
                         {faq.question}
                       </AccordionTrigger>
@@ -355,9 +347,7 @@ export default function HelpSupportPage() {
             {/* Contact Support */}
             <DCard>
               <div className="flex items-center gap-sm mb-lg">
-                <div className="size-[36px] rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                  <Mail className="size-[18px] text-primary" />
-                </div>
+                <Thumbnail type="icon" color="primary" icon={<Mail className="size-[18px]" />} />
                 <div>
                   <h3 className="sp-h4 text-foreground">Contact Support</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">Can't find what you need? Our team typically responds within 4 hours.</p>
@@ -366,9 +356,7 @@ export default function HelpSupportPage() {
 
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-2xl text-center">
-                  <div className="size-[48px] rounded-full bg-success-subtle flex items-center justify-center mb-md">
-                    <CheckCircle2 className="size-[24px] text-success" />
-                  </div>
+                  <Thumbnail type="icon" shape="circle" size="lg" color="success" icon={<CheckCircle2 className="size-[24px]" />} className="mb-md" />
                   <p className="sp-h4 text-foreground">Ticket Submitted!</p>
                   <p className="sp-body text-muted-foreground mt-xs max-w-[400px]">
                     We've received your request and will get back to you at your account email within 4 hours. Check your inbox for a confirmation.
@@ -415,7 +403,7 @@ export default function HelpSupportPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="sp-caption text-muted-foreground/60">
+                    <p className="sp-caption text-muted-foreground">
                       You can also email us directly at support@shoppulse.io
                     </p>
                     <Button onClick={handleSubmitTicket} disabled={submitting || !ticketSubject.trim() || !ticketCategory || !ticketMessage.trim()}>
@@ -434,9 +422,7 @@ export default function HelpSupportPage() {
             <DCard>
               <div className="flex items-center justify-between mb-lg">
                 <div className="flex items-center gap-sm">
-                  <div className="size-[36px] rounded-lg bg-success-subtle flex items-center justify-center">
-                    <CheckCircle2 className="size-[18px] text-success" />
-                  </div>
+                  <Thumbnail type="icon" color="success" icon={<CheckCircle2 className="size-[18px]" />} />
                   <div>
                     <h3 className="sp-h4 text-foreground">System Status</h3>
                     <p className="sp-caption text-muted-foreground mt-3xs">All systems operational</p>
@@ -463,7 +449,7 @@ export default function HelpSupportPage() {
                 ))}
               </div>
               <Separator className="my-md" />
-              <p className="sp-caption text-muted-foreground/60 text-center">
+              <p className="sp-caption text-muted-foreground text-center">
                 Uptime: 99.98% over the last 90 days · Last incident: 14 days ago
               </p>
             </DCard>

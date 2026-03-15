@@ -1,0 +1,156 @@
+{
+  "components": [
+    {
+      "name": "Illustration",
+      "description": "Full branding illustration panel used on auth screens. Dark background with ambient glow, grid pattern, logo, animated dashboard SVG mockup, tagline, social proof stats, and copyright. Shown on desktop only (hidden on tablet/mobile).",
+      "category": "Branding",
+      "installation": {
+        "import": "import { AuthIllustration, ShopPulseLogo } from \"@/components/layout/auth-layout\""
+      },
+
+      "properties": {
+        "Type": ["Auth"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "width": 480,
+        "height": 700,
+        "heightMode": "fixed",
+        "fill": "background",
+        "clipsContent": true,
+        "paddingX": "2xl",
+        "paddingY": "2xl",
+        "gap": "none",
+        "counterAlign": "center",
+        "primaryAlign": "space-between",
+        "hideLabel": true,
+        "children": [
+          {
+            "type": "instance", "name": "Logo", "component": "Logo",
+            "variants": { "Type": "Full", "Size": "Default" }
+          },
+          {
+            "type": "frame", "name": "Center", "layout": "vertical",
+            "widthMode": "hug", "counterAlign": "center", "gap": "lg",
+            "paddingX": "none", "paddingY": "none",
+            "children": [
+              {
+                "type": "frame", "name": "Illustration",
+                "layout": "vertical",
+                "width": 280, "height": 200,
+                "widthMode": "fixed", "heightMode": "fixed",
+                "fill": "muted", "radius": "xl",
+                "counterAlign": "center", "primaryAlign": "center",
+                "paddingX": "none", "paddingY": "none", "gap": "none",
+                "children": [
+                  { "type": "icon", "name": "Chart Icon", "iconName": "ChartNoAxesColumn", "iconSize": 48, "iconFill": "muted-foreground" }
+                ]
+              },
+              {
+                "type": "frame", "name": "Text Group", "layout": "vertical",
+                "widthMode": "fixed", "width": 360,
+                "counterAlign": "center", "gap": "xs",
+                "paddingX": "none", "paddingY": "none",
+                "children": [
+                  { "type": "text", "name": "Heading", "textContent": "Powerful analytics for modern e-commerce", "textStyle": "SP/H3", "textFill": "foreground" },
+                  { "type": "text", "name": "Description", "textContent": "Real-time revenue tracking, order insights, and growth metrics — everything you need in one beautiful dashboard.", "textStyle": "SP/Body", "textFill": "muted-foreground" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "frame", "name": "Footer", "layout": "vertical",
+            "widthMode": "hug", "counterAlign": "center", "gap": "md",
+            "paddingX": "none", "paddingY": "none",
+            "children": [
+              {
+                "type": "frame", "name": "Stats", "layout": "horizontal",
+                "widthMode": "hug", "counterAlign": "center", "gap": "xl",
+                "paddingX": "none", "paddingY": "none",
+                "children": [
+                  {
+                    "type": "frame", "name": "Stat 1", "layout": "vertical",
+                    "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                    "paddingX": "none", "paddingY": "none",
+                    "children": [
+                      { "type": "text", "name": "Value", "textContent": "10K+", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                      { "type": "text", "name": "Label", "textContent": "Active Users", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                    ]
+                  },
+                  { "type": "instance", "name": "Div 1", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                  {
+                    "type": "frame", "name": "Stat 2", "layout": "vertical",
+                    "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                    "paddingX": "none", "paddingY": "none",
+                    "children": [
+                      { "type": "text", "name": "Value", "textContent": "99.9%", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                      { "type": "text", "name": "Label", "textContent": "Uptime", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                    ]
+                  },
+                  { "type": "instance", "name": "Div 2", "component": "Separator", "variants": { "Orientation": "Vertical" } },
+                  {
+                    "type": "frame", "name": "Stat 3", "layout": "vertical",
+                    "widthMode": "hug", "counterAlign": "center", "gap": "3xs",
+                    "paddingX": "none", "paddingY": "none",
+                    "children": [
+                      { "type": "text", "name": "Value", "textContent": "4.9★", "textStyle": "SP/Body Semibold", "textFill": "foreground" },
+                      { "type": "text", "name": "Label", "textContent": "Rating", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+                    ]
+                  }
+                ]
+              },
+              { "type": "text", "name": "Copyright", "textContent": "© 2026 ShopPulse. All rights reserved.", "textStyle": "SP/Caption", "textFill": "muted-foreground" }
+            ]
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "Type=Auth": {}
+      },
+
+      "variantRestrictions": {},
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      },
+
+      "examples": [
+        {
+          "name": "Auth Branding",
+          "description": "Full branding panel as used in auth screens — logo, illustration, tagline, stats.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Auth", "props": { "Type": "Auth" } }
+          ]
+        }
+      ],
+
+      "bestPractices": [
+        { "do": "Use exclusively on auth flow pages (sign-in, sign-up, forgot-password, onboarding) — provides brand identity context while user authenticates.", "dont": "Use inside dashboard pages or non-auth contexts — the dark branding panel conflicts with the app's adaptive theme." },
+        { "do": "Hide on mobile and tablet breakpoints — the split-screen layout doesn't fit narrow screens. Mobile/tablet auth shows logo in the form card header instead.", "dont": "Show on mobile or tablet — it pushes the form below the fold and hurts conversion." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "Type=Auth", "value": "Auth branding panel", "code": "component", "codeValue": "AuthBrandingPanel (composed from AuthIllustration + ShopPulseLogo)" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "—", "action": "Decorative panel — not focusable or interactive" }
+        ],
+        "notes": [
+          "The entire panel is hidden on mobile/tablet — screen readers see only the auth form.",
+          "All SVG elements are decorative and should have aria-hidden='true'.",
+          "Animated SVG uses CSS animations that respect prefers-reduced-motion."
+        ]
+      },
+
+      "related": [
+        { "name": "Logo", "desc": "ShopPulseLogo is used in the branding panel header." },
+        { "name": "Screen", "desc": "Screen component Auth layout uses Illustration as the left panel." }
+      ]
+    }
+  ]
+}

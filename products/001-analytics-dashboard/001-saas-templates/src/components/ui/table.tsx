@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { figma } from "@/lib/figma-dev"
 
 /**
  * SprouX Table
@@ -47,7 +48,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
+        "border-t bg-muted font-medium [&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -60,7 +61,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "border-b border-border transition-colors hover:bg-muted data-[state=selected]:bg-muted",
         className
       )}
       {...props}
@@ -105,6 +106,38 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
   )
 }
 
+/**
+ * TableCard — Mobile card representation of a table row.
+ * Use below `md` breakpoint as a responsive alternative to the full table.
+ */
+function TableCard({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="table-card"
+      {...figma("Table Card", { State: "Default" })}
+      className={cn(
+        "rounded-xl border border-border-subtle p-md flex flex-col gap-sm transition-colors cursor-pointer hover:bg-surface-raised",
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+/**
+ * TableCardRow — A justify-between flex row inside TableCard.
+ */
+function TableCardRow({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="table-card-row"
+      {...figma("Table Card Row", { State: "Default" })}
+      className={cn("flex items-center justify-between", className)}
+      {...props}
+    />
+  )
+}
+
 export {
   Table,
   TableHeader,
@@ -114,4 +147,6 @@ export {
   TableHead,
   TableCell,
   TableCaption,
+  TableCard,
+  TableCardRow,
 }

@@ -12,9 +12,9 @@ type DayCellState = "default" | "hover" | "today" | "selected" | "outside" | "di
 const dayCellStyles: Record<DayCellState, string> = {
   "default":      "rounded-sm text-foreground bg-transparent",
   "hover":        "rounded-sm text-foreground bg-ghost-hover",
-  "today":        "rounded-sm text-foreground ring-1 ring-primary/40",
+  "today":        "rounded-sm text-foreground border border-primary-border",
   "selected":     "rounded-sm text-primary-foreground bg-primary",
-  "outside":      "rounded-sm text-muted-foreground/40 bg-transparent",
+  "outside":      "rounded-sm text-muted-foreground bg-transparent",
   "disabled":     "rounded-sm text-muted-foreground opacity-50 bg-transparent",
   "range-start":  "rounded-l-sm text-primary-foreground bg-primary",
   "range-middle": "text-foreground bg-primary-10",
@@ -89,17 +89,17 @@ function Calendar({
         nav: "absolute top-0 inset-x-0 flex items-center justify-between z-10 h-2xl",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "size-2xl rounded-lg p-[7px]"
+          "size-2xl rounded-lg p-2xs"
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
-          "size-2xl rounded-lg p-[7px]"
+          "size-2xl rounded-lg p-2xs"
         ),
         month_grid: "w-full border-collapse",
         weekdays: "flex",
         weekday:
-          "text-muted-foreground rounded-sm w-[48px] h-[32px] font-normal text-[12px] leading-[16px]",
-        week: "flex w-full mt-[1px]",
+          "text-muted-foreground rounded-sm w-[48px] h-[32px] font-normal sp-caption",
+        week: "flex w-full mt-px",
         day: cn(
           "relative p-0 text-center typo-paragraph-sm focus-within:relative focus-within:z-20",
           props.mode === "range"

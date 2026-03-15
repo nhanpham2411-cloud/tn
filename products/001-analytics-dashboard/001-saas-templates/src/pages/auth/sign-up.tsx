@@ -101,7 +101,7 @@ export default function SignUpPage() {
       <CardContent>
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-md">
           {/* Name */}
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
@@ -116,7 +116,7 @@ export default function SignUpPage() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -132,7 +132,7 @@ export default function SignUpPage() {
           </div>
 
           {/* Password */}
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-3xs">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
@@ -184,7 +184,7 @@ export default function SignUpPage() {
           </div>
 
           {/* Terms */}
-          <div className="flex items-start gap-xs">
+          <div className="flex items-center gap-xs">
             <Checkbox
               id="terms"
               checked={terms}

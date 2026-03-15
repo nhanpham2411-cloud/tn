@@ -46,6 +46,16 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
       ],
     },
     {
+      name: "show-password",
+      actions: [
+        { action: "fill", selector: "#email", text: "john@shoppulse.com" },
+        { action: "fill", selector: "#password", text: "SecureP@ss123" },
+        // Toggle password visibility → EyeOff icon + visible text
+        { action: "evaluate", script: "document.querySelector('#password').parentElement.querySelector('button[aria-label]').click()" },
+        { action: "wait", ms: 200 },
+      ],
+    },
+    {
       name: "validation-error",
       actions: [
         { action: "fill", selector: "#email", text: "invalid-email" },
@@ -61,11 +71,25 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
 
   "auth-sign-up": [
     {
+      name: "filled",
+      actions: [
+        { action: "fill", selector: "#name", text: "Alex Rivera" },
+        { action: "fill", selector: "#email", text: "alex@shoppulse.com" },
+        // Fair password (3/5) → progress bar 60%, 3/4 requirements met (length + uppercase + number)
+        { action: "fill", selector: "#password", text: "MyPass123" },
+        { action: "evaluate", script: "document.querySelector('#terms').click()" },
+        { action: "wait", ms: 200 },
+      ],
+    },
+    {
       name: "password-strength",
       actions: [
         { action: "fill", selector: "#name", text: "Alex Rivera" },
         { action: "fill", selector: "#email", text: "alex@shoppulse.com" },
-        { action: "fill", selector: "#password", text: "Str0ng!Pass" },
+        // Very Strong password (5/5) → progress bar 100%, all 4 requirements met
+        { action: "fill", selector: "#password", text: "Str0ng!Pass@2026" },
+        // Toggle password visibility → show clear text + EyeOff icon
+        { action: "evaluate", script: "document.querySelector('#password').parentElement.querySelector('button[aria-label]').click()" },
         { action: "wait", ms: 200 },
       ],
     },
@@ -89,6 +113,13 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
 
   "auth-forgot-password": [
     {
+      name: "filled",
+      actions: [
+        { action: "fill", selector: "#email", text: "john@shoppulse.com" },
+        { action: "wait", ms: 200 },
+      ],
+    },
+    {
       name: "validation-error",
       actions: [
         { action: "fill", selector: "#email", text: "invalid-email" },
@@ -109,19 +140,51 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
 
   "auth-onboarding": [
     {
+      name: "step-1-filled",
+      actions: [
+        { action: "fill", selector: "#company", text: "Acme Inc." },
+        { action: "click", selector: "[role='combobox']" },
+        { action: "wait", ms: 300 },
+        { action: "click", selector: "[role='option']:has-text('E-commerce')" },
+        { action: "wait", ms: 300 },
+        // Select team size 51-200
+        { action: "evaluate", script: "document.querySelector('#size-51-200').click()" },
+        { action: "wait", ms: 200 },
+      ],
+    },
+    {
       name: "step-2",
       actions: [
         // Fill step 1 fields
         { action: "fill", selector: "#company", text: "Acme Inc." },
-        // Open industry select (Radix: role=combobox)
         { action: "click", selector: "[role='combobox']" },
         { action: "wait", ms: 300 },
-        // Select "E-commerce" from portal dropdown
         { action: "click", selector: "[role='option']:has-text('E-commerce')" },
         { action: "wait", ms: 300 },
-        // Click Continue to advance to step 2
-        { action: "click", selector: "button:has-text('Continue')" },
+        // Click Continue to advance to step 2 (evaluate bypasses decorative blur div on Mobile)
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
         { action: "wait", ms: 500 },
+      ],
+    },
+    {
+      name: "step-2-filled",
+      actions: [
+        // Fill step 1
+        { action: "fill", selector: "#company", text: "Acme Inc." },
+        { action: "click", selector: "[role='combobox']" },
+        { action: "wait", ms: 300 },
+        { action: "click", selector: "[role='option']:has-text('E-commerce')" },
+        { action: "wait", ms: 300 },
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
+        { action: "wait", ms: 500 },
+        // Fill team member emails
+        { action: "fill", selector: "input[type='email']", text: "sarah@acme.com" },
+        // Click "+ Add another" to add more email fields
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Add another'))?.click()" },
+        { action: "wait", ms: 300 },
+        // Fill second email (nth-match selector targets 2nd email input)
+        { action: "fill", selector: "input[type='email'] >> nth=1", text: "mike@acme.com" },
+        { action: "wait", ms: 200 },
       ],
     },
     {
@@ -134,11 +197,33 @@ export const PAGE_STATES: Record<string, ScreenState[]> = {
         { action: "click", selector: "[role='option']:has-text('E-commerce')" },
         { action: "wait", ms: 300 },
         // Continue to step 2
-        { action: "click", selector: "button:has-text('Continue')" },
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
         { action: "wait", ms: 500 },
         // Continue to step 3 (step 2 has no required fields)
-        { action: "click", selector: "button:has-text('Continue')" },
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
         { action: "wait", ms: 500 },
+      ],
+    },
+    {
+      name: "step-3-filled",
+      actions: [
+        // Fill step 1
+        { action: "fill", selector: "#company", text: "Acme Inc." },
+        { action: "click", selector: "[role='combobox']" },
+        { action: "wait", ms: 300 },
+        { action: "click", selector: "[role='option']:has-text('E-commerce')" },
+        { action: "wait", ms: 300 },
+        // Continue to step 2
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
+        { action: "wait", ms: 500 },
+        // Continue to step 3
+        { action: "evaluate", script: "Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Continue').click()" },
+        { action: "wait", ms: 500 },
+        // Select timezone
+        { action: "click", selector: "[role='combobox']" },
+        { action: "wait", ms: 300 },
+        { action: "click", selector: "[role='option']:has-text('Indochina')" },
+        { action: "wait", ms: 300 },
       ],
     },
   ],

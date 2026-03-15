@@ -23,6 +23,8 @@
         "paddingY": "none",
         "width": 40,
         "height": 40,
+        "heightVar": "avatar/default",
+        "widthVar": "avatar/default",
         "radius": "full",
         "stroke": "border",
         "clipsContent": true,
@@ -36,9 +38,9 @@
         "Type=Image": { "imageUrl": "https://avatars.githubusercontent.com/u/124599?v=4", "hideLabel": true },
         "Type=Text": {},
 
-        "Size=SM": { "width": 32, "height": 32 },
+        "Size=SM": { "width": 32, "height": 32, "heightVar": "avatar/sm", "widthVar": "avatar/sm" },
         "Size=Default": {},
-        "Size=LG": { "width": 56, "height": 56 }
+        "Size=LG": { "width": 56, "height": 56, "heightVar": "avatar/lg", "widthVar": "avatar/lg" }
       },
 
       "examples": [

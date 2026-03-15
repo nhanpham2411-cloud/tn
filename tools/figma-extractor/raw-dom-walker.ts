@@ -23,6 +23,7 @@ export interface RawExtractedNode {
   primaryAlign?: string
   counterAlign?: string
   wrap?: boolean
+  wrapGap?: number
   // Sizing
   width?: number
   height?: number
@@ -105,6 +106,7 @@ export const RAW_DOM_WALKER_SCRIPT = `
   // Container DS components — recurse into children
   const CONTAINER_COMPONENTS = new Set([
     "Card", "Dialog", "Sheet", "Drawer", "Collapsible", "Accordion",
+    "Screen", "Illustration", "Tabs",
   ]);
 
   // ── Helpers ──
@@ -360,13 +362,60 @@ export const RAW_DOM_WALKER_SCRIPT = `
           if ((!alignSelf || alignSelf === "auto" || alignSelf === "stretch") &&
               (!alignItems || alignItems === "stretch" || alignItems === "normal")) return true;
         }
+        // Horizontal flex: child width matches parent content width
+        // But if parent has only 1 visible child, width match is trivial (parent HUGs child)
+        // — require explicit flex-grow or width: 100% for single-child case
+        if (!isCol) {
+          const visibleSiblings = Array.from(parent.children).filter(function(c) {
+            var cs = getComputedStyle(c);
+            return cs.display !== "none" && c.getBoundingClientRect().width > 0;
+          });
+          if (visibleSiblings.length <= 1) {
+            // Single child — fillWidth only if parent genuinely fills its container
+            // (otherwise parent HUGs child, width match is trivial)
+            if (!fills) return false;
+            var _pGrow = parseFloat(parentStyle.flexGrow) || 0;
+            var _pW = parentStyle.width;
+            if (_pGrow > 0 || _pW === "100%") return true;
+            // Parent in column flex → stretches by default → fills width
+            var _gp = parent.parentElement;
+            if (_gp) {
+              var _gpS = getComputedStyle(_gp);
+              var _gpD = _gpS.flexDirection || "row";
+              if ((_gpS.display === "flex" || _gpS.display === "inline-flex") &&
+                  (_gpD === "column" || _gpD === "column-reverse")) {
+                return true;
+              }
+            }
+            return false;
+          }
+          // Multi-child: child fills if width matches parent OR takes majority of space
+          if (fills) return true;
+          // Check if child takes > 70% of parent width (e.g. Input w-full with small sibling button)
+          if (parentContentW > 0 && childRect.width / parentContentW > 0.7) return true;
+        }
       }
       if (parentDisplay === "block" || parentDisplay === "flow-root" || parentDisplay === "") {
         const elDisplay = style.display;
         if ((elDisplay === "block" || elDisplay === "flex" || elDisplay === "grid") && fills) return true;
       }
-      // Grid children fill their cell
-      if (parentDisplay === "grid" || parentDisplay === "inline-grid") return true;
+      // Grid children: Figma has no CSS grid — fake with horizontal frame + fixed children
+      if (parentDisplay === "grid" || parentDisplay === "inline-grid") {
+        const gridChildren = Array.from(parent.children).filter(function(c) {
+          const cs = getComputedStyle(c);
+          return cs.display !== "none" && cs.position !== "absolute" && cs.position !== "fixed";
+        });
+        if (gridChildren.length <= 1) return true; // single child → fill
+        // Check if multi-row grid (items on different y positions)
+        const firstTop = gridChildren[0].getBoundingClientRect().top;
+        const lastTop = gridChildren[gridChildren.length - 1].getBoundingClientRect().top;
+        if (lastTop > firstTop + 2) return false; // multi-row → FIXED width (wrap handles layout)
+        // Single-row: fill only if all cells same width (uniform columns)
+        const widths = gridChildren.map(function(c) { return Math.round(c.getBoundingClientRect().width); });
+        const allSame = widths.every(function(w) { return Math.abs(w - widths[0]) <= 2; });
+        if (allSame) return true; // uniform single-row columns → fill equally
+        return false; // different column widths → keep FIXED
+      }
     }
     return false;
   }
@@ -379,7 +428,13 @@ export const RAW_DOM_WALKER_SCRIPT = `
     if (!parent) return false;
     const parentStyle = getComputedStyle(parent);
     const isCol = parentStyle.flexDirection === "column" || parentStyle.flexDirection === "column-reverse";
-    if (isCol && grow > 0) return true;
+    if (isCol && grow > 0) {
+      // flex-grow only stretches when parent has extra space to distribute
+      // If parent has no explicit height (auto) → grow has no effect → child is content-sized (HUG)
+      // Check if element is ACTUALLY stretched beyond its content
+      if (!hasExplicitHeight(el)) return false; // height matches content → not actually stretched
+      return true;
+    }
     if (h === "100%") return true;
     // Cross-axis stretch only applies in flex/grid containers (not block parents)
     const parentDisplay = parentStyle.display;
@@ -389,11 +444,81 @@ export const RAW_DOM_WALKER_SCRIPT = `
       const parentAlign = parentStyle.alignItems;
       const parentStretches = parentAlign === "stretch" || parentAlign === "normal" || parentAlign === "";
       if (alignSelf === "stretch" || ((alignSelf === "auto" || alignSelf === "") && parentStretches)) {
+        // Check if element is actually being stretched by a taller sibling
+        // (if no taller sibling exists, hugHeight fallback handles it)
+        const myH = el.getBoundingClientRect().height;
+        const siblings = parent.children;
+        for (var si = 0; si < siblings.length; si++) {
+          if (siblings[si] === el) continue;
+          const sibS = getComputedStyle(siblings[si]);
+          if (sibS.display === "none" || sibS.position === "absolute" || sibS.position === "fixed") continue;
+          if (siblings[si].getBoundingClientRect().height > myH + 2) {
+            return true; // taller sibling → this element IS being stretched → FILL
+          }
+        }
+        // No taller sibling + parent has explicit height → FILL
         const parentH = parentStyle.height;
         if (parentH && parentH !== "auto" && parentH !== "0px") return true;
       }
     }
     return false;
+  }
+
+  // Check if element has explicit width larger than its content
+  // Returns true if element width > children total width (indicating CSS width is set)
+  function hasExplicitWidth(el) {
+    if (el.children.length === 0) return false;
+    var r = el.getBoundingClientRect();
+    var s = getComputedStyle(el);
+    var totalChildW = 0;
+    var visibleCount = 0;
+    for (var i = 0; i < el.children.length; i++) {
+      var cs = getComputedStyle(el.children[i]);
+      if (cs.display === "none" || cs.position === "absolute" || cs.position === "fixed") continue;
+      totalChildW += el.children[i].getBoundingClientRect().width;
+      visibleCount++;
+    }
+    if (visibleCount === 0) return false;
+    var padW = parseFloat(s.paddingLeft) + parseFloat(s.paddingRight);
+    var gapW = parseFloat(s.columnGap) || parseFloat(s.gap) || 0;
+    var contentW = totalChildW + Math.max(0, visibleCount - 1) * gapW + padW;
+    return r.width > contentW + 2;
+  }
+
+  // Check if element has explicit height larger than its content
+  function hasExplicitHeight(el) {
+    var r = el.getBoundingClientRect();
+    var s = getComputedStyle(el);
+    // Leaf element or all children hidden: compare against text line height + padding + border
+    var totalChildH = 0;
+    var totalMarginH = 0;
+    var visibleCount = 0;
+    for (var i = 0; i < el.children.length; i++) {
+      var cs = getComputedStyle(el.children[i]);
+      if (cs.display === "none" || cs.position === "absolute" || cs.position === "fixed") continue;
+      totalChildH += el.children[i].getBoundingClientRect().height;
+      totalMarginH += parseFloat(cs.marginTop) || 0;
+      totalMarginH += parseFloat(cs.marginBottom) || 0;
+      visibleCount++;
+    }
+    if (visibleCount === 0) {
+      // No visible element children (leaf or all hidden):
+      // Check if element has no text → purely visual element with explicit size
+      var textContent = (el.textContent || "").trim();
+      if (!textContent) return true; // No text, no visible children → explicit size (checkbox, icon container)
+      // Has text: compare height against text line height + padding + border
+      var lineH = parseFloat(s.lineHeight) || (parseFloat(s.fontSize) * 1.2);
+      var padH = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
+      var borderH = parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth);
+      return r.height > lineH + padH + borderH + 4;
+    }
+    var padH = parseFloat(s.paddingTop) + parseFloat(s.paddingBottom);
+    var gapH = parseFloat(s.rowGap) || parseFloat(s.gap) || 0;
+    // Content height = children + gaps/margins + padding (use max of gap-based vs margin-based)
+    var gapTotal = Math.max(0, visibleCount - 1) * gapH;
+    var spacingH = Math.max(gapTotal, totalMarginH);
+    var contentH = totalChildH + spacingH + padH;
+    return r.height > contentH + 2;
   }
 
   // Detect if element should HUG width (content-sized, no explicit width)
@@ -421,7 +546,11 @@ export const RAW_DOM_WALKER_SCRIPT = `
         // Applies to ANY element (flex, block, etc.) in a row flex parent
         var grow = parseFloat(style.flexGrow) || 0;
         var basis = style.flexBasis;
-        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) {
+          // Verify content is not smaller than element (explicit width like size-[48px])
+          if (hasExplicitWidth(el)) return false;
+          return true;
+        }
       } else {
         // Column flex child: width is cross-axis
         // If not stretch → sizes to content width
@@ -429,11 +558,27 @@ export const RAW_DOM_WALKER_SCRIPT = `
         var alignItems = ps.alignItems;
         var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
         var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
-        if (selfIsContent) return true;
-        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
+        if (selfIsContent || ((!alignSelf || alignSelf === "auto") && parentIsContent)) {
+          // Verify content is not smaller than element (explicit width like size-[48px])
+          if (hasExplicitWidth(el)) return false;
+          return true;
+        }
       }
     }
     return false;
+  }
+
+  // Fallback: check if element auto-sizes to content height
+  // Returns true when element has visible flow children AND height matches content
+  // Used as safety net when getHugHeight/getFillHeight miss common cases
+  function isContentSizedHeight(el) {
+    var visibleCount = 0;
+    for (var i = 0; i < el.children.length; i++) {
+      var cs = getComputedStyle(el.children[i]);
+      if (cs.display !== "none" && cs.position !== "absolute" && cs.position !== "fixed") visibleCount++;
+    }
+    if (visibleCount === 0) return false;
+    return !hasExplicitHeight(el);
   }
 
   // Detect if element should HUG height (content-sized, no explicit height)
@@ -454,15 +599,20 @@ export const RAW_DOM_WALKER_SCRIPT = `
       if (isCol) {
         var grow = parseFloat(style.flexGrow) || 0;
         var basis = style.flexBasis;
-        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) return true;
+        if (grow === 0 && (basis === "auto" || basis === "content" || !basis)) {
+          if (hasExplicitHeight(el)) return false;
+          return true;
+        }
       } else {
         // Row flex child: height is cross-axis
         var alignSelf = style.alignSelf;
         var alignItems = ps.alignItems;
         var selfIsContent = alignSelf === "flex-start" || alignSelf === "start" || alignSelf === "center";
         var parentIsContent = alignItems === "flex-start" || alignItems === "start" || alignItems === "center";
-        if (selfIsContent) return true;
-        if ((!alignSelf || alignSelf === "auto") && parentIsContent) return true;
+        if (selfIsContent || ((!alignSelf || alignSelf === "auto") && parentIsContent)) {
+          if (hasExplicitHeight(el)) return false;
+          return true;
+        }
       }
     }
     return false;
@@ -680,9 +830,55 @@ export const RAW_DOM_WALKER_SCRIPT = `
     // so it falls through to mixed inline logic preserving per-run color tokens
     const figmaComp = el.getAttribute("data-figma");
     const skipInstanceForMixedLabel = figmaComp === "Label" && hasColoredInlineChildren(el);
+    // Detect inline text link: Button/element styled as inline text (p-0, h-auto, text-primary)
+    // Extract as text node instead of instance so color token is preserved
+    var isInlineTextLink = false;
+    if (figmaComp && !CONTAINER_COMPONENTS.has(figmaComp)) {
+      var _cs2 = getComputedStyle(el);
+      var _vPad = parseFloat(_cs2.paddingTop) + parseFloat(_cs2.paddingBottom);
+      var _hPad = parseFloat(_cs2.paddingLeft) + parseFloat(_cs2.paddingRight);
+      var _hasText = el.textContent && el.textContent.trim().length > 0;
+      // Inline link: near-zero padding + has text + small height (close to line height)
+      isInlineTextLink = _vPad < 4 && _hPad < 4 && _hasText && rect.height < 28;
+    }
+    if (isInlineTextLink && !skipInstanceForMixedLabel) {
+      // Extract as text node with correct computed color
+      const cs = getComputedStyle(el);
+      return {
+        type: "text",
+        textContent: el.textContent.trim(),
+        fontFamily: cs.fontFamily.split(",")[0].replace(/['"]/g, "").trim(),
+        fontWeight: parseFloat(cs.fontWeight) || 400,
+        fontSize: roundPx(parseFloat(cs.fontSize)) || 14,
+        lineHeight: roundPx(parseFloat(cs.lineHeight)) || undefined,
+        color: normalizeColor(cs.color),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        fillWidth: getFlexGrow(el) || undefined,
+      };
+    }
+    // Auto-detect complex containers: if a DS component wraps other DS components
+    // (e.g. Button wrapping Avatar + Badge), treat as container frame, not instance
+    var _autoContainer = false;
     if (figmaComp && !CONTAINER_COMPONENTS.has(figmaComp) && !skipInstanceForMixedLabel) {
+      var _innerComps = el.querySelectorAll("[data-figma]");
+      if (_innerComps.length > 0) _autoContainer = true;
+    }
+    if (figmaComp && !CONTAINER_COMPONENTS.has(figmaComp) && !skipInstanceForMixedLabel && !_autoContainer) {
       const variantsStr = el.getAttribute("data-figma-variants");
       const variants = variantsStr ? JSON.parse(variantsStr) : {};
+
+      // Override Value variant from Radix data-state (Radio, Checkbox, Switch only)
+      // figma() sets Value at render time but Radix updates data-state dynamically
+      // Skip for Progress — its data-state is "loading"/"complete"/"indeterminate", not checkbox states
+      const dataState = el.getAttribute("data-state");
+      const DATA_STATE_COMPONENTS = ["Checkbox", "Switch", "Radio"];
+      if (dataState && variants.Value && DATA_STATE_COMPONENTS.includes(figmaComp)) {
+        if (dataState === "checked") variants.Value = "Checked";
+        else if (dataState === "unchecked") variants.Value = "Unchecked";
+        else if (dataState === "indeterminate") variants.Value = "Indeterminate";
+      }
+
       const textOverrides = {};
 
       // Extract text content and SVG icons
@@ -715,18 +911,52 @@ export const RAW_DOM_WALKER_SCRIPT = `
       }
       if (directText.length > 0) textOverrides["Label"] = directText.join(" ");
 
+      // Alert: map data-slot children to Figma text node names (Title / Description)
+      if (figmaComp === "Alert") {
+        delete textOverrides["Label"];
+        var titleEl = el.querySelector('[data-slot="alert-title"]');
+        var descEl = el.querySelector('[data-slot="alert-description"]');
+        if (titleEl) textOverrides["Title"] = titleEl.textContent.trim();
+        if (descEl) textOverrides["Description"] = descEl.textContent.trim();
+      }
+
+      // Select/Combobox: detect filled state from Radix data-placeholder attribute
+      // Radix SelectValue <span> gets data-placeholder when no value selected, removed when selected
+      // figma() hardcodes Value="Placeholder" — override to "Filled" when value is selected
+      if ((figmaComp === "Select" || figmaComp === "Combobox") && variants.Value === "Placeholder") {
+        var _hasPlaceholder = false;
+        for (var _si = 0; _si < el.children.length; _si++) {
+          if (el.children[_si].tagName === "SPAN" && el.children[_si].hasAttribute("data-placeholder")) {
+            _hasPlaceholder = true; break;
+          }
+        }
+        // No data-placeholder span found AND has text content → value is filled
+        if (!_hasPlaceholder && el.textContent && el.textContent.trim().length > 0) {
+          variants.Value = "Filled";
+        }
+      }
+
       // Extract placeholder / value
+      // Input/Select/Textarea/Combobox use "Value" text node in Figma, others use "Label"
+      const isFormInput = figmaComp === "Input" || figmaComp === "Select" || figmaComp === "Textarea" || figmaComp === "Combobox";
+      const textKey = isFormInput ? "Value" : "Label";
+      if (isFormInput && textOverrides["Label"]) {
+        textOverrides[textKey] = textOverrides["Label"];
+        delete textOverrides["Label"];
+      }
       const inputEl = el.tagName === "INPUT" || el.tagName === "TEXTAREA"
         ? el : el.querySelector("input, textarea");
       if (inputEl) {
         const placeholder = inputEl.getAttribute("placeholder");
-        if (placeholder) textOverrides["Label"] = placeholder;
+        if (placeholder) textOverrides[textKey] = placeholder;
         if (inputEl.value) {
           // Mask password fields with bullet characters
-          const inputType = inputEl.getAttribute("type");
-          textOverrides["Label"] = inputType === "password"
-            ? "•".repeat(inputEl.value.length)
+          const inputType = inputEl.getAttribute("type") || inputEl.type;
+          textOverrides[textKey] = inputType === "password"
+            ? "\u2022".repeat(inputEl.value.length)
             : inputEl.value;
+          // Override Value variant to "Filled" when input has value
+          if (variants.Value === "Placeholder") variants.Value = "Filled";
         }
       }
 
@@ -757,7 +987,15 @@ export const RAW_DOM_WALKER_SCRIPT = `
 
       // Override Button Icon variant when SVG icons are present
       if (figmaComp === "Button" && svgIcons.length > 0 && variants.Icon === "None") {
-        variants.Icon = "Left";
+        if (directText.length === 0) {
+          // No text content = icon-only button (dev forgot to use icon size)
+          variants.Icon = "Icon Only";
+        } else {
+          // Has text + icon — detect position (last child SVG = Right, else Left)
+          const lastChild = el.lastElementChild;
+          const isLastSvg = lastChild && (lastChild.tagName === "svg" || lastChild.tagName === "SVG");
+          variants.Icon = isLastSvg && svgIcons.length === 1 ? "Right" : "Left";
+        }
       }
 
       // For native input/textarea inside a relative wrapper, use wrapper's dimensions and fillWidth
@@ -765,6 +1003,9 @@ export const RAW_DOM_WALKER_SCRIPT = `
         getComputedStyle(el.parentElement).position === "relative";
       const sizeEl = hasWrapper ? el.parentElement : el;
       const sizeRect = hasWrapper ? el.parentElement.getBoundingClientRect() : rect;
+
+      var _instFillW = getFlexGrow(sizeEl) || undefined;
+      var _instHugW = !_instFillW ? (getHugWidth(sizeEl) || undefined) : undefined;
 
       return {
         type: "instance",
@@ -774,7 +1015,9 @@ export const RAW_DOM_WALKER_SCRIPT = `
         svgIcons: svgIcons.length > 0 ? svgIcons : undefined,
         width: Math.round(sizeRect.width),
         height: Math.round(sizeRect.height),
-        fillWidth: getFlexGrow(sizeEl) || undefined,
+        fillWidth: _instFillW,
+        hugWidth: _instHugW,
+        fillHeight: getFillHeight(sizeEl) || undefined,
         selfAlign: getSelfAlign(sizeEl) || undefined,
       };
     }
@@ -817,13 +1060,27 @@ export const RAW_DOM_WALKER_SCRIPT = `
       }
 
       // Fallback: screenshot it
+      // If SVG has negative margins, screenshot the overflow-hidden parent to avoid bleed
+      var screenshotEl = el;
+      var screenshotW = w;
+      var screenshotH = h;
+      var pEl = el.parentElement;
+      if (pEl) {
+        var pCs = getComputedStyle(pEl);
+        if (pCs.overflow === "hidden" || pCs.overflowX === "hidden" || pCs.overflowY === "hidden") {
+          var pRect = pEl.getBoundingClientRect();
+          screenshotEl = pEl;
+          screenshotW = Math.round(pRect.width);
+          screenshotH = Math.round(pRect.height);
+        }
+      }
       return {
         type: "image",
         name: "Illustration",
         src: "",
-        selector: getSelector(el),
-        width: w,
-        height: h,
+        selector: getSelector(screenshotEl),
+        width: screenshotW,
+        height: screenshotH,
         fillWidth: getFlexGrow(el) || undefined,
         objectFit: "contain",
       };
@@ -858,6 +1115,45 @@ export const RAW_DOM_WALKER_SCRIPT = `
     if (isTextOnly(el)) {
       const text = el.textContent?.trim();
       if (!text) return null;
+
+      // Check if this text-only element has visual properties (bg, stroke, radius)
+      // If so, wrap text in a frame to preserve visual styling (e.g. step indicator circles)
+      const _leafBg = normalizeColor(style.backgroundColor);
+      const _leafStroke = getStrokeInfo(style);
+      const _leafRadius = extractBorderRadius(style);
+      if (_leafBg || _leafStroke || _leafRadius > 0) {
+        const _isFlex = style.display === "flex" || style.display === "inline-flex";
+        const textChild = {
+          type: "text",
+          textContent: text,
+          fontFamily: style.fontFamily,
+          fontWeight: parseInt(style.fontWeight) || 400,
+          fontSize: roundPx(style.fontSize),
+          lineHeight: roundPx(style.lineHeight) || undefined,
+          color: normalizeColor(style.color),
+        };
+        return {
+          type: "frame",
+          layout: "horizontal",
+          gap: 0,
+          paddingTop: roundPx(style.paddingTop) || 0,
+          paddingRight: roundPx(style.paddingRight) || 0,
+          paddingBottom: roundPx(style.paddingBottom) || 0,
+          paddingLeft: roundPx(style.paddingLeft) || 0,
+          primaryAlign: _isFlex && (style.justifyContent === "center" || style.justifyContent === "space-around") ? "center" : undefined,
+          counterAlign: _isFlex && style.alignItems === "center" ? "center" : undefined,
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+          fill: _leafBg || undefined,
+          stroke: _leafStroke ? _leafStroke.color : undefined,
+          strokeWidth: _leafStroke ? _leafStroke.width : undefined,
+          radius: _leafRadius || undefined,
+          fillWidth: getFlexGrow(el) || undefined,
+          fillHeight: getFillHeight(el) || undefined,
+          children: [textChild],
+        };
+      }
+
       return {
         type: "text",
         textContent: text,
@@ -888,6 +1184,7 @@ export const RAW_DOM_WALKER_SCRIPT = `
             width: Math.round(rect.width),
             height: Math.round(rect.height),
             fillWidth: getFlexGrow(el) || true,
+            primaryAlign: style.textAlign === "center" ? "center" : undefined,
             children: runs,
           };
         }
@@ -907,6 +1204,74 @@ export const RAW_DOM_WALKER_SCRIPT = `
           height: Math.round(rect.height),
           fillWidth: getFlexGrow(el) || undefined,
         };
+      }
+    }
+
+    // 5c. Mixed content: text nodes + non-inline element children (e.g. <p>text <button>link</button></p>)
+    // isMixedInline() misses this because BUTTON/DIV are not in INLINE_TAGS
+    // We need to extract text nodes as text frames + recurse element children
+    if (el.childElementCount > 0) {
+      var hasDirectText = false;
+      var hasNonInlineChild = false;
+      for (var mci = 0; mci < el.childNodes.length; mci++) {
+        var mcNode = el.childNodes[mci];
+        if (mcNode.nodeType === 3 && mcNode.textContent.trim()) hasDirectText = true;
+        if (mcNode.nodeType === 1 && !INLINE_TAGS.has(mcNode.tagName)) hasNonInlineChild = true;
+      }
+      if (hasDirectText && hasNonInlineChild) {
+        var mixedChildren = [];
+        for (var mci2 = 0; mci2 < el.childNodes.length; mci2++) {
+          var mcn = el.childNodes[mci2];
+          if (mcn.nodeType === 3) {
+            var txt = mcn.textContent.replace(/\\s+/g, " ").trim();
+            if (txt) {
+              mixedChildren.push({
+                type: "text",
+                textContent: txt,
+                fontFamily: style.fontFamily,
+                fontWeight: parseInt(style.fontWeight) || 400,
+                fontSize: roundPx(style.fontSize),
+                lineHeight: roundPx(style.lineHeight) || undefined,
+                color: normalizeColor(style.color),
+              });
+            }
+          } else if (mcn.nodeType === 1) {
+            // Inline tags: extract as styled text
+            if (INLINE_TAGS.has(mcn.tagName)) {
+              var inlineTxt = mcn.textContent.trim();
+              if (inlineTxt) {
+                var inlineStyle = getComputedStyle(mcn);
+                mixedChildren.push({
+                  type: "text",
+                  textContent: inlineTxt,
+                  fontFamily: inlineStyle.fontFamily,
+                  fontWeight: parseInt(inlineStyle.fontWeight) || 400,
+                  fontSize: roundPx(inlineStyle.fontSize),
+                  lineHeight: roundPx(inlineStyle.lineHeight) || undefined,
+                  color: normalizeColor(inlineStyle.color),
+                });
+              }
+            } else {
+              // Non-inline element: recurse (Button, div, etc.)
+              var childNode = walkDOM(mcn, depth + 1);
+              if (childNode) mixedChildren.push(childNode);
+            }
+          }
+        }
+        if (mixedChildren.length > 0) {
+          return {
+            type: "frame",
+            layout: "horizontal",
+            wrap: true,
+            gap: 4,
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            fillWidth: getFlexGrow(el) || undefined,
+            selfAlign: getSelfAlign(el) || undefined,
+            primaryAlign: style.textAlign === "center" ? "center" : undefined,
+            children: mixedChildren,
+          };
+        }
       }
     }
 
@@ -1008,9 +1373,24 @@ export const RAW_DOM_WALKER_SCRIPT = `
       };
     }
 
+    const _isGrid = style.display === "grid" || style.display === "inline-grid";
     const layout = _isFlex
       ? (style.flexDirection === "column" || style.flexDirection === "column-reverse" ? "vertical" : "horizontal")
-      : (style.display === "grid" || style.display === "inline-grid" ? "horizontal" : "vertical");
+      : (_isGrid ? "horizontal" : "vertical");
+
+    // Detect multi-row CSS grid (children total width > container → needs wrap)
+    let _isGridWrap = false;
+    if (_isGrid && children.length > 1) {
+      const visibleEls = Array.from(el.children).filter(function(c) {
+        const cs = getComputedStyle(c);
+        return cs.display !== "none" && cs.position !== "absolute" && cs.position !== "fixed";
+      });
+      if (visibleEls.length > 1) {
+        const firstTop = visibleEls[0].getBoundingClientRect().top;
+        const lastTop = visibleEls[visibleEls.length - 1].getBoundingClientRect().top;
+        _isGridWrap = lastTop > firstTop + 2; // items span multiple rows
+      }
+    }
 
     // Gap: use CSS gap property first
     let gap = 0;
@@ -1025,12 +1405,17 @@ export const RAW_DOM_WALKER_SCRIPT = `
         if (gapStr && gapStr !== "normal") gap = roundPx(gapStr);
       }
     }
-    if (gap === 0 && children.length > 1) gap = inferGapFromMargins(el, layout);
+    var gapFromCSS = gap > 0;
+    // Skip gap inference for space-between — Figma handles via SPACE_BETWEEN alignment, not gap
+    var isSpaceBetween = _isFlex && style.justifyContent === "space-between";
+    if (gap === 0 && children.length > 1 && !isSpaceBetween) gap = inferGapFromMargins(el, layout);
 
     // Detect extra margins on children that stack with CSS gap
     // CSS gap + margin stack in flex — but Figma only has one itemSpacing
     // Add margin as extra paddingBottom/paddingRight on the child node
-    if (gap > 0 && children.length > 1) {
+    // Handles ALL node types: frame (add padding), instance/text (wrap in frame)
+    // SKIP when gap was inferred from margins (not CSS gap) — margins already accounted for
+    if (gapFromCSS && gap > 0 && children.length > 1) {
       const visibleEls = Array.from(el.children).filter(c => {
         const s = getComputedStyle(c);
         return s.display !== "none" && s.visibility !== "hidden" &&
@@ -1043,14 +1428,58 @@ export const RAW_DOM_WALKER_SCRIPT = `
         const extraMargin = isVertical
           ? roundPx(cs.marginBottom)
           : roundPx(cs.marginRight);
-        if (extraMargin > 0 && children[i].type === "frame") {
-          // Add margin as padding to the child frame
-          if (isVertical) {
-            children[i].paddingBottom = (children[i].paddingBottom || 0) + extraMargin;
-            children[i].height = (children[i].height || 0) + extraMargin;
-          } else {
-            children[i].paddingRight = (children[i].paddingRight || 0) + extraMargin;
-            children[i].width = (children[i].width || 0) + extraMargin;
+        if (extraMargin > 0) {
+          const child = children[i];
+          const childType = child.type;
+
+          if (childType === "frame") {
+            // Visual frames (has radius + fill, small size) should NOT have margin
+            // added as internal padding — it distorts the visual shape.
+            const isVisualFrame = child.radius > 0 && child.fill &&
+              (child.width || 0) <= 100 && (child.height || 0) <= 100;
+            if (isVisualFrame) {
+              // Wrap in transparent frame with margin as padding
+              const wrapper = {
+                type: "frame",
+                layout: isVertical ? "vertical" : "horizontal",
+                gap: 0,
+                paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0,
+                fillWidth: true,
+                hugHeight: isVertical ? true : undefined,
+                hugWidth: !isVertical ? true : undefined,
+                counterAlign: "center",
+                children: [child],
+              };
+              if (isVertical) wrapper.paddingBottom = extraMargin;
+              else wrapper.paddingRight = extraMargin;
+              if (child.selfAlign) delete child.selfAlign;
+              if (child.fillWidth) delete child.fillWidth;
+              children[i] = wrapper;
+            } else {
+              // Regular frame: add margin as padding
+              if (isVertical) {
+                child.paddingBottom = (child.paddingBottom || 0) + extraMargin;
+                child.height = (child.height || 0) + extraMargin;
+              } else {
+                child.paddingRight = (child.paddingRight || 0) + extraMargin;
+                child.width = (child.width || 0) + extraMargin;
+              }
+            }
+          } else if (childType === "instance" || childType === "text" || childType === "icon" || childType === "svg") {
+            // Non-frame types: wrap in transparent frame with margin as padding
+            const wrapper = {
+              type: "frame",
+              layout: isVertical ? "vertical" : "horizontal",
+              gap: 0,
+              paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0,
+              fillWidth: child.fillWidth || undefined,
+              hugHeight: isVertical ? true : undefined,
+              hugWidth: !isVertical ? true : undefined,
+              children: [child],
+            };
+            if (isVertical) wrapper.paddingBottom = extraMargin;
+            else wrapper.paddingRight = extraMargin;
+            children[i] = wrapper;
           }
         }
       }
@@ -1063,7 +1492,15 @@ export const RAW_DOM_WALKER_SCRIPT = `
     var _pLeft = roundPx(style.paddingLeft);
     var _radius = extractBorderRadius(style);
     // Extract box-shadow for effect style mapping
-    var _shadow = style.boxShadow && style.boxShadow !== "none" ? style.boxShadow : undefined;
+    // Filter out fully transparent shadows (rgba(0,0,0,0) 0px 0px 0px 0px)
+    var _shadowRaw = style.boxShadow && style.boxShadow !== "none" ? style.boxShadow : undefined;
+    var _shadow = _shadowRaw;
+    if (_shadow && _shadow.indexOf("rgba(0, 0, 0, 0)") !== -1) {
+      // Check if ALL rgba values in the shadow are transparent
+      // Note: inside template literal → use double-escaped regex
+      var _stripped = _shadow.replace(/rgba\\(0, 0, 0, 0\\)/g, "").replace(/0px/g, "").replace(/[, ]/g, "");
+      if (_stripped.length === 0) _shadow = undefined;
+    }
 
     const node = {
       type: "frame",
@@ -1076,13 +1513,14 @@ export const RAW_DOM_WALKER_SCRIPT = `
       paddingLeft: layout ? (_pLeft || 0) : (_pLeft || undefined),
       primaryAlign: _isFlex ? mapJustify(style.justifyContent) : undefined,
       counterAlign: _isFlex ? mapAlign(style.alignItems) : undefined,
-      wrap: style.flexWrap === "wrap" || undefined,
+      wrap: style.flexWrap === "wrap" || _isGridWrap || undefined,
+      wrapGap: _isGridWrap ? roundPx(style.rowGap !== "normal" ? style.rowGap : "0") : undefined,
       width: w,
       height: h,
       fillWidth: getFlexGrow(el) || undefined,
       fillHeight: getFillHeight(el) || undefined,
       hugWidth: getHugWidth(el) || undefined,
-      hugHeight: getHugHeight(el) || undefined,
+      hugHeight: getHugHeight(el) || (!getFillHeight(el) && isContentSizedHeight(el)) || undefined,
       selfAlign: getSelfAlign(el) || undefined,
       fill: bg || undefined,
       stroke: strokeInfo ? strokeInfo.color : undefined,

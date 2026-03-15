@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Thumbnail } from "@/components/ui/thumbnail"
 import {
   Select,
   SelectContent,
@@ -37,6 +38,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCard,
+  TableCardRow,
 } from "@/components/ui/table"
 import {
   DropdownMenu,
@@ -104,9 +107,7 @@ function OrdersSkeleton() {
 function EmptyState({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-2xl text-center">
-      <div className="size-[40px] rounded-full bg-surface-raised flex items-center justify-center mb-md">
-        <Icon className="size-[18px] text-muted-foreground" />
-      </div>
+      <Thumbnail type="icon" shape="circle" size="default" color="surface" icon={<Icon className="size-[18px]" />} className="mb-md" />
       <p className="sp-body-semibold text-foreground">{title}</p>
       <p className="sp-caption text-muted-foreground mt-2xs">{description}</p>
     </div>
@@ -137,32 +138,32 @@ const statusConfig: Record<Order["status"], { label: string; dotClass: string; b
   pending: {
     label: "Pending",
     dotClass: "bg-warning",
-    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border/20",
+    badgeClass: "bg-warning-subtle text-warning-subtle-foreground border-warning-border",
   },
   processing: {
     label: "Processing",
     dotClass: "bg-primary animate-pulse",
-    badgeClass: "bg-primary/10 text-primary border-primary/20 dark:bg-primary/20",
+    badgeClass: "bg-primary-10 text-primary border-primary-20 dark:bg-primary-20",
   },
   shipped: {
     label: "Shipped",
     dotClass: "bg-info",
-    badgeClass: "bg-info-subtle text-info-subtle-foreground border-info-border/20",
+    badgeClass: "bg-info-subtle text-info-subtle-foreground border-info-border",
   },
   delivered: {
     label: "Delivered",
     dotClass: "bg-success",
-    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border/20",
+    badgeClass: "bg-success-subtle text-success-subtle-foreground border-success-border",
   },
   cancelled: {
     label: "Cancelled",
     dotClass: "bg-destructive",
-    badgeClass: "bg-destructive/10 text-destructive border-destructive/20 dark:bg-destructive/20",
+    badgeClass: "bg-destructive-subtle text-destructive border-destructive-border dark:bg-destructive-subtle",
   },
   refunded: {
     label: "Refunded",
-    dotClass: "bg-muted-foreground/40",
-    badgeClass: "bg-muted text-muted-foreground border-border/40",
+    dotClass: "bg-muted-foreground",
+    badgeClass: "bg-muted text-muted-foreground border-border",
   },
 }
 
@@ -303,7 +304,7 @@ export default function OrdersPage() {
   const OrderActions = ({ order }: { order: Order }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" aria-label="More options">
+        <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" aria-label="More options">
           <MoreHorizontal className="size-[14px]" />
         </Button>
       </DropdownMenuTrigger>
@@ -339,7 +340,7 @@ export default function OrdersPage() {
       <div className="flex flex-col gap-lg">
         {/* Offline banner */}
         {connectionStatus === "offline" && (
-          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border/20 text-warning-subtle-foreground">
+          <div className="flex items-center gap-sm px-lg py-sm rounded-xl bg-warning-subtle border border-warning-border text-warning-subtle-foreground">
             <WifiOff className="size-[16px] shrink-0" />
             <p className="sp-body-medium flex-1">You're offline. Some data may not be up to date.</p>
             <Button variant="ghost" size="xs" className="text-warning-subtle-foreground hover:text-warning" onClick={() => window.location.reload()}>
@@ -355,7 +356,7 @@ export default function OrdersPage() {
               <p className="sp-caption text-muted-foreground">Management</p>
               <h1 className="sp-h3 text-foreground">Orders</h1>
             </div>
-            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground/50 mt-lg">
+            <div className="hidden sm:flex items-center gap-2xs text-muted-foreground mt-lg">
               <div className="size-[6px] rounded-full bg-success animate-pulse" />
               <span className="sp-caption">Updated just now</span>
             </div>
@@ -369,16 +370,14 @@ export default function OrdersPage() {
         {/* KPI summary cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-lg stagger-children">
           {[
-            { icon: ShoppingCart, label: "Total Orders", value: totalOrders, iconBg: "bg-primary/10 dark:bg-primary/20", iconColor: "text-primary" },
-            { icon: DollarSign, label: "Revenue", value: `$${(totalRevenue / 1_000).toFixed(0)}K`, iconBg: "bg-success-subtle", iconColor: "text-success" },
-            { icon: Clock, label: "Pending", value: pendingCount, iconBg: "bg-warning-subtle", iconColor: "text-warning" },
-            { icon: PackageCheck, label: "Delivered", value: deliveredCount, iconBg: "bg-violet-100 dark:bg-violet-500/20", iconColor: "text-violet-600 dark:text-violet-400" },
+            { icon: ShoppingCart, label: "Total Orders", value: totalOrders, color: "primary" as const },
+            { icon: DollarSign, label: "Revenue", value: `$${(totalRevenue / 1_000).toFixed(0)}K`, color: "success" as const },
+            { icon: Clock, label: "Pending", value: pendingCount, color: "warning" as const },
+            { icon: PackageCheck, label: "Delivered", value: deliveredCount, color: "primary" as const },
           ].map((kpi) => (
             <DCard key={kpi.label} className="flex flex-col justify-center gap-xs">
               <div className="flex items-center gap-sm">
-                <div className={`size-[36px] rounded-lg ${kpi.iconBg} flex items-center justify-center`}>
-                  <kpi.icon className={`size-[18px] ${kpi.iconColor}`} />
-                </div>
+                <Thumbnail type="icon" color={kpi.color} icon={<kpi.icon className="size-[18px]" />} />
                 <div>
                   <p className="sp-kpi-md text-foreground">{kpi.value}</p>
                   <p className="sp-caption text-muted-foreground">{kpi.label}</p>
@@ -398,7 +397,7 @@ export default function OrdersPage() {
                   <h3 className="sp-h4 text-foreground">All Orders</h3>
                   <p className="sp-caption text-muted-foreground mt-3xs">{filtered.length} orders found</p>
                 </div>
-                <Button variant="ghost" size="xs" className="size-[28px] p-0 text-muted-foreground/60 hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
+                <Button variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-muted-foreground" onClick={handleRefresh} aria-label="Refresh">
                   <RefreshCw className={`size-[13px] ${refreshing ? "animate-spin" : ""}`} />
                 </Button>
               </div>
@@ -438,7 +437,7 @@ export default function OrdersPage() {
                   <Button variant="outline" size="sm" onClick={handleBulkExport}>
                     <Download className="size-[13px] mr-xs" /> Export
                   </Button>
-                  <Button variant="outline" size="sm" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={handleBulkCancel}>
+                  <Button variant="outline" size="sm" className="text-destructive border-destructive-border hover:bg-destructive-subtle" onClick={handleBulkCancel}>
                     <XCircle className="size-[13px] mr-xs" /> Cancel
                   </Button>
                   <Button variant="ghost" size="xs" onClick={() => setSelected(new Set())}>
@@ -484,27 +483,23 @@ export default function OrdersPage() {
             ) : (
               <div className="flex flex-col gap-sm">
                 {paginated.map((order) => (
-                  <div
-                    key={order.id}
-                    className="rounded-xl border border-border/60 dark:border-white/[0.06] p-md flex flex-col gap-sm hover:bg-muted/30 dark:hover:bg-white/[0.02] transition-colors"
-                    onClick={() => setDetailSheet(order.id)}
-                  >
-                    <div className="flex items-center justify-between">
+                  <TableCard key={order.id} onClick={() => setDetailSheet(order.id)}>
+                    <TableCardRow>
                       <span className="sp-body-semibold text-primary">{order.id}</span>
                       <StatusBadge status={order.status} />
-                    </div>
-                    <div className="flex items-center justify-between">
+                    </TableCardRow>
+                    <TableCardRow>
                       <div className="min-w-0 flex-1">
                         <p className="sp-body-medium text-foreground truncate">{order.customerName}</p>
-                        <p className="sp-caption text-muted-foreground/60 truncate">{order.customerEmail}</p>
+                        <p className="sp-caption text-muted-foreground truncate">{order.customerEmail}</p>
                       </div>
                       <p className="sp-body-semibold text-foreground ml-md">${order.total.toLocaleString()}</p>
-                    </div>
-                    <div className="flex items-center justify-between sp-caption text-muted-foreground">
+                    </TableCardRow>
+                    <TableCardRow className="sp-caption text-muted-foreground">
                       <span>{order.items.length} item{order.items.length !== 1 && "s"} · {paymentLabel[order.paymentMethod]}</span>
                       <span>{order.createdAt}</span>
-                    </div>
-                  </div>
+                    </TableCardRow>
+                  </TableCard>
                 ))}
               </div>
             )}
@@ -539,23 +534,19 @@ export default function OrdersPage() {
                   </TableRow>
                 ) : (
                   paginated.map((order) => (
-                    <TableRow key={order.id} className="group" data-state={selected.has(order.id) ? "selected" : undefined}>
-                      <TableCell className="!p-0 text-center">
+                    <TableRow key={order.id} className="group cursor-pointer" data-state={selected.has(order.id) ? "selected" : undefined} onClick={() => setDetailSheet(order.id)}>
+                      <TableCell className="!p-0 text-center" onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={selected.has(order.id)} onCheckedChange={() => toggleOne(order.id)} aria-label={`Select ${order.id}`} />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="ghost"
-                          className="sp-body-semibold text-primary hover:underline hover:bg-transparent text-left h-auto p-0"
-                          onClick={() => setDetailSheet(order.id)}
-                        >
+                        <span className="sp-body-semibold text-primary">
                           {order.id}
-                        </Button>
+                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="min-w-0">
                           <p className="sp-body-semibold text-foreground truncate">{order.customerName}</p>
-                          <p className="sp-caption text-muted-foreground/60 truncate">{order.customerEmail}</p>
+                          <p className="sp-caption text-muted-foreground truncate">{order.customerEmail}</p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -575,7 +566,7 @@ export default function OrdersPage() {
                       <TableCell className="sp-caption text-muted-foreground">
                         {order.createdAt}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <OrderActions order={order} />
                       </TableCell>
                     </TableRow>
@@ -586,7 +577,7 @@ export default function OrdersPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border/40 mt-md">
+              <div className="flex items-center justify-end gap-lg pt-lg border-t border-border mt-md">
                 <p className="sp-caption text-muted-foreground whitespace-nowrap mr-auto">
                   Showing {(page - 1) * perPage + 1}–{Math.min(page * perPage, filtered.length)} of {filtered.length}
                 </p>
@@ -642,7 +633,7 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Customer info */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <p className="sp-label text-muted-foreground mb-sm">Customer</p>
                     <p className="sp-body-semibold text-foreground">{detailOrder.customerName}</p>
                     <p className="sp-caption text-muted-foreground">{detailOrder.customerEmail}</p>
@@ -654,7 +645,7 @@ export default function OrdersPage() {
                     <p className="sp-label text-muted-foreground mb-sm">Items ({detailOrder.items.length})</p>
                     <div className="flex flex-col gap-xs">
                       {detailOrder.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-md rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50">
+                        <div key={idx} className="flex items-center justify-between p-md rounded-xl bg-surface-raised dark:bg-surface-inset">
                           <div className="min-w-0 flex-1">
                             <p className="sp-body-semibold text-foreground truncate">{item.productName}</p>
                             <p className="sp-caption text-muted-foreground">{item.quantity} × ${item.unitPrice.toLocaleString()}</p>
@@ -666,7 +657,7 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Totals */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <div className="flex items-center justify-between mb-xs">
                       <span className="sp-body text-muted-foreground">Subtotal</span>
                       <span className="sp-body text-foreground">${detailOrder.subtotal.toLocaleString()}</span>
@@ -675,7 +666,7 @@ export default function OrdersPage() {
                       <span className="sp-body text-muted-foreground">Tax</span>
                       <span className="sp-body text-foreground">${detailOrder.tax.toLocaleString()}</span>
                     </div>
-                    <div className="border-t border-border/40 pt-xs mt-xs flex items-center justify-between">
+                    <div className="border-t border-border pt-xs mt-xs flex items-center justify-between">
                       <span className="sp-body-semibold text-foreground">Total</span>
                       <span className="sp-body-semibold text-foreground">${detailOrder.total.toLocaleString()}</span>
                     </div>
@@ -689,7 +680,7 @@ export default function OrdersPage() {
                       { label: "Payment", value: paymentLabel[detailOrder.paymentMethod] },
                       { label: "Customer ID", value: detailOrder.customerId },
                     ].map((meta) => (
-                      <div key={meta.label} className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                      <div key={meta.label} className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                         <p className="sp-caption text-muted-foreground">{meta.label}</p>
                         <p className="sp-body-semibold text-foreground mt-2xs">{meta.value}</p>
                       </div>
@@ -710,7 +701,7 @@ export default function OrdersPage() {
                   {detailOrder.status !== "cancelled" && detailOrder.status !== "refunded" && detailOrder.status !== "delivered" && (
                     <Button
                       variant="outline"
-                      className="w-full text-destructive border-destructive/30 hover:bg-destructive/10"
+                      className="w-full text-destructive border-destructive-border hover:bg-destructive-subtle"
                       onClick={() => { setDetailSheet(null); const o = detailOrder; setTimeout(() => setCancelTarget(orders.find((x) => x.id === o.id) ?? null), 100) }}
                     >
                       <XCircle className="size-[13px] mr-xs" /> Cancel Order
@@ -733,7 +724,7 @@ export default function OrdersPage() {
                 </SheetHeader>
                 <div className="mt-xl flex flex-col gap-lg">
                   {/* Customer info (read-only) */}
-                  <div className="rounded-xl bg-surface-raised/50 dark:bg-surface-inset/50 p-lg">
+                  <div className="rounded-xl bg-surface-raised dark:bg-surface-inset p-lg">
                     <p className="sp-body-semibold text-foreground">{editOrder.customerName}</p>
                     <p className="sp-caption text-muted-foreground">{editOrder.customerEmail}</p>
                     <p className="sp-caption text-muted-foreground mt-xs">
@@ -782,7 +773,7 @@ export default function OrdersPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Keep Order</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={handleCancelConfirm}>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive" onClick={handleCancelConfirm}>
                 <XCircle className="size-[14px] mr-xs" /> Cancel Order
               </AlertDialogAction>
             </AlertDialogFooter>

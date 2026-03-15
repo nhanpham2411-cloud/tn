@@ -259,12 +259,25 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
 2. Run `pnpm build` — must pass with zero errors
 3. **Automated scans** (Claude runs these via Grep/Glob on the codebase):
 
+   **🔴 Screenshot Verification (BẮT BUỘC cho MỌI spec đã chạy plugin)**
+   - [ ] Claude TỰ chụp web screenshot (Playwright/browser dev server) của component trên Design System page
+   - [ ] Claude TỰ chụp Figma screenshot bằng MCP `get_screenshot` (cần fileKey + nodeId)
+   - [ ] So sánh 2 screenshots: content, styling, layout, sizing — báo cáo mismatches
+   - [ ] KHÔNG BAO GIỜ yêu cầu user chụp hình thay mình
+
    **A0. Group+Item Instance Connection (BẮT BUỘC cho compound components)**
    - [ ] Component cha (Table, Tabs, Calendar, DatePicker, Input OTP, Navigation Menu, Breadcrumb, Pagination) render sub-component con đúng cách trên web React
    - [ ] Figma JSON: parent dùng `"type": "instance"` với `component`/`variants` để móc child ComponentSet — KHÔNG tạo manual frame
    - [ ] Figma JSON: item spec ở index 0, parent spec ở index 1+ trong `"components"` array (common-mistake #122)
    - [ ] Indicator components (Radio, Checkbox, Switch): `clipsContent` nằm trong `indicator` object, KHÔNG ở `base` level (common-mistake #121)
    - [ ] Design System page: parent component có tab riêng cho mỗi sub-component (Group+Item tabbed pattern)
+
+   **A0b. Screen & Illustration (BẮT BUỘC)**
+   - [ ] Screen web DS: Page property 6 values (Dashboard, Analytics, Reports, Users, Products, Orders) — mỗi page có content riêng (KPI + chart hoặc KPI + table)
+   - [ ] Screen table pages: grid columns dùng inline `style` — KHÔNG `grid-cols-${n}` (common-mistake #155)
+   - [ ] Screen auth: branding panel = `isDesktop` only (≥1024px), logo in card = `!isDesktop` (common-mistake #156)
+   - [ ] Screen JSON spec KHÔNG tồn tại — screens dùng HTML-to-Figma pipeline (common-mistake #157)
+   - [ ] Illustration JSON: Archetype #14, Type=Auth, 480×700 fixed height, showcase `["header","component","installation"]`
 
    **A1. Figma Property & ComponentSet Quality (BẮT BUỘC cho JSON spec và Figma output)**
    - [ ] Mỗi ComponentSet có đầy đủ properties như React Explore controls — không thừa, không thiếu
@@ -282,14 +295,34 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
    - [ ] Children icon `iconFill`: icon instance trong `children` có variant-specific color → PHẢI có `iconFill`. Check web `[&>svg]:text-{color}` per variant (common-mistake #82)
    - [ ] Deep overrides: instance children dùng `overrides` (KHÔNG phải `instanceOverrides`). Nested text = `overrides.nested`, nested variants = `overrides.nestedVariants` (common-mistake #106)
    - [ ] Button Icon Only sizing: KHÔNG có `widthMode: "hug"` → phải FIXED 36×36 (common-mistake #107)
+   - [ ] Border token scope: mọi `"stroke"` trong JSON PHẢI dùng token có scope `STROKE_COLOR` (suffix `-border`). KHÔNG dùng fill token (`primary`, `destructive`, `foreground`) cho stroke. VD: `"stroke": "primary-border"` ✅, `"stroke": "primary"` ❌ (common-mistake #167)
+   - [ ] Ring token scope: ring tokens chỉ `EFFECT_COLOR` — KHÔNG `STROKE_COLOR`. Ring = effect (DROP_SHADOW), border = stroke — tách biệt (common-mistake #169)
+   - [ ] Compound key specificity: compound keys (2+ properties) KHÔNG chứa redundant fill/stroke đã define ở simple Type key — sẽ block simple keys khác từ override (common-mistake #170)
+   - [ ] Boolean controls web DS: property 2 giá trị (Yes/No) → `type: "toggle"`. KHÔNG `type: "select"` với `["yes","no"]` (common-mistake #171)
    - [ ] **Archetype match**: mỗi component JSON match ≥1 trong 13 archetype chuẩn (`_refs/plugin-json-pattern.md` → "Established JSON Archetypes"). Verify structure theo canonical example. Combination rule: nhiều component dùng NHIỀU archetypes (VD: Dialog = #3 + #5 + #6 + #11)
    - [ ] **Property migration safety**: Khi thêm/xóa property so với Figma hiện tại → plugin tự migrate variant names (rename, KHÔNG xóa tạo lại). Verify: default value của property mới = first value trong `properties` array (common-mistake #126)
+   - [ ] **Absolute children constraints**: Children frame có `position: "absolute"` → verify `constraints` đúng (SCALE cho proportional, STRETCH cho fill). Width PHẢI match % intent (common-mistake #149)
+   - [ ] **Variable token binding**: MỌI frame tạo bởi plugin PHẢI bind variable token cho gap, padding, border-radius — kể cả 0px → `spacing/none` / `border radius/none`. KHÔNG raw number assignment (common-mistake #153)
+   - [ ] **Text style binding**: MỌI text node bind text style (`setTextStyleIdAsync()`). KHÔNG override `fontSize`/`fontName` sau binding (detach style). Nếu cần font khác → chọn text style khác từ foundation (common-mistake #159)
+   - [ ] **Effect style binding**: Ring/Shadow/Glow effects bind via `setEffectStyleIdAsync()` (KHÔNG manual DROP_SHADOW). Effect styles phải tồn tại trong Figma (foundation-effects.json). Áp dụng: showcase, foundation docs, toasts (common-mistake #159)
+   - [ ] **Showcase sections 3-tier**: Có `installation` data → sections = `["header", "component", "installation"]`. Sub-component (no installation) → `["header", "component"]`. Slot → `[]`. JSON có `"installation"` mà sections thiếu = BUG (common-mistake #154)
+   - [ ] **Size variable binding**: Components có fixed size → `heightVar`/`widthVar` bind `size/*` variable. Form components → `minWidthVar` (KHÔNG widthVar). Type-specific sizes (Badge/Round/Dot) → compound keys PHẢI override cả `height` VÀ `heightVar` (common-mistake #162-165)
+   - [ ] **Icon swap trên upsert**: Variant dùng `iconLeftName`/`iconRightName` khác nhau → plugin PHẢI swap component khi upsert (KHÔNG giữ icon cũ). Variant không cần icon → XÓA node, KHÔNG tạo hidden instance (common-mistake #172-173)
+   - [ ] **Không mix native icon + children**: Variant dùng `children` array cho icon → KHÔNG thêm `iconRight`/`iconLeft` native flow cùng lúc (duplicate). Exception: addon variants (textLeft/textRight disable children → cần native icon) (common-mistake #174)
+   - [ ] **fixedIcons cho semantic icons**: Indicator components có icon biểu thị state (Checkbox Check/Minus) → `"fixedIcons": true` trong spec. KHÔNG để INSTANCE_SWAP cho icon cố định (common-mistake #175)
+   - [ ] **Image CORS check**: Mọi `imageUrl` domain trong JSON → verify CORS headers (`curl -sI url | grep access-control`). No CORS = plugin fetch sẽ fail (common-mistake #188)
+   - [ ] **No raw frames for DS elements**: Mọi visual indicator (dot, badge, label) PHẢI dùng component instance — KHÔNG raw frame (common-mistake #186-187)
+   - [ ] **imageUrl source match**: JSON `imageUrl` PHẢI match web DS data arrays CHÍNH XÁC — cùng domain, cùng path (common-mistake #191)
+   - [ ] **Group instance imageOverrides**: Item trong group parent (Item List, Table) có custom image PHẢI có explicit `overrides.imageOverrides` — không dựa vào component base (common-mistake #190)
+   - [ ] **⛔ Plugin upsert KHÔNG xóa children**: Verify plugin code KHÔNG có `comp.children[i].remove()` loop trong upsert path. Upsert giữ children → `_processChildren` update in-place. Vi phạm = phá hủy TẤT CẢ instances (common-mistake #192)
 
-   **A. Code Quality Scan**
+   **A. Code Quality Scan — ⛔ 100% Foundation Token Binding (common-mistake #177)**
    - [ ] No `text-*` custom typography (must use `sp-*` or project prefix)
    - [ ] No hardcoded colors (hex/rgb in className — must use tokens)
+   - [ ] No Tailwind color scale names (`bg-violet-*`, `text-zinc-*`, `border-amber-*` — must use semantic tokens: `bg-primary`, `text-foreground`, `border-border`)
    - [ ] No `opacity-*` to dim individual element colors — use semantic token (`text-muted-foreground`) or `color-mix()`. OK: `disabled:opacity-50`, `opacity-0/100` toggle
    - [ ] No hardcoded spacing (`px-[17px]` — must use tokens `px-sm`, `gap-md`)
+   - [ ] MỌI color, spacing, radius, typography, effect = foundation token. ZERO raw/manual values. Nếu cần token chưa có → tạo mới trong foundation TRƯỚC
    - [ ] No `console.log` / `console.error` left in code
    - [ ] No `TODO` / `FIXME` / `HACK` comments
    - [ ] All pages use `React.lazy()` code-splitting
@@ -303,6 +336,8 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
    - [ ] Offline detection (WifiOff banner) on data-heavy pages
    - [ ] All buttons have hover + active + disabled + focus-visible states
    - [ ] All form inputs have error state (aria-invalid)
+   - [ ] Password inputs have Eye/EyeOff icon toggle (`showPassword ? <EyeOff /> : <Eye />`)
+   - [ ] Password inputs default to `type="password"` (masked) with Eye icon visible
    - [ ] Dropdown menus close properly (no stale state)
    - [ ] Sheets/Dialogs have proper close guards (unsaved changes)
    - [ ] Toast notifications for user actions (create, update, delete, copy, export)
@@ -341,7 +376,8 @@ visual polish, interactivity, data realism, responsiveness, dark mode, micro-int
    - [ ] Numbers are plausible for the domain (revenue, order counts)
    - [ ] Dates span realistic ranges (not all same day)
    - [ ] Status distribution is realistic (not all "Delivered")
-   - [ ] Product images use real-looking URLs (placeholder or Unsplash)
+   - [ ] Image sources consistent: product images use SAME CDN as `src/data/` (dummyjson), avatars use same service (pravatar) — across web app, DS page, AND Figma JSON
+   - [ ] No mixed image styles (e.g. Unsplash lifestyle photos vs dummyjson product-on-white)
    - [ ] Chart data shows meaningful trends (not flat lines)
    - [ ] At least 20+ items in list pages for pagination demo
 

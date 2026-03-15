@@ -24,6 +24,7 @@
         "paddingY": "none",
         "width": 60,
         "height": 24,
+        "heightVar": "badge/default",
         "widthMode": "hug",
         "radius": "full",
         "fill": "primary",
@@ -43,15 +44,15 @@
         "Variant=Warning": { "fill": "warning", "textFill": "warning-foreground" },
 
         "Type=Badge": {},
-        "Type=Round": { "widthMode": "fixed", "width": 24, "paddingX": "none", "gap": "none", "textContent": "3" },
-        "Type=Dot": { "widthMode": "fixed", "width": 8, "height": 8, "paddingX": "none", "gap": "none", "hideLabel": true },
+        "Type=Round": { "widthMode": "fixed", "width": 24, "heightVar": "badge-round/default", "widthVar": "badge-round/default", "paddingX": "none", "gap": "none", "textContent": "3" },
+        "Type=Dot": { "widthMode": "fixed", "width": 8, "height": 8, "heightVar": "badge-dot/default", "widthVar": "badge-dot/default", "paddingX": "none", "paddingY": "none", "gap": "none", "hideLabel": true },
 
         "Level=Primary": {},
         "Level=Secondary": { "textStyle": "SP/Caption" },
 
-        "Size=SM": { "height": 20, "paddingX": "2xs" },
+        "Size=SM": { "height": 20, "heightVar": "badge/sm", "paddingX": "2xs" },
         "Size=Default": {},
-        "Size=LG": { "height": 28, "paddingX": "sm", "gap": "2xs", "paddingY": "3xs", "textStyle": "SP/Body Medium" },
+        "Size=LG": { "height": 28, "heightVar": "badge/lg", "paddingX": "sm", "gap": "2xs", "paddingY": "3xs", "textStyle": "SP/Body Medium" },
 
         "Variant=Default,Level=Secondary": { "fill": "primary-subtle", "textFill": "primary-subtle-foreground" },
         "Variant=Secondary,Level=Secondary": {},
@@ -64,10 +65,10 @@
 
         "Level=Secondary,Size=LG": { "textStyle": "SP/Body" },
 
-        "Type=Round,Size=SM": { "width": 20, "height": 20 },
-        "Type=Round,Size=LG": { "width": 28, "height": 28 },
-        "Type=Dot,Size=SM": { "width": 4, "height": 4 },
-        "Type=Dot,Size=LG": { "width": 12, "height": 12 }
+        "Type=Round,Size=SM": { "width": 20, "height": 20, "heightVar": "badge-round/sm", "widthVar": "badge-round/sm" },
+        "Type=Round,Size=LG": { "width": 28, "height": 28, "heightVar": "badge-round/lg", "widthVar": "badge-round/lg" },
+        "Type=Dot,Size=SM": { "width": 4, "height": 4, "heightVar": "badge-dot/sm", "widthVar": "badge-dot/sm" },
+        "Type=Dot,Size=LG": { "width": 12, "height": 12, "heightVar": "badge-dot/lg", "widthVar": "badge-dot/lg" }
       },
 
       "variantRestrictions": {

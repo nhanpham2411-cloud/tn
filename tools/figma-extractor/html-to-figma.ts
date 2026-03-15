@@ -131,6 +131,7 @@ const CSS_VAR_NORMALIZE_SCRIPT = `
     "sidebar-accent","sidebar-accent-foreground",
     "sidebar-accent-hover","sidebar-muted","sidebar-border","sidebar-ring",
     "chart-1","chart-2","chart-3","chart-4","chart-5","chart-6",
+    "glass-bg","glass-bg-hover","glass-border","glass-border-hover",
   ];
   var temp = document.createElement("div");
   document.body.appendChild(temp);
@@ -249,6 +250,74 @@ async function captureDecorativeBackgrounds(page: any, tree: RawExtractedNode) {
   })
 }
 
+/**
+ * Walk tree to find chart/canvas nodes (type: "image" with selector but no src),
+ * screenshot each element, and embed as base64 backgroundImage.
+ */
+async function captureChartScreenshots(page: any, tree: RawExtractedNode) {
+  const nodes: RawExtractedNode[] = []
+  function collect(n: RawExtractedNode) {
+    if (n.type === "image" && (n as any).selector && !(n as any).src) nodes.push(n)
+    if (n.children) n.children.forEach(collect)
+  }
+  collect(tree)
+
+  if (nodes.length === 0) return
+  console.log(`   Capturing ${nodes.length} chart screenshot(s)...`)
+
+  for (const node of nodes) {
+    try {
+      const selector = (node as any).selector as string
+      // Screenshot the parent container (chart wrapper) not just canvas
+      // Go up to find the wrapper div that contains the full chart
+      const el = await page.$(selector)
+      if (!el) continue
+
+      const buf = await el.screenshot({ type: "png" }) as Buffer
+      // Convert to frame with backgroundImage (not "image" type)
+      node.type = "frame"
+      ;(node as any).backgroundImage = "data:image/png;base64," + buf.toString("base64")
+      delete (node as any).selector
+      delete (node as any).src
+      console.log(`      ✅ ${node.name || "chart"}`)
+    } catch (e) {
+      console.log(`      ⚠️ Chart failed: ${(node as any).selector} — ${(e as Error).message}`)
+    }
+  }
+}
+
+/**
+ * Walk tree to find image nodes (type: "image" with src or selector),
+ * screenshot each element via its selector, and embed as base64.
+ */
+async function captureImageScreenshots(page: any, tree: RawExtractedNode) {
+  const nodes: RawExtractedNode[] = []
+  function collect(n: RawExtractedNode) {
+    if (n.type === "image" && (n as any).selector && (n as any).src) nodes.push(n)
+    if (n.children) n.children.forEach(collect)
+  }
+  collect(tree)
+
+  if (nodes.length === 0) return
+  console.log(`   Capturing ${nodes.length} image(s)...`)
+
+  for (const node of nodes) {
+    try {
+      const selector = (node as any).selector as string
+      const el = await page.$(selector)
+      if (!el) continue
+
+      const buf = await el.screenshot({ type: "png" }) as Buffer
+      node.imageBase64 = "data:image/png;base64," + buf.toString("base64")
+      delete (node as any).selector
+      delete (node as any).src
+      console.log(`      ✅ image captured`)
+    } catch (e) {
+      console.log(`      ⚠️ Image failed: ${(node as any).selector} — ${(e as Error).message}`)
+    }
+  }
+}
+
 async function extractURL(
   context: any,
   url: string,
@@ -305,6 +374,12 @@ async function extractURL(
   // Only used for elements with backgroundSelector — these can't be drawn as vectors
   await captureDecorativeBackgrounds(page, rawTree)
 
+  // Screenshot chart/canvas elements (Recharts, complex SVGs that can't be serialized)
+  await captureChartScreenshots(page, rawTree)
+
+  // Screenshot <img> elements and embed as base64
+  await captureImageScreenshots(page, rawTree)
+
   // Annotate tree with token mappings (color, spacing, radius, text style)
   annotateTokens(rawTree)
   console.log("   Token mapping applied")
@@ -326,6 +401,12 @@ async function extractURL(
  */
 function mapShadowToken(shadow: string): string | undefined {
   if (!shadow || shadow === "none") return undefined
+  // Skip fully transparent shadows
+  if (shadow.indexOf("rgba(0, 0, 0, 0)") !== -1 || shadow.indexOf("rgba(0,0,0,0)") !== -1) {
+    const hasOpaque = shadow.split(/,(?![^(]*\))/).some(l =>
+      l.indexOf("rgba(0, 0, 0, 0)") === -1 && l.indexOf("rgba(0,0,0,0)") === -1)
+    if (!hasOpaque) return undefined
+  }
   // Extract all blur values: "0 4px 6px rgba(...), 0 2px 4px rgba(...)"
   const blurValues: number[] = []
   // Each shadow layer: [inset?] x y blur [spread] color
@@ -416,6 +497,12 @@ function annotateTokens(node: RawExtractedNode) {
     const gap = node.gap ?? 0
     const token = mapSpacing(gap)
     if (typeof token === "string") node.gapToken = token
+
+    // Wrap gap (row gap for CSS grid multi-row)
+    if (node.wrapGap != null && node.wrapGap >= 0) {
+      const wgToken = mapSpacing(node.wrapGap)
+      if (typeof wgToken === "string") (node as any).wrapGapToken = wgToken
+    }
 
     const pTop = node.paddingTop ?? 0
     const pRight = node.paddingRight ?? 0

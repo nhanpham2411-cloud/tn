@@ -111,6 +111,7 @@
         "width": 384,
         "height": 320,
         "heightMode": "fixed",
+        "radius": "none",
         "fill": "card",
         "strokeSides": "left",
         "stroke": "border",

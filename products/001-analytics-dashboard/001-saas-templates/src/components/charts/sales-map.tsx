@@ -66,13 +66,29 @@ function generateDots(feature: any, spacing = 14) {
   return dots
 }
 
-/* ── country code → flag emoji ───────────────────────── */
-const FLAG_MAP: Record<string, string> = {
-  US: "🇺🇸", UK: "🇬🇧", GB: "🇬🇧", FR: "🇫🇷", JP: "🇯🇵", AU: "🇦🇺",
-  SG: "🇸🇬", AE: "🇦🇪", BR: "🇧🇷", DE: "🇩🇪", CA: "🇨🇦", KR: "🇰🇷",
-  CN: "🇨🇳", IN: "🇮🇳", MX: "🇲🇽", NL: "🇳🇱", IT: "🇮🇹", ES: "🇪🇸", NG: "🇳🇬", ZA: "🇿🇦",
+/* ── country code → flag ───────────────────────── */
+const FLAG_CODES = new Set([
+  "us", "gb", "fr", "jp", "au", "sg", "ae", "br", "de", "ca",
+  "kr", "cn", "in", "mx", "nl", "it", "es", "ng", "za",
+])
+/** SVG flag URL for a country code */
+export function countryFlagUrl(code: string) {
+  const lower = code === "UK" ? "gb" : code.toLowerCase()
+  return FLAG_CODES.has(lower) ? `/flags/${lower}.svg` : null
 }
-export function countryFlag(code: string) { return FLAG_MAP[code] || "🌍" }
+/** Legacy: emoji fallback for non-rendering contexts */
+export function countryFlag(code: string) {
+  const url = countryFlagUrl(code)
+  return url ? code : "🌍"
+}
+/** Circular SVG flag image component */
+export function CountryFlag({ code, size = 20, className = "" }: { code: string; size?: number; className?: string }) {
+  const url = countryFlagUrl(code)
+  if (!url) return <span className={className} style={{ fontSize: size }}>🌍</span>
+  const figmaName = `Flag / ${code === "UK" ? "GB" : code.toUpperCase()}`
+  const figmaAttrs = import.meta.env.DEV ? { "data-figma": figmaName } : {}
+  return <img src={url} alt={code} width={size} height={size} className={`rounded-full shrink-0 ${className}`} {...figmaAttrs} />
+}
 
 /* ── component ─────────────────────────────────────────── */
 
@@ -336,9 +352,9 @@ export function SalesMap({ locations, className = "", highlightCity, onHover }: 
                 transform: "translate(-50%, -100%) translateY(-16px)",
               }}
             >
-              <div className="whitespace-nowrap rounded-xl bg-popover backdrop-blur-md border border-border/40 dark:border-white/[0.1] px-lg py-sm shadow-lg">
+              <div className="whitespace-nowrap rounded-xl bg-popover backdrop-blur-md border border-border-subtle dark:border-white/[0.1] px-lg py-sm shadow-lg">
                 <div className="flex items-center gap-xs mb-3xs">
-                  <span className="text-[14px] leading-none">{countryFlag(activeLoc.country)}</span>
+                  <CountryFlag code={activeLoc.country} size={20} />
                   <span className="sp-body-medium text-foreground">{activeLoc.city}</span>
                 </div>
                 <div className="flex items-center gap-sm">

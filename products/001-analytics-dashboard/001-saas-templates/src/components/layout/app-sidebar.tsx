@@ -99,7 +99,7 @@ export function AppSidebar() {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton tooltip="Linh Nguyen" className="data-[state=open]:bg-sidebar-accent">
                   <Avatar className="size-[20px] rounded-lg">
-                    <AvatarFallback className="rounded-lg text-[10px]">LN</AvatarFallback>
+                    <AvatarFallback className="rounded-lg sp-detail">LN</AvatarFallback>
                   </Avatar>
                   <span className="truncate">Linh Nguyen</span>
                 </SidebarMenuButton>

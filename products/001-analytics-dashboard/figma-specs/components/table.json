@@ -680,6 +680,181 @@
     },
 
     {
+      "name": "Table Card Row",
+      "description": "A justify-between flex row inside TableCard. Maps to <TableCardRow> with flex items-center justify-between. Used for label-value pairs in mobile card view of table data.",
+      "category": "Data Display",
+
+      "properties": {
+        "State": ["Default"]
+      },
+
+      "base": {
+        "layout": "horizontal",
+        "primaryAlign": "space-between",
+        "counterAlign": "center",
+        "gap": "auto",
+        "paddingX": "none",
+        "paddingY": "none",
+        "width": 320,
+        "heightMode": "hug",
+        "radius": "none",
+        "hideLabel": true,
+        "children": [
+          { "type": "text", "name": "Label", "textContent": "Status", "textFill": "muted-foreground", "textStyle": "SP/Body" },
+          { "type": "text", "name": "Value", "textContent": "Paid", "textFill": "foreground", "textStyle": "SP/Body Medium" }
+        ]
+      },
+
+      "examples": [
+        {
+          "name": "Row Content",
+          "description": "Label-value pair rows for mobile card layout.",
+          "layout": "vertical",
+          "items": [
+            { "label": "Default", "props": { "State": "Default" } }
+          ]
+        }
+      ],
+
+      "related": [
+        { "name": "Table Card", "desc": "Parent card composing Table Card Row instances for mobile table view." },
+        { "name": "Table Row", "desc": "Desktop counterpart — full table row with cell instances." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component"]
+      }
+    },
+
+    {
+      "name": "Table Card",
+      "description": "Mobile card representation of a table row. Maps to <TableCard> with rounded-xl border p-md flex-col gap-sm. Used below md breakpoint as a responsive alternative to the full Table. Hover state raises surface background. Compose with Table Card Row instances for label-value pairs.",
+      "category": "Data Display",
+      "installation": {
+        "import": "import {\n  Table, TableHeader, TableBody, TableFooter,\n  TableRow, TableHead, TableCell, TableCaption,\n  TableCard, TableCardRow,\n} from \"@/components/ui/table\""
+      },
+
+      "properties": {
+        "State": ["Default", "Hover"]
+      },
+
+      "base": {
+        "layout": "vertical",
+        "primaryAlign": "start",
+        "counterAlign": "start",
+        "gap": "sm",
+        "paddingX": "md",
+        "paddingY": "md",
+        "width": 320,
+        "heightMode": "hug",
+        "radius": "xl",
+        "stroke": "border-subtle",
+        "strokeWidth": 1,
+        "hideLabel": true,
+        "children": [
+          {
+            "name": "Row 1",
+            "type": "instance",
+            "component": "Table Card Row",
+            "variants": { "State": "Default" },
+            "textOverrides": { "Label": "Invoice", "Value": "INV001" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 2",
+            "type": "instance",
+            "component": "Table Card Row",
+            "variants": { "State": "Default" },
+            "textOverrides": { "Label": "Status", "Value": "Paid" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 3",
+            "type": "instance",
+            "component": "Table Card Row",
+            "variants": { "State": "Default" },
+            "textOverrides": { "Label": "Method", "Value": "Credit Card" },
+            "fillWidth": true
+          },
+          {
+            "name": "Row 4",
+            "type": "instance",
+            "component": "Table Card Row",
+            "variants": { "State": "Default" },
+            "textOverrides": { "Label": "Amount", "Value": "$250.00" },
+            "fillWidth": true
+          }
+        ]
+      },
+
+      "variantStyles": {
+        "State=Hover": {
+          "fill": "surface-raised",
+          "fillOpacity": 1
+        }
+      },
+
+      "examples": [
+        {
+          "name": "Card States",
+          "description": "Default and hover states for mobile table card.",
+          "layout": "horizontal",
+          "items": [
+            { "label": "Default", "props": { "State": "Default" } },
+            { "label": "Hover", "props": { "State": "Hover" } }
+          ]
+        }
+      ],
+
+      "props": [
+        { "name": "TableCard", "type": "component", "default": "--", "description": "Rounded card container for mobile table row — flex-col gap-sm with border and hover:bg-surface-raised" },
+        { "name": "TableCardRow", "type": "component", "default": "--", "description": "Justify-between flex row for label-value pairs inside TableCard" }
+      ],
+
+      "designTokens": [
+        { "token": "--color-border-subtle", "value": "zinc-200/50 / zinc-700/50", "description": "Card border color" },
+        { "token": "--color-surface-raised", "value": "zinc-50 / zinc-900", "description": "Hover state background fill" },
+        { "token": "--color-foreground", "value": "zinc-900 / zinc-50", "description": "Value text color" },
+        { "token": "--color-muted-foreground", "value": "zinc-500 / zinc-400", "description": "Label text color" },
+        { "token": "--spacing-md", "value": "16px", "description": "Card padding" },
+        { "token": "--spacing-sm", "value": "12px", "description": "Gap between rows" },
+        { "token": "--radius-xl", "value": "12px", "description": "Card border radius" }
+      ],
+
+      "bestPractices": [
+        { "do": "Use TableCard below md breakpoint as a responsive alternative to the full Table component.", "dont": "Show both Table and TableCard at the same breakpoint — use responsive visibility (hidden md:block / md:hidden)." },
+        { "do": "Compose with TableCardRow for consistent label-value pair spacing.", "dont": "Use bare divs inside TableCard — TableCardRow handles justify-between alignment." }
+      ],
+
+      "figmaMapping": [
+        { "figma": "State=Default", "value": "No background fill, border only", "code": "--", "codeValue": "Default TableCard" },
+        { "figma": "State=Hover", "value": "bg-surface-raised fill", "code": "--", "codeValue": "Built-in via hover:bg-surface-raised" }
+      ],
+
+      "accessibility": {
+        "keyboard": [
+          { "key": "Tab", "action": "Move focus to the card (cursor: pointer)" },
+          { "key": "Enter", "action": "Activate card click handler" }
+        ],
+        "notes": [
+          "TableCard uses cursor: pointer — ensure onClick or Link wrapping for keyboard access.",
+          "Label-value pairs in TableCardRow are visually associated — consider aria-label for screen readers."
+        ]
+      },
+
+      "related": [
+        { "name": "Table Card Row", "desc": "Sub-component — label-value rows instanced inside Table Card." },
+        { "name": "Table", "desc": "Desktop counterpart — full table with rows and cells." },
+        { "name": "Table Row", "desc": "Desktop row counterpart composing Cell Row instances." },
+        { "name": "Card", "desc": "Generic card — TableCard is specialized for table data representation." }
+      ],
+
+      "showcase": {
+        "sections": ["header", "component", "installation"]
+      }
+    },
+
+    {
       "name": "Table",
       "description": "Full data table composing Table Header and Table Row instances via instance swap. Header at top, data rows below with multi-column data via Cell sub-components. Striped property toggles alternating row tint for improved readability in dense tables.",
       "category": "Data Display",

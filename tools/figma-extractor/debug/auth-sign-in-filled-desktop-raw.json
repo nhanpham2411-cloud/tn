@@ -89,7 +89,7 @@
                   "fontWeight": 700,
                   "fontSize": 24,
                   "lineHeight": 30,
-                  "color": "rgba(255, 255, 255, 0.9)",
+                  "color": "rgb(250, 250, 250)",
                   "textAlign": "center",
                   "width": 360,
                   "height": 60,
@@ -103,7 +103,7 @@
                   "fontWeight": 400,
                   "fontSize": 14,
                   "lineHeight": 22.75,
-                  "color": "rgba(255, 255, 255, 0.35)",
+                  "color": "rgb(161, 161, 170)",
                   "textAlign": "center",
                   "width": 360,
                   "height": 68,
@@ -166,7 +166,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 73,
                       "height": 28,
@@ -180,7 +180,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 73,
                       "height": 16,
@@ -195,7 +195,7 @@
                   "type": "frame",
                   "width": 1,
                   "height": 20,
-                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "fill": "rgba(255, 255, 255, 0.06)",
                   "radius": 0,
                   "tagName": "DIV"
                 },
@@ -218,7 +218,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 58,
                       "height": 28,
@@ -232,7 +232,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 58,
                       "height": 16,
@@ -247,7 +247,7 @@
                   "type": "frame",
                   "width": 1,
                   "height": 20,
-                  "fill": "rgba(255, 255, 255, 0.08)",
+                  "fill": "rgba(255, 255, 255, 0.06)",
                   "radius": 0,
                   "tagName": "DIV"
                 },
@@ -270,7 +270,7 @@
                       "fontWeight": 700,
                       "fontSize": 18,
                       "lineHeight": 28,
-                      "color": "rgba(255, 255, 255, 0.8)",
+                      "color": "rgb(250, 250, 250)",
                       "textAlign": "center",
                       "width": 48,
                       "height": 28,
@@ -284,7 +284,7 @@
                       "fontWeight": 400,
                       "fontSize": 12,
                       "lineHeight": 16,
-                      "color": "rgba(255, 255, 255, 0.25)",
+                      "color": "rgb(113, 113, 122)",
                       "textAlign": "center",
                       "width": 48,
                       "height": 16,
@@ -306,7 +306,7 @@
               "fontWeight": 400,
               "fontSize": 12,
               "lineHeight": 16,
-              "color": "rgba(255, 255, 255, 0.15)",
+              "color": "rgb(113, 113, 122)",
               "width": 226,
               "height": 16,
               "fillWidth": false,
@@ -500,7 +500,7 @@
                                 "Right": "None"
                               },
                               "textOverrides": {
-                                "Label": "john@shoppulse.com"
+                                "Value": "john@shoppulse.com"
                               },
                               "width": 374,
                               "height": 36,
@@ -543,22 +543,40 @@
                               "dataSlot": "label"
                             },
                             {
-                              "type": "instance",
-                              "component": "Input",
-                              "variants": {
-                                "State": "Default",
-                                "Value": "Filled",
-                                "Left": "None",
-                                "Right": "None"
-                              },
-                              "textOverrides": {
-                                "Label": "SecureP@ss123"
-                              },
+                              "type": "frame",
+                              "layout": "horizontal",
+                              "gap": 0,
+                              "paddingTop": 0,
+                              "paddingRight": 0,
+                              "paddingBottom": 0,
+                              "paddingLeft": 0,
+                              "primaryAlign": "start",
+                              "counterAlign": "center",
                               "width": 374,
                               "height": 36,
                               "fillWidth": true,
-                              "tagName": "INPUT",
-                              "dataSlot": "input"
+                              "children": [
+                                {
+                                  "type": "instance",
+                                  "component": "Input",
+                                  "variants": {
+                                    "State": "Default",
+                                    "Value": "Filled",
+                                    "Left": "None",
+                                    "Right": "Icon"
+                                  },
+                                  "textOverrides": {
+                                    "Value": "•••••••••••••"
+                                  },
+                                  "width": 374,
+                                  "height": 36,
+                                  "fillWidth": false,
+                                  "tagName": "INPUT",
+                                  "dataSlot": "input"
+                                }
+                              ],
+                              "tagName": "DIV",
+                              "className": "relative flex items-center"
                             }
                           ],
                           "tagName": "DIV",

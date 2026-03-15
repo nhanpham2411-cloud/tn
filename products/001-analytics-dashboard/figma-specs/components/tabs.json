@@ -25,10 +25,12 @@
         "widthMode": "hug",
         "heightMode": "hug",
         "radius": "md",
-        "iconSize": 16,
-        "textStyle": "SP/Body Medium",
-        "textContent": "Account",
-        "textFill": "muted-foreground"
+        "hideLabel": true,
+        "textFill": "muted-foreground",
+        "children": [
+          { "name": "Icon Left", "type": "icon", "iconName": "User", "iconSize": 16, "showWhen": "Icon=Yes" },
+          { "name": "Label", "type": "text", "textStyle": "SP/Body Medium", "textContent": "Account" }
+        ]
       },
 
       "variantStyles": {
@@ -46,10 +48,7 @@
           "opacity": 0.5
         },
 
-        "Icon=Yes": {
-          "iconLeft": true,
-          "iconLeftName": "User"
-        },
+        "Icon=Yes": {},
 
         "Variant=Pill,State=Hover": {
           "radius": "full",
